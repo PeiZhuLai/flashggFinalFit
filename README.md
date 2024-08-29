@@ -41,7 +41,7 @@ Install Flashgg Final Fit packages
 ```
 cd ..
 
-git clone https://github.com/zebingwang/flashggFinalFit.git
+git clone https://github.com/PeiZhuLai/flashggFinalFit.git
 
 cd flashggFinalFit/
 ```
