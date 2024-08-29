@@ -15,6 +15,8 @@ cd CMSSW_10_2_13/src
 cmsenv
 
 git cms-init
+
+git clone git@github.com:PeiZhuLai/cmssw.git
 ```
 
 Install the GBRLikelihood package which contains the RooDoubleCBFast implementation
