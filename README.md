@@ -21,11 +21,13 @@ Install the GBRLikelihood package which contains the RooDoubleCBFast implementat
 ```
 git clone git@github.com:jonathon-langford/HiggsAnalysis.git
 git clone https://github.com/jonathon-langford/HiggsAnalysis.git
+git clone git@github.com:PeiZhuLai/HiggsAnalysis.git
 ```
 Install Combine as per the documentation here: cms-analysis.github.io/HiggsAnalysis-CombinedLimit/
 ```
 git clone git@github.com:cms-analysis/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
 git clone https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
+git clone git@github.com:PeiZhuLai/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
 ```
 Compile external libraries
 -----------------------
