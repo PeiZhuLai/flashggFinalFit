@@ -1,6 +1,10 @@
 ALP Flashgg Final Fit
 ========================
 
+run all the readme in
+
+https://github.com/cms-analysis/flashggFinalFit?tab=readme-ov-file##download-and-setup-instructions
+
 Cloning the Repository
 ---------------
 ```
