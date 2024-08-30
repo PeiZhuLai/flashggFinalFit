@@ -46,13 +46,15 @@ cd ..
 
 git clone https://github.com/zebingwang/flashggFinalFit.git
 
-cd flashggFinalFit/
+cd HiggsAnalysis
 ```
 
 Compile Signal Model Pakage
 --------------
 
 ```
+cd flashggFinalFit
+
 cd Signal
 
 cmsenv
