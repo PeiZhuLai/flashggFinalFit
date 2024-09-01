@@ -1,5 +1,4 @@
-ALP Flashgg Final Fit
-========================
+# ALP Flashgg Final Fit
 
 run all the readme in
 
@@ -43,6 +42,15 @@ cd HiggsAnalysis
 cmsenv
 
 scram b -j
+
+cd $CMSSW_BASE/src/HiggsAnalysis/CombinedLimit
+
+git fetch origin
+
+git checkout v10.0.2
+
+scramv1 b clean; scramv1 b # always make a clean build
+
 ```
 Install Flashgg Final Fit packages
 -----------------------
