@@ -5,9 +5,7 @@ run all the readme in official flashggFinalFit Github
 https://github.com/cms-analysis/flashggFinalFit?tab=readme-ov-file##download-and-setup-instructions
 
 Cloning the Repository
----
-
-
+-----------------------
 ```
 export SCRAM_ARCH=slc7_amd64_gcc700
 
