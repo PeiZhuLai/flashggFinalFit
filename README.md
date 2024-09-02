@@ -41,7 +41,7 @@ cd HiggsAnalysis
 
 cmsenv
 
-scram b -j
+scramv1 b clean; scramv1 b
 
 cd $CMSSW_BASE/src/HiggsAnalysis/CombinedLimit
 
