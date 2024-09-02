@@ -1,8 +1,8 @@
 # ALP Flashgg Final Fit
 
-run all the readme in official flashggFinalFit Github
+Set up el7 environment first
 
-https://github.com/cms-analysis/flashggFinalFit?tab=readme-ov-file##download-and-setup-instructions
+https://gitlab.cern.ch/cms-cat/cmssw-lxplus
 
 Cloning the Repository
 -----------------------
