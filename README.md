@@ -9,8 +9,6 @@ Cloning the Repository
 ```
 export SCRAM_ARCH=slc7_amd64_gcc700
 
-cmssw-el7
-
 cmsrel CMSSW_10_2_13
 
 cd CMSSW_10_2_13/src
