@@ -42,11 +42,11 @@ scramv1 b clean; scramv1 b
 Install Flashgg Final Fit packages
 -----------------------
 ```
-cd ..
+cd ../..
 
 git clone https://github.com/zebingwang/flashggFinalFit.git
 
-cd HiggsAnalysis
+install flashggFinalFit parella to HiggsAnalysis
 ```
 
 Compile Signal Model Pakage
