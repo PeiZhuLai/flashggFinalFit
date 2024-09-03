@@ -45,6 +45,7 @@ Install Flashgg Final Fit packages
 cd ../..
 
 git clone https://github.com/zebingwang/flashggFinalFit.git
+git clone git@github.com:PeiZhuLai/flashggFinalFit.git
 
 install flashggFinalFit parella to HiggsAnalysis
 ```
