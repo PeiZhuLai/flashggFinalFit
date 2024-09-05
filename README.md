@@ -55,7 +55,7 @@ cd ../..
 git clone https://github.com/zebingwang/flashggFinalFit.git
 git clone git@github.com:PeiZhuLai/flashggFinalFit.git
 
-install flashggFinalFit parella to HiggsAnalysis
+install flashggFinalFit parallel to HiggsAnalysis
 ```
 
 Compile Signal Model Pakage
