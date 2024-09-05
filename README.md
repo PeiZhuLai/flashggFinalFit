@@ -34,7 +34,7 @@ git checkout v8.2.0
 Compile external libraries
 -----------------------
 ```
-cd ../HiggsAnalysis
+cd ..
 
 cmsenv
 
