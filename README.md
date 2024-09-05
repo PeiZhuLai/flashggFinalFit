@@ -7,9 +7,9 @@ Repositories:
 
 Cloning the Repository
 ---------------
-```
-at IHEP
+At IHEP Server 
 
+```
 export PATH=/cvmfs/container.ihep.ac.cn/bin:$PATH
 
 hep_container shell CentOS7
