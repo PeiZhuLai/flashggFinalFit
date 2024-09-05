@@ -10,6 +10,10 @@ Cloning the Repository
 ```
 cmssw-el7
 
+at IHEP
+export PATH=/cvmfs/container.ihep.ac.cn/bin:$PATH
+hep_container shell CentOS7
+
 export SCRAM_ARCH=slc7_amd64_gcc700
 
 cmsrel CMSSW_10_2_13
