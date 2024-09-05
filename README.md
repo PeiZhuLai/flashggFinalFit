@@ -1,11 +1,6 @@
 ALP Flashgg Final Fit
 ========================
-Contacts:
 
-Repositories:
-------------
-
-Cloning the Repository
 ---------------
 At IHEP Server 
 
