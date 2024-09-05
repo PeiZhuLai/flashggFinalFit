@@ -1,12 +1,19 @@
-# ALP Flashgg Final Fit
+ALP Flashgg Final Fit
+========================
+Contacts:
 
-Set up el7 environment first
-
-https://gitlab.cern.ch/cms-cat/cmssw-lxplus
+Repositories:
+------------
 
 Cloning the Repository
------------------------
+---------------
 ```
+at IHEP
+
+export PATH=/cvmfs/container.ihep.ac.cn/bin:$PATH
+
+hep_container shell CentOS7
+
 export SCRAM_ARCH=slc7_amd64_gcc700
 
 cmsrel CMSSW_10_2_13
@@ -17,52 +24,44 @@ cmsenv
 
 git cms-init
 
-git clone git@github.com:PeiZhuLai/cmssw.git
 ```
 
 Install the GBRLikelihood package which contains the RooDoubleCBFast implementation
 ```
 git clone git@github.com:jonathon-langford/HiggsAnalysis.git
-git clone https://github.com/jonathon-langford/HiggsAnalysis.git
-git clone git@github.com:PeiZhuLai/HiggsAnalysis.git
 ```
 Install Combine as per the documentation here: cms-analysis.github.io/HiggsAnalysis-CombinedLimit/
 ```
-git clone git@github.com:cms-analysis/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
 git clone https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
-git clone git@github.com:PeiZhuLai/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
+cd HiggsAnalysis/CombinedLimit
+git fetch origin
+git checkout v8.2.0
 ```
 Compile external libraries
 -----------------------
 ```
-cd HiggsAnalysis
+cd ../HiggsAnalysis
 
 cmsenv
 
 scramv1 b clean; scramv1 b
-
-cd $CMSSW_BASE/src/HiggsAnalysis/CombinedLimit
-
-git fetch origin
-
-git checkout v10.0.2
-
-scramv1 b clean; scramv1 b # always make a clean build
-
 ```
 Install Flashgg Final Fit packages
 -----------------------
 ```
-cd ..
-
-git clone https://github.com/PeiZhuLai/flashggFinalFit.git
+cd ../..
 
 git clone git@github.com:PeiZhuLai/flashggFinalFit.git
 
-cd flashggFinalFit/
+install flashggFinalFit parallel to HiggsAnalysis
 ```
 
+Compile Signal Model Pakage
+--------------
+
 ```
+cd flashggFinalFit
+
 cd Signal
 
 cmsenv
@@ -73,7 +72,7 @@ make
 
 ```
 
-Background Model
+Compile Background Model Pakage
 --------------
 
 ```
@@ -86,9 +85,16 @@ make clean
 make
 
 ```
+
+Prepare dataset
+--------------
+
+Copy all the input datasets into dir: ```InputData```
+
+
 Run
 -----
 
 ```
-./fit_ALP.sh
+./fit_HZGamma_model_UL.sh
 ```
