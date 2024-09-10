@@ -1,10 +1,53 @@
 ALP Flashgg Final Fit
 ========================
-Contacts:
 
-Repositories:
-------------
+Please follow the entire instruction from offical flashggfit 
 
+```
+export SCRAM_ARCH=el9_amd64_gcc12
+cmsrel CMSSW_14_1_0_pre4
+cd CMSSW_14_1_0_pre4/src
+cmsenv
+
+COMBINE_TAG=07b56c67ba6e4304b42c3a6cdba710d59c719192
+COMBINEHARVESTER_TAG=94017ba5a3a657f7b88669b1a525b19d34ea41a2
+FINALFIT_TAG=higgsdnafinalfit
+
+# Install Combine with the latest EL9 compatible branch
+git clone https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
+cd HiggsAnalysis/CombinedLimit && git fetch origin ${COMBINE_TAG} && git checkout ${COMBINE_TAG}
+
+# Install CombineTools in CombineHarvester
+cd ${CMSSW_BASE}/src
+bash <(curl -s https://raw.githubusercontent.com/cms-analysis/CombineHarvester/${COMBINEHARVESTER_TAG}/CombineTools/scripts/sparse-checkout-https.sh)
+cd CombineHarvester && git fetch origin ${COMBINEHARVESTER_TAG} && git checkout ${COMBINEHARVESTER_TAG}
+
+# Compile libraries
+cd ${CMSSW_BASE}/src
+cmsenv
+scram b clean
+scram b -j 8
+
+# Install Final Fit package
+git clone -b $FINALFIT_TAG https://github.com/cms-analysis/flashggFinalFit.git
+cd flashggFinalFit/
+source setup.sh
+```
+
+Add the modified file into counterpart of fiels
+
+```
+cd Background
+
+cmsenv
+
+make clean
+
+make
+
+```
+
+========================
 Cloning the Repository
 ---------------
 ```
