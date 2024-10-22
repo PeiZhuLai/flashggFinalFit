@@ -11,12 +11,15 @@ from tools.plottingTools import *
 
 def get_options():
   parser = OptionParser()
-  parser.add_option('--procs', dest='procs', default='all', help="Comma separated list of processes to include. all = sum all signal procs")  
-  parser.add_option('--years', dest='years', default='2016,2017,2018', help="Comma separated list of years to include")  
-  parser.add_option('--cats', dest='cats', default='', help="Comma separated list of analysis categories to include. all = sum of all categories, wall = weighted sum of categories (requires S/S+B from ./Plots/getCatInfo.py)")
+  parser.add_option('--mass_ALP', dest='mass_ALP', default=1, type='int', help="ALP mass") # PZ
+  parser.add_option("--channel", dest='channel', default='', help="ele, mu, or leptons") # PZ
+
+  parser.add_option('--procs', dest='procs', default='GG2H', help="Comma separated list of processes to include. all = sum all signal procs")  
+  parser.add_option('--years', dest='years', default='16,16APV,17,18', help="Comma separated list of years to include")  
+  parser.add_option('--cats', dest='cats', default='cat0', help="Comma separated list of analysis categories to include. all = sum of all categories, wall = weighted sum of categories (requires S/S+B from ./Plots/getCatInfo.py)")
   parser.add_option('--loadCatWeights', dest='loadCatWeights', default='', help="Load S/S+B weights for analysis categories (path to weights json file)")
   parser.add_option('--ext', dest='ext', default='test', help="Extension: defines output dir where signal models are saved")
-  parser.add_option("--xvar", dest="xvar", default='CMS_hgg_mass:m_{#gamma#gamma}:GeV', help="x-var (name:title:units)")
+  parser.add_option("--xvar", dest="xvar", default='CMS_hza_mass:m_{ ll#gamma#gamma}:GeV', help="x-var (name:title:units)")
   parser.add_option("--mass", dest="mass", default='125', help="Mass of datasets")
   parser.add_option("--MH", dest="MH", default='125', help="Higgs mass (for pdf)")
   parser.add_option("--nBins", dest="nBins", default=160, type='int', help="Number of bins")
@@ -25,7 +28,7 @@ def get_options():
   parser.add_option("--translateCats", dest="translateCats", default=None, help="JSON to store cat translations")
   parser.add_option("--translateProcs", dest="translateProcs", default=None, help="JSON to store proc translations")
   parser.add_option("--label", dest="label", default='Simulation Preliminary', help="CMS Sub-label")
-  parser.add_option("--doFWHM", dest="doFWHM", default=False, action='store_true', help="Do FWHM")
+  parser.add_option("--doFWHM", dest="doFWHM", default=True, action='store_true', help="Do FWHM")
   return parser.parse_args()
 (opt,args) = get_options()
 
@@ -49,7 +52,7 @@ if opt.cats in ['all','wall']:
     citr += 1
 else:
   for cat in opt.cats.split(","):
-    f = "%s/outdir_%s/CMS-HGG_sigfit_%s_%s.root"%(swd__,opt.ext,opt.ext,cat)
+    f = f"{swd__}/outdir_{opt.channel}/signalFit/output/{opt.mass_ALP}_CMS-HGG_sigfit_{opt.years}_{opt.channel}_Hm125.root"
     inputFiles[cat] = f
     if citr == 0:
       w = ROOT.TFile(f).Get("wsig_13TeV")
@@ -156,11 +159,11 @@ for cat,f in inputFiles.items():
         if year in _id: hists['pdf_%s'%year] += p
    
   # Garbage removal
-  #for d in data_rwgt.values(): d.Delete()
-  #for p in hpdfs.values(): p.Delete()
-  #w.Delete()
+  # for d in data_rwgt.values(): d.Delete()
+  # for p in hpdfs.values(): p.Delete()
+  # w.Delete()
   fin.Close()
 
 # Make plot
-if not os.path.isdir("%s/outdir_%s/Plots"%(swd__,opt.ext)): os.system("mkdir %s/outdir_%s/Plots"%(swd__,opt.ext))
-plotSignalModel(hists,opt,_outdir="%s/outdir_%s/Plots"%(swd__,opt.ext))
+if not os.path.isdir("%s/outdir_%s/Plots"%(swd__,opt.channel)): os.system("mkdir %s/outdir_%s/Plots"%(swd__,opt.channel))
+plotSignalModel(hists,opt,_outdir="%s/outdir_%s/Plots"%(swd__,opt.channel), _Amass=opt.mass_ALP,_year=opt.years,_channel=opt.channel)

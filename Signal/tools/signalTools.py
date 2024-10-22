@@ -6,7 +6,9 @@ import math
 from collections import OrderedDict as od
 from commonObjects import *
 
-# Functions for manip RooDataSets
+# Functions for manip RooDataSets / cut the _d to be left only _argset
+# _d = RooDataSet
+# _argset = RooArgSet
 def reduceDataset(_d,_argset): return _d.reduce(_argset)
 
 def splitRVWV(_d,_argset,mode="RV"):

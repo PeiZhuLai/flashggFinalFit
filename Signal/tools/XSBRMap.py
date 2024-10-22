@@ -36,10 +36,15 @@ globalXSBRMap['tutorial']['decay'] = {'mode':'hgg'}
 globalXSBRMap['tutorial']['GG2H'] = {'mode':'constant', 'factor':51.96}
 globalXSBRMap['tutorial']['VBF'] = {'mode':'constant', 'factor':4.067}
 
+# ~~~~~~~~~ PZ ~~~~~~~~~ 
+# globalXSBRMap['GG2H'] = od()
+# globalXSBRMap['GG2H']['GG2H'] = {'mode': 'ggH', 'factor': 1.0}
+
 # STXS analysis: add factor for bin composition
 globalXSBRMap['STXS'] = od()
 globalXSBRMap['STXS']['decay'] = {'mode':'hgg'}
 # ggH STXS stage 1.2 bins
+globalXSBRMap['STXS']['GG2H'] = {'mode':'ggH','factor':1.} # PZ
 globalXSBRMap['STXS']['GG2H_FWDH'] = {'mode':'ggH','factor':0.0809}
 globalXSBRMap['STXS']['GG2H_PTH_200_300'] = {'mode':'ggH','factor':0.0098}
 globalXSBRMap['STXS']['GG2H_PTH_300_450'] = {'mode':'ggH','factor':0.0025}

@@ -13,8 +13,12 @@ from systematics import theory_systematics, experimental_systematics, signal_sha
 
 def get_options():
   parser = OptionParser()
-  parser.add_option('--ext', dest='ext', default='', help="Extension (used when running RunYields.py)")
+
+  parser.add_option('--mass_ALP', dest='mass_ALP', default=1, type='int', help="ALP mass") # PZ
   parser.add_option('--years', dest='years', default='2022preEE,2022postEE', help="Comma separated list of years in makeYields output")
+  parser.add_option("--channel", dest='channel', default='', help="ele, mu, or leptons") # PZ
+
+  parser.add_option('--ext', dest='ext', default='', help="Extension (used when running RunYields.py)")
   # For pruning processes
   parser.add_option('--prune', dest='prune', default=False, action="store_true", help="Prune proc x cat which make up less than pruneThreshold (default 0.1%) of given total category")
   parser.add_option('--pruneThreshold', dest='pruneThreshold', default=0.001, type='float', help="Threshold with which to prune proc x cat as fraction of total category yield (default=0.1%)")
@@ -28,7 +32,7 @@ def get_options():
   parser.add_option('--doSTXSMerging', dest='doSTXSMerging', default=False, action="store_true", help="Calculate additional migrations uncertainties for merged STXS bins (for 'mnorm' tier in systematics)")
   parser.add_option('--doSTXSScaleCorrelationScheme', dest='doSTXSScaleCorrelationScheme', default=False, action="store_true", help="Partially de-correlate scale uncertainties for different phase space regions")
   # For output
-  parser.add_option('--saveDataFrame', dest='saveDataFrame', default=False, action="store_true", help='Save final dataframe as pkl file') 
+  parser.add_option('--saveDataFrame', dest='saveDataFrame', default=True, action="store_true", help='Save final dataframe as pkl file') 
   parser.add_option('--output', dest='output', default='Datacard', help='Datacard name') 
   return parser.parse_args()
 (opt,args) = get_options()
@@ -41,11 +45,14 @@ STXSMergingScheme, STXSScaleCorrelationScheme = None, None
 if opt.doSTXSMerging: from tools.STXS_tools import STXSMergingScheme
 if opt.doSTXSScaleCorrelationScheme: from tools.STXS_tools import STXSScaleCorrelationScheme
 
+# with open("./yields%s/%s_datacard_%s_%s.pkl"%(extStr,opt.mass_ALP,opt.years,opt.channel),"wb") as fD: pickle.dump(data,fD)
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Concatenate dataframes
 print(" --> Loading per category dataframes into single dataframe")
-extStr = "_%s"%opt.ext if opt.ext != '' else ''
-pkl_files = glob.glob("./yields%s/*.pkl"%extStr)
+extStr = "_%s"%opt.channel if opt.channel != '' else ''
+# pkl_files = glob.glob("./yields%s/*.pkl"%extStr)
+pkl_files = glob.glob("./yields%s/%s_datacard_%s_%s.pkl"%(extStr,opt.mass_ALP,opt.years,opt.channel))
 pkl_files.sort() # Categories in alphabetical order
 data = pd.DataFrame()
 for f_pkl_name in pkl_files:
@@ -144,15 +151,20 @@ if opt.prune:
     
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # SAVE DATAFRAME
+# with open("./yields%s/%s_datacard_%s_%s.pkl"%(extStr,opt.mass_ALP,opt.years,opt.channel),"wb") as fD: pickle.dump(data,fD)
+
 if opt.saveDataFrame:
   print(" ..........................................................................................")
   print(" --> Saving dataFrame: %s.pkl"%opt.output)
-  with open("%s.pkl"%opt.output,"wb") as fD: pickle.dump(data,fD)
+  with open("./yields%s/%s_pruned_Datacard_%s_%s.pkl"%(extStr,opt.mass_ALP,opt.years,opt.channel),"wb") as fD: pickle.dump(data,fD)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # WRITE TO .TXT FILE
 print(" ..........................................................................................")
-fdataName = "%s.txt"%opt.output
+extStr = "_%s"%opt.channel if opt.channel != '' else ''
+if not os.path.isdir("./output_Datacard%s"%extStr): os.system("mkdir ./output_Datacard%s"%extStr)
+# fdataName = "%s.txt"%opt.output
+fdataName = "./output_Datacard%s/%s_pruned_datacard_%s_%s.txt"%(extStr,opt.mass_ALP,opt.years,opt.channel)
 print(" --> Writing to datacard file: %s"%fdataName)
 from tools.writeToDatacard import writePreamble, writeProcesses, writeSystematic, writeMCStatUncertainty, writePdfIndex, writeBreak
 fdata = open(fdataName,"w")

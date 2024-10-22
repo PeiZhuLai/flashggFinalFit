@@ -29,32 +29,35 @@ def leave():
 
 def get_options():
   parser = OptionParser()
-  parser.add_option("--xvar", dest='xvar', default='CMS_hgg_mass', help="Observable to fit")
+  parser.add_option('--mass_ALP', dest='mass_ALP', default=1, type='int', help="ALP mass") # PZ
+  parser.add_option("--channel", dest='channel', default='', help="ele, mu, or leptons") # PZ
+
+  parser.add_option("--xvar", dest='xvar', default='CMS_hza_mass', help="Observable to fit")
   parser.add_option("--inputWSDir", dest='inputWSDir', default='', help="Input flashgg WS directory")
   parser.add_option("--ext", dest='ext', default='', help="Extension")
-  parser.add_option("--proc", dest='proc', default='', help="Signal process")
-  parser.add_option("--cat", dest='cat', default='', help="RECO category")
+  parser.add_option("--proc", dest='proc', default='GG2H', help="Signal process") # PZ
+  parser.add_option("--cat", dest='cat', default='cat0', help="RECO category") # PZ
   parser.add_option("--year", dest='year', default='2016', help="Year")
   parser.add_option("--analysis", dest='analysis', default='STXS', help="Analysis handle: used to specify replacement map and XS*BR normalisations")
   parser.add_option('--massPoints', dest='massPoints', default='120,125,130', help="Mass points to fit")
-  parser.add_option('--skipBeamspotReweigh', dest='skipBeamspotReweigh', default=False, action="store_true", help="Skip beamspot reweigh to match beamspot distribution in data")
-  parser.add_option('--doPlots', dest='doPlots', default=False, action="store_true", help="Produce Signal Fitting plots")
+  parser.add_option('--skipBeamspotReweigh', dest='skipBeamspotReweigh', default=True, action="store_true", help="Skip beamspot reweigh to match beamspot distribution in data") # PZ
+  parser.add_option('--doPlots', dest='doPlots', default=True, action="store_true", help="Produce Signal Fitting plots") # PZ
   parser.add_option("--doVoigtian", dest='doVoigtian', default=False, action="store_true", help="Use Voigtians instead of Gaussians for signal models with Higgs width as parameter")
   parser.add_option("--useDCB", dest='useDCB', default=False, action="store_true", help="Use DCB in signal fitting")
   parser.add_option("--useDiagonalProcForShape", dest='useDiagonalProcForShape', default=False, action="store_true", help="Use shape of diagonal process, keeping normalisation (requires diagonal mapping produced by getDiagProc script)")
-  parser.add_option('--skipVertexScenarioSplit', dest='skipVertexScenarioSplit', default=False, action="store_true", help="Skip vertex scenario split")
+  parser.add_option('--skipVertexScenarioSplit', dest='skipVertexScenarioSplit', default=True, action="store_true", help="Skip vertex scenario split") # PZ
   parser.add_option('--skipZeroes', dest='skipZeroes', default=False, action="store_true", help="Skip proc x cat is numEntries = 0., or sumEntries < 0.")
   # For systematics
-  parser.add_option('--skipSystematics', dest='skipSystematics', default=False, action="store_true", help="Skip shape systematics in signal model")
+  parser.add_option('--skipSystematics', dest='skipSystematics', default=True, action="store_true", help="Skip shape systematics in signal model") # PZ
   parser.add_option('--useDiagonalProcForSyst', dest='useDiagonalProcForSyst', default=False, action="store_true", help="Use diagonal process for systematics (requires diagonal mapping produced by getDiagProc script)")
   parser.add_option("--scales", dest='scales', default='', help="Photon shape systematics: scales")
   parser.add_option("--scalesCorr", dest='scalesCorr', default='', help='Photon shape systematics: scalesCorr')
   parser.add_option("--scalesGlobal", dest='scalesGlobal', default='', help='Photon shape systematics: scalesGlobal')
   parser.add_option("--smears", dest='smears', default='', help='Photon shape systematics: smears')
   # Parameter values
-  parser.add_option('--replacementThreshold', dest='replacementThreshold', default=100, type='int', help="Nevent threshold to trigger replacement dataset")
+  parser.add_option('--replacementThreshold', dest='replacementThreshold', default=20, type='int', help="Nevent threshold to trigger replacement dataset")
   parser.add_option('--beamspotWidthData', dest='beamspotWidthData', default=3.5, type='float', help="Width of beamspot in data [cm]")
-  parser.add_option('--beamspotWidthMC', dest='beamspotWidthMC', default=3.7, type='float', help="Width of beamspot in MC [cm]")
+  parser.add_option('--beamspotWidthMC', dest='beamspotWidthMC', default=5.14, type='float', help="Width of beamspot in MC [cm]") # PZ
   parser.add_option('--MHPolyOrder', dest='MHPolyOrder', default=1, type='int', help="Order of polynomial for MH dependence")
   parser.add_option('--nBins', dest='nBins', default=80, type='int', help="Number of bins for fit")
   # Minimizer options
@@ -88,14 +91,23 @@ if opt.analysis not in globalXSBRMap:
 else: xsbrMap = globalXSBRMap[opt.analysis]
 
 # Load RooRealVars
-nominalWSFileName = glob.glob("%s/output*M%s*%s.root"%(opt.inputWSDir,MHNominal,opt.proc))[0]
+nominalWSFileName = glob.glob(f"{opt.inputWSDir}/ALP_sig_Am{opt.mass_ALP}_Hm125_{opt.year}_{opt.channel}.root")[0] # PZ
 f0 = ROOT.TFile(nominalWSFileName,"read")
 inputWS0 = f0.Get(inputWSName__)
 xvar = inputWS0.var(opt.xvar)
 xvarFit = xvar.Clone()
-dZ = inputWS0.var("dZ")
+dZ = ROOT.RooRealVar("dZ", "dZ", 0)  # PZ
+# dZ = inputWS0.var("dZ")
 aset = ROOT.RooArgSet(xvar,dZ)
 f0.Close()
+# official sample structure
+# inputWSName__ = "tagsDumper/cms_hgg_13TeV"
+# procToData(proc.split("_")[0]) = ggh
+# RooDataHist::ggh_120_13TeV_EEEB_highR9highR9_SmearingDown01sigma(CMS_hgg_mass)
+
+# PZ sample structure
+# inputWSName__ = "CMS_hza_workspace"
+# RooDataSet::ggh_125_13TeV_cat0(CMS_hza_mass)
 
 # Create MH var
 MH = ROOT.RooRealVar("MH","m_{H}", int(MHLow), int(MHHigh))
@@ -104,10 +116,11 @@ MH.setConstant(True)
 
 if opt.skipZeroes:
   # Extract nominal mass dataset and see if entries == 0
-  WSFileName = glob.glob("%s/output*M%s*%s.root"%(opt.inputWSDir,MHNominal,opt.proc))[0]
+  WSFileName = glob.glob(f"{opt.inputWSDir}/ALP_sig_Am{opt.mass_ALP}_Hm125_{opt.year}_{opt.channel}.root")[0]
   f = ROOT.TFile(WSFileName,"read")
   inputWS = f.Get(inputWSName__)
-  d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(opt.proc.split("_")[0]),MHNominal,sqrts__,opt.cat)),aset)
+  d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(proc.split("_")[0]),opt.mass,sqrts__,opt.cat)),aset)
+  # d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(opt.proc.split("_")[0]),MHNominal,sqrts__,opt.cat)),aset)
   if( d.numEntries() == 0. )|( d.sumEntries <= 0. ):
     print(" --> (%s,%s) has zero events. Will not construct signal model"%(opt.proc,opt.cat))
     exit()
@@ -150,10 +163,12 @@ nominalDatasets = od()
 # For RV (or if skipping vertex scenario split)
 datasetRVForFit = od()
 for mp in opt.massPoints.split(","):
-  WSFileName = glob.glob("%s/output*M%s*%s.root"%(opt.inputWSDir,mp,procRVFit))[0]
+  WSFileName = glob.glob(f"{opt.inputWSDir}/ALP_sig_Am{opt.mass_ALP}_Hm{mp}_{opt.year}_{opt.channel}.root")[0] # PZ
+  # WSFileName = glob.glob("%s/output*M%s*%s.root"%(opt.inputWSDir,mp,procRVFit))[0]
   f = ROOT.TFile(WSFileName,"read")
   inputWS = f.Get(inputWSName__)
-  d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(procRVFit.split("_")[0]),mp,sqrts__,catRVFit)),aset)
+  d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(procRVFit.split("_")[0]),mp,sqrts__,opt.cat)),aset) # PZ
+  # d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(procRVFit.split("_")[0]),mp,sqrts__,catRVFit)),aset)
   nominalDatasets[mp] = d.Clone()
   if opt.skipVertexScenarioSplit: datasetRVForFit[mp] = d
   else: datasetRVForFit[mp] = splitRVWV(d,aset,mode="RV")
@@ -165,10 +180,12 @@ if( datasetRVForFit[MHNominal].numEntries() < opt.replacementThreshold  )|( data
   nominal_numEntries = datasetRVForFit[MHNominal].numEntries()
   procReplacementFit, catReplacementFit = rMap['procRVMap'][opt.cat], rMap['catRVMap'][opt.cat]
   for mp in opt.massPoints.split(","):
-    WSFileName = glob.glob("%s/output*M%s*%s.root"%(opt.inputWSDir,mp,procReplacementFit))[0]
+    WSFileName = glob.glob(f"{opt.inputWSDir}/ALP_sig_Am{opt.mass_ALP}_Hm{mp}_{opt.year}_{opt.channel}.root")[0] # PZ
+    # WSFileName = glob.glob("%s/output*M%s*%s.root"%(opt.inputWSDir,mp,procReplacementFit))[0]
     f = ROOT.TFile(WSFileName,"read")
     inputWS = f.Get(inputWSName__)
-    d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(procReplacementFit.split("_")[0]),mp,sqrts__,catReplacementFit)),aset)
+    d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(procReplacementFit.split("_")[0]),mp,sqrts__,opt.cat)),aset) # PZ
+    # d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(procReplacementFit.split("_")[0]),mp,sqrts__,catReplacementFit)),aset)
     if opt.skipVertexScenarioSplit: datasetRVForFit[mp] = d
     else: datasetRVForFit[mp] = splitRVWV(d,aset,mode="RV")
     inputWS.Delete()
@@ -204,10 +221,12 @@ else:
 if not opt.skipVertexScenarioSplit:
   datasetWVForFit = od()
   for mp in opt.massPoints.split(","):
-    WSFileName = glob.glob("%s/output*M%s*%s.root"%(opt.inputWSDir,mp,procWVFit))[0]
+    WSFileName = glob.glob(f"{opt.inputWSDir}/ALP_sig_Am{opt.mass_ALP}_Hm{mp}_{opt.year}_{opt.channel}.root")[0] # PZ
+    # WSFileName = glob.glob("%s/output*M%s*%s.root"%(opt.inputWSDir,mp,procWVFit))[0]
     f = ROOT.TFile(WSFileName,"read")
     inputWS = f.Get(inputWSName__)
-    d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(procWVFit.split("_")[0]),mp,sqrts__,catWVFit)),aset)
+    d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(proc.split("_")[0]),mp,sqrts__,opt.cat)),aset) # PZ
+    # d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(procWVFit.split("_")[0]),mp,sqrts__,catWVFit)),aset)
     datasetWVForFit[mp] = splitRVWV(d,aset,mode="WV")
     inputWS.Delete()
     f.Close()
@@ -217,10 +236,12 @@ if not opt.skipVertexScenarioSplit:
     nominal_numEntries = datasetWVForFit[MHNominal].numEntries()
     procReplacementFit, catReplacementFit = rMap['procWV'], rMap['catWV']
     for mp in opt.massPoints.split(","):
-      WSFileName = glob.glob("%s/output*M%s*%s.root"%(opt.inputWSDir,mp,procReplacementFit))[0]
+      WSFileName = glob.glob(f"{opt.inputWSDir}/ALP_sig_Am{opt.mass_ALP}_Hm{mp}_{opt.year}_{opt.channel}.root")[0] # PZ
+      # WSFileName = glob.glob("%s/output*M%s*%s.root"%(opt.inputWSDir,mp,procReplacementFit))[0]
       f = ROOT.TFile(WSFileName,"read")
       inputWS = f.Get(inputWSName__)
-      d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(procReplacementFit.split("_")[0]),mp,sqrts__,catReplacementFit)),aset)
+      d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(proc.split("_")[0]),mp,sqrts__,opt.cat)),aset) # PZ
+      # d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(procReplacementFit.split("_")[0]),mp,sqrts__,catReplacementFit)),aset)
       datasetWVForFit[mp] = splitRVWV(d,aset,mode="WV")
       inputWS.Delete()
       f.Close()
@@ -261,11 +282,12 @@ if not opt.skipBeamspotReweigh:
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # If using nGaussian fit then extract nGaussians from fTest json file
 if not opt.useDCB:
-  with open("%s/outdir_%s/fTest/json/nGauss_%s.json"%(swd__,opt.ext,catRVFit)) as jf: ngauss = json.load(jf)
+  # with open("%s/outdir_%s/fTest/json/nGauss_%s.json"%(swd__,opt.ext,catRVFit)) as jf: ngauss = json.load(jf)
+  with open(f"{swd__}/outdir_{opt.channel}/fTest/json/{opt.mass_ALP}_nGauss_{opt.year}_{opt.channel}_Hm125.json") as jf: ngauss = json.load(jf)
   nRV = int(ngauss["%s__%s"%(procRVFit,catRVFit)]['nRV'])
   if opt.skipVertexScenarioSplit: print(" --> Fitting function: convolution of nGaussians (%g)"%nRV)
   else: 
-    with open("%s/outdir_%s/fTest/json/nGauss_%s.json"%(swd__,opt.ext,catWVFit)) as jf: ngauss = json.load(jf)
+    with open(f"{swd__}/outdir_{opt.channel}/fTest/json/{opt.mass_ALP}_nGauss_{opt.year}_{opt.channel}_Hm125.json") as jf: ngauss = json.load(jf)
     nWV = int(ngauss["%s__%s"%(procWVFit,catWVFit)]['nWV'])
     print(" --> Fitting function: convolution of nGaussians (RV=%g,WV=%g)"%(nRV,nWV))
 else:
@@ -301,8 +323,8 @@ fm = FinalModel(ssfMap,opt.proc,opt.cat,opt.ext,opt.year,sqrts__,nominalDatasets
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # SAVE: to output workspace
-foutDir = "%s/outdir_%s/signalFit/output"%(swd__,opt.ext)
-foutName = "%s/outdir_%s/signalFit/output/CMS-HGG_sigfit_%s_%s_%s_%s.root"%(swd__,opt.ext,opt.ext,opt.proc,opt.year,opt.cat)
+foutDir = "%s/outdir_%s/signalFit/output"%(swd__,opt.channel)
+foutName = f"{swd__}/outdir_{opt.channel}/signalFit/output/{opt.mass_ALP}_CMS-HGG_sigfit_{opt.year}_{opt.channel}_Hm125.root"
 print("\n --> Saving output workspace to file: %s"%foutName)
 if not os.path.isdir(foutDir): os.system("mkdir %s"%foutDir)
 fout = ROOT.TFile(foutName,"RECREATE")
@@ -315,12 +337,12 @@ fout.Close()
 # PLOTTING
 if opt.doPlots:
   print("\n --> Making plots...")
-  if not os.path.isdir("%s/outdir_%s/signalFit/Plots"%(swd__,opt.ext)): os.system("mkdir %s/outdir_%s/signalFit/Plots"%(swd__,opt.ext))
+  if not os.path.isdir("%s/outdir_%s/signalFit/Plots"%(swd__,opt.channel)): os.system("mkdir %s/outdir_%s/signalFit/Plots"%(swd__,opt.channel))
   if opt.skipVertexScenarioSplit:
-    plotPdfComponents(ssfRV,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.ext),_extension="total_",_proc=procRVFit,_cat=catRVFit) 
+    plotPdfComponents(ssfRV,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.channel),_extension="total_",_proc=procRVFit,_cat=catRVFit, _Amass=opt.mass_ALP,_year=opt.year,_channel=opt.channel) 
   if not opt.skipVertexScenarioSplit:
-    plotPdfComponents(ssfRV,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.ext),_extension="RV_",_proc=procRVFit,_cat=catRVFit) 
-    plotPdfComponents(ssfWV,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.ext),_extension="WV_",_proc=procWVFit,_cat=catRVFit) 
+    plotPdfComponents(ssfRV,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.channel),_extension="RV_",_proc=procRVFit,_cat=catRVFit, _Amass=opt.mass_ALP,_year=opt.year,_channel=opt.channel) 
+    plotPdfComponents(ssfWV,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.channel),_extension="WV_",_proc=procWVFit,_cat=catRVFit, _Amass=opt.mass_ALP,_year=opt.year,_channel=opt.channel) 
   # Plot interpolation
-  plotInterpolation(fm,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.ext)) 
-  plotSplines(fm,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.ext),_nominalMass=MHNominal) 
+  plotInterpolation(fm,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.channel), _Amass=opt.mass_ALP,_year=opt.year,_channel=opt.channel) 
+  plotSplines(fm,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.channel),_nominalMass=MHNominal, _Amass=opt.mass_ALP,_year=opt.year,_channel=opt.channel) 

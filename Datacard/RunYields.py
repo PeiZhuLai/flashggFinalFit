@@ -12,10 +12,10 @@ from tools.submissionTools import *
 def get_options():
   parser = OptionParser()
   # Input details
-  parser.add_option('--cats', dest='cats', default='auto', help="Comma separated list of categories. auto = automatically inferred from inputWSDirMap")
+  parser.add_option('--cats', dest='cats', default='cat0', help="Comma separated list of categories. auto = automatically inferred from inputWSDirMap")
   parser.add_option('--inputWSDirMap', dest='inputWSDirMap', default='2016=/vols/cms/jl2117/hgg/ws/UL/Sept20/MC_final/signal_2016', help="Map. Format: year=inputWSDir (separate years by comma)")
   parser.add_option('--procs', dest='procs', default='auto', help='Comma separated list of signal processes. auto = automatically inferred from input workspaces')
-  parser.add_option('--ext', dest='ext', default='test', help='Extension for saving')
+  parser.add_option('--ext', dest='ext', default='HToZa', help='Extension for saving')
   parser.add_option('--mass', dest='mass', default='125', help='Input workspace mass')
   parser.add_option('--mergeYears', dest='mergeYears', default=False, action="store_true", help="Merge category across years")
   parser.add_option('--skipBkg', dest='skipBkg', default=False, action="store_true", help="Only add signal processes to datacard")
@@ -28,13 +28,13 @@ def get_options():
   parser.add_option('--skipZeroes', dest='skipZeroes', default=False, action="store_true", help="Skip signal processes with 0 sum of weights")
   parser.add_option('--skipCOWCorr', dest='skipCOWCorr', default=False, action="store_true", help="Skip centralObjectWeight correction for events in acceptance. Use if no centralObjectWeight in workspace")
   # For systematics:
-  parser.add_option('--doSystematics', dest='doSystematics', default=False, action="store_true", help="Include systematics calculations and add to datacard")
+  parser.add_option('--doSystematics', dest='doSystematics', default=True, action="store_true", help="Include systematics calculations and add to datacard")
   parser.add_option('--ignore-warnings', dest='ignore_warnings', default=False, action="store_true", help="Skip errors for missing systematics. Instead output warning message")
   # For submission
   parser.add_option('--batch', dest='batch', default='IC', help='Batch')
   parser.add_option('--queue', dest='queue', default='microcentury', help='Queue: should not take long (microcentury will do)')
   parser.add_option('--jobOpts', dest='jobOpts', default='', help="Additional options to add to job submission. For Condor separate individual options with a colon (specify all within quotes e.g. \"option_xyz = abc+option_123 = 456\")")
-  parser.add_option('--printOnly', dest='printOnly', default=False, action="store_true", help="Dry run: print submission files only")
+  parser.add_option('--printOnly', dest='printOnly', default=True, action="store_true", help="Dry run: print submission files only")
   return parser.parse_args()
 (opt,args) = get_options()
 

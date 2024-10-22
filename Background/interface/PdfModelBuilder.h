@@ -65,6 +65,11 @@ class PdfModelBuilder {
     RooAbsPdf* getLaurentSeries(string prefix, int order);
     RooAbsPdf* getKeysPdf(string prefix);
     RooAbsPdf* getPdfFromFile(string &prefix);
+    //PZ
+    RooAbsPdf* getBernsteinStepxGau(string prefix, int order, int mass_ALP);
+    RooAbsPdf* getPowerLawStepxGau(string prefix, int order,int cat, int mass_ALP);
+    RooAbsPdf* getExponentialStepxGau(string prefix, int order, int cat, int mass_ALP);
+    RooAbsPdf* getLaurentStepxGau(string prefix, int order, int cat, int mass_ALP);
 
   private:
    

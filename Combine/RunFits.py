@@ -12,7 +12,12 @@ print(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ HGG SUBMIT FITS RUN II ~~~~~~~~~~~~~~~
 
 def get_options():
   parser = OptionParser()
-  parser.add_option('--inputJson', dest='inputJson', default='inputs.json', help="Input json file to define fits")
+
+  parser.add_option('--mass_ALP', dest='mass_ALP', default=1, type='int', help="ALP mass") # PZ
+  parser.add_option('--year', dest='year', default='2016', help="Separated list of years") # PZ
+  parser.add_option("--channel", dest='channel', default='ele', help="ele or mu") # PZ
+
+  parser.add_option('--inputJson', dest='inputJson', default='inputs_HToZa.json', help="Input json file to define fits")
   parser.add_option('--mode', dest='mode', default='mu_inclusive', help="Type of fit")
   parser.add_option('--ext', dest='ext', default='', help="Running over Datacard with extension")
   parser.add_option('--mass', dest='mass', default='125.38', help="Higgs mass")
@@ -25,7 +30,7 @@ def get_options():
   parser.add_option('--subOpts', dest='subOpts', default="", help="Submission options")
   parser.add_option('--doCustomCrab', dest='doCustomCrab', default=False, action="store_true", help="Load crab options from custom_crab.py file")
   parser.add_option('--crabMemory', dest='crabMemory', default='5900', help="Memory for crab job")
-  parser.add_option('--dryRun', dest='dryRun', action="store_true", default=False, help="Only create submission files")
+  parser.add_option('--dryRun', dest='dryRun', action="store_true", default=True, help="Only create submission files")
   return parser.parse_args()
 (opt,args) = get_options()
 
@@ -75,7 +80,7 @@ else:
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Make folder for running fits if does not exist
-if not os.path.isdir("runFits%s_%s"%(opt.ext,opt.mode)): os.system("mkdir runFits%s_%s"%(opt.ext,opt.mode))
+if not os.path.isdir("runFits_%s_%s"%(opt.mode,opt.channel)): os.system("mkdir runFits_%s_%s"%(opt.mode,opt.channel))
 
 # Read json file
 with open( opt.inputJson ) as jsonfile: inputs = json.load(jsonfile)[opt.mode]
@@ -97,7 +102,8 @@ for fidx in range(len(fits)):
 
   # If ALL in fit_opts: replace by list of constrained nuisances in workspace
   if "ALL" in _fit_opts: 
-    fd = ROOT.TFile("Datacard%s_%s.root"%(opt.ext,opt.mode))
+    # fd = ROOT.TFile("Datacard%s_%s.root"%(opt.ext,opt.mode))
+    fd = ROOT.TFile("%s/src/flashggFinalFit/Combine/output_datacard_rootfile_%s/%s_Datacard_%s_%s_%s.root"%(os.environ['CMSSW_BASE'], opt.channel,opt.mass_ALP,opt.year,opt.channel,opt.mode))
     ws = fd.Get("w")
     nuisances = ws.obj("ModelConfig").GetNuisanceParameters().contentsString()
     _fit_opts = re.sub("ALL",nuisances,_fit_opts)
@@ -118,7 +124,8 @@ for fidx in range(len(fits)):
   if opt.snapshotWSFile != '': d_opts = '-d %s --snapshotName MultiDimFit'%opt.snapshotWSFile
   else:
     #d_opts = '-d ../Datacard%s_%s.root'%(opt.ext,opt.mode)
-    d_opts = '-d %s/src/flashggFinalFit/Combine/Datacard%s_%s.root'%(os.environ['CMSSW_BASE'],opt.ext,opt.mode)
+    # d_opts = '-d %s/src/flashggFinalFit/Combine/Datacard%s_%s.root'%(os.environ['CMSSW_BASE'],opt.ext,opt.mode)
+    d_opts = '-d %s/src/flashggFinalFit/Combine/output_datacard_rootfile_%s/%s_Datacard_%s_%s_%s.root'%(os.environ['CMSSW_BASE'], opt.channel,opt.mass_ALP,opt.year,opt.channel,opt.mode)
 
   # If setParameters already in _fit_opts then add to fit opts and set pdfOpts = ''
   if( "setParameters" in _fit_opts )&( pdf_opts != '' ):
@@ -155,7 +162,7 @@ for fidx in range(len(fits)):
   # For asymptotic limit
   if _fit.split(":")[0] == "AsymptoticLimit":
     for poi in _fitpois:
-      fitcmd = "cd runFits%s_%s; source /cvmfs/cms.cern.ch/crab3/crab.sh; combineTool.py --task-name %s_%s -M AsymptoticLimits -m %s %s %s -n _%s_%s --redefineSignalPOI %s %s %s %s %s; cd .."%(opt.ext,opt.mode,_name,poi,opt.mass,d_opts,exp_opts,_name,poi,poi,_fit_opts,pdf_opts,common_opts,job_opts)
+      fitcmd = "cd runFits_%s_%s; source /cvmfs/cms.cern.ch/crab3/crab.sh; combineTool.py --task-name %s_%s -M AsymptoticLimits -m %s %s %s -n _%s_%s --redefineSignalPOI %s %s %s %s %s; cd .."%(opt.mode,opt.channel, _name,poi, opt.mass,d_opts,exp_opts, _name,poi, poi,_fit_opts,pdf_opts,common_opts,job_opts)
       if(os.environ['PWD'].startswith("/eos"))&(opt.batch == "condor")&(not opt.dryRun):
         fitcmd = re.sub("; cd ..", " --dry-run; condor_submit -spool condor_%s_%s.sub; cd .."%(_name,poi), fitcmd)      
       run(fitcmd)

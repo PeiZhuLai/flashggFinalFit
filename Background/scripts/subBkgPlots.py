@@ -35,7 +35,7 @@ os.system('mkdir -p %s'%options.outDir)
 
 vcats = options.flashggCats.split(',') 
 ncats = len(vcats)
-print 'Considering ',ncats,' catgeories :', vcats
+print ('Considering ',ncats,' catgeories :', vcats)
 
 if options.catLabels=='mk_default':
   options.catLabels=[]
@@ -44,9 +44,9 @@ if options.catLabels=='mk_default':
     options.catLabels.append('Category %d'%cat)
 else:
   options.catLabels = options.catLabels.split(',')
-print ""
-print options.catLabels
-print ""
+print ("")
+print (options.catLabels)
+print ("")
 
 #for cat in range(options.cats):
 for cat in range(ncats):
@@ -55,16 +55,16 @@ for cat in range(ncats):
   f.write('#!/bin/bash\n')
   f.write('cd %s\n'%os.getcwd())
   f.write('eval `scramv1 runtime -sh`\n')
-  print "nCats = ",ncats
-  print "cat = ",cat
-  print "nCatLabels = ",len(options.catLabels)
-  print ""
+  print ("nCats = ",ncats)
+  print ("cat = ",cat)
+  print ("nCatLabels = ",len(options.catLabels))
+  print ("")
   execLine = '$CMSSW_BASE/src/flashggFinalFit/Background/bin/makeBkgPlots -f %s -b %s -o %s/BkgPlots_cat%d.root -d %s -c %d -l \"%s\"'%(options.flashggCats,options.bkgfilename,options.outDir,cat,options.outDir,cat,options.catLabels[cat])
 #  execLine = '$PWD -b %s -s %s -o %s/BkgPlots_cat%d.root -d %s -c %d -l \"%s\"'%(options.bkgfilename,options.sigfilename,options.outDir,cat,options.outDir,cat,options.catLabels[cat])
   execLine += " --sqrts %d "%options.sqrts
   execLine += " --intLumi %f "%options.intLumi
   execLine += " --year %s "%options.year
-  print "LC DEBUG echo intlumi ",options.intLumi
+  print ("LC DEBUG echo intlumi ",options.intLumi)
   if options.doBands:
     execLine += ' --doBands --massStep %5.3f --nllTolerance %5.3f -L %d -H %d'%(options.massStep,options.nllTolerance,options.low,options.high)
   if options.higgsResolution:
@@ -83,7 +83,7 @@ for cat in range(ncats):
     execLine += ' --verbose'
   f.write('%s\n'%execLine);
   f.close()
-  print execLine
+  print (execLine)
   
   os.system('chmod +x %s'%f.name)
   if options.runLocal: os.system('./%s'%f.name)
@@ -107,4 +107,4 @@ for cat in range(ncats):
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE,
                              close_fds=True)
-    else: print "Batch %s is not supported. Exiting..."%options.batch
+    else: print ("Batch %s is not supported. Exiting..."%options.batch)

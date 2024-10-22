@@ -67,9 +67,11 @@ def getEffSigma(_h):
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Ftest: plots
 # Plot possible nGauss fits and chi2 values
-def plotFTest(ssfs,_opt=1,_outdir='./',_extension='',_proc='',_cat='',_mass='125'):
-  canv = ROOT.TCanvas()
-  canv.SetLeftMargin(0.15)
+def plotFTest(ssfs,_opt=1,_outdir='./',_extension='',_proc='',_cat='',_mass='125',_Amass='1',_year='16',_channel='ele',_Hmass='125'):
+  canv = ROOT.TCanvas("c", "c", 800, 600)
+  canv.SetMargin(0.16, 0.03, 0.14, 0.08) # //left//right//bottom//top
+  canv.SetTickx(1)
+  canv.SetTicky(1)
   LineColorMap = {'1':ROOT.kAzure+1,'2':ROOT.kRed-4,'3':ROOT.kGreen+2,'4':ROOT.kMagenta-9,'5':ROOT.kOrange}
   pdfs = od()
   hists = od()
@@ -78,26 +80,52 @@ def plotFTest(ssfs,_opt=1,_outdir='./',_extension='',_proc='',_cat='',_mass='125
   for k,ssf in ssfs.items():
     ssf.MH.setVal(int(_mass))
     hists[k] = ssf.Pdfs['final'].createHistogram("h_%s_%s"%(k,_extension),ssf.xvar,ROOT.RooFit.Binning(1600))
-    if int(k.split("_")[-1]) == _opt: hists[k].SetLineWidth(3)
+    if int(k.split("_")[-1]) == _opt: hists[k].SetLineWidth(4)
     else: hists[k].SetLineWidth(1)
     hists[k].SetLineColor(LineColorMap[k.split("_")[-1]])
+    # hists[k].SetNDC(300)
     hists[k].SetTitle("")
-    hists[k].GetXaxis().SetTitle("m_{#gamma#gamma} [GeV]")
+    hists[k].GetXaxis().SetTitle("m_{ ll#gamma#gamma} [GeV]")
     hists[k].SetMinimum(0)
     if hists[k].GetMaximum()>hmax: hmax = hists[k].GetMaximum()
     if hists[k].GetMinimum()<hmin: hmin = hists[k].GetMinimum()
-    hists[k].GetXaxis().SetRangeUser(115,140)
+    if _mass == '120':
+      hists[k].GetXaxis().SetRangeUser(110,135)
+    elif _mass == '125':
+      hists[k].GetXaxis().SetRangeUser(115,140)
+    elif _mass=='130':
+      hists[k].GetXaxis().SetRangeUser(120,145)
   # Extract data histogram
   hists['data'] = ssf.xvar.createHistogram("h_data%s"%_extension,ROOT.RooFit.Binning(ssf.nBins))
   ssf.DataHists[_mass].fillHistogram(hists['data'],ROOT.RooArgList(ssf.xvar))
+  hists['data'].GetXaxis().CenterTitle(True)
+  hists['data'].GetYaxis().CenterTitle(True)
   hists['data'].Scale(float(ssf.nBins)/1600)
   hists['data'].SetMarkerStyle(20)
   hists['data'].SetMarkerColor(1)
   hists['data'].SetLineColor(1)
   hists['data'].SetTitle("")
-  hists['data'].GetXaxis().SetTitle("m_{#gamma#gamma} [GeV]")
+  hists['data'].GetYaxis().SetTitle(f"Events / {hists['data'].GetBinWidth(1):.2f}")
+  hists['data'].GetYaxis().SetTitleFont(42)
+  hists['data'].GetYaxis().SetTitleSize(0.055)
+  hists['data'].GetYaxis().SetTitleOffset(1.55)
+  hists['data'].GetYaxis().SetLabelFont(42)
+  hists['data'].GetYaxis().SetLabelSize(0.05)
+  hists['data'].GetXaxis().SetTitle("m_{ ll#gamma#gamma} [GeV]")
+  hists['data'].GetXaxis().SetTitleFont(42)
+  hists['data'].GetXaxis().SetTitleSize(0.055)
+  hists['data'].GetXaxis().SetTitleOffset(1.2)
+  hists['data'].GetXaxis().SetLabelFont(42)
+  hists['data'].GetXaxis().SetLabelSize(0.05)
+  hists['data'].GetXaxis().SetLabelOffset(0.009)
+
   hists['data'].SetMinimum(0)
-  hists['data'].GetXaxis().SetRangeUser(115,140)
+  if _mass == '120':
+    hists['data'].GetXaxis().SetRangeUser(110,135)
+  elif _mass == '125':
+    hists['data'].GetXaxis().SetRangeUser(115,140)
+  elif _mass == '130':
+    hists['data'].GetXaxis().SetRangeUser(120,145)
   if hists['data'].GetMaximum()>hmax: hmax = hists['data'].GetMaximum()
   if hists['data'].GetMinimum()<hmin: hmin = hists['data'].GetMinimum()
 
@@ -110,30 +138,41 @@ def plotFTest(ssfs,_opt=1,_outdir='./',_extension='',_proc='',_cat='',_mass='125
     h.Draw("HIST SAME")
 
   # Legend & Text
-  leg = ROOT.TLegend(0.55,0.3,0.86,0.8)
+  leg = ROOT.TLegend(0.595,0.47,0.905,0.89)
   leg.SetFillStyle(0)
+  leg.SetFillColor(0)
   leg.SetLineColor(0)
-  leg.SetTextSize(0.03)
+  leg.SetBorderSize(0)
+  leg.SetTextSize(0.04)
   leg.AddEntry(hists['data'],"Simulation","ep")
   for k,ssf in ssfs.items(): 
-    if int(k.split("_")[-1]) == _opt: leg.AddEntry(hists[k],"#bf{N_{gauss} = %s}: #chi^{2}/n(dof) = %.4f"%(k.split("_")[-1],ssf.getReducedChi2()),"L")
-    else: leg.AddEntry(hists[k],"N_{gauss} = %s: #chi^{2}/n(dof) = %.4f"%(k.split("_")[-1],ssf.getReducedChi2()),"L")
+    if int(k.split("_")[-1]) == _opt: leg.AddEntry(hists[k],"#bf{N_{gau} = %s} (#chi^{2}/dof = %.2f)"%(k.split("_")[-1],ssf.getReducedChi2()),"L")
+    else: leg.AddEntry(hists[k],"N_{gau} = %s (#chi^{2}/dof = %.2f)"%(k.split("_")[-1],ssf.getReducedChi2()),"L")
   leg.Draw("Same")
   # Add Latex
   lat = ROOT.TLatex()
   lat.SetTextFont(42)
-  lat.SetTextAlign(31)
+  lat.SetTextAlign(13)
   lat.SetNDC()
-  lat.SetTextSize(0.03)
-  lat.DrawLatex(0.9,0.92,"( %s , %s , %s )"%(_extension,_proc,_cat))
-
+  lat.SetTextSize(0.045)
+  # lat.DrawLatex(0.9,0.92,"( %s , %s , %s )"%(_extension,_proc,_cat))
+  lat.DrawLatex(0.20, 0.87, f"m_{{a}} = {_Amass} GeV")
+  lat.SetTextSize(0.05)  # 字體大小
+  lat.SetTextFont(61)  # 粗體字 CMS 標籤
+  lat.DrawLatex(0.155, 0.969, "CMS")
+  lat.SetTextSize(0.045)
+  lat.SetTextFont(52)  # 斜體字 Preliminary 標籤
+  lat.DrawLatex(0.245, 0.965, "Simulation Preliminary")
+  lat.DrawLatex(0.74,0.97,("138 fb^{-1} (13 TeV)"))
   canv.Update()
-  canv.SaveAs("%s/fTest_%s_%s_%s.png"%(_outdir,_cat,_proc,_extension))
-  canv.SaveAs("%s/fTest_%s_%s_%s.pdf"%(_outdir,_cat,_proc,_extension))
+  canv.SaveAs(f"{_outdir}/{_Amass}_fTest_{_year}_{_channel}_Hm{_Hmass}.pdf")
 
 # Plot reduced chi2 vs nGauss
-def plotFTestResults(ssfs,_opt,_outdir="./",_extension='',_proc='',_cat='',_mass='125'):
-  canv = ROOT.TCanvas()
+def plotFTestResults(ssfs,_opt,_outdir="./",_extension='',_proc='',_cat='',_mass='125',_Amass='1',_year='16',_channel='ele',_Hmass='125'):
+  canv = ROOT.TCanvas("c", "c", 800, 600)
+  canv.SetMargin(0.11, 0.03, 0.14, 0.08) # //left//right//bottom//top
+  canv.SetTickx(1)
+  canv.SetTicky(1)
   gr = ROOT.TGraph()
   # Loop over nGuassians
   p = 0
@@ -151,15 +190,28 @@ def plotFTestResults(ssfs,_opt,_outdir="./",_extension='',_proc='',_cat='',_mass
   # Draw axes
   haxes = ROOT.TH1F("h_axes_%s_%s"%(_proc,_extension),"h_axes_%s_%s"%(_proc,_extension),xmax+1,0,xmax+1)
   haxes.SetTitle("")
-  haxes.GetXaxis().SetTitle("N_{gauss}")
-  haxes.GetXaxis().SetTitleSize(0.05)
-  haxes.GetXaxis().SetTitleOffset(0.85)
-  haxes.GetXaxis().SetLabelSize(0.035)
+  haxes.GetXaxis().CenterTitle(True)
+  haxes.GetYaxis().CenterTitle(True)
+
   haxes.GetYaxis().SetTitle("#chi^{2} / n(dof)")
-  haxes.GetYaxis().SetTitleOffset(0.85)
-  haxes.GetYaxis().SetTitleSize(0.05)
+  haxes.GetYaxis().SetTitleFont(42)
+  haxes.GetYaxis().SetTitleSize(0.055)
+  haxes.GetYaxis().SetTitleOffset(0.9)
+  haxes.GetYaxis().SetLabelFont(42)
+  haxes.GetYaxis().SetLabelSize(0.05)
+
+  haxes.GetXaxis().SetTitle("N_{guass}")
+  haxes.GetXaxis().SetTitleFont(42)
+  haxes.GetXaxis().SetTitleSize(0.055)
+  haxes.GetXaxis().SetTitleOffset(1.2)
+  haxes.GetXaxis().SetLabelFont(42)
+  haxes.GetXaxis().SetLabelSize(0.05)
+  haxes.GetXaxis().SetLabelOffset(0.009)
+
   haxes.SetMaximum(1.2*ymax)
   haxes.SetMinimum(0)
+  # haxes.GetXaxis().SetRangeUser(0.5,5.5)
+  haxes.GetXaxis().SetLimits(0.6,5.4)
   haxes.Draw()
   # Draw graph
   if "RV" in _extension: gr.SetLineColor(ROOT.kRed-4)
@@ -167,25 +219,37 @@ def plotFTestResults(ssfs,_opt,_outdir="./",_extension='',_proc='',_cat='',_mass
   else: gr.SetLineColor(1)
   gr.SetMarkerColor(1)
   gr.SetMarkerStyle(20)
+  gr.SetMarkerSize(1.5)
+
+  gr.SetLineWidth(3)
   gr.Draw("Same PL")
   # Add Latex
   lat = ROOT.TLatex()
   lat.SetTextFont(42)
-  lat.SetTextAlign(31)
+  lat.SetTextAlign(13)
   lat.SetNDC()
-  lat.SetTextSize(0.03)
-  lat.DrawLatex(0.9,0.92,"( %s , %s , %s )"%(_extension,_proc,_cat))
-  lat.DrawLatex(0.6,0.75,"Optimum N_{gauss} = %s"%_opt)
+  lat.SetTextSize(0.045)
+  # lat.DrawLatex(0.9,0.92,"( %s , %s , %s )"%(_extension,_proc,_cat))
+  lat.DrawLatex(0.66,0.85, f"m_{{a}} = {_Amass} GeV")
+  lat.DrawLatex(0.66,0.77,"Optimum N_{gauss} = %s"%_opt)
+  lat.SetTextSize(0.05)  # 字體大小
+  lat.SetTextFont(61)  # 粗體字 CMS 標籤
+  lat.DrawLatex(0.11, 0.969, "CMS")
+  lat.SetTextSize(0.045)
+  lat.SetTextFont(52)  # 斜體字 Preliminary 標籤
+  lat.DrawLatex(0.20, 0.965, "Simulation Preliminary")
+  lat.DrawLatex(0.74,0.97,("138 fb^{-1} (13 TeV)"))
   canv.Update()
-  canv.SaveAs("%s/fTest_%s_%s_%s_chi2_vs_nGauss.png"%(_outdir,_cat,_proc,_extension))
-  canv.SaveAs("%s/fTest_%s_%s_%s_chi2_vs_nGauss.pdf"%(_outdir,_cat,_proc,_extension))
+  canv.SaveAs(f"{_outdir}/{_Amass}_fTest_{_year}_{_channel}_Hm{_Hmass}_chi2_vs_nGauss.pdf")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Signal fit plots
 # Plot final pdf at MH = 125 (with data) + individual Pdf components
-def plotPdfComponents(ssf,_outdir='./',_extension='',_proc='',_cat=''):
-  canv = ROOT.TCanvas()
-  canv.SetLeftMargin(0.15)
+def plotPdfComponents(ssf,_outdir='./',_extension='',_proc='',_cat='',_Amass='1',_year='16',_channel='ele'):
+  canv = ROOT.TCanvas("c", "c", 800, 600)
+  canv.SetMargin(0.17, 0.03, 0.14, 0.08) # //left//right//bottom//top
+  canv.SetTickx(1)
+  canv.SetTicky(1)
   ssf.MH.setVal(125)
   LineColorMap = {0:ROOT.kAzure+1,1:ROOT.kRed-4,2:ROOT.kOrange,3:ROOT.kGreen+2,4:ROOT.kMagenta-9}
   pdfs = od()
@@ -193,27 +257,43 @@ def plotPdfComponents(ssf,_outdir='./',_extension='',_proc='',_cat=''):
   hmax, hmin = 0, 0
   # Total pdf histogram
   hists['final'] = ssf.Pdfs['final'].createHistogram("h_final%s"%_extension,ssf.xvar,ROOT.RooFit.Binning(1600))
-  hists['final'].SetLineWidth(2)
+  hists['final'].SetLineWidth(3)
   hists['final'].SetLineColor(1)
-  hists['final'].SetTitle("")
-  hists['final'].GetXaxis().SetTitle("m_{#gamma#gamma} [GeV]")
+  
+  
   hists['final'].SetMinimum(0)
   if hists['final'].GetMaximum()>hmax: hmax = hists['final'].GetMaximum()
   if hists['final'].GetMinimum()<hmin: hmin = hists['final'].GetMinimum()
-  #hists['final'].GetXaxis().SetRangeUser(115,140)
-  hists['final'].GetXaxis().SetRangeUser(100,150)
+  hists['final'].GetXaxis().SetRangeUser(115,140)
+  # hists['final'].GetXaxis().SetRangeUser(100,150)
   # Create data histogram
   hists['data'] = ssf.xvar.createHistogram("h_data%s"%_extension,ROOT.RooFit.Binning(ssf.nBins))
   ssf.DataHists['125'].fillHistogram(hists['data'],ROOT.RooArgList(ssf.xvar))
-  hists['data'].SetTitle("")
-  hists['data'].GetXaxis().SetTitle("m_{#gamma#gamma} [GeV]")
-  hists['data'].SetMinimum(0)
-  #hists['data'].GetXaxis().SetRangeUser(115,140)
-  hists['data'].GetXaxis().SetRangeUser(100,150)
-  hists['data'].Scale(float(ssf.nBins)/1600)
+  hists['data'].GetXaxis().CenterTitle(True)
+  hists['data'].GetYaxis().CenterTitle(True)
   hists['data'].SetMarkerStyle(20)
   hists['data'].SetMarkerColor(1)
   hists['data'].SetLineColor(1)
+  hists['data'].SetTitle("")
+  hists['data'].GetYaxis().SetTitle(f"Events / {hists['data'].GetBinWidth(1):.2f}")
+  hists['data'].GetYaxis().SetTitleFont(42)
+  hists['data'].GetYaxis().SetTitleSize(0.055)
+  hists['data'].GetYaxis().SetTitleOffset(1.55)
+  hists['data'].GetYaxis().SetLabelFont(42)
+  hists['data'].GetYaxis().SetLabelSize(0.05)
+  hists['data'].GetXaxis().SetTitle("m_{ ll#gamma#gamma} [GeV]")
+  hists['data'].GetXaxis().SetTitleFont(42)
+  hists['data'].GetXaxis().SetTitleSize(0.055)
+  hists['data'].GetXaxis().SetTitleOffset(1.2)
+  hists['data'].GetXaxis().SetLabelFont(42)
+  hists['data'].GetXaxis().SetLabelSize(0.05)
+  hists['data'].GetXaxis().SetLabelOffset(0.009)
+  
+  hists['data'].SetMinimum(0)
+  hists['data'].GetXaxis().SetRangeUser(115,140)
+  # hists['data'].GetXaxis().SetRangeUser(100,150)
+  hists['data'].Scale(float(ssf.nBins)/1600)
+
   if hists['data'].GetMaximum()>hmax: hmax = hists['data'].GetMaximum()
   if hists['data'].GetMinimum()<hmin: hmin = hists['data'].GetMinimum()
   # Draw histograms
@@ -237,47 +317,117 @@ def plotPdfComponents(ssf,_outdir='./',_extension='',_proc='',_cat=''):
       hists[k] = v.createHistogram("h_%s%s"%(k,_extension),ssf.xvar,ROOT.RooFit.Binning(1600))
       hists[k].Scale(frac)
       hists[k].SetLineColor(LineColorMap[pdfItr])
-      hists[k].SetLineWidth(2)
+      hists[k].SetLineWidth(3)
       hists[k].SetLineStyle(2)
       hists[k].Draw("HIST SAME")
       pdfItr += 1
   # Add legend
-  leg = ROOT.TLegend(0.58,0.6,0.86,0.8)
+  leg = ROOT.TLegend(0.595,0.72,0.905,0.87)
   leg.SetFillStyle(0)
   leg.SetLineColor(0)
-  leg.SetTextSize(0.04)
+  leg.SetBorderSize(0)
+  leg.SetTextSize(0.05)
   leg.AddEntry(hists['data'],"Simulation","ep")
   leg.AddEntry(hists['final'],"Parametric Model","L")
   leg.Draw("Same")
   if len(pdfs.keys())!=1:
-    leg1 = ROOT.TLegend(0.6,0.4,0.86,0.6)
-    leg1.SetFillStyle(0)
-    leg1.SetLineColor(0)
-    leg1.SetTextSize(0.035)
-    for k,v in pdfs.items(): leg1.AddEntry(hists[k],k,"L")
-    leg1.Draw("Same")
+    if(len(pdfs)==2): 
+      leg1 = ROOT.TLegend(0.595,0.57,0.94,0.72)
+      leg1.SetFillStyle(0)
+      leg1.SetLineColor(0)
+      leg1.SetBorderSize(0)
+      leg1.SetTextSize(0.05)
+      for k,v in pdfs.items():
+        if( int(k[-1])+1 == 1):
+          leg1.AddEntry(hists[k],f"{int(k[-1])+1}st Gau","L")
+        elif( int(k[-1])+1 == 2):
+          leg1.AddEntry(hists[k],f"{int(k[-1])+1}nd Gau","L")
+      leg1.Draw("Same")
+
+    elif(len(pdfs)==3): 
+      leg1 = ROOT.TLegend(0.595,0.52,0.94,0.72)
+      leg1.SetFillStyle(0)
+      leg1.SetLineColor(0)
+      leg1.SetBorderSize(0)
+      leg1.SetTextSize(0.05)
+      for k,v in pdfs.items():
+        if( int(k[-1])+1 == 1):
+          leg1.AddEntry(hists[k],f"{int(k[-1])+1}st Gau","L")
+        elif( int(k[-1])+1 == 2):
+          leg1.AddEntry(hists[k],f"{int(k[-1])+1}nd Gau","L")
+        elif( int(k[-1])+1 == 3):
+          leg1.AddEntry(hists[k],f"{int(k[-1])+1}rd Gau","L")
+      leg1.Draw("Same")
+
+    elif(len(pdfs)==4): 
+      leg1 = ROOT.TLegend(0.595,0.47,0.94,0.72)
+      leg1.SetFillStyle(0)
+      leg1.SetLineColor(0)
+      leg1.SetBorderSize(0)
+      leg1.SetTextSize(0.05)
+      for k,v in pdfs.items():
+        if( int(k[-1])+1 == 1):
+          leg1.AddEntry(hists[k],f"{int(k[-1])+1}st Gau","L")
+        elif( int(k[-1])+1 == 2):
+          leg1.AddEntry(hists[k],f"{int(k[-1])+1}nd Gau","L")
+        elif( int(k[-1])+1 == 3):
+          leg1.AddEntry(hists[k],f"{int(k[-1])+1}rd Gau","L")
+        elif( int(k[-1])+1 == 4):
+          leg1.AddEntry(hists[k],f"{int(k[-1])+1}th Gau","L")
+      leg1.Draw("Same")
+
+    elif(len(pdfs)==5): 
+      leg1 = ROOT.TLegend(0.595,0.42,0.94,0.72)
+      leg1.SetFillStyle(0)
+      leg1.SetLineColor(0)
+      leg1.SetBorderSize(0)
+      leg1.SetTextSize(0.05)
+      for k,v in pdfs.items():
+        if( int(k[-1])+1 == 1):
+          leg1.AddEntry(hists[k],f"{int(k[-1])+1}st Gau","L")
+        elif( int(k[-1])+1 == 2):
+          leg1.AddEntry(hists[k],f"{int(k[-1])+1}nd Gau","L")
+        elif( int(k[-1])+1 == 3):
+          leg1.AddEntry(hists[k],f"{int(k[-1])+1}rd Gau","L")
+        elif( int(k[-1])+1 == 4):
+          leg1.AddEntry(hists[k],f"{int(k[-1])+1}th Gau","L")
+        elif( int(k[-1])+1 == 5):
+          leg1.AddEntry(hists[k],f"{int(k[-1])+1}th Gau","L")
+      leg1.Draw("Same")
+
   # Add Latex
   lat = ROOT.TLatex()
   lat.SetTextFont(42)
-  lat.SetTextAlign(31)
+  lat.SetTextAlign(13)
   lat.SetNDC()
-  lat.SetTextSize(0.03)
-  lat.DrawLatex(0.9,0.92,"( %s , %s , %s )"%(ssf.name,_proc,_cat))
+  lat.SetTextSize(0.05)
+  # lat.DrawLatex(0.9,0.92,"( %s , %s , %s )"%(_extension,_proc,_cat))
+  lat.DrawLatex(0.22, 0.87, f"m_{{a}} = {_Amass} GeV")
+  lat.SetTextSize(0.05)  # 字體大小
+  lat.SetTextFont(61)  # 粗體字 CMS 標籤
+  lat.DrawLatex(0.165, 0.969, "CMS")
+  lat.SetTextSize(0.045)
+  lat.SetTextFont(52)  # 斜體字 Preliminary 標籤
+  lat.DrawLatex(0.255, 0.965, "Simulation Preliminary")
+  lat.DrawLatex(0.74,0.97,("138 fb^{-1} (13 TeV)"))
+
   lat1 = ROOT.TLatex()
   lat1.SetTextFont(42)
-  lat1.SetTextAlign(11)
+  lat1.SetTextAlign(13)
   lat1.SetNDC()
-  lat1.SetTextSize(0.035)
-  lat1.DrawLatex(0.65,0.3,"#chi^{2}/n(dof) = %.4f"%(ssf.getChi2()/ssf.Ndof))
+  lat1.SetTextSize(0.05)
+  lat1.DrawLatex(0.22,0.79,"#chi^{2}/dof = %.2f"%(ssf.getChi2()/ssf.Ndof))
 
   canv.Update()
-  canv.SaveAs("%s/%sshape_pdf_components_%s_%s.png"%(_outdir,_extension,_proc,_cat))
-  canv.SaveAs("%s/%sshape_pdf_components_%s_%s.pdf"%(_outdir,_extension,_proc,_cat))
+  canv.SaveAs(f"{_outdir}/shape_pdf_components_{_Amass}_{_year}_{_channel}.pdf")
 
 # Plot final pdf for each mass point
-def plotInterpolation(_finalModel,_outdir='./',_massPoints='120,121,122,123,124,125,126,127,128,129,130'):
+def plotInterpolation(_finalModel,_outdir='./',_massPoints='120,121,122,123,124,125,126,127,128,129,130',_Amass='1',_year='16',_channel='ele'):
 
-  canv = ROOT.TCanvas()
+  canv = ROOT.TCanvas("c", "c", 800, 600)
+  canv.SetMargin(0.15, 0.03, 0.14, 0.08) # //left//right//bottom//top
+  canv.SetTickx(1)
+  canv.SetTicky(1)
   colors = [ROOT.kRed,ROOT.kCyan,ROOT.kBlue+1,ROOT.kOrange-3,ROOT.kMagenta-7,ROOT.kGreen+1,ROOT.kYellow-7,ROOT.kViolet+6,ROOT.kTeal+1,ROOT.kPink+1,ROOT.kAzure+1]
   colorMap = {}
   for i, mp in enumerate(_massPoints.split(",")): colorMap[mp] = colors[i]
@@ -294,9 +444,9 @@ def plotInterpolation(_finalModel,_outdir='./',_massPoints='120,121,122,123,124,
     if norm == 0.: hists[mp].Scale(0.)
     else: hists[mp].Scale((norm*3200)/(hists[mp].Integral()*_finalModel.xvar.getBins()))
     if mp in _finalModel.Datasets:
-      hists[mp].SetLineWidth(2)
+      hists[mp].SetLineWidth(3)
     else:
-      hists[mp].SetLineWidth(1)
+      hists[mp].SetLineWidth(2)
       hists[mp].SetLineStyle(2)
     hists[mp].SetLineColor(colorMap[mp])
     hists[mp].SetTitle("")
@@ -315,11 +465,29 @@ def plotInterpolation(_finalModel,_outdir='./',_massPoints='120,121,122,123,124,
 
   # Extract first hist and clone for axes
   haxes = hists[list(hists.keys())[0]].Clone()
-  haxes.GetXaxis().SetTitle("m_{#gamma#gamma} [GeV]")
+  # haxes.GetXaxis().SetTitle("m_{#gamma#gamma} [GeV]")
+  # haxes.GetYaxis().SetTitle("Events / %.2f GeV"%((_finalModel.xvar.getMax()-_finalModel.xvar.getMin())/_finalModel.xvar.getBins()))
+  haxes.GetXaxis().CenterTitle(True)
+  haxes.GetYaxis().CenterTitle(True)
+
+  haxes.SetTitle("")
   haxes.GetYaxis().SetTitle("Events / %.2f GeV"%((_finalModel.xvar.getMax()-_finalModel.xvar.getMin())/_finalModel.xvar.getBins()))
+  haxes.GetYaxis().SetTitleFont(42)
+  haxes.GetYaxis().SetTitleSize(0.055)
+  haxes.GetYaxis().SetTitleOffset(1.35)
+  haxes.GetYaxis().SetLabelFont(42)
+  haxes.GetYaxis().SetLabelSize(0.05)
+  haxes.GetXaxis().SetTitle("m_{ ll#gamma#gamma} [GeV]")
+  haxes.GetXaxis().SetTitleFont(42)
+  haxes.GetXaxis().SetTitleSize(0.055)
+  haxes.GetXaxis().SetTitleOffset(1.2)
+  haxes.GetXaxis().SetLabelFont(42)
+  haxes.GetXaxis().SetLabelSize(0.05)
+  haxes.GetXaxis().SetLabelOffset(0.009)
+
   haxes.SetMinimum(0)
   haxes.SetMaximum(hmax*1.2)
-  haxes.GetXaxis().SetRangeUser(100,150)
+  haxes.GetXaxis().SetRangeUser(108,142)
   haxes.Draw("AXIS")
 
   # Draw rest of histograms
@@ -331,24 +499,30 @@ def plotInterpolation(_finalModel,_outdir='./',_massPoints='120,121,122,123,124,
   # Add Latex
   lat = ROOT.TLatex()
   lat.SetTextFont(42)
-  lat.SetTextAlign(31)
+  lat.SetTextAlign(13)
   lat.SetNDC()
-  lat.SetTextSize(0.03)
-  lat.DrawLatex(0.9,0.92,"%s"%(_finalModel.name))
-
+  lat.SetTextSize(0.045)
+  lat.DrawLatex(0.20, 0.87, f"m_{{a}} = {_Amass} GeV")
+  lat.SetTextSize(0.05)  # 字體大小
+  lat.SetTextFont(61)  # 粗體字 CMS 標籤
+  lat.DrawLatex(0.15, 0.969, "CMS")
+  lat.SetTextSize(0.045)
+  lat.SetTextFont(52)  # 斜體字 Preliminary 標籤
+  lat.DrawLatex(0.24, 0.965, "Simulation Preliminary")
+  lat.DrawLatex(0.74,0.97,("138 fb^{-1} (13 TeV)"))
 
   canv.Update()
-  canv.SaveAs("%s/%s_model_vs_mH.png"%(_outdir,_finalModel.name))
-  canv.SaveAs("%s/%s_model_vs_mH.pdf"%(_outdir,_finalModel.name))
-
-
-
+  canv.SaveAs(f"{_outdir}/model_vs_mH_{_Amass}_{_year}_{_channel}.pdf")
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Plot splines
-def plotSplines(_finalModel,_outdir="./",_nominalMass='125',splinesToPlot=['xs','br','ea','fracRV']):
-  canv = ROOT.TCanvas()
+def plotSplines(_finalModel,_outdir="./",_nominalMass='125',splinesToPlot=['xs','br','ea'],_Amass='1',_year='16',_channel='ele'):
+# def plotSplines(_finalModel,_outdir="./",_nominalMass='125',splinesToPlot=['xs','br','ea','fracRV'],_Amass='1',_year='16',_channel='ele'):
+  canv = ROOT.TCanvas("c", "c", 800, 600)
+  canv.SetMargin(0.16, 0.035, 0.14, 0.08) # //left//right//bottom//top
+  canv.SetTickx(1)
+  canv.SetTicky(1)
   colorMap = {'xs':ROOT.kRed-4,'br':ROOT.kAzure+1,'ea':ROOT.kGreen+1,'fracRV':ROOT.kMagenta-7,'norm':ROOT.kBlack}
   grs = od()
   grs['norm'] = ROOT.TGraph()
@@ -356,12 +530,13 @@ def plotSplines(_finalModel,_outdir="./",_nominalMass='125',splinesToPlot=['xs',
   # Get value at nominal mass
   xnom = od()
   _finalModel.MH.setVal(float(_nominalMass))
+  # print(_finalModel.Splines.keys()) # PZ
   for sp in splinesToPlot: xnom[sp] = _finalModel.Splines[sp].getVal()
   _finalModel.intLumi.setVal(lumiScaleFactor*float(lumiMap[_finalModel.year]))
   xnom['norm'] = _finalModel.Functions['final_normThisLumi'].getVal()
   # Loop over mass points
   p = 0
-  xmax, xmin = 0,0.5
+  xmax, xmin = 0, 0.7
   for mh in range(int(_finalModel.MHLow),int(_finalModel.MHHigh)+1):
     _finalModel.MH.setVal(float(mh))
     for sp in splinesToPlot:
@@ -382,26 +557,43 @@ def plotSplines(_finalModel,_outdir="./",_nominalMass='125',splinesToPlot=['xs',
   # Draw axes
   haxes = ROOT.TH1F("h_axes_spl","h_axes_spl",int(_finalModel.MHHigh)-int(_finalModel.MHLow),int(_finalModel.MHLow),int(_finalModel.MHHigh))
   haxes.SetTitle("")
-  haxes.GetXaxis().SetTitle("m_{H} [GeV]")
-  haxes.GetXaxis().SetTitleSize(0.05)
-  haxes.GetXaxis().SetTitleOffset(0.85)
-  haxes.GetXaxis().SetLabelSize(0.035)
+  haxes.SetTitle("")
+  haxes.GetXaxis().CenterTitle(True)
+  haxes.GetYaxis().CenterTitle(True)
+
   haxes.GetYaxis().SetTitle("X/X(m_{H}=125)")
-  haxes.GetYaxis().SetTitleOffset(0.85)
-  haxes.GetYaxis().SetTitleSize(0.05)
-  haxes.SetMaximum(1.2*xmax)
+  haxes.GetYaxis().SetTitleFont(42)
+  haxes.GetYaxis().SetTitleSize(0.055)
+  haxes.GetYaxis().SetTitleOffset(1.3)
+  haxes.GetYaxis().SetLabelFont(42)
+  haxes.GetYaxis().SetLabelSize(0.05)
+
+  haxes.GetXaxis().SetTitle("m_{H} [GeV]")
+  haxes.GetXaxis().SetTitleFont(42)
+  haxes.GetXaxis().SetTitleSize(0.055)
+  haxes.GetXaxis().SetTitleOffset(1.2)
+  haxes.GetXaxis().SetLabelFont(42)
+  haxes.GetXaxis().SetLabelSize(0.05)
+  haxes.GetXaxis().SetLabelOffset(0.009)
+  haxes.GetXaxis().SetRangeUser(115,135)
+  haxes.SetMaximum(1.1*xmax)
   haxes.SetMinimum(xmin)
   haxes.Draw()
   # Define legend
-  leg = ROOT.TLegend(0.15,0.15,0.4,0.4)
+  leg = ROOT.TLegend(0.20,0.18,0.50,0.43)
   leg.SetFillStyle(0)
+  leg.SetFillColor(0)
   leg.SetLineColor(0)
-  leg.SetTextSize(0.04)
+  leg.SetBorderSize(0)
+  leg.SetTextFont(42)
+  leg.SetTextSize(0.045)
   # Draw graphs
   for x, gr in grs.items(): 
     gr.SetLineColor(colorMap[x])
     gr.SetMarkerColor(colorMap[x])
     gr.SetMarkerStyle(20)
+    gr.SetMarkerSize(1.5)
+    gr.SetLineWidth(3)
     gr.Draw("Same PL")
     if x == "norm": leg.AddEntry(gr,"N_{exp}: @%s = %.2f"%(_nominalMass,xnom['norm']))
     if x == "xs": leg.AddEntry(gr,"#sigma: @%s = %.2f pb"%(_nominalMass,xnom['xs']))
@@ -413,34 +605,52 @@ def plotSplines(_finalModel,_outdir="./",_nominalMass='125',splinesToPlot=['xs',
   # Add Latex
   lat = ROOT.TLatex()
   lat.SetTextFont(42)
-  lat.SetTextAlign(31)
+  lat.SetTextAlign(13)
   lat.SetNDC()
-  lat.SetTextSize(0.03)
-  lat.DrawLatex(0.9,0.92,"%s"%(_finalModel.name))
+  lat.SetTextSize(0.050)
+  # lat.DrawLatex(0.9,0.92,"( %s , %s , %s )"%(_extension,_proc,_cat))
+  lat.DrawLatex(0.22, 0.87, f"m_{{a}} = {_Amass} GeV")
+  lat.SetTextSize(0.05)  # 字體大小
+  lat.SetTextFont(61)  # 粗體字 CMS 標籤
+  lat.DrawLatex(0.16, 0.969, "CMS")
+  lat.SetTextSize(0.045)
+  lat.SetTextFont(52)  # 斜體字 Preliminary 標籤
+  lat.DrawLatex(0.25, 0.965, "Simulation Preliminary")
+  lat.DrawLatex(0.74,0.97,("138 fb^{-1} (13 TeV)"))
   canv.Update()
-  canv.SaveAs("%s/%s_splines.png"%(_outdir,_finalModel.name))
-  canv.SaveAs("%s/%s_splines.pdf"%(_outdir,_finalModel.name))
+  canv.SaveAs(f"{_outdir}/{_finalModel.name}_splines_{_Amass}_{_year}_{_channel}.pdf")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Function for plotting final signal model: neat
-def plotSignalModel(_hists,_opt,_outdir=".",offset=0.02):
-  colorMap = {'2016':38,'2017':30,'2018':46,'2022preEE':38,'2022postEE':30}
+def plotSignalModel(_hists,_opt,_outdir=".",offset=0.07,_Amass='1',_year='16', _channel='ele'):
+  colorMap = {'16':38,'16APV':31, '17':30,'18':46,'2022preEE':38,'2022postEE':30}
   canv = ROOT.TCanvas("c","c",650,600)
-  canv.SetBottomMargin(0.12)
-  canv.SetLeftMargin(0.15)
+  canv.SetMargin(0.19, 0.035, 0.14, 0.09) # //left//right//bottom//top
   canv.SetTickx()
   canv.SetTicky()
   h_axes = _hists['data'].Clone()
   h_axes.Reset()
   h_axes.SetMaximum(_hists['data'].GetMaximum()*1.2)
   h_axes.SetMinimum(0.)
-  h_axes.GetXaxis().SetRangeUser(105,140)
+  h_axes.GetXaxis().SetRangeUser(104,135)
+  h_axes.GetXaxis().CenterTitle(True)
+  h_axes.GetYaxis().CenterTitle(True)
   h_axes.SetTitle("")
+  h_axes.GetYaxis().SetTitle(f"Events / {h_axes.GetBinWidth(1):.2f}")
+  h_axes.GetYaxis().SetTitleFont(42)
+  h_axes.GetYaxis().SetTitleSize(0.055)
+  h_axes.GetYaxis().SetTitleOffset(1.8)
+  h_axes.GetYaxis().SetLabelFont(42)
+  h_axes.GetYaxis().SetLabelSize(0.05)
+
   h_axes.GetXaxis().SetTitle("%s (%s)"%(_opt.xvar.split(":")[1],_opt.xvar.split(":")[2]))
-  h_axes.GetXaxis().SetTitleSize(0.05)
-  h_axes.GetXaxis().SetTitleOffset(1.)
-  h_axes.GetYaxis().SetTitleSize(0.05)
-  h_axes.GetYaxis().SetTitleOffset(1.2)
+  h_axes.GetXaxis().SetTitleFont(42)
+  h_axes.GetXaxis().SetTitleSize(0.055)
+  h_axes.GetXaxis().SetTitleOffset(1.15)
+  h_axes.GetXaxis().SetLabelFont(42)
+  h_axes.GetXaxis().SetLabelSize(0.05)
+  h_axes.GetXaxis().SetLabelOffset(0.009)
+  
   h_axes.Draw()
     
   # Extract effSigma
@@ -474,10 +684,13 @@ def plotSignalModel(_hists,_opt,_outdir=".",offset=0.02):
     leg2.Draw("Same")
   else:
     year = _opt.years
-    leg = ROOT.TLegend(0.15+offset,0.4,0.5+offset,0.82)
+    leg = ROOT.TLegend(0.15+offset,0.45,0.5+offset,0.8)
     leg.SetFillStyle(0)
+    leg.SetFillColor(0)
     leg.SetLineColor(0)
-    leg.SetTextSize(0.03)
+    leg.SetBorderSize(0)
+    leg.SetTextFont(42)
+    leg.SetTextSize(0.045)
     leg.AddEntry(_hists['data'],"Simulation","lep")
     leg.AddEntry(_hists['pdf'],"#splitline{Parametric}{model (%s)}"%year,"l")
     leg.AddEntry(h_effSigma,"#sigma_{eff} = %1.2f GeV"%(0.5*(effSigma_high-effSigma_low)),"fl")
@@ -508,18 +721,18 @@ def plotSignalModel(_hists,_opt,_outdir=".",offset=0.02):
     fwhmText.SetTextFont(42)
     fwhmText.SetTextAlign(11)
     fwhmText.SetNDC()
-    fwhmText.SetTextSize(0.03)
-    fwhmText.DrawLatex(0.17+offset,0.25,"FWHM = %1.2f GeV"%(fwhm_high-fwhm_low))
+    fwhmText.SetTextSize(0.045)
+    fwhmText.DrawLatex(0.165+offset,0.38,"FWHM = %1.2f GeV"%(fwhm_high-fwhm_low))
 
   # Set style pdf
   _hists['pdf'].SetLineColor(4)
-  _hists['pdf'].SetLineWidth(2)
+  _hists['pdf'].SetLineWidth(3)
   _hists['pdf'].Draw("Same Hist C")
   if len(_opt.years.split(","))>1:
     for year in _opt.years.split(","):
       _hists['pdf_%s'%year].SetLineColor( colorMap[year] )  
       _hists['pdf_%s'%year].SetLineStyle(2)
-      _hists['pdf_%s'%year].SetLineWidth(2)
+      _hists['pdf_%s'%year].SetLineWidth(3)
       _hists['pdf_%s'%year].Draw("Same Hist C")
   # Set style: data
   _hists['data'].SetMarkerStyle(25)
@@ -533,10 +746,10 @@ def plotSignalModel(_hists,_opt,_outdir=".",offset=0.02):
   lat0.SetTextFont(42)
   lat0.SetTextAlign(11)
   lat0.SetNDC()
-  lat0.SetTextSize(0.045)
-  lat0.DrawLatex(0.15,0.92,"#bf{CMS} #it{%s}"%_opt.label)
-  lat0.DrawLatex(0.77,0.92,"%s TeV"%(sqrts__.split("TeV")[0]))
-  lat0.DrawLatex(0.16+offset,0.83,"H #rightarrow #gamma#gamma")
+  lat0.SetTextSize(0.05)
+  lat0.DrawLatex(0.19,0.92,"#bf{CMS} #it{%s}"%_opt.label)
+  lat0.DrawLatex(0.83,0.92,"%s TeV"%(sqrts__.split("TeV")[0]))
+  lat0.DrawLatex(0.16+offset,0.81,"H #rightarrow Za #rightarrow ll#gamma#gamma")
 
   # Load translations
   translateCats = {} if _opt.translateCats is None else LoadTranslations(_opt.translateCats)
@@ -559,8 +772,8 @@ def plotSignalModel(_hists,_opt,_outdir=".",offset=0.02):
   elif len(_opt.cats.split(","))>1: procStr, procExt = "Multiple categories", "multipleCats"
   else: catStr, catExt = Translate(_opt.cats,translateCats), _opt.cats
  
-  lat1.DrawLatex(0.85,0.86,"%s"%catStr)
-  lat1.DrawLatex(0.83,0.8,"%s %s"%(procStr,yearStr))
+  # lat1.DrawLatex(0.85,0.86,"%s"%catStr)
+  # lat1.DrawLatex(0.83,0.8,"%s %s"%(procStr,yearStr))
 
   canv.Update()
 
@@ -572,5 +785,6 @@ def plotSignalModel(_hists,_opt,_outdir=".",offset=0.02):
     with open("%s/effSigma_%s.json"%(_outdir,catExt),"w") as jf: json.dump(es,jf)
 
   # Save canvas
-  canv.SaveAs("%s/smodel_%s%s%s.pdf"%(_outdir,catExt,procExt,yearExt))
-  canv.SaveAs("%s/smodel_%s%s%s.png"%(_outdir,catExt,procExt,yearExt))
+  # canv.SaveAs("%s/smodel_%s%s%s.pdf"%(_outdir,catExt,procExt,yearExt))
+  # canv.SaveAs("%s/smodel_%s%s%s.png"%(_outdir,catExt,procExt,yearExt))
+  canv.SaveAs(f"{_outdir}/smodel_{_Amass}_{_year}_{_channel}.pdf")
