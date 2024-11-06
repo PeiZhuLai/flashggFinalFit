@@ -20,9 +20,9 @@ def get_options():
 
   parser.add_option('--ext', dest='ext', default='', help="Extension (used when running RunYields.py)")
   # For pruning processes
-  parser.add_option('--prune', dest='prune', default=False, action="store_true", help="Prune proc x cat which make up less than pruneThreshold (default 0.1%) of given total category")
+  parser.add_option('--prune', dest='prune', default=True, action="store_true", help="Prune proc x cat which make up less than pruneThreshold (default 0.1%) of given total category")
   parser.add_option('--pruneThreshold', dest='pruneThreshold', default=0.001, type='float', help="Threshold with which to prune proc x cat as fraction of total category yield (default=0.1%)")
-  parser.add_option('--doTrueYield', dest='doTrueYield', default=False, action="store_true", help="For pruning: use true number of expected events for proc x cat i.e. Product(XS,BR,eff*acc,lumi). If false then will just use sum of weights (= eff x acc)")
+  parser.add_option('--doTrueYield', dest='doTrueYield', default=True, action="store_true", help="For pruning: use true number of expected events for proc x cat i.e. Product(XS,BR,eff*acc,lumi). If false then will just use sum of weights (= eff x acc)")
   parser.add_option('--mass', dest='mass', default='125', help="MH mass: required for doTrueYield")
   parser.add_option('--analysis', dest='analysis', default='tutorial', help="Analysis extension: required for doTrueYield (see ./tools/XSBR.py for example)")
   # For yield/systematics:

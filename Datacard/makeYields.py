@@ -37,7 +37,7 @@ def get_options():
   parser.add_option('--mergeYears', dest='mergeYears', default=True, action="store_true", help="Merge category across years")
   parser.add_option('--skipBkg', dest='skipBkg', default=False, action="store_true", help="Only add signal processes to datacard")
   parser.add_option('--bkgScaler', dest='bkgScaler', default=1., type="float", help="Add overall scale factor for background")
-  parser.add_option('--sigModelWSDir', dest='sigModelWSDir', default='/publicfs/cms/user/laipeizhu/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/', help='Input signal model WS directory') 
+  parser.add_option('--sigModelWSDir', dest='sigModelWSDir', default='/publicfs/cms/user/laipeizhu/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal', help='Input signal model WS directory') 
   parser.add_option('--sigModelExt', dest='sigModelExt', default='packaged', help='Extension used when saving signal model') 
   parser.add_option('--bkgModelWSDir', dest='bkgModelWSDir', default='/publicfs/cms/user/laipeizhu/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_param_UL/fit_results_run2', help='Input background model WS directory') 
   parser.add_option('--bkgModelExt', dest='bkgModelExt', default='multipdf', help='Extension used when saving background model') 

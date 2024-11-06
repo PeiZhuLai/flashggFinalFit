@@ -23,18 +23,6 @@ nYear=${#YearsList[@]}
 path_makeYields="/publicfs/cms/user/laipeizhu/CMSSW_14_1_0_pre4/src/flashggFinalFit/Datacard"
 path_inputWSDir="/publicfs/cms/user/laipeizhu/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output"
 
-python3 $path_makeYields/makeYields.py --inputWSDirMap 17=$path_inputWSDir --mass_ALP 30 --year 17 --channel mu
-
-
-# for ((iChannel=0; iChannel<$nChannel; iChannel++))
-#   do
-#   for ((iALPmass=0; iALPmass<$nALPmass; iALPmass++))
-#     do
-#     for ((iYear=0; iYear<$nYear; iYear++))
-#       do
-#         python3 $path_makeYields/makeYields.py --inputWSDirMap ${YearsList[$iYear]}=$path_inputWSDir --mass_ALP ${ALPmassList[$iALPmass]} --year ${YearsList[$iYear]} --channel ${ChannelList[$iChannel]}
-#       done
-#     done
-#   done
+python3 $path_makeYields/makeYields.py --inputWSDirMap 17=$path_inputWSDir --mass_ALP 6 --year 17 --channel mu
 
 

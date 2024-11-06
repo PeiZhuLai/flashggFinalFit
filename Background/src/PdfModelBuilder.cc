@@ -212,38 +212,50 @@ RooAbsPdf* PdfModelBuilder::getBernsteinStepxGau(string prefix, int order, int m
   double param_bern,param_lbern,param_hbern;
   double turnon_bern,turnon_lbern,turnon_hbern;
 
-  sigma_bern = 1.5;          sigma_lbern = 1.;       sigma_hbern = 5.;
-  param_bern = 0.3;          param_lbern = 0.01;     param_hbern = 15.;
+  param_bern = 10.0;         param_lbern = 0.01;     param_hbern = 35.;
+  sigma_bern = 1.5;          sigma_lbern = 1.;       sigma_hbern = 15.;
   turnon_bern = 105;         turnon_lbern = 100;     turnon_hbern = 110;
 
   if(mass_ALP == 1)
   {
-    sigma_bern = 1.5;          sigma_lbern = 1.;      sigma_hbern = 5.;
-    param_bern = 0.3;          param_lbern = 0.01;     param_hbern = 15.;
-    turnon_bern = 105;         turnon_lbern = 100;     turnon_hbern = 110;
+    param_bern = 10.0;         param_lbern = 0.01;       param_hbern = 45.;
+    sigma_bern = 5;            sigma_lbern = 1.;       sigma_hbern = 15.;
+    turnon_bern = 105;         turnon_lbern = 100;     turnon_hbern = 115;
   }
   else if(mass_ALP == 2)
   {
-    sigma_bern = 2.;          sigma_lbern = 1.;       sigma_hbern = 3.;
-    param_bern = 0.3;         param_lbern = 0.01;     param_hbern = 15.;
+    param_bern = 10;          param_lbern = 0.01;      param_hbern = 35.;
+    sigma_bern = 3.;          sigma_lbern = 1.;       sigma_hbern = 15.;
     turnon_bern = 105;        turnon_lbern = 100;     turnon_hbern = 110;
   }
   else if(mass_ALP == 3)
   {
-    sigma_bern = 2.;          sigma_lbern = 1.;       sigma_hbern = 8.;
-    param_bern = 0.01;        param_lbern = 0.01;     param_hbern = 1.;
+    param_bern = 10.0;        param_lbern = 0.01;     param_hbern = 35.;
+    sigma_bern = 2.;          sigma_lbern = 1.;       sigma_hbern = 15.;
+    turnon_bern = 100;        turnon_lbern = 100;     turnon_hbern = 110;
+  }
+  else if(mass_ALP == 4)
+  {
+    param_bern = 10.0;        param_lbern = 0.01;     param_hbern = 35.;
+    sigma_bern = 2.;          sigma_lbern = 1.;       sigma_hbern = 15.;
     turnon_bern = 100;        turnon_lbern = 100;     turnon_hbern = 110;
   }
   else if(mass_ALP == 5)
   {
-    sigma_bern = 2.;          sigma_lbern = 1.;      sigma_hbern = 8.;
-    param_bern = 6;           param_lbern = 0.01;     param_hbern = 15.;
+    param_bern = 10.0;        param_lbern = 0.01;     param_hbern = 35.;
+    sigma_bern = 2.;          sigma_lbern = 1.;       sigma_hbern = 15.;
+    turnon_bern = 105;        turnon_lbern = 100;     turnon_hbern = 110;
+  }
+  else if(mass_ALP == 6)
+  {
+    param_bern = 10.0;        param_lbern = 0.01;     param_hbern = 35.;
+    sigma_bern = 2.;          sigma_lbern = 1.;       sigma_hbern = 15.;
     turnon_bern = 105;        turnon_lbern = 100;     turnon_hbern = 110;
   }
   else if(mass_ALP == 10)
   {
-    sigma_bern = 2.;          sigma_lbern = 1.;      sigma_hbern = 8.;
-    param_bern = 6;           param_lbern = 0.01;     param_hbern = 15.;
+    param_bern = 10;           param_lbern = 0.01;     param_hbern = 35.;
+    sigma_bern = 2.;          sigma_lbern = 1.;      sigma_hbern = 15.;
     turnon_bern = 105;        turnon_lbern = 100;     turnon_hbern = 110;
   }
 
@@ -295,57 +307,57 @@ RooAbsPdf* PdfModelBuilder::getPowerLawStepxGau(string prefix, int order, int ca
   double coeff1_hpow1, coeff1_hpow3, coeff3_hpow3, coeff1_hpow5, coeff3_hpow5, coeff5_hpow5;
   double coeff1_lpow1, coeff1_lpow3, coeff3_lpow3, coeff1_lpow5, coeff3_lpow5, coeff5_lpow5;
 
-  sigma_pow = 2;            sigma_lpow = 1.;      sigma_hpow = 5.;
-  turnon_pow = 115.;        turnon_lpow = 100.;   turnon_hpow = 125.;//1geV
-  par1_pow1 = -5.6;         par1_lpow1 = -15.;    par1_hpow1 = -5.;
-  coeff1_pow1 = 0.002;      coeff1_lpow1 = 0.;    coeff1_hpow1 = 1.;
-  
-  sigma_pow = 2;            sigma_lpow = 1.;      sigma_hpow = 5.;
-  turnon_pow = 118.5;       turnon_lpow = 100.;   turnon_hpow = 125.;//1Gev
-  par1_pow3 = -7;           par1_lpow3 = -10.;    par1_hpow3 = -5.;
-  coeff1_pow3 = 7.7276e-01; coeff1_lpow3 = 0.;    coeff1_hpow3 = 1.;
-  par3_pow3 = -5.9269;      par3_lpow3 = -8;      par3_hpow3 = 2.;
-  coeff3_pow3 = 6.3834e-05; coeff3_lpow3 = 0.;    coeff3_hpow3 = 1.;
+  coeff1_pow1 = 0.3;        coeff1_lpow1 = 0.;    coeff1_hpow1 = 1.;
+  par1_pow1 = -6.26;        par1_lpow1 = -15.;    par1_hpow1 = -5.;
+  sigma_pow = 5;            sigma_lpow = 1.;      sigma_hpow = 15.;
+  turnon_pow = 111.;        turnon_lpow = 100.;   turnon_hpow = 125.;
 
-  sigma_pow = 2;            sigma_lpow = 1.;      sigma_hpow = 5.;
-  turnon_pow = 108.64;      turnon_lpow = 95.;   turnon_hpow = 110.;
-  par1_pow5 = -10.4;        par1_lpow5 = -15.;    par1_hpow5 = -5.;
-  coeff1_pow5 = 7.4192e-01; coeff1_lpow5 = 0.;    coeff1_hpow5 = 1.;
-  par3_pow5 = -7.0937;      par3_lpow5 = -10.;    par3_hpow5 = -2.;
-  coeff3_pow5 = 9.0955e-01; coeff3_lpow5 = 0.;    coeff3_hpow5 = 1.;
-  par5_pow5 = -6.2482;      par5_lpow5 = -10;     par5_hpow5 = -1.;
-  coeff5_pow5 =2.1590e-03;  coeff5_lpow5 = 0.001; coeff5_hpow5 = 1.;
-  
+  coeff1_pow3 = 0.3;      coeff1_lpow3 = 0.;    coeff1_hpow3 = 1.;
+  coeff3_pow3 = 0.0;      coeff3_lpow3 = 0.;    coeff3_hpow3 = 1.;
+  par1_pow3 = -7.0;       par1_lpow3 = -10.;    par1_hpow3 = -5.;
+  par3_pow3 = -5.0;       par3_lpow3 = -10.;    par3_hpow3 = -2;
+  sigma_pow = 5;          sigma_lpow = 1.;      sigma_hpow = 15.;
+  turnon_pow = 111.;      turnon_lpow = 100.;   turnon_hpow = 125.;
+
+  coeff1_pow5 = 0.3;      coeff1_lpow5 = 0.;    coeff1_hpow5 = 1.;
+  coeff3_pow5 = 0.0;      coeff3_lpow5 = 0.;    coeff3_hpow5 = 1.;
+  coeff5_pow5 = 0.0;      coeff5_lpow5 = 0.;    coeff5_hpow5 = 1.;
+  par1_pow5 = -7.0;       par1_lpow5 = -15.;    par1_hpow5 = -5.;
+  par3_pow5 = -5.0;       par3_lpow5 = -10.;    par3_hpow5 = -2.;
+  par5_pow5 = -6.0;       par5_lpow5 = -10;     par5_hpow5 = -1.;
+  sigma_pow = 5;          sigma_lpow = 1.;      sigma_hpow = 15.;
+  turnon_pow = 111.;      turnon_lpow = 100.;   turnon_hpow = 125.;
+
   if(mass_ALP == 1)
   {
     if(cat==2)
     {
       if(order==1)
       {
-        sigma_pow = 2;            sigma_lpow = 1.;      sigma_hpow = 5.;
-        turnon_pow = 115.;        turnon_lpow = 100.;   turnon_hpow = 125.;//1geV
-        par1_pow1 = -5.6;         par1_lpow1 = -15.;    par1_hpow1 = -5.;
-        coeff1_pow1 = 0.002;      coeff1_lpow1 = 0.;    coeff1_hpow1 = 1.;
+        coeff1_pow1 = 1.0;        coeff1_lpow1 = 0.;    coeff1_hpow1 = 2.;
+        par1_pow1 = -8.49;        par1_lpow1 = -15.;    par1_hpow1 = -5.;
+        sigma_pow = 8.7;          sigma_lpow = 5.;      sigma_hpow = 15.;
+        turnon_pow = 114.;        turnon_lpow = 100.;   turnon_hpow = 125.;
       }
       else if(order==3)
       {
-        sigma_pow = 2;            sigma_lpow = 1.;      sigma_hpow = 5.;
-        turnon_pow = 118.5;       turnon_lpow = 100.;   turnon_hpow = 125.;//1Gev
-        par1_pow3 = -7;           par1_lpow3 = -10.;    par1_hpow3 = -5.;
-        coeff1_pow3 = 7.7276e-01; coeff1_lpow3 = 0.;    coeff1_hpow3 = 1.;
-        par3_pow3 = -5.9269;      par3_lpow3 = -8;      par3_hpow3 = 2.;
-        coeff3_pow3 = 6.3834e-05; coeff3_lpow3 = 0.;    coeff3_hpow3 = 1.;
+        coeff1_pow3 = 1.0;      coeff1_lpow3 = 0.;    coeff1_hpow3 = 2.;
+        coeff3_pow3 = 0.0;      coeff3_lpow3 = 0.;    coeff3_hpow3 = 1.;
+        par1_pow3 = -8.49;       par1_lpow3 = -15.;    par1_hpow3 = -5.;
+        par3_pow3 = -9.6;       par3_lpow3 = -15.;    par3_hpow3 = -5.;
+        sigma_pow = 9.;          sigma_lpow = 7.;      sigma_hpow = 15.;
+        turnon_pow = 114.;      turnon_lpow = 100.;   turnon_hpow = 125.;
       } 
       else if(order==5)
       {
-        sigma_pow = 2;            sigma_lpow = 1.;      sigma_hpow = 5.;
-        turnon_pow = 108.64;      turnon_lpow = 95.;   turnon_hpow = 110.;
-        par1_pow5 = -10.4;        par1_lpow5 = -15.;    par1_hpow5 = -5.;
-        coeff1_pow5 = 7.4192e-01; coeff1_lpow5 = 0.;    coeff1_hpow5 = 1.;
-        par3_pow5 = -7.0937;      par3_lpow5 = -10.;    par3_hpow5 = -2.;
-        coeff3_pow5 = 9.0955e-01; coeff3_lpow5 = 0.;    coeff3_hpow5 = 1.;
-        par5_pow5 = -6.2482;      par5_lpow5 = -10;     par5_hpow5 = -1.;
-        coeff5_pow5 =2.1590e-03;  coeff5_lpow5 = 0.001; coeff5_hpow5 = 1.;
+        coeff1_pow5 = 0.3;      coeff1_lpow5 = 0.;    coeff1_hpow5 = 1.;
+        coeff3_pow5 = 0.0;      coeff3_lpow5 = 0.;    coeff3_hpow5 = 1.;
+        coeff5_pow5 = 0.0;      coeff5_lpow5 = 0.;    coeff5_hpow5 = 1.;
+        par1_pow5 = -7.0;       par1_lpow5 = -15.;    par1_hpow5 = -5.;
+        par3_pow5 = -5.0;       par3_lpow5 = -10.;    par3_hpow5 = -2.;
+        par5_pow5 = -6.0;       par5_lpow5 = -10;     par5_hpow5 = -1.;
+        sigma_pow = 5;          sigma_lpow = 1.;      sigma_hpow = 15.;
+        turnon_pow = 111.;      turnon_lpow = 100.;   turnon_hpow = 125.;
       }
     }
   }
@@ -356,35 +368,441 @@ RooAbsPdf* PdfModelBuilder::getPowerLawStepxGau(string prefix, int order, int ca
     {
       if(order==1)
       {
-        sigma_pow = 4;            sigma_lpow = 2.;      sigma_hpow = 10.;
-        turnon_pow = 115.;        turnon_lpow = 100.;   turnon_hpow = 110.;//1geV
-        par1_pow1 = -5.6;         par1_lpow1 = -15.;    par1_hpow1 = -5.;
-        coeff1_pow1 = 0.002;      coeff1_lpow1 = 0.;    coeff1_hpow1 = 1.;
+        coeff1_pow1 = 1.0;        coeff1_lpow1 = 0.;    coeff1_hpow1 = 3.;
+        par1_pow1 = -5.18;         par1_lpow1 = -15.;    par1_hpow1 = -5.;
+        sigma_pow = 9;            sigma_lpow = 1.;      sigma_hpow = 15.;
+        turnon_pow = 109.;        turnon_lpow = 100.;   turnon_hpow = 125.;
       }
       else if(order==3)
       {
-        sigma_pow = 4;            sigma_lpow = 2.;      sigma_hpow = 10.;
-        turnon_pow = 115;         turnon_lpow = 100.;   turnon_hpow = 110.;//1Gev
-        par1_pow3 = -7;           par1_lpow3 = -10.;    par1_hpow3 = -5.;
-        coeff1_pow3 = 7.7276e-01; coeff1_lpow3 = 0.;    coeff1_hpow3 = 1.;
-        par3_pow3 = -5.9269;      par3_lpow3 = -8;      par3_hpow3 = 2.;
-        coeff3_pow3 = 6.3834e-05; coeff3_lpow3 = 0.;    coeff3_hpow3 = 1.;
+        coeff1_pow3 = 0.0;      coeff1_lpow3 = 0.;    coeff1_hpow3 = 1.;
+        coeff3_pow3 = 0.0;      coeff3_lpow3 = 0.;    coeff3_hpow3 = 1.;
+        par1_pow3 = -10.;       par1_lpow3 = -15.;    par1_hpow3 = -5.;
+        par3_pow3 = -2.;      par3_lpow3 = -10.;    par3_hpow3 = -0.01;
+        sigma_pow = 8;          sigma_lpow = 1.;      sigma_hpow = 25.;
+        turnon_pow = 109.;      turnon_lpow = 100.;   turnon_hpow = 125.;
       } 
       else if(order==5)
       {
-        sigma_pow = 2;            sigma_lpow = 1.;      sigma_hpow = 10.;
-        turnon_pow = 100;         turnon_lpow = 100.;   turnon_hpow = 110.;
-        par1_pow5 = -10.4;        par1_lpow5 = -15.;    par1_hpow5 = -5.;
-        coeff1_pow5 = 7.4192e-01; coeff1_lpow5 = 0.;    coeff1_hpow5 = 1.;
-        par3_pow5 = -7.0937;      par3_lpow5 = -10.;    par3_hpow5 = -2.;
-        coeff3_pow5 = 9.0955e-01; coeff3_lpow5 = 0.;    coeff3_hpow5 = 1.;
-        par5_pow5 = -6.2482;      par5_lpow5 = -10;     par5_hpow5 = -1.;
-        coeff5_pow5 =2.1590e-03;  coeff5_lpow5 = 0.001; coeff5_hpow5 = 1.;
+        coeff1_pow5 = 0.3;      coeff1_lpow5 = 0.;    coeff1_hpow5 = 3.;
+        coeff3_pow5 = 0.0;      coeff3_lpow5 = 0.;    coeff3_hpow5 = 1.;
+        coeff5_pow5 = 0.0;      coeff5_lpow5 = 0.;    coeff5_hpow5 = 1.;
+        par1_pow5 = -7.0;       par1_lpow5 = -15.;    par1_hpow5 = -5.;
+        par3_pow5 = -5.0;       par3_lpow5 = -10.;    par3_hpow5 = -2.;
+        par5_pow5 = -6.0;       par5_lpow5 = -10;     par5_hpow5 = -1.;
+        sigma_pow = 5;          sigma_lpow = 1.;      sigma_hpow = 15.;
+        turnon_pow = 111.;      turnon_lpow = 100.;   turnon_hpow = 125.;
+      }
+    }
+  }
+
+  else if(mass_ALP == 3)
+  {
+    if(cat==2)
+    {
+      if(order==1)
+      {
+        coeff1_pow1 = 1.0;        coeff1_lpow1 = 0.;    coeff1_hpow1 = 1.;
+        par1_pow1 = -8.4;         par1_lpow1 = -15.;    par1_hpow1 = -5.;
+        sigma_pow = 10.0;         sigma_lpow = 1.;      sigma_hpow = 15.;
+        turnon_pow = 110.;        turnon_lpow = 100.;   turnon_hpow = 125.;
+      }
+      else if(order==3)
+      {
+        coeff1_pow3 = 1.95;      coeff1_lpow3 = 0.;    coeff1_hpow3 = 3.;
+        coeff3_pow3 = 0.0;      coeff3_lpow3 = 0.;    coeff3_hpow3 = 1.;
+        par1_pow3 = -8.56;       par1_lpow3 = -15.;    par1_hpow3 = -7.;
+        par3_pow3 = -9.97;       par3_lpow3 = -15.;    par3_hpow3 = -7;
+        sigma_pow = 10;         sigma_lpow = 5.;      sigma_hpow = 15.;
+        turnon_pow = 110.;     turnon_lpow = 100.;   turnon_hpow = 125.;
+      } 
+      else if(order==5)
+      {
+        coeff1_pow5 = 0.3;      coeff1_lpow5 = 0.;    coeff1_hpow5 = 1.;
+        coeff3_pow5 = 0.0;      coeff3_lpow5 = 0.;    coeff3_hpow5 = 1.;
+        coeff5_pow5 = 0.0;      coeff5_lpow5 = 0.;    coeff5_hpow5 = 1.;
+        par1_pow5 = -7.0;       par1_lpow5 = -15.;    par1_hpow5 = -5.;
+        par3_pow5 = -5.0;       par3_lpow5 = -10.;    par3_hpow5 = -2.;
+        par5_pow5 = -6.0;       par5_lpow5 = -10;     par5_hpow5 = -1.;
+        sigma_pow = 5;          sigma_lpow = 1.;      sigma_hpow = 15.;
+        turnon_pow = 111.;      turnon_lpow = 100.;   turnon_hpow = 125.;
       }
     }
   }
   
+  else if(mass_ALP == 4)
+  {
+    if(cat==2)
+    {
+      if(order==1)
+      {
+        coeff1_pow1 = 1.3;        coeff1_lpow1 = 0.;    coeff1_hpow1 = 2.5;
+        par1_pow1 = -6.0;         par1_lpow1 = -15.;    par1_hpow1 = -5.;
+        sigma_pow = 2.1;          sigma_lpow = 1.;      sigma_hpow = 10.;
+        turnon_pow = 100.;        turnon_lpow = 99.;   turnon_hpow = 125.;
+      }
+      else if(order==3)
+      {
+        coeff1_pow3 = 0.8;      coeff1_lpow3 = 0.;    coeff1_hpow3 = 10.;
+        coeff3_pow3 = 0.0;      coeff3_lpow3 = 0.;    coeff3_hpow3 = 1.;
+        par1_pow3 = -6.0;       par1_lpow3 = -10.;    par1_hpow3 = -5.;
+        par3_pow3 = -7.7;       par3_lpow3 = -10.;    par3_hpow3 = -5;
+        sigma_pow = 2.1;        sigma_lpow = 1.;      sigma_hpow = 15.;
+        turnon_pow = 100.;      turnon_lpow = 99.;   turnon_hpow = 125.;
+      } 
+      else if(order==5)
+      {
+        coeff1_pow5 = 0.3;      coeff1_lpow5 = 0.;    coeff1_hpow5 = 1.;
+        coeff3_pow5 = 0.0;      coeff3_lpow5 = 0.;    coeff3_hpow5 = 1.;
+        coeff5_pow5 = 0.0;      coeff5_lpow5 = 0.;    coeff5_hpow5 = 1.;
+        par1_pow5 = -7.0;       par1_lpow5 = -15.;    par1_hpow5 = -5.;
+        par3_pow5 = -5.0;       par3_lpow5 = -10.;    par3_hpow5 = -2.;
+        par5_pow5 = -6.0;       par5_lpow5 = -10;     par5_hpow5 = -1.;
+        sigma_pow = 5;          sigma_lpow = 1.;      sigma_hpow = 15.;
+        turnon_pow = 111.;      turnon_lpow = 100.;   turnon_hpow = 125.;
+      }
+    }
+  }
+  
+    else if(mass_ALP == 5)
+  {
+    if(cat==2)
+    {
+      if(order==1)
+      {
+        coeff1_pow1 = 0.6;        coeff1_lpow1 = 0.;    coeff1_hpow1 = 1.5;
+        par1_pow1 = -9.1;         par1_lpow1 = -15.;    par1_hpow1 = -5.;
+        sigma_pow = 1.7;          sigma_lpow = 1.;      sigma_hpow = 3.;
+        turnon_pow = 100.;        turnon_lpow = 100.;   turnon_hpow = 115.;
+      }
+      else if(order==3)
+      {
+        coeff1_pow3 = 2.0;      coeff1_lpow3 = 0.;    coeff1_hpow3 = 5.;
+        coeff3_pow3 = 0.6;     coeff3_lpow3 = 0.;    coeff3_hpow3 = 1.;
+        par1_pow3 = -9.5;       par1_lpow3 = -15.;    par1_hpow3 = -5.;
+        par3_pow3 = -9.2;      par3_lpow3 = -15.;    par3_hpow3 = -5;
+        sigma_pow = 2.0;        sigma_lpow = 1.;      sigma_hpow = 6.;
+        turnon_pow = 100.;      turnon_lpow = 99.;   turnon_hpow = 125.;
+      } 
+      else if(order==5)
+      {
+        coeff1_pow5 = 1.0;      coeff1_lpow5 = 0.;    coeff1_hpow5 = 5.;
+        coeff3_pow5 = 0.0;      coeff3_lpow5 = 0.;    coeff3_hpow5 = 1.;
+        coeff5_pow5 = 0.0;      coeff5_lpow5 = 0.;    coeff5_hpow5 = 1.;
+        par1_pow5 = -8.8;       par1_lpow5 = -15.;    par1_hpow5 = -5.;
+        par3_pow5 = -5.2;       par3_lpow5 = -10.;    par3_hpow5 = -2.;
+        par5_pow5 = -6.4;       par5_lpow5 = -10;     par5_hpow5 = -1.;
+        sigma_pow = 7;          sigma_lpow = 1.;      sigma_hpow = 15.;
+        turnon_pow = 100.;      turnon_lpow = 99.;   turnon_hpow = 125.;
+      }
+    }
+  }
 
+  else if(mass_ALP == 6)
+  {
+    if(cat==2)
+    {
+      if(order==1)
+      {
+        coeff1_pow1 = 0.2;        coeff1_lpow1 = 0.;    coeff1_hpow1 = 1.5;
+        par1_pow1 = -7.6;         par1_lpow1 = -15.;    par1_hpow1 = -5.;
+        sigma_pow = 2.7;          sigma_lpow = 1.;      sigma_hpow = 5.;
+        turnon_pow = 100.;        turnon_lpow = 98.;   turnon_hpow = 125.;
+      }
+      else if(order==3)
+      {
+        coeff1_pow3 = 0.001;    coeff1_lpow3 = 0.;    coeff1_hpow3 = 1.;
+        coeff3_pow3 = 2.0;      coeff3_lpow3 = 0.;    coeff3_hpow3 = 5.;
+        par1_pow3 = -6.77;      par1_lpow3 = -15.;    par1_hpow3 = -5.;
+        par3_pow3 = -8.51;      par3_lpow3 = -15.;    par3_hpow3 = -5;
+        sigma_pow = 2.65;       sigma_lpow = 1.;      sigma_hpow = 10.;
+        turnon_pow = 100.;      turnon_lpow = 99.;   turnon_hpow = 125.;
+      } 
+      else if(order==5)
+      {
+        coeff1_pow5 = 0.3;      coeff1_lpow5 = 0.;    coeff1_hpow5 = 1.;
+        coeff3_pow5 = 0.0;      coeff3_lpow5 = 0.;    coeff3_hpow5 = 1.;
+        coeff5_pow5 = 0.0;      coeff5_lpow5 = 0.;    coeff5_hpow5 = 1.;
+        par1_pow5 = -7.0;       par1_lpow5 = -15.;    par1_hpow5 = -5.;
+        par3_pow5 = -5.0;       par3_lpow5 = -10.;    par3_hpow5 = -2.;
+        par5_pow5 = -6.0;       par5_lpow5 = -10;     par5_hpow5 = -1.;
+        sigma_pow = 5;          sigma_lpow = 1.;      sigma_hpow = 15.;
+        turnon_pow = 111.;      turnon_lpow = 100.;   turnon_hpow = 125.;
+      }
+    }
+  }
+
+    else if(mass_ALP == 7)
+  {
+    if(cat==2)
+    {
+      if(order==1)
+      {
+        coeff1_pow1 = 0.4;        coeff1_lpow1 = 0.;    coeff1_hpow1 = 1.5;
+        par1_pow1 = -9.0;         par1_lpow1 = -15.;    par1_hpow1 = -5.;
+        sigma_pow = 3.0;          sigma_lpow = 1.;      sigma_hpow = 5.;
+        turnon_pow = 100.;        turnon_lpow = 98.;   turnon_hpow = 125.;
+      }
+      else if(order==3)
+      {
+        coeff1_pow3 = 1.0;      coeff1_lpow3 = 0.;    coeff1_hpow3 = 2.;
+        coeff3_pow3 = 0.0;      coeff3_lpow3 = 0.;    coeff3_hpow3 = 2.;
+        par1_pow3 = -9.19;       par1_lpow3 = -15.;    par1_hpow3 = -5.;
+        par3_pow3 = -8.8;       par3_lpow3 = -15.;    par3_hpow3 = -5;
+        sigma_pow = 3.3;        sigma_lpow = 1.;      sigma_hpow = 10.;
+        turnon_pow = 100.;      turnon_lpow = 98.;   turnon_hpow = 125.;
+      } 
+      else if(order==5)
+      {
+        coeff1_pow5 = 0.3;      coeff1_lpow5 = 0.;    coeff1_hpow5 = 1.;
+        coeff3_pow5 = 0.0;      coeff3_lpow5 = 0.;    coeff3_hpow5 = 1.;
+        coeff5_pow5 = 0.0;      coeff5_lpow5 = 0.;    coeff5_hpow5 = 1.;
+        par1_pow5 = -7.0;       par1_lpow5 = -15.;    par1_hpow5 = -5.;
+        par3_pow5 = -5.0;       par3_lpow5 = -10.;    par3_hpow5 = -2.;
+        par5_pow5 = -6.0;       par5_lpow5 = -10;     par5_hpow5 = -1.;
+        sigma_pow = 5;          sigma_lpow = 1.;      sigma_hpow = 15.;
+        turnon_pow = 111.;      turnon_lpow = 100.;   turnon_hpow = 125.;
+      }
+    }
+  }
+
+  else if(mass_ALP == 8)
+  {
+    if(cat==2)
+    {
+      if(order==1)
+      {
+        coeff1_pow1 = 0.0;        coeff1_lpow1 = 0.;    coeff1_hpow1 = 1.0;
+        par1_pow1 = -6.92;         par1_lpow1 = -15.;    par1_hpow1 = -5.;
+        sigma_pow = 6.0;          sigma_lpow = 1.;      sigma_hpow = 10.;
+        turnon_pow = 100.;        turnon_lpow = 98.;   turnon_hpow = 125.;
+      }
+      else if(order==3)
+      {
+        coeff1_pow3 = 0.1;      coeff1_lpow3 = 0.;    coeff1_hpow3 = 1.;
+        coeff3_pow3 = 0.0;      coeff3_lpow3 = 0.;    coeff3_hpow3 = 2.;
+        par1_pow3 = -8.5;       par1_lpow3 = -15.;    par1_hpow3 = -5.;
+        par3_pow3 = -14.8;      par3_lpow3 = -15.;    par3_hpow3 = -5;
+        sigma_pow = 6.0;        sigma_lpow = 1.;      sigma_hpow = 10.;
+        turnon_pow = 102.;      turnon_lpow = 100.;   turnon_hpow = 115.;
+      } 
+      else if(order==5)
+      {
+        coeff1_pow5 = 0.3;      coeff1_lpow5 = 0.;    coeff1_hpow5 = 1.;
+        coeff3_pow5 = 0.0;      coeff3_lpow5 = 0.;    coeff3_hpow5 = 5.;
+        coeff5_pow5 = 0.0;      coeff5_lpow5 = 0.;    coeff5_hpow5 = 5.;
+        par1_pow5 = -7.0;       par1_lpow5 = -15.;    par1_hpow5 = -5.;
+        par3_pow5 = -5.0;       par3_lpow5 = -10.;    par3_hpow5 = -5.;
+        par5_pow5 = -6.0;       par5_lpow5 = -10;     par5_hpow5 = -5.;
+        sigma_pow = 5;          sigma_lpow = 1.;      sigma_hpow = 15.;
+        turnon_pow = 102.;      turnon_lpow = 100.;   turnon_hpow = 125.;
+      }
+    }
+  }
+
+    else if(mass_ALP == 9)
+  {
+    if(cat==2)
+    {
+      if(order==1)
+      {
+        coeff1_pow1 = 1.0;        coeff1_lpow1 = 0.;    coeff1_hpow1 = 5.0;
+        par1_pow1 = -9.18;         par1_lpow1 = -15.;    par1_hpow1 = -5.;
+        sigma_pow = 7.0;          sigma_lpow = 1.;      sigma_hpow = 10.;
+        turnon_pow = 100.;        turnon_lpow = 98.;   turnon_hpow = 125.;
+      }
+      else if(order==3)
+      {
+        coeff1_pow3 = 1.0;      coeff1_lpow3 = 0.;    coeff1_hpow3 = 5.;
+        coeff3_pow3 = 0.0;      coeff3_lpow3 = 0.;    coeff3_hpow3 = 2.;
+        par1_pow3 = -9.3;       par1_lpow3 = -15.;    par1_hpow3 = -5.;
+        par3_pow3 = -11.43;     par3_lpow3 = -15.;    par3_hpow3 = -5;
+        sigma_pow = 6.7;        sigma_lpow = 1.;      sigma_hpow = 10.;
+        turnon_pow = 100.;      turnon_lpow = 98.;   turnon_hpow = 125.;
+      } 
+      else if(order==5)
+      {
+        coeff1_pow5 = 0.3;      coeff1_lpow5 = 0.;    coeff1_hpow5 = 1.;
+        coeff3_pow5 = 0.0;      coeff3_lpow5 = 0.;    coeff3_hpow5 = 1.;
+        coeff5_pow5 = 0.0;      coeff5_lpow5 = 0.;    coeff5_hpow5 = 1.;
+        par1_pow5 = -7.0;       par1_lpow5 = -15.;    par1_hpow5 = -5.;
+        par3_pow5 = -5.0;       par3_lpow5 = -10.;    par3_hpow5 = -2.;
+        par5_pow5 = -6.0;       par5_lpow5 = -10;     par5_hpow5 = -1.;
+        sigma_pow = 5;          sigma_lpow = 1.;      sigma_hpow = 15.;
+        turnon_pow = 111.;      turnon_lpow = 100.;   turnon_hpow = 125.;
+      }
+    }
+  }
+
+  else if(mass_ALP == 10)
+  {
+    if(cat==2)
+    {
+      if(order==1)
+      {
+        coeff1_pow1 = 0.0;        coeff1_lpow1 = 0.;    coeff1_hpow1 = 1.0;
+        par1_pow1 = -6.17;        par1_lpow1 = -15.;    par1_hpow1 = -5.;
+        sigma_pow = 2.;          sigma_lpow = 1.;      sigma_hpow = 5.;
+        turnon_pow = 100.;        turnon_lpow = 100.;   turnon_hpow = 115.;
+      }
+      else if(order==3)
+      {
+        coeff1_pow3 = 1.0;      coeff1_lpow3 = 0.;    coeff1_hpow3 = 5.;
+        coeff3_pow3 = 0.0;      coeff3_lpow3 = 0.;    coeff3_hpow3 = 1.;
+        par1_pow3 = -8.12;       par1_lpow3 = -15.;    par1_hpow3 = -5.;
+        par3_pow3 = -2.84;       par3_lpow3 = -15.;    par3_hpow3 = -2;
+        sigma_pow = 5.0;        sigma_lpow = 1.;      sigma_hpow = 10.;
+        turnon_pow = 100.;      turnon_lpow = 98.;   turnon_hpow = 125.;
+      } 
+      else if(order==5)
+      {
+        coeff1_pow5 = 1.0;      coeff1_lpow5 = 0.;    coeff1_hpow5 = 3.;
+        coeff3_pow5 = 0.0;      coeff3_lpow5 = 0.;    coeff3_hpow5 = 1.;
+        coeff5_pow5 = 0.0;      coeff5_lpow5 = 0.;    coeff5_hpow5 = 1.;
+        par1_pow5 = -7.0;       par1_lpow5 = -15.;    par1_hpow5 = -5.;
+        par3_pow5 = -4.9;       par3_lpow5 = -10.;    par3_hpow5 = -2.;
+        par5_pow5 = -6.2;       par5_lpow5 = -10;     par5_hpow5 = -1.;
+        sigma_pow = 8;          sigma_lpow = 1.;      sigma_hpow = 10.;
+        turnon_pow = 100.;      turnon_lpow = 100.;   turnon_hpow = 125.;
+      }
+    }
+  }
+
+    else if(mass_ALP == 15)
+  {
+    if(cat==2)
+    {
+      if(order==1)
+      {
+        coeff1_pow1 = 0.0;        coeff1_lpow1 = 0.;    coeff1_hpow1 = 1.0;
+        par1_pow1 = -6.69;         par1_lpow1 = -15.;    par1_hpow1 = -5.;
+        sigma_pow = 4.0;          sigma_lpow = 1.;      sigma_hpow = 10.;
+        turnon_pow = 100.;        turnon_lpow = 100.;   turnon_hpow = 125.;
+      }
+      else if(order==3)
+      {
+        coeff1_pow3 = 0.0;      coeff1_lpow3 = 0.;    coeff1_hpow3 = 1.;
+        coeff3_pow3 = 0.0;      coeff3_lpow3 = 0.;    coeff3_hpow3 = 1.;
+        par1_pow3 = -6.65;      par1_lpow3 = -15.;    par1_hpow3 = -5.;
+        par3_pow3 = -6.0;       par3_lpow3 = -15.;    par3_hpow3 = -5;
+        sigma_pow = 3.0;        sigma_lpow = 1.;      sigma_hpow = 8.;
+        turnon_pow = 100.;      turnon_lpow = 100.;   turnon_hpow = 115.;
+      } 
+      else if(order==5)
+      {
+        coeff1_pow5 = 0.3;      coeff1_lpow5 = 0.;    coeff1_hpow5 = 1.;
+        coeff3_pow5 = 0.0;      coeff3_lpow5 = 0.;    coeff3_hpow5 = 1.;
+        coeff5_pow5 = 0.0;      coeff5_lpow5 = 0.;    coeff5_hpow5 = 1.;
+        par1_pow5 = -7.0;       par1_lpow5 = -15.;    par1_hpow5 = -5.;
+        par3_pow5 = -5.0;       par3_lpow5 = -10.;    par3_hpow5 = -2.;
+        par5_pow5 = -6.0;       par5_lpow5 = -10;     par5_hpow5 = -1.;
+        sigma_pow = 5;          sigma_lpow = 1.;      sigma_hpow = 15.;
+        turnon_pow = 111.;      turnon_lpow = 100.;   turnon_hpow = 125.;
+      }
+    }
+  }
+
+   else if(mass_ALP == 20)
+  {
+    if(cat==2)
+    {
+      if(order==1)
+      {
+        coeff1_pow1 = 0.0;        coeff1_lpow1 = 0.;    coeff1_hpow1 = 2.0;
+        par1_pow1 = -6.59;        par1_lpow1 = -15.;    par1_hpow1 = -4.;
+        sigma_pow = 2.4;          sigma_lpow = 1.;      sigma_hpow = 10.;
+        turnon_pow = 100.;        turnon_lpow = 98.;   turnon_hpow = 125.;
+      }
+      else if(order==3)
+      {
+        coeff1_pow3 = 0.0;      coeff1_lpow3 = 0.;    coeff1_hpow3 = 2.;
+        coeff3_pow3 = 1.0;      coeff3_lpow3 = 0.;    coeff3_hpow3 = 3.;
+        par1_pow3 = -12.5;      par1_lpow3 = -15.;    par1_hpow3 = -2.;
+        par3_pow3 = -14.49;     par3_lpow3 = -15.;    par3_hpow3 = -4;
+        sigma_pow = 3.0;        sigma_lpow = 1.;      sigma_hpow = 7.;
+        turnon_pow = 100.;      turnon_lpow = 98.;   turnon_hpow = 110.;
+      } 
+      else if(order==5)
+      {
+        coeff1_pow5 = 0.3;      coeff1_lpow5 = 0.;    coeff1_hpow5 = 1.;
+        coeff3_pow5 = 0.0;      coeff3_lpow5 = 0.;    coeff3_hpow5 = 1.;
+        coeff5_pow5 = 0.0;      coeff5_lpow5 = 0.;    coeff5_hpow5 = 1.;
+        par1_pow5 = -7.0;       par1_lpow5 = -15.;    par1_hpow5 = -5.;
+        par3_pow5 = -5.0;       par3_lpow5 = -10.;    par3_hpow5 = -2.;
+        par5_pow5 = -6.0;       par5_lpow5 = -10;     par5_hpow5 = -1.;
+        sigma_pow = 5;          sigma_lpow = 1.;      sigma_hpow = 15.;
+        turnon_pow = 111.;      turnon_lpow = 100.;   turnon_hpow = 125.;
+      }
+    }
+  }
+
+     else if(mass_ALP == 25)
+  {
+    if(cat==2)
+    {
+      if(order==1)
+      {
+        coeff1_pow1 = 0.9;        coeff1_lpow1 = 0.;    coeff1_hpow1 = 2.0;
+        par1_pow1 = -6.82;         par1_lpow1 = -15.;    par1_hpow1 = -4.;
+        sigma_pow = 2.9;          sigma_lpow = 1.;      sigma_hpow = 5.;
+        turnon_pow = 103.;        turnon_lpow = 99.;   turnon_hpow = 125.;
+      }
+      else if(order==3)
+      {
+        coeff1_pow3 = 1.0;      coeff1_lpow3 = 0.;    coeff1_hpow3 = 2.;
+        coeff3_pow3 = 0.2;      coeff3_lpow3 = 0.;    coeff3_hpow3 = 1.;
+        par1_pow3 = -10.02;      par1_lpow3 = -15.;    par1_hpow3 = -5.;
+        par3_pow3 = -6.8;       par3_lpow3 = -15.;    par3_hpow3 = -5;
+        sigma_pow = 2.9;        sigma_lpow = 1.;      sigma_hpow = 5.;
+        turnon_pow = 101.;      turnon_lpow = 100.;   turnon_hpow = 120.;
+      } 
+      else if(order==5)
+      {
+        coeff1_pow5 = 0.3;      coeff1_lpow5 = 0.;    coeff1_hpow5 = 1.;
+        coeff3_pow5 = 0.0;      coeff3_lpow5 = 0.;    coeff3_hpow5 = 1.;
+        coeff5_pow5 = 0.0;      coeff5_lpow5 = 0.;    coeff5_hpow5 = 1.;
+        par1_pow5 = -7.0;       par1_lpow5 = -15.;    par1_hpow5 = -5.;
+        par3_pow5 = -5.0;       par3_lpow5 = -10.;    par3_hpow5 = -2.;
+        par5_pow5 = -6.0;       par5_lpow5 = -10;     par5_hpow5 = -1.;
+        sigma_pow = 5;          sigma_lpow = 1.;      sigma_hpow = 15.;
+        turnon_pow = 111.;      turnon_lpow = 100.;   turnon_hpow = 125.;
+      }
+    }
+  }
+
+ else if(mass_ALP == 30)
+  {
+    if(cat==2)
+    {
+      if(order==1)
+      {
+        coeff1_pow1 = 2.0;        coeff1_lpow1 = 0.;    coeff1_hpow1 = 5.0;
+        par1_pow1 = -8.55;        par1_lpow1 = -15.;    par1_hpow1 = -4.;
+        sigma_pow = 11.;          sigma_lpow = 1.;      sigma_hpow = 20.;
+        turnon_pow = 105.;        turnon_lpow = 100.;   turnon_hpow = 110.;
+      }
+      else if(order==3)
+      {
+        coeff1_pow3 = 2.0;      coeff1_lpow3 = 0.;    coeff1_hpow3 = 10.;
+        coeff3_pow3 = 0.0;      coeff3_lpow3 = 0.;    coeff3_hpow3 = 1.;
+        par1_pow3 = -8.51;      par1_lpow3 = -15.;    par1_hpow3 = -5.;
+        par3_pow3 = -10.3;      par3_lpow3 = -15.;    par3_hpow3 = -5;
+        sigma_pow = 11.0;       sigma_lpow = 5.;      sigma_hpow = 15.;
+        turnon_pow = 105.;      turnon_lpow = 100.;   turnon_hpow = 120.;
+      } 
+      else if(order==5)
+      {
+        coeff1_pow5 = 0.3;      coeff1_lpow5 = 0.;    coeff1_hpow5 = 10.;
+        coeff3_pow5 = 0.0;      coeff3_lpow5 = 0.;    coeff3_hpow5 = 1.;
+        coeff5_pow5 = 0.0;      coeff5_lpow5 = 0.;    coeff5_hpow5 = 1.;
+        par1_pow5 = -8.0;       par1_lpow5 = -15.;    par1_hpow5 = -5.;
+        par3_pow5 = -10.0;      par3_lpow5 = -10.;    par3_hpow5 = -2.;
+        par5_pow5 = -6.0;       par5_lpow5 = -10;     par5_hpow5 = -1.;
+        sigma_pow = 11;         sigma_lpow = 9.;      sigma_hpow = 15.;
+        turnon_pow = 105.;      turnon_lpow = 100.;   turnon_hpow = 115.;
+      }
+    }
+  }
   RooRealVar *sigma = new RooRealVar(Form("%s_sigma_p%d",prefix.c_str(),order),Form("%s_sigma_p%d",prefix.c_str(),order),sigma_pow,sigma_lpow,sigma_hpow);
   RooRealVar *turnon = new RooRealVar(Form("%s_turnon_p%d",prefix.c_str(),order),Form("%s_turnon_p%d",prefix.c_str(),order),turnon_pow,turnon_lpow,turnon_hpow);
   //coeffList->add(RooConst(1.0)); // no need for cnstant in this interface
@@ -513,6 +931,9 @@ RooAbsPdf* PdfModelBuilder::getExponential(string prefix, int order){
 
 RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int cat, int mass_ALP){
   if(order%2==0) return NULL;
+  // RooAbsReal::defaultIntegratorConfig()->setEpsAbs(1e-1);
+  // RooAbsReal::defaultIntegratorConfig()->setEpsRel(1e-1);
+
   RooRealVar *mean = new RooRealVar(Form("%s_mean",prefix.c_str()),Form("%s_mean",prefix.c_str()),0.);
   double sigma_exp,sigma_lexp,sigma_hexp;
   double turnon_exp,turnon_lexp,turnon_hexp;
@@ -523,53 +944,50 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
   double coeff1_hexp1, coeff1_hexp3, coeff3_hexp3, coeff1_hexp5, coeff3_hexp5, coeff5_hexp5;
   double coeff1_lexp1, coeff1_lexp3, coeff3_lexp3, coeff1_lexp5, coeff3_lexp5, coeff5_lexp5;
   
-  coeff1_exp1 = 0.5;      coeff1_lexp1 = 0.;    coeff1_hexp1 = 1.;
-  par1_exp1 = -0.03;      par1_lexp1 = -0.03;   par1_hexp1 = 0.;
-  sigma_exp = 1;          sigma_lexp = 1;       sigma_hexp = 5.;
-  turnon_exp = 105.;      turnon_lexp = 100.;   turnon_hexp = 110.;
-  
+  coeff1_exp1 = 0.4;      coeff1_lexp1 = 0.1;     coeff1_hexp1 = 0.9;
+  par1_exp1 = -0.06;      par1_lexp1 = -0.09;     par1_hexp1 = -0.02;
+  sigma_exp = 8;          sigma_lexp = 4;         sigma_hexp = 10.;
+  turnon_exp = 114.;      turnon_lexp = 110.;     turnon_hexp = 116.;
+
   coeff1_exp3 = 0.7;        coeff1_lexp3 = 0.;    coeff1_hexp3 = 1.;
   coeff3_exp3 = 0.8;        coeff3_lexp3 = 0.;    coeff3_hexp3 = 1.;
-  par1_exp3 = -0.15;        par1_lexp3 = -0.2;    par1_hexp3 = 0.;
-  par3_exp3 = -0.15;        par3_lexp3 = -0.2;    par3_hexp3 = 0.;
-  sigma_exp = 2.;           sigma_lexp = 1.;      sigma_hexp = 5.;
-  turnon_exp = 100.;        turnon_lexp = 100.;   turnon_hexp = 110.;
-  
+  par1_exp3 = -0.05;        par1_lexp3 = -0.2;    par1_hexp3 = -0.02;
+  par3_exp3 = -0.05;        par3_lexp3 = -0.2;    par3_hexp3 = -0.02;
+
+
   coeff1_exp5 = 0.05;       coeff1_lexp5 = 0.;    coeff1_hexp5 = 1.;
-  coeff3_exp5 = 0.0002;     coeff3_lexp5 = 0.;    coeff3_hexp5 = 1.;
+  coeff3_exp5 = 0.002;      coeff3_lexp5 = 0.;    coeff3_hexp5 = 1.;
   coeff5_exp5 =0.002;       coeff5_lexp5 = 0.;    coeff5_hexp5 = 1.;
-  par1_exp5 = -0.07;        par1_lexp5 = -0.5;    par1_hexp5 = 0.;
-  par3_exp5 = -0.04;        par3_lexp5 = -0.5;    par3_hexp5 = 0.;
-  par5_exp5 = -0.02;        par5_lexp5 = -0.5;    par5_hexp5 = 0.;
-  sigma_exp = 5.;           sigma_lexp = 3.;      sigma_hexp = 10.;
-  turnon_exp = 108.64;      turnon_lexp = 100.;   turnon_hexp = 110.;
+  par1_exp5 = -0.07;        par1_lexp5 = -0.2;    par1_hexp5 = -0.01;
+  par3_exp5 = -0.04;        par3_lexp5 = -0.2;    par3_hexp5 = -0.01;
+  par5_exp5 = -0.02;        par5_lexp5 = -0.2;    par5_hexp5 = -0.01;
 
   if(mass_ALP == 1)
   {
     if(cat==2)
     {
       if(order==1){
-      coeff1_exp1 = 0.5;      coeff1_lexp1 = 0.;    coeff1_hexp1 = 1.;
-      par1_exp1 = -0.2;       par1_lexp1 = -0.2;    par1_hexp1 = 0.;
-      sigma_exp = 1;          sigma_lexp = 1;       sigma_hexp = 8.;
-      turnon_exp = 105.;      turnon_lexp = 100.;   turnon_hexp = 110.;
+      coeff1_exp1 = 0.3;      coeff1_lexp1 = 0.1;     coeff1_hexp1 = 0.9;
+      par1_exp1 = -0.06;      par1_lexp1 = -0.09;     par1_hexp1 = -0.02;
+      sigma_exp = 9;          sigma_lexp = 4;         sigma_hexp = 10.;
+      turnon_exp = 100.;      turnon_lexp = 100.;     turnon_hexp = 115.;
       }
       else if(order==3){
-      coeff1_exp3 = 0.7;        coeff1_lexp3 = 0.;    coeff1_hexp3 = 1.;
-      coeff3_exp3 = 0.8;        coeff3_lexp3 = 0.;    coeff3_hexp3 = 1.;
-      par1_exp3 = -0.15;        par1_lexp3 = -0.2;    par1_hexp3 = 0.;
-      par3_exp3 = -0.15;        par3_lexp3 = -0.2;    par3_hexp3 = 0.;
-      sigma_exp = 2.;           sigma_lexp = 1.;      sigma_hexp = 4.;
-      turnon_exp = 100.;        turnon_lexp = 100.;   turnon_hexp = 110.;
+      coeff1_exp3 = 0.0;        coeff1_lexp3 = 0.;    coeff1_hexp3 = 1.;
+      coeff3_exp3 = 0.4;        coeff3_lexp3 = 0.;    coeff3_hexp3 = 1.0;
+      par1_exp3 = -0.114;       par1_lexp3 = -0.15;    par1_hexp3 = -0.02;
+      par3_exp3 = -0.046;       par3_lexp3 = -0.1;    par3_hexp3 = -0.02;
+      sigma_exp = 7.0;          sigma_lexp = 4;       sigma_hexp = 10.;
+      turnon_exp = 110.;        turnon_lexp = 100.;   turnon_hexp = 115.;
       } 
       else if(order==5)
       {
       coeff1_exp5 = 0.05;       coeff1_lexp5 = 0.;    coeff1_hexp5 = 1.;
       coeff3_exp5 = 0.0002;     coeff3_lexp5 = 0.;    coeff3_hexp5 = 1.;
       coeff5_exp5 =0.002;       coeff5_lexp5 = 0.;    coeff5_hexp5 = 1.;
-      par1_exp5 = -0.07;        par1_lexp5 = -0.5;    par1_hexp5 = 0.;
-      par3_exp5 = -0.04;        par3_lexp5 = -0.5;    par3_hexp5 = 0.;
-      par5_exp5 = -0.02;        par5_lexp5 = -0.5;    par5_hexp5 = 0.;
+      par1_exp5 = -0.07;        par1_lexp5 = -0.5;    par1_hexp5 = -0.02;
+      par3_exp5 = -0.04;        par3_lexp5 = -0.5;    par3_hexp5 = -0.02;
+      par5_exp5 = -0.02;        par5_lexp5 = -0.5;    par5_hexp5 = -0.02;
       sigma_exp = 5.;           sigma_lexp = 3.;      sigma_hexp = 10.;
       turnon_exp = 108.64;      turnon_lexp = 100.;   turnon_hexp = 110.;
       }
@@ -580,18 +998,18 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
     if(cat==2)
     {
       if(order==1){
-      coeff1_exp1 = 0.5;      coeff1_lexp1 = 0.;    coeff1_hexp1 = 1.;
-      par1_exp1 = -0.03;      par1_lexp1 = -0.03;   par1_hexp1 = 0.;
-      sigma_exp = 1;          sigma_lexp = 1;       sigma_hexp = 8.;
-      turnon_exp = 105.;      turnon_lexp = 100.;   turnon_hexp = 110.;
+      coeff1_exp1 = 0.0;      coeff1_lexp1 = 0.;    coeff1_hexp1 = 0.2;
+      par1_exp1 = -0.035;      par1_lexp1 = -0.06;    par1_hexp1 = 0.;
+      sigma_exp = 8;          sigma_lexp = 6;       sigma_hexp = 10.;
+      turnon_exp = 108.;      turnon_lexp = 100.;   turnon_hexp = 110.;
       }
       else if(order==3){
-      coeff1_exp3 = 0.7;        coeff1_lexp3 = 0.;    coeff1_hexp3 = 1.;
-      coeff3_exp3 = 0.8;        coeff3_lexp3 = 0.;    coeff3_hexp3 = 1.;
-      par1_exp3 = -0.15;        par1_lexp3 = -0.2;    par1_hexp3 = 0.;
-      par3_exp3 = -0.15;        par3_lexp3 = -0.2;    par3_hexp3 = 0.;
-      sigma_exp = 2.;           sigma_lexp = 1.;      sigma_hexp = 4.;
-      turnon_exp = 100.;        turnon_lexp = 100.;   turnon_hexp = 110.;
+      coeff1_exp3 = 0.0;        coeff1_lexp3 = 0.;    coeff1_hexp3 = 0.05;
+      coeff3_exp3 = 0.000;      coeff3_lexp3 = 0.;    coeff3_hexp3 = 0.01;
+      par1_exp3 = -0.15;        par1_lexp3 = -0.25;   par1_hexp3 = -0.01;
+      par3_exp3 = -0.035;       par3_lexp3 = -0.05;   par3_hexp3 = -0.01;
+      sigma_exp = 8.;           sigma_lexp = 7.;      sigma_hexp = 12.;
+      turnon_exp = 109.;        turnon_lexp = 100.;   turnon_hexp = 112.;
       } 
       else if(order==5)
       {
@@ -611,19 +1029,18 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
     if(cat==2)
     {
       if(order==1){
-      return NULL;
-      coeff1_exp1 = 0.5;      coeff1_lexp1 = 0.;    coeff1_hexp1 = 1.;
-      par1_exp1 = -0.03;      par1_lexp1 = -0.03;   par1_hexp1 = 0.;
-      sigma_exp = 3;          sigma_lexp = 3;       sigma_hexp = 8.;
-      turnon_exp = 105.;      turnon_lexp = 100.;   turnon_hexp = 110.;
+      coeff1_exp1 = 0.0;      coeff1_lexp1 = 0.;    coeff1_hexp1 = 0.2;
+      par1_exp1 = -0.06;      par1_lexp1 = -0.1;    par1_hexp1 = 0.;
+      sigma_exp = 8;          sigma_lexp = 6;       sigma_hexp = 15.;
+      turnon_exp = 109.;      turnon_lexp = 100.;   turnon_hexp = 110.;
       }
       else if(order==3){
-      coeff1_exp3 = 0.7;        coeff1_lexp3 = 0.;    coeff1_hexp3 = 1.;
-      coeff3_exp3 = 0.8;        coeff3_lexp3 = 0.;    coeff3_hexp3 = 1.;
-      par1_exp3 = -0.15;        par1_lexp3 = -0.2;    par1_hexp3 = 0.;
-      par3_exp3 = -0.15;        par3_lexp3 = -0.2;    par3_hexp3 = 0.;
-      sigma_exp = 3.;           sigma_lexp = 3.;      sigma_hexp = 8.;
-      turnon_exp = 100.;        turnon_lexp = 100.;   turnon_hexp = 110.;
+      coeff1_exp3 = 1.0;        coeff1_lexp3 = 0.;    coeff1_hexp3 = 2.;
+      coeff3_exp3 = 0.0;        coeff3_lexp3 = 0.;    coeff3_hexp3 = 1.;
+      par1_exp3 = -0.066;       par1_lexp3 = -0.1;    par1_hexp3 = 0.;
+      par3_exp3 = -0.035;       par3_lexp3 = -0.1;    par3_hexp3 = 0.;
+      sigma_exp = 8.;           sigma_lexp = 3.;      sigma_hexp = 15.;
+      turnon_exp = 107.;        turnon_lexp = 100.;   turnon_hexp = 115.;
       } 
       else if(order==5)
       {
@@ -635,6 +1052,37 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
       par5_exp5 = -0.02;        par5_lexp5 = -0.5;    par5_hexp5 = 0.;
       sigma_exp = 5.;           sigma_lexp = 3.;      sigma_hexp = 10.;
       turnon_exp = 108.64;      turnon_lexp = 100.;   turnon_hexp = 110.;
+      }
+    }
+  }
+    else if(mass_ALP == 4)
+  {
+    if(cat==2)
+    {
+      if(order==1){
+      coeff1_exp1 = 0.2;      coeff1_lexp1 = 0.;    coeff1_hexp1 = 0.5;
+      par1_exp1 = -0.046;      par1_lexp1 = -0.1;    par1_hexp1 = 0.;
+      sigma_exp = 3;          sigma_lexp = 0;       sigma_hexp = 3.;
+      turnon_exp = 100.;      turnon_lexp = 99.;   turnon_hexp = 110.;
+      }
+      else if(order==3){
+      coeff1_exp3 = 0.06;        coeff1_lexp3 = 0.;    coeff1_hexp3 = 0.1;
+      coeff3_exp3 = 0.1;        coeff3_lexp3 = 0.;    coeff3_hexp3 = 0.5;
+      par1_exp3 = -0.104;       par1_lexp3 = -0.3;    par1_hexp3 = -0.1;
+      par3_exp3 = -0.047;       par3_lexp3 = -0.1;    par3_hexp3 = -0.01;
+      sigma_exp = 2.;           sigma_lexp = 0.;      sigma_hexp = 6.;
+      turnon_exp = 100.;        turnon_lexp = 99.;   turnon_hexp = 105.;
+      } 
+      else if(order==5)
+      {
+      coeff1_exp5 = 0.1;        coeff1_lexp5 = 0.;    coeff1_hexp5 = 0.3;
+      coeff3_exp5 = 0.0;        coeff3_lexp5 = 0.;    coeff3_hexp5 = 0.1;
+      coeff5_exp5 = 1.0;        coeff5_lexp5 = 0.5;    coeff5_hexp5 = 2.;
+      par1_exp5 = -0.127;       par1_lexp5 = -0.2;    par1_hexp5 = -0.05;
+      par3_exp5 = -0.07;        par3_lexp5 = -0.1;    par3_hexp5 = -0.01;
+      par5_exp5 = -0.048;       par5_lexp5 = -0.1;    par5_hexp5 = -0.01;
+      sigma_exp = 3.;           sigma_lexp = 0.;      sigma_hexp = 5.;
+      turnon_exp = 100.;        turnon_lexp = 100.;   turnon_hexp = 110.;
       }
     }
   }
@@ -643,29 +1091,29 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
     if(cat==2)
     {
       if(order==1){
-      coeff1_exp1 = 0.5;      coeff1_lexp1 = 0.;    coeff1_hexp1 = 1.;
-      par1_exp1 = -0.3;       par1_lexp1 = -0.3;    par1_hexp1 = 0.;
-      sigma_exp = 3;          sigma_lexp = 3;       sigma_hexp = 8.;
-      turnon_exp = 105.;      turnon_lexp = 100.;   turnon_hexp = 110.;
+      coeff1_exp1 = 0.3;      coeff1_lexp1 = 0.;    coeff1_hexp1 = 1.;
+      par1_exp1 = -0.079;     par1_lexp1 = -0.2;    par1_hexp1 = 0.;
+      sigma_exp = 9;          sigma_lexp = 0;       sigma_hexp = 12.;
+      turnon_exp = 100.;      turnon_lexp = 100.;   turnon_hexp = 110.;
       }
       else if(order==3){
-      coeff1_exp3 = 0.7;        coeff1_lexp3 = 0.;    coeff1_hexp3 = 1.;
-      coeff3_exp3 = 0.8;        coeff3_lexp3 = 0.;    coeff3_hexp3 = 1.;
-      par1_exp3 = -0.15;        par1_lexp3 = -0.2;    par1_hexp3 = 0.;
-      par3_exp3 = -0.15;        par3_lexp3 = -0.2;    par3_hexp3 = 0.;
-      sigma_exp = 3.;           sigma_lexp = 3.;      sigma_hexp = 8.;
-      turnon_exp = 100.;        turnon_lexp = 100.;   turnon_hexp = 110.;
+      coeff1_exp3 = 0.1;        coeff1_lexp3 = 0.;    coeff1_hexp3 = 0.2;
+      coeff3_exp3 = 0.0;        coeff3_lexp3 = 0.;    coeff3_hexp3 = 0.1;
+      par1_exp3 = -0.254;       par1_lexp3 = -0.3;    par1_hexp3 = -0.01;
+      par3_exp3 = -0.041;       par3_lexp3 = -0.1;    par3_hexp3 = -0.01;
+      sigma_exp = 1.;           sigma_lexp = 0.;      sigma_hexp = 5.;
+      turnon_exp = 100.;        turnon_lexp = 98.;   turnon_hexp = 105.;
       } 
       else if(order==5)
       {
-      coeff1_exp5 = 0.05;       coeff1_lexp5 = 0.;    coeff1_hexp5 = 1.;
-      coeff3_exp5 = 0.0002;     coeff3_lexp5 = 0.;    coeff3_hexp5 = 1.;
-      coeff5_exp5 =0.002;       coeff5_lexp5 = 0.;    coeff5_hexp5 = 1.;
-      par1_exp5 = -0.07;        par1_lexp5 = -0.5;    par1_hexp5 = 0.;
-      par3_exp5 = -0.04;        par3_lexp5 = -0.5;    par3_hexp5 = 0.;
-      par5_exp5 = -0.02;        par5_lexp5 = -0.5;    par5_hexp5 = 0.;
-      sigma_exp = 5.;           sigma_lexp = 3.;      sigma_hexp = 10.;
-      turnon_exp = 108.64;      turnon_lexp = 100.;   turnon_hexp = 110.;
+      coeff1_exp5 = 1.0;        coeff1_lexp5 = 0.;    coeff1_hexp5 = 2.;
+      coeff3_exp5 = 0.004;      coeff3_lexp5 = 0.;    coeff3_hexp5 = 1.;
+      coeff5_exp5 =0.0;         coeff5_lexp5 = 0.;    coeff5_hexp5 = 1.;
+      par1_exp5 = -0.25;        par1_lexp5 = -0.5;    par1_hexp5 = 0.;
+      par3_exp5 = -0.085;       par3_lexp5 = -0.1;    par3_hexp5 = 0.;
+      par5_exp5 = -0.038;       par5_lexp5 = -0.1;    par5_hexp5 = 0.;
+      sigma_exp = 10.;          sigma_lexp = 0.;      sigma_hexp = 20.;
+      turnon_exp = 100.;        turnon_lexp = 100.;   turnon_hexp = 110.;
       }
     }
   }
@@ -674,29 +1122,29 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
     if(cat==2)
     {
       if(order==1){
-      coeff1_exp1 = 0.5;      coeff1_lexp1 = 0.;    coeff1_hexp1 = 1.;
-      par1_exp1 = -0.03;      par1_lexp1 = -0.03;   par1_hexp1 = 0.;
-      sigma_exp = 1;          sigma_lexp = 1;       sigma_hexp = 8.;
-      turnon_exp = 105.;      turnon_lexp = 100.;   turnon_hexp = 110.;
+      coeff1_exp1 = 0.8;      coeff1_lexp1 = 0.;    coeff1_hexp1 = 1.;
+      par1_exp1 = -0.06;      par1_lexp1 = -0.1;   par1_hexp1 = 0.;
+      sigma_exp = 2.6;        sigma_lexp = 0;       sigma_hexp = 8.;
+      turnon_exp = 100.;      turnon_lexp = 98.;   turnon_hexp = 110.;
       }
       else if(order==3){
-      coeff1_exp3 = 0.7;        coeff1_lexp3 = 0.;    coeff1_hexp3 = 1.;
-      coeff3_exp3 = 0.8;        coeff3_lexp3 = 0.;    coeff3_hexp3 = 1.;
-      par1_exp3 = -0.15;        par1_lexp3 = -0.2;    par1_hexp3 = 0.;
-      par3_exp3 = -0.15;        par3_lexp3 = -0.2;    par3_hexp3 = 0.;
-      sigma_exp = 2.;           sigma_lexp = 1.;      sigma_hexp = 4.;
-      turnon_exp = 100.;        turnon_lexp = 100.;   turnon_hexp = 110.;
+      coeff1_exp3 = 0.0;        coeff1_lexp3 = 0.;    coeff1_hexp3 = 1.;
+      coeff3_exp3 = 0.0;        coeff3_lexp3 = 0.;    coeff3_hexp3 = 1.;
+      par1_exp3 = -0.059;       par1_lexp3 = -0.1;    par1_hexp3 = 0.;
+      par3_exp3 = -0.16;        par3_lexp3 = -0.6;    par3_hexp3 = 0.;
+      sigma_exp = 2.6;          sigma_lexp = 1.;      sigma_hexp = 4.;
+      turnon_exp = 100.;        turnon_lexp = 98.;   turnon_hexp = 110.;
       } 
       else if(order==5)
       {
-      coeff1_exp5 = 0.05;       coeff1_lexp5 = 0.;    coeff1_hexp5 = 1.;
-      coeff3_exp5 = 0.0002;     coeff3_lexp5 = 0.;    coeff3_hexp5 = 1.;
-      coeff5_exp5 =0.002;       coeff5_lexp5 = 0.;    coeff5_hexp5 = 1.;
-      par1_exp5 = -0.07;        par1_lexp5 = -0.5;    par1_hexp5 = 0.;
-      par3_exp5 = -0.04;        par3_lexp5 = -0.5;    par3_hexp5 = 0.;
-      par5_exp5 = -0.02;        par5_lexp5 = -0.5;    par5_hexp5 = 0.;
-      sigma_exp = 5.;           sigma_lexp = 3.;      sigma_hexp = 10.;
-      turnon_exp = 108.64;      turnon_lexp = 100.;   turnon_hexp = 110.;
+      coeff1_exp5 = 0.0;        coeff1_lexp5 = 0.;    coeff1_hexp5 = 1.;
+      coeff3_exp5 = 0.6;        coeff3_lexp5 = 0.;    coeff3_hexp5 = 1.;
+      coeff5_exp5 =0.0;         coeff5_lexp5 = 0.;    coeff5_hexp5 = 1.;
+      par1_exp5 = -0.484;        par1_lexp5 = -0.5;    par1_hexp5 = 0.;
+      par3_exp5 = -0.274;        par3_lexp5 = -0.5;    par3_hexp5 = 0.;
+      par5_exp5 = -0.041;        par5_lexp5 = -0.5;    par5_hexp5 = 0.;
+      sigma_exp = 5.;           sigma_lexp = 0.;      sigma_hexp = 10.;
+      turnon_exp = 100.64;      turnon_lexp = 99.;   turnon_hexp = 105.;
       }
     }
   }
@@ -705,30 +1153,60 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
     if(cat==2)
     {
       if(order==1){
-      return NULL;
-      coeff1_exp1 = 0.5;      coeff1_lexp1 = 0.;    coeff1_hexp1 = 1.;
-      par1_exp1 = -0.03;      par1_lexp1 = -0.03;   par1_hexp1 = 0.;
-      sigma_exp = 1;          sigma_lexp = 1;       sigma_hexp = 8.;
-      turnon_exp = 105.;      turnon_lexp = 100.;   turnon_hexp = 110.;
+      coeff1_exp1 = 0.0;      coeff1_lexp1 = 0.;    coeff1_hexp1 = 1.;
+      par1_exp1 = -0.096;     par1_lexp1 = -0.2;   par1_hexp1 = 0.;
+      sigma_exp = 8;          sigma_lexp = 0;       sigma_hexp = 10.;
+      turnon_exp = 102.;      turnon_lexp = 100.;   turnon_hexp = 115.;
       }
       else if(order==3){
-      coeff1_exp3 = 0.7;        coeff1_lexp3 = 0.;    coeff1_hexp3 = 1.;
-      coeff3_exp3 = 0.8;        coeff3_lexp3 = 0.;    coeff3_hexp3 = 1.;
-      par1_exp3 = -0.15;        par1_lexp3 = -0.2;    par1_hexp3 = 0.;
-      par3_exp3 = -0.15;        par3_lexp3 = -0.2;    par3_hexp3 = 0.;
-      sigma_exp = 2.;           sigma_lexp = 1.;      sigma_hexp = 4.;
-      turnon_exp = 100.;        turnon_lexp = 100.;   turnon_hexp = 110.;
+      coeff1_exp3 = 0.0;        coeff1_lexp3 = 0.;    coeff1_hexp3 = 1.5;
+      coeff3_exp3 = 0.0;        coeff3_lexp3 = 0.;    coeff3_hexp3 = 1.;
+      par1_exp3 = -0.053;       par1_lexp3 = -0.1;    par1_hexp3 = 0.;
+      par3_exp3 = -0.2;         par3_lexp3 = -0.5;    par3_hexp3 = 0.;
+      sigma_exp = 3.0;           sigma_lexp = 1.;      sigma_hexp = 5.;
+      turnon_exp = 100.;        turnon_lexp = 100.;   turnon_hexp = 105.;
       } 
       else if(order==5)
       {
-      coeff1_exp5 = 0.05;       coeff1_lexp5 = 0.;    coeff1_hexp5 = 1.;
-      coeff3_exp5 = 0.0002;     coeff3_lexp5 = 0.;    coeff3_hexp5 = 1.;
-      coeff5_exp5 =0.002;       coeff5_lexp5 = 0.;    coeff5_hexp5 = 1.;
-      par1_exp5 = -0.07;        par1_lexp5 = -0.5;    par1_hexp5 = 0.;
-      par3_exp5 = -0.04;        par3_lexp5 = -0.5;    par3_hexp5 = 0.;
-      par5_exp5 = -0.02;        par5_lexp5 = -0.5;    par5_hexp5 = 0.;
-      sigma_exp = 5.;           sigma_lexp = 3.;      sigma_hexp = 10.;
-      turnon_exp = 108.64;      turnon_lexp = 100.;   turnon_hexp = 110.;
+      coeff1_exp5 = 0.8;          coeff1_lexp5 = 0.;    coeff1_hexp5 = 1.2;
+      coeff3_exp5 = 0.359;        coeff3_lexp5 = 0.;    coeff3_hexp5 = 1.;
+      coeff5_exp5 = 0.906;        coeff5_lexp5 = 0.;    coeff5_hexp5 = 1.2;
+      par1_exp5 = -0.386;         par1_lexp5 = -0.5;    par1_hexp5 = 0.;
+      par3_exp5 = -0.056;         par3_lexp5 = -0.1;    par3_hexp5 = 0.;
+      par5_exp5 = -0.438;         par5_lexp5 = -0.6;    par5_hexp5 = 0.;
+      sigma_exp = 3.;             sigma_lexp = 0.;      sigma_hexp = 5.;
+      turnon_exp = 100.;          turnon_lexp = 98.;   turnon_hexp = 110.;
+      }
+    }
+  }
+  else if(mass_ALP == 8)
+  {
+    if(cat==2)
+    {
+      if(order==1){
+      coeff1_exp1 = 0.4;      coeff1_lexp1 = 0.;    coeff1_hexp1 = 1.;
+      par1_exp1 = -0.54;      par1_lexp1 = -0.1;   par1_hexp1 = 0.;
+      sigma_exp = 6;          sigma_lexp = 0;       sigma_hexp = 20.;
+      turnon_exp = 100.;      turnon_lexp = 98.;   turnon_hexp = 115.;
+      }
+      else if(order==3){
+      coeff1_exp3 = 0.1;        coeff1_lexp3 = 0.;    coeff1_hexp3 = 2.;
+      coeff3_exp3 = 0.0;        coeff3_lexp3 = 0.;    coeff3_hexp3 = 1.;
+      par1_exp3 = -0.225;       par1_lexp3 = -0.5;    par1_hexp3 = 0.;
+      par3_exp3 = -0.051;       par3_lexp3 = -0.2;    par3_hexp3 = 0.;
+      sigma_exp = 5;            sigma_lexp = 1.;      sigma_hexp = 15;
+      turnon_exp = 110.;        turnon_lexp = 99.;   turnon_hexp = 115.;
+      } 
+      else if(order==5)
+      {
+      coeff1_exp5 = 0.6;        coeff1_lexp5 = 0.;    coeff1_hexp5 = 1.;
+      coeff3_exp5 = 0.0;        coeff3_lexp5 = 0.;    coeff3_hexp5 = 1.;
+      coeff5_exp5 = 0.0;        coeff5_lexp5 = 0.;    coeff5_hexp5 = 1.;
+      par1_exp5 = -0.30;        par1_lexp5 = -0.5;    par1_hexp5 = -0.1;
+      par3_exp5 = -0.059;       par3_lexp5 = -0.1;    par3_hexp5 = -0.01;
+      par5_exp5 = -0.21;         par5_lexp5 = -0.6;    par5_hexp5 = -0.1;
+      sigma_exp = 6.;           sigma_lexp = 0.;      sigma_hexp = 10.;
+      turnon_exp = 102.;        turnon_lexp = 100.;   turnon_hexp = 110.;
       }
     }
   }
@@ -737,19 +1215,18 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
     if(cat==2)
     {
       if(order==1){
-      return NULL;
       coeff1_exp1 = 0.5;      coeff1_lexp1 = 0.;    coeff1_hexp1 = 1.;
-      par1_exp1 = -0.03;      par1_lexp1 = -0.03;   par1_hexp1 = 0.;
-      sigma_exp = 1;          sigma_lexp = 1;       sigma_hexp = 8.;
-      turnon_exp = 105.;      turnon_lexp = 100.;   turnon_hexp = 110.;
+      par1_exp1 = -0.061;     par1_lexp1 = -0.1;   par1_hexp1 = 0.;
+      sigma_exp = 3;          sigma_lexp = 2;       sigma_hexp = 10.;
+      turnon_exp = 103.;      turnon_lexp = 100.;   turnon_hexp = 110.;
       }
       else if(order==3){
-      coeff1_exp3 = 0.7;        coeff1_lexp3 = 0.;    coeff1_hexp3 = 1.;
-      coeff3_exp3 = 0.8;        coeff3_lexp3 = 0.;    coeff3_hexp3 = 1.;
-      par1_exp3 = -0.15;        par1_lexp3 = -0.2;    par1_hexp3 = 0.;
-      par3_exp3 = -0.15;        par3_lexp3 = -0.2;    par3_hexp3 = 0.;
-      sigma_exp = 2.;           sigma_lexp = 1.;      sigma_hexp = 4.;
-      turnon_exp = 100.;        turnon_lexp = 100.;   turnon_hexp = 110.;
+      coeff1_exp3 = 0.0;        coeff1_lexp3 = 0.;    coeff1_hexp3 = 1.;
+      coeff3_exp3 = 0.3;        coeff3_lexp3 = 0.;    coeff3_hexp3 = 1.;
+      par1_exp3 = -0.002;        par1_lexp3 = -0.01;    par1_hexp3 = -0.001;
+      par3_exp3 = -0.09;        par3_lexp3 = -0.2;    par3_hexp3 = -0.01;
+      sigma_exp = 4.;           sigma_lexp = 1.;      sigma_hexp = 8.;
+      turnon_exp = 100.;        turnon_lexp = 98.;   turnon_hexp = 110.;
       } 
       else if(order==5)
       {
@@ -769,30 +1246,153 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
     if(cat==2)
     {
       if(order==1){
-      return NULL;
       coeff1_exp1 = 0.5;      coeff1_lexp1 = 0.;    coeff1_hexp1 = 1.;
-      par1_exp1 = -0.03;      par1_lexp1 = -0.03;   par1_hexp1 = 0.;
-      sigma_exp = 1;          sigma_lexp = 1;       sigma_hexp = 8.;
-      turnon_exp = 105.;      turnon_lexp = 100.;   turnon_hexp = 110.;
+      par1_exp1 = -0.034;     par1_lexp1 = -0.1;   par1_hexp1 = 0.;
+      sigma_exp = 5;          sigma_lexp = 2;       sigma_hexp = 8.;
+      turnon_exp = 100.;      turnon_lexp = 98.;   turnon_hexp = 110.;
       }
       else if(order==3){
-      coeff1_exp3 = 0.7;        coeff1_lexp3 = 0.;    coeff1_hexp3 = 1.;
-      coeff3_exp3 = 0.8;        coeff3_lexp3 = 0.;    coeff3_hexp3 = 1.;
-      par1_exp3 = -0.15;        par1_lexp3 = -0.2;    par1_hexp3 = 0.;
-      par3_exp3 = -0.15;        par3_lexp3 = -2.0;    par3_hexp3 = 0.;
-      sigma_exp = 2.;           sigma_lexp = 1.;      sigma_hexp = 8.;
-      turnon_exp = 100.;        turnon_lexp = 100.;   turnon_hexp = 110.;
+      coeff1_exp3 = 0.00;       coeff1_lexp3 = 0.;    coeff1_hexp3 = 1.;
+      coeff3_exp3 = 0.437;      coeff3_lexp3 = 0.;    coeff3_hexp3 = 1.;
+      par1_exp3 = -0.0187;      par1_lexp3 = -0.1;    par1_hexp3 = -0.01;
+      par3_exp3 = -0.2;         par3_lexp3 = -0.5;    par3_hexp3 = -0.1;
+      sigma_exp = 5.;           sigma_lexp = 1.;      sigma_hexp = 8.;
+      turnon_exp = 100.;        turnon_lexp = 99.;   turnon_hexp = 110.;
       } 
       else if(order==5)
       {
-      coeff1_exp5 = 0.05;       coeff1_lexp5 = 0.;    coeff1_hexp5 = 2.;
-      coeff3_exp5 = 0.0002;     coeff3_lexp5 = 0.;    coeff3_hexp5 = 2.;
-      coeff5_exp5 =0.002;       coeff5_lexp5 = 0.;    coeff5_hexp5 = 2.;
-      par1_exp5 = -0.07;        par1_lexp5 = -0.5;    par1_hexp5 = 0.;
-      par3_exp5 = -0.04;        par3_lexp5 = -0.5;    par3_hexp5 = 0.;
-      par5_exp5 = -0.02;        par5_lexp5 = -0.5;    par5_hexp5 = 0.;
-      sigma_exp = 5.;           sigma_lexp = 3.;      sigma_hexp = 10.;
-      turnon_exp = 108.64;      turnon_lexp = 100.;   turnon_hexp = 110.;
+      coeff1_exp5 = 0.9;       coeff1_lexp5 = 0.;    coeff1_hexp5 = 2.;
+      coeff3_exp5 = 1.0;       coeff3_lexp5 = 0.;    coeff3_hexp5 = 2.;
+      coeff5_exp5 = 1.0;       coeff5_lexp5 = 0.;    coeff5_hexp5 = 2.;
+      par1_exp5 = -0.034;      par1_lexp5 = -0.1;    par1_hexp5 = -0.01;
+      par3_exp5 = -0.151;      par3_lexp5 = -0.2;    par3_hexp5 = -0.1;
+      par5_exp5 = -0.29;       par5_lexp5 = -0.6;    par5_hexp5 = -0.1;
+      sigma_exp = 5.;          sigma_lexp = 3.;      sigma_hexp = 10.;
+      turnon_exp = 100.;       turnon_lexp = 99.;   turnon_hexp = 110.;
+      }
+    }
+  }
+    else if(mass_ALP == 15)
+  {
+    if(cat==2)
+    {
+      if(order==1){
+      coeff1_exp1 = 0.3;      coeff1_lexp1 = 0.;    coeff1_hexp1 = 2.;
+      par1_exp1 = -0.083;      par1_lexp1 = -0.1;   par1_hexp1 = -0.01;
+      sigma_exp = 11;          sigma_lexp = 2;       sigma_hexp = 15.;
+      turnon_exp = 106.;      turnon_lexp = 100.;   turnon_hexp = 115.;
+      }
+      else if(order==3){
+      coeff1_exp3 = 0.734;        coeff1_lexp3 = 0.;    coeff1_hexp3 = 1.;
+      coeff3_exp3 = 0.0;        coeff3_lexp3 = 0.;    coeff3_hexp3 = 1.;
+      par1_exp3 = -0.05;       par1_lexp3 = -0.2;    par1_hexp3 = -0.01;
+      par3_exp3 = -0.21;         par3_lexp3 = -0.3;    par3_hexp3 = -0.1;
+      sigma_exp = 3.9;          sigma_lexp = 1.;      sigma_hexp = 10.;
+      turnon_exp = 100.;        turnon_lexp = 99.;   turnon_hexp = 110.;
+      } 
+      else if(order==5)
+      {
+      coeff1_exp5 = 1.0;       coeff1_lexp5 = 0.;    coeff1_hexp5 = 2.;
+      coeff3_exp5 = 2.0;       coeff3_lexp5 = 0.;    coeff3_hexp5 = 5.;
+      coeff5_exp5 = 2.0;       coeff5_lexp5 = 0.;    coeff5_hexp5 = 5.;
+      par1_exp5 = -0.163;      par1_lexp5 = -0.3;    par1_hexp5 = -0.1;
+      par3_exp5 = -0.053;      par3_lexp5 = -0.1;    par3_hexp5 = -0.01;
+      par5_exp5 = -0.152;      par5_lexp5 = -0.3;    par5_hexp5 = -0.1;
+      sigma_exp = 4.;          sigma_lexp = 2.;      sigma_hexp = 10.;
+      turnon_exp = 100.;       turnon_lexp = 99.;   turnon_hexp = 110.;
+      }
+    }
+  }
+  else if(mass_ALP == 20)
+  {
+    if(cat==2)
+    {
+      if(order==1){
+      coeff1_exp1 = 0.6;      coeff1_lexp1 = 0.;    coeff1_hexp1 = 1.;
+      par1_exp1 = -0.07;      par1_lexp1 = -0.3;   par1_hexp1 = -0.01;
+      sigma_exp = 10;         sigma_lexp = 2;       sigma_hexp = 25.;
+      turnon_exp = 113.;      turnon_lexp = 100.;   turnon_hexp = 115.;
+      }
+      else if(order==3){
+      coeff1_exp3 = 0.0;        coeff1_lexp3 = 0.;    coeff1_hexp3 = 1.;
+      coeff3_exp3 = 0.0;        coeff3_lexp3 = 0.;    coeff3_hexp3 = 2.;
+      par1_exp3 = -0.2;         par1_lexp3 = -0.6;    par1_hexp3 = -0.1;
+      par3_exp3 = -0.02;        par3_lexp3 = -0.1;    par3_hexp3 = -0.01;
+      sigma_exp = 2.;          sigma_lexp = 1.;      sigma_hexp = 18.;
+      turnon_exp = 101.;        turnon_lexp = 100.;   turnon_hexp = 110.;
+      } 
+      else if(order==5)
+      {
+      coeff1_exp5 = 1.0;        coeff1_lexp5 = 0.;    coeff1_hexp5 = 2.;
+      coeff3_exp5 = 0.2;        coeff3_lexp5 = 0.;    coeff3_hexp5 = 1.;
+      coeff5_exp5 = 0.0;        coeff5_lexp5 = 0.;    coeff5_hexp5 = 1.;
+      par1_exp5 = -0.49;        par1_lexp5 = -0.6;    par1_hexp5 = -0.3;
+      par3_exp5 = -0.30;        par3_lexp5 = -0.5;    par3_hexp5 = -0.2;
+      par5_exp5 = -0.043;       par5_lexp5 = -0.1;    par5_hexp5 = -0.01;
+      sigma_exp = 3.;           sigma_lexp = 0.;      sigma_hexp = 10.;
+      turnon_exp = 100.;        turnon_lexp = 99.;   turnon_hexp = 110.;
+      }
+    }
+  }
+    else if(mass_ALP == 25)
+  {
+    if(cat==2)
+    {
+      if(order==1){
+      coeff1_exp1 = 0.1;      coeff1_lexp1 = 0.;    coeff1_hexp1 = 1.;
+      par1_exp1 = -0.07;      par1_lexp1 = -0.2;   par1_hexp1 = -0.05;
+      sigma_exp = 8;          sigma_lexp = 2;       sigma_hexp = 15.;
+      turnon_exp = 106.;      turnon_lexp = 100.;   turnon_hexp = 115.;
+      }
+      else if(order==3){
+      coeff1_exp3 = 0.53;       coeff1_lexp3 = 0.;    coeff1_hexp3 = 2.;
+      coeff3_exp3 = 0.0;        coeff3_lexp3 = 0.;    coeff3_hexp3 = 1.;
+      par1_exp3 = -0.05;        par1_lexp3 = -0.2;    par1_hexp3 = -0.01;
+      par3_exp3 = -0.2;         par3_lexp3 = -0.6;    par3_hexp3 = -0.05;
+      sigma_exp = 2.6;          sigma_lexp = 1.;      sigma_hexp = 18.;
+      turnon_exp = 100.1;       turnon_lexp = 99.;   turnon_hexp = 110.;
+      } 
+      else if(order==5)
+      {
+      coeff1_exp5 = 1.0;        coeff1_lexp5 = 0.;    coeff1_hexp5 = 2.;
+      coeff3_exp5 = 0.2;        coeff3_lexp5 = 0.;    coeff3_hexp5 = 1.;
+      coeff5_exp5 = 0.0;        coeff5_lexp5 = 0.;    coeff5_hexp5 = 1.;
+      par1_exp5 = -0.49;        par1_lexp5 = -0.6;    par1_hexp5 = -0.2;
+      par3_exp5 = -0.30;        par3_lexp5 = -0.5;    par3_hexp5 = -0.1;
+      par5_exp5 = -0.043;       par5_lexp5 = -0.1;    par5_hexp5 = -0.01;
+      sigma_exp = 5.;           sigma_lexp = 0.;      sigma_hexp = 10.;
+      turnon_exp = 100.;        turnon_lexp = 100.;   turnon_hexp = 110.;
+      }
+    }
+  }
+  else if(mass_ALP == 30)
+  {
+    if(cat==2)
+    {
+      if(order==1){
+      coeff1_exp1 = 1.0;      coeff1_lexp1 = 0.;    coeff1_hexp1 = 2.;
+      par1_exp1 = -0.085;     par1_lexp1 = -0.2;   par1_hexp1 = 0.;
+      sigma_exp = 13;          sigma_lexp = 10;       sigma_hexp = 15.;
+      turnon_exp = 107.;      turnon_lexp = 100.;   turnon_hexp = 110.;
+      }
+      else if(order==3){
+      coeff1_exp3 = 1.0;        coeff1_lexp3 = 0.1;    coeff1_hexp3 = 2.;
+      coeff3_exp3 = 1.0;        coeff3_lexp3 = 0.5;    coeff3_hexp3 = 2.;
+      par1_exp3 = -0.16;        par1_lexp3 = -0.25;   par1_hexp3 = -0.1;
+      par3_exp3 = -0.07;        par3_lexp3 = -0.1;    par3_hexp3 = -0.01;
+      sigma_exp = 12.;           sigma_lexp = 10.;      sigma_hexp = 20.;
+      turnon_exp = 106.;        turnon_lexp = 100.;   turnon_hexp = 115.;
+      } 
+      else if(order==5)
+      {
+      coeff1_exp5 = 1.;       coeff1_lexp5 = 0.;    coeff1_hexp5 = 2.;
+      coeff3_exp5 = 2.;       coeff3_lexp5 = 1.;    coeff3_hexp5 = 4.;
+      coeff5_exp5 = 2.;       coeff5_lexp5 = 1.;    coeff5_hexp5 = 4.;
+      par1_exp5 = -0.21;      par1_lexp5 = -0.3;    par1_hexp5 = -0.1;
+      par3_exp5 = -0.1087;    par3_lexp5 = -0.2;    par3_hexp5 = -0.05;
+      par5_exp5 = -0.1;       par5_lexp5 = -0.2;    par5_hexp5 = -0.09;
+      sigma_exp = 14.5;       sigma_lexp = 10.;     sigma_hexp = 18.;
+      turnon_exp = 110.;      turnon_lexp = 100.;   turnon_hexp = 115.;
       }
     }
   }
@@ -948,73 +1548,518 @@ RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat
     {
       if(order==1)
       {
-        turnon_lau = 100.;        turnon_llau = 100.;    turnon_hlau = 115.;
-        sigma_lau = 4.;           sigma_llau = 1.;      sigma_hlau = 10.;
-        coeff1_lau1 = 5.8468e-08; coeff1_llau1 = 0.;    coeff1_hlau1 = 0.5;
+        coeff1_lau1 = 0.0;        coeff1_llau1 = 0.;      coeff1_hlau1 = 0.2;
+        sigma_lau = 6.5;          sigma_llau = 1.0;       sigma_hlau = 10.;
+        turnon_lau = 109.;        turnon_llau = 100.;     turnon_hlau = 115.;
       }
       else if(order==2)
       {
-        turnon_lau = 100.;        turnon_llau = 100.;    turnon_hlau = 115.;
-        sigma_lau = 4.;           sigma_llau = 1.;      sigma_hlau = 10.;
-        coeff1_lau2 = 5.8468e-08; coeff1_llau2 = 0.;    coeff1_hlau2 = 0.5;
-        coeff2_lau2 = 0.25;       coeff2_llau2 = 0.;    coeff2_hlau2 = 0.5;
+        coeff1_lau2 = 0.0;        coeff1_llau2 = 0.;    coeff1_hlau2 = 0.5;
+        coeff2_lau2 = 0.0;        coeff2_llau2 = 0.;    coeff2_hlau2 = 0.5;
+        sigma_lau = 6.6;          sigma_llau = 1.;      sigma_hlau = 10.;
+        turnon_lau = 109.;        turnon_llau = 100.;    turnon_hlau = 115.;
       }
       else if(order==3)
       {
-        turnon_lau = 100;         turnon_llau = 100.;   turnon_hlau = 115.;
-        sigma_lau = 4.;           sigma_llau = 1.;      sigma_hlau = 10.;
-        coeff1_lau3 = 1.2503e-06; coeff1_llau3 = 0.;    coeff1_hlau3 = 0.5;
-        coeff2_lau3 = 9.7549e-01; coeff2_llau3 = 0.;    coeff2_hlau3 = 0.5;
-        coeff3_lau3 = 0.;         coeff3_llau3 = 0.;    coeff3_hlau3 = 0.5;
+        coeff1_lau3 = 0.0;        coeff1_llau3 = 0.;    coeff1_hlau3 = 0.5;
+        coeff2_lau3 = 0.0;        coeff2_llau3 = 0.;    coeff2_hlau3 = 0.5;
+        coeff3_lau3 = 0.0;        coeff3_llau3 = 0.;    coeff3_hlau3 = 2.0;
+        sigma_lau = 7.6;           sigma_llau = 1.;      sigma_hlau = 10.;
+        turnon_lau = 112;         turnon_llau = 100.;   turnon_hlau = 115.;
       } 
       else if(order==4)
       {
-        turnon_lau = 100;         turnon_llau = 100;     turnon_hlau = 115.;
-        sigma_lau = 4.;           sigma_llau = 1.;      sigma_hlau = 10.;
-        coeff1_lau4 = 5.e-09;     coeff1_llau4 = 0.;    coeff1_hlau4 = 0.5;
-        coeff2_lau4 = 4.e-08;     coeff2_llau4 = 0.;    coeff2_hlau4 = 0.5;
-        coeff3_lau4 = 7e-11;      coeff3_llau4 = 0.;    coeff3_hlau4 = 0.5;
-        coeff4_lau4 = 0.5;        coeff4_llau4 = 0.;    coeff4_hlau4 = 0.5;
+        coeff1_lau4 = 0.0;        coeff1_llau4 = 0.;    coeff1_hlau4 = 0.5;
+        coeff2_lau4 = 0.0;        coeff2_llau4 = 0.;    coeff2_hlau4 = 0.5;
+        coeff3_lau4 = 0.0;        coeff3_llau4 = 0.;    coeff3_hlau4 = 2.0;
+        coeff4_lau4 = 0.0;        coeff4_llau4 = 0.;    coeff4_hlau4 = 2.0;
+        sigma_lau = 8.;           sigma_llau = 1.;      sigma_hlau = 10.;
+        turnon_lau = 112;         turnon_llau = 100;     turnon_hlau = 120.;
       }
     } // cat 2
   }// if mass_ALP
   
-  else
+  else if(mass_ALP==2)
   {  
     if(cat==2)
     {
       if(order==1)
       {
-        turnon_lau = 100.;        turnon_llau = 100.;    turnon_hlau = 115.;
-        sigma_lau = 4.;           sigma_llau = 1.;      sigma_hlau = 10.;
-        coeff1_lau1 = 5.8468e-08; coeff1_llau1 = 0.;    coeff1_hlau1 = 0.5;
+        coeff1_lau1 = 0.0;        coeff1_llau1 = 0.;      coeff1_hlau1 = 0.1;
+        sigma_lau = 7.0;          sigma_llau = 1.0;       sigma_hlau = 10.;
+        turnon_lau = 108.;        turnon_llau = 100.;     turnon_hlau = 115.;
       }
       else if(order==2)
       {
-        turnon_lau = 100.;        turnon_llau = 100.;    turnon_hlau = 115.;
-        sigma_lau = 4.;           sigma_llau = 1.;      sigma_hlau = 10.;
-        coeff1_lau2 = 5.8468e-08; coeff1_llau2 = 0.;    coeff1_hlau2 = 0.5;
-        coeff2_lau2 = 0.25;       coeff2_llau2 = 0.;    coeff2_hlau2 = 0.5;
+        coeff1_lau2 = 0.1;        coeff1_llau2 = 0.;    coeff1_hlau2 = 0.5;
+        coeff2_lau2 = 0.0;        coeff2_llau2 = 0.;    coeff2_hlau2 = 0.5;
+        sigma_lau = 10.0;          sigma_llau = 1.;      sigma_hlau = 10.;
+        turnon_lau = 108.;        turnon_llau = 100.;    turnon_hlau = 115.;
       }
       else if(order==3)
       {
-        turnon_lau = 100;         turnon_llau = 100.;   turnon_hlau = 115.;
+        coeff1_lau3 = 0.1;        coeff1_llau3 = 0.;    coeff1_hlau3 = 0.5;
+        coeff2_lau3 = 0.0;        coeff2_llau3 = 0.;    coeff2_hlau3 = 0.5;
+        coeff3_lau3 = 0.0;        coeff3_llau3 = 0.;    coeff3_hlau3 = 0.5;
         sigma_lau = 4.;           sigma_llau = 1.;      sigma_hlau = 10.;
-        coeff1_lau3 = 1.2503e-06; coeff1_llau3 = 0.;    coeff1_hlau3 = 0.5;
-        coeff2_lau3 = 9.7549e-01; coeff2_llau3 = 0.;    coeff2_hlau3 = 0.5;
-        coeff3_lau3 = 0.;         coeff3_llau3 = 0.;    coeff3_hlau3 = 0.5;
+        turnon_lau = 109;         turnon_llau = 100.;   turnon_hlau = 115.;
       } 
       else if(order==4)
       {
-        turnon_lau = 100;         turnon_llau = 100;     turnon_hlau = 115.;
+        coeff1_lau4 = 0.1;        coeff1_llau4 = 0.;    coeff1_hlau4 = 0.5;
+        coeff2_lau4 = 0.0;        coeff2_llau4 = 0.;    coeff2_hlau4 = 0.5;
+        coeff3_lau4 = 0.0;        coeff3_llau4 = 0.;    coeff3_hlau4 = 0.5;
+        coeff4_lau4 = 0.0;        coeff4_llau4 = 0.;    coeff4_hlau4 = 0.5;
         sigma_lau = 4.;           sigma_llau = 1.;      sigma_hlau = 10.;
-        coeff1_lau4 = 5.e-09;     coeff1_llau4 = 0.;    coeff1_hlau4 = 0.5;
-        coeff2_lau4 = 4.e-08;     coeff2_llau4 = 0.;    coeff2_hlau4 = 0.5;
-        coeff3_lau4 = 7e-11;      coeff3_llau4 = 0.;    coeff3_hlau4 = 0.5;
-        coeff4_lau4 = 0.5;        coeff4_llau4 = 0.;    coeff4_hlau4 = 0.5;
+        turnon_lau = 109;         turnon_llau = 100;     turnon_hlau = 115.;
       }
-    }
-  }
+    } // cat 2
+  }// if mass_ALP
+  
+  else if(mass_ALP==3)
+  {  
+    if(cat==2)
+    {
+      if(order==1)
+      {
+        coeff1_lau1 = 0.0;        coeff1_llau1 = 0.;      coeff1_hlau1 = 0.1;
+        sigma_lau = 10.0;         sigma_llau = 1.0;       sigma_hlau = 20.;
+        turnon_lau = 114.;        turnon_llau = 100.;     turnon_hlau = 120.;
+      }
+      else if(order==2)
+      {
+        coeff1_lau2 = 0.0;        coeff1_llau2 = 0.;    coeff1_hlau2 = 0.5;
+        coeff2_lau2 = 0.5;        coeff2_llau2 = 0.;    coeff2_hlau2 = 1.0;
+        sigma_lau = 8.4;          sigma_llau = 1.;      sigma_hlau = 10.;
+        turnon_lau = 106.;        turnon_llau = 100.;    turnon_hlau = 115.;
+      }
+      else if(order==3)
+      {
+        coeff1_lau3 = 0.0;        coeff1_llau3 = 0.;    coeff1_hlau3 = 1.0;
+        coeff2_lau3 = 0.5;        coeff2_llau3 = 0.;    coeff2_hlau3 = 1.0;
+        coeff3_lau3 = 0.0;        coeff3_llau3 = 0.;    coeff3_hlau3 = 1.0;
+        sigma_lau = 8.;           sigma_llau = 1.;      sigma_hlau = 12.;
+        turnon_lau = 105;         turnon_llau = 100.;   turnon_hlau = 115.;
+      } 
+      else if(order==4)
+      {
+        coeff1_lau4 = 0.1;        coeff1_llau4 = 0.;    coeff1_hlau4 = 0.5;
+        coeff2_lau4 = 0.0;        coeff2_llau4 = 0.;    coeff2_hlau4 = 0.5;
+        coeff3_lau4 = 0.0;        coeff3_llau4 = 0.;    coeff3_hlau4 = 0.5;
+        coeff4_lau4 = 0.0;        coeff4_llau4 = 0.;    coeff4_hlau4 = 0.5;
+        sigma_lau = 4.;           sigma_llau = 1.;      sigma_hlau = 10.;
+        turnon_lau = 109;         turnon_llau = 100;     turnon_hlau = 115.;
+      }
+    } // cat 2
+  }// if mass_ALP
+
+  else if(mass_ALP==4)
+  {  
+    if(cat==2)
+    {
+      if(order==1)
+      {
+        coeff1_lau1 = 0.2;        coeff1_llau1 = 0.;      coeff1_hlau1 = 1.0;
+        sigma_lau = 2.0;          sigma_llau = 1.0;       sigma_hlau = 5.;
+        turnon_lau = 100.;        turnon_llau = 99.;     turnon_hlau = 120.;
+      }
+      else if(order==2)
+      {
+        coeff1_lau2 = 0.0;        coeff1_llau2 = 0.;      coeff1_hlau2 = 0.5;
+        coeff2_lau2 = 0.1;        coeff2_llau2 = 0.;      coeff2_hlau2 = 1.0;
+        sigma_lau = 2.0;         sigma_llau = 1.0;       sigma_hlau = 5.;
+        turnon_lau = 100.;        turnon_llau = 99.;     turnon_hlau = 110.;
+      }
+      else if(order==3)
+      {
+        coeff1_lau3 = 0.0;        coeff1_llau3 = 0.;    coeff1_hlau3 = 1.0;
+        coeff2_lau3 = 0.5;        coeff2_llau3 = 0.;    coeff2_hlau3 = 1.0;
+        coeff3_lau3 = 0.0;        coeff3_llau3 = 0.;    coeff3_hlau3 = 1.0;
+        sigma_lau = 8.;           sigma_llau = 1.;      sigma_hlau = 12.;
+        turnon_lau = 105;         turnon_llau = 100.;   turnon_hlau = 115.;
+      } 
+      else if(order==4)
+      {
+        coeff1_lau4 = 0.1;        coeff1_llau4 = 0.;    coeff1_hlau4 = 0.5;
+        coeff2_lau4 = 0.0;        coeff2_llau4 = 0.;    coeff2_hlau4 = 0.5;
+        coeff3_lau4 = 0.0;        coeff3_llau4 = 0.;    coeff3_hlau4 = 0.5;
+        coeff4_lau4 = 0.0;        coeff4_llau4 = 0.;    coeff4_hlau4 = 0.5;
+        sigma_lau = 4.;           sigma_llau = 1.;      sigma_hlau = 10.;
+        turnon_lau = 109;         turnon_llau = 100;     turnon_hlau = 115.;
+      }
+    } // cat 2
+  }// if mass_ALP
+
+  else if(mass_ALP==5)
+  {  
+    if(cat==2)
+    {
+      if(order==1)
+      {
+        coeff1_lau1 = 0.0;        coeff1_llau1 = 0.;      coeff1_hlau1 = 1.0;
+        sigma_lau = 2.0;          sigma_llau = 1.0;       sigma_hlau = 10.;
+        turnon_lau = 100.;        turnon_llau = 99.;     turnon_hlau = 120.;
+      }
+      else if(order==2)
+      {
+        coeff1_lau2 = 0.0;        coeff1_llau2 = 0.;      coeff1_hlau2 = 0.5;
+        coeff2_lau2 = 0.5;        coeff2_llau2 = 0.;      coeff2_hlau2 = 3.0;
+        sigma_lau = 1.9;          sigma_llau = 1.0;       sigma_hlau = 10.;
+        turnon_lau = 100.;        turnon_llau = 99.;     turnon_hlau = 110.;
+      }
+      else if(order==3)
+      {
+        coeff1_lau3 = 0.0;        coeff1_llau3 = 0.;    coeff1_hlau3 = 1.0;
+        coeff2_lau3 = 0.0;        coeff2_llau3 = 0.;    coeff2_hlau3 = 1.0;
+        coeff3_lau3 = 1.0;        coeff3_llau3 = 0.;    coeff3_hlau3 = 3.0;
+        sigma_lau = 2.;           sigma_llau = 1.;      sigma_hlau = 12.;
+        turnon_lau = 100;         turnon_llau = 99.;   turnon_hlau = 115.;
+      } 
+      else if(order==4)
+      {
+        coeff1_lau4 = 0.1;        coeff1_llau4 = 0.;    coeff1_hlau4 = 0.5;
+        coeff2_lau4 = 0.0;        coeff2_llau4 = 0.;    coeff2_hlau4 = 0.5;
+        coeff3_lau4 = 0.0;        coeff3_llau4 = 0.;    coeff3_hlau4 = 3.0;
+        coeff4_lau4 = 0.0;        coeff4_llau4 = 0.;    coeff4_hlau4 = 0.5;
+        sigma_lau = 4.;           sigma_llau = 1.;      sigma_hlau = 10.;
+        turnon_lau = 109;         turnon_llau = 100;     turnon_hlau = 115.;
+      }
+    } // cat 2
+  }// if mass_ALP
+
+  else if(mass_ALP==6)
+  {  
+    if(cat==2)
+    {
+      if(order==1)
+      {
+        coeff1_lau1 = 0.0;        coeff1_llau1 = 0.;      coeff1_hlau1 = 1.0;
+        sigma_lau = 3.0;          sigma_llau = 1.0;       sigma_hlau = 20.;
+        turnon_lau = 100.;        turnon_llau = 99.;     turnon_hlau = 120.;
+      }
+      else if(order==2)
+      {
+        coeff1_lau2 = 0.0;        coeff1_llau2 = 0.;      coeff1_hlau2 = 0.5;
+        coeff2_lau2 = 0.6;        coeff2_llau2 = 0.;      coeff2_hlau2 = 1.0;
+        sigma_lau = 3.0;          sigma_llau = 1.0;       sigma_hlau = 10.;
+        turnon_lau = 101.;        turnon_llau = 100.;     turnon_hlau = 110.;
+      }
+      else if(order==3)
+      {
+        coeff1_lau3 = 0.0;        coeff1_llau3 = 0.;    coeff1_hlau3 = 1.0;
+        coeff2_lau3 = 0.0;        coeff2_llau3 = 0.;    coeff2_hlau3 = 1.0;
+        coeff3_lau3 = 0.5;        coeff3_llau3 = 0.;    coeff3_hlau3 = 1.0;
+        sigma_lau = 2.6;          sigma_llau = 1.;      sigma_hlau = 10.;
+        turnon_lau = 100;         turnon_llau = 100.;   turnon_hlau = 115.;
+      } 
+      else if(order==4)
+      {
+        coeff1_lau4 = 0.0;        coeff1_llau4 = 0.;    coeff1_hlau4 = 0.5;
+        coeff2_lau4 = 0.0;        coeff2_llau4 = 0.;    coeff2_hlau4 = 0.5;
+        coeff3_lau4 = 0.0;        coeff3_llau4 = 0.;    coeff3_hlau4 = 3.0;
+        coeff4_lau4 = 0.5;        coeff4_llau4 = 0.;    coeff4_hlau4 = 2.0;
+        sigma_lau = 3.;           sigma_llau = 1.;      sigma_hlau = 10.;
+        turnon_lau = 100;         turnon_llau = 99;     turnon_hlau = 115.;
+      }
+    } // cat 2
+  }// if mass_ALP
+
+  else if(mass_ALP==7)
+  {  
+    if(cat==2)
+    {
+      if(order==1)
+      {
+        coeff1_lau1 = 0.0;        coeff1_llau1 = 0.;      coeff1_hlau1 = 1.0;
+        sigma_lau = 3.0;          sigma_llau = 1.0;       sigma_hlau = 20.;
+        turnon_lau = 100.;        turnon_llau = 98.;     turnon_hlau = 120.;
+      }
+      else if(order==2)
+      {
+        coeff1_lau2 = 0.0;        coeff1_llau2 = 0.;      coeff1_hlau2 = 0.5;
+        coeff2_lau2 = 0.4;        coeff2_llau2 = 0.;      coeff2_hlau2 = 1.0;
+        sigma_lau = 3.0;          sigma_llau = 1.0;       sigma_hlau = 5.;
+        turnon_lau = 100.;        turnon_llau = 98.;     turnon_hlau = 110.;
+      }
+      else if(order==3)
+      {
+        coeff1_lau3 = 0.0;        coeff1_llau3 = 0.;    coeff1_hlau3 = 1.0;
+        coeff2_lau3 = 0.0;        coeff2_llau3 = 0.;    coeff2_hlau3 = 1.0;
+        coeff3_lau3 = 1.0;        coeff3_llau3 = 0.;    coeff3_hlau3 = 3.0;
+        sigma_lau = 2.0;          sigma_llau = 1.;      sigma_hlau = 5.;
+        turnon_lau = 100;         turnon_llau = 98.;   turnon_hlau = 115.;
+      } 
+      else if(order==4)
+      {
+        coeff1_lau4 = 0.0;        coeff1_llau4 = 0.;    coeff1_hlau4 = 0.5;
+        coeff2_lau4 = 0.0;        coeff2_llau4 = 0.;    coeff2_hlau4 = 0.5;
+        coeff3_lau4 = 0.0;        coeff3_llau4 = 0.;    coeff3_hlau4 = 0.5;
+        coeff4_lau4 = 0.5;        coeff4_llau4 = 0.;    coeff4_hlau4 = 2.0;
+        sigma_lau = 3.;           sigma_llau = 1.;      sigma_hlau = 10.;
+        turnon_lau = 100;         turnon_llau = 100;     turnon_hlau = 115.;
+      }
+    } // cat 2
+  }// if mass_ALP
+
+  else if(mass_ALP==8)
+  {  
+    if(cat==2)
+    {
+      if(order==1)
+      {
+        coeff1_lau1 = 0.0;        coeff1_llau1 = 0.;      coeff1_hlau1 = 1.0;
+        sigma_lau = 5.0;          sigma_llau = 1.0;       sigma_hlau = 20.;
+        turnon_lau = 100.;        turnon_llau = 98.;     turnon_hlau = 120.;
+      }
+      else if(order==2)
+      {
+        coeff1_lau2 = 0.0;        coeff1_llau2 = 0.;      coeff1_hlau2 = 0.5;
+        coeff2_lau2 = 0.0;        coeff2_llau2 = 0.;      coeff2_hlau2 = 1.0;
+        sigma_lau = 5.0;          sigma_llau = 1.0;       sigma_hlau = 20.;
+        turnon_lau = 100.;        turnon_llau = 98.;     turnon_hlau = 110.;
+      }
+      else if(order==3)
+      {
+        coeff1_lau3 = 0.0;        coeff1_llau3 = 0.;    coeff1_hlau3 = 1.0;
+        coeff2_lau3 = 0.0;        coeff2_llau3 = 0.;    coeff2_hlau3 = 1.0;
+        coeff3_lau3 = 0.5;        coeff3_llau3 = 0.;    coeff3_hlau3 = 1.0;
+        sigma_lau = 3.0;          sigma_llau = 1.;      sigma_hlau = 12.;
+        turnon_lau = 100;         turnon_llau = 98.;   turnon_hlau = 115.;
+      } 
+      else if(order==4)
+      {
+        coeff1_lau4 = 0.0;        coeff1_llau4 = 0.;    coeff1_hlau4 = 0.5;
+        coeff2_lau4 = 0.0;        coeff2_llau4 = 0.;    coeff2_hlau4 = 0.5;
+        coeff3_lau4 = 0.0;        coeff3_llau4 = 0.;    coeff3_hlau4 = 0.5;
+        coeff4_lau4 = 0.5;        coeff4_llau4 = 0.;    coeff4_hlau4 = 2.0;
+        sigma_lau = 3.;           sigma_llau = 1.;      sigma_hlau = 10.;
+        turnon_lau = 100;         turnon_llau = 98;     turnon_hlau = 115.;
+      }
+    } // cat 2
+  }// if mass_ALP
+
+  else if(mass_ALP==9)
+  {  
+    if(cat==2)
+    {
+      if(order==1)
+      {
+        coeff1_lau1 = 0.0;        coeff1_llau1 = 0.;      coeff1_hlau1 = 1.0;
+        sigma_lau = 6.0;          sigma_llau = 1.0;       sigma_hlau = 20.;
+        turnon_lau = 100.;        turnon_llau = 98.;     turnon_hlau = 120.;
+      }
+      else if(order==2)
+      {
+        coeff1_lau2 = 0.0;        coeff1_llau2 = 0.;      coeff1_hlau2 = 0.5;
+        coeff2_lau2 = 0.0;        coeff2_llau2 = 0.;      coeff2_hlau2 = 1.0;
+        sigma_lau = 6.0;          sigma_llau = 1.0;       sigma_hlau = 20.;
+        turnon_lau = 100.;        turnon_llau = 98.;     turnon_hlau = 110.;
+      }
+      else if(order==3)
+      {
+        coeff1_lau3 = 0.0;        coeff1_llau3 = 0.;    coeff1_hlau3 = 1.0;
+        coeff2_lau3 = 0.0;        coeff2_llau3 = 0.;    coeff2_hlau3 = 1.0;
+        coeff3_lau3 = 0.5;        coeff3_llau3 = 0.;    coeff3_hlau3 = 1.0;
+        sigma_lau = 3.0;          sigma_llau = 1.;      sigma_hlau = 12.;
+        turnon_lau = 100;         turnon_llau = 100.;   turnon_hlau = 115.;
+      } 
+      else if(order==4)
+      {
+        coeff1_lau4 = 0.0;        coeff1_llau4 = 0.;    coeff1_hlau4 = 0.5;
+        coeff2_lau4 = 0.0;        coeff2_llau4 = 0.;    coeff2_hlau4 = 0.5;
+        coeff3_lau4 = 0.0;        coeff3_llau4 = 0.;    coeff3_hlau4 = 0.5;
+        coeff4_lau4 = 0.5;        coeff4_llau4 = 0.;    coeff4_hlau4 = 2.0;
+        sigma_lau = 3.;           sigma_llau = 1.;      sigma_hlau = 10.;
+        turnon_lau = 100;         turnon_llau = 100;     turnon_hlau = 115.;
+      }
+    } // cat 2
+  }// if mass_ALP
+
+  else if(mass_ALP==10)
+  {  
+    if(cat==2)
+    {
+      if(order==1)
+      {
+        coeff1_lau1 = 0.0;        coeff1_llau1 = 0.;      coeff1_hlau1 = 1.0;
+        sigma_lau = 5.0;          sigma_llau = 1.0;       sigma_hlau = 20.;
+        turnon_lau = 100.;        turnon_llau = 98.;     turnon_hlau = 120.;
+      }
+      else if(order==2)
+      {
+        coeff1_lau2 = 0.0;        coeff1_llau2 = 0.;      coeff1_hlau2 = 0.5;
+        coeff2_lau2 = 0.6;        coeff2_llau2 = 0.;      coeff2_hlau2 = 1.0;
+        sigma_lau = 5.0;          sigma_llau = 1.0;       sigma_hlau = 10.;
+        turnon_lau = 100.;        turnon_llau = 98.;     turnon_hlau = 110.;
+      }
+      else if(order==3)
+      {
+        coeff1_lau3 = 0.0;        coeff1_llau3 = 0.;    coeff1_hlau3 = 1.0;
+        coeff2_lau3 = 0.0;        coeff2_llau3 = 0.;    coeff2_hlau3 = 1.0;
+        coeff3_lau3 = 0.5;        coeff3_llau3 = 0.;    coeff3_hlau3 = 1.0;
+        sigma_lau = 3.0;          sigma_llau = 1.;      sigma_hlau = 12.;
+        turnon_lau = 100;         turnon_llau = 100.;   turnon_hlau = 115.;
+      } 
+      else if(order==4)
+      {
+        coeff1_lau4 = 0.0;        coeff1_llau4 = 0.;    coeff1_hlau4 = 0.5;
+        coeff2_lau4 = 0.0;        coeff2_llau4 = 0.;    coeff2_hlau4 = 0.5;
+        coeff3_lau4 = 0.0;        coeff3_llau4 = 0.;    coeff3_hlau4 = 0.5;
+        coeff4_lau4 = 0.5;        coeff4_llau4 = 0.;    coeff4_hlau4 = 2.0;
+        sigma_lau = 3.;           sigma_llau = 1.;      sigma_hlau = 10.;
+        turnon_lau = 100;         turnon_llau = 100;     turnon_hlau = 115.;
+      }
+    } // cat 2
+  }// if mass_ALP
+
+  else if(mass_ALP==15)
+  {  
+    if(cat==2)
+    {
+      if(order==1)
+      {
+        coeff1_lau1 = 0.0;        coeff1_llau1 = 0.;      coeff1_hlau1 = 1.0;
+        sigma_lau = 6.0;          sigma_llau = 1.0;       sigma_hlau = 10.;
+        turnon_lau = 102.;        turnon_llau = 100.;     turnon_hlau = 120.;
+      }
+      else if(order==2)
+      {
+        coeff1_lau2 = 0.0;        coeff1_llau2 = 0.;      coeff1_hlau2 = 0.5;
+        coeff2_lau2 = 0.5;        coeff2_llau2 = 0.;      coeff2_hlau2 = 3.0;
+        sigma_lau = 4.0;          sigma_llau = 1.0;       sigma_hlau = 10.;
+        turnon_lau = 100.;        turnon_llau = 98.;     turnon_hlau = 110.;
+      }
+      else if(order==3)
+      {
+        coeff1_lau3 = 0.0;        coeff1_llau3 = 0.;    coeff1_hlau3 = 1.0;
+        coeff2_lau3 = 0.0;        coeff2_llau3 = 0.;    coeff2_hlau3 = 1.0;
+        coeff3_lau3 = 0.05;       coeff3_llau3 = 0.;    coeff3_hlau3 = 1.0;
+        sigma_lau = 4.0;          sigma_llau = 1.;      sigma_hlau = 12.;
+        turnon_lau = 100;         turnon_llau = 98.;   turnon_hlau = 115.;
+      } 
+      else if(order==4)
+      {
+        coeff1_lau4 = 0.0;        coeff1_llau4 = 0.;    coeff1_hlau4 = 0.5;
+        coeff2_lau4 = 0.0;        coeff2_llau4 = 0.;    coeff2_hlau4 = 0.5;
+        coeff3_lau4 = 0.0;        coeff3_llau4 = 0.;    coeff3_hlau4 = 1.5;
+        coeff4_lau4 = 0.5;        coeff4_llau4 = 0.;    coeff4_hlau4 = 1.0;
+        sigma_lau = 5.;          sigma_llau = 1.;      sigma_hlau = 10.;
+        turnon_lau = 102;         turnon_llau = 100;    turnon_hlau = 120.;
+      }
+    } // cat 2
+  }// if mass_ALP
+
+  else if(mass_ALP==20)
+  {  
+    if(cat==2)
+    {
+      if(order==1)
+      {
+        coeff1_lau1 = 0.0;        coeff1_llau1 = 0.;      coeff1_hlau1 = 1.0;
+        sigma_lau = 2.6;          sigma_llau = 1.0;       sigma_hlau = 7.;
+        turnon_lau = 100.;        turnon_llau = 98.;     turnon_hlau = 115.;
+      }
+      else if(order==2)
+      {
+        coeff1_lau2 = 0.0;        coeff1_llau2 = 0.;      coeff1_hlau2 = 0.5;
+        coeff2_lau2 = 0.4;        coeff2_llau2 = 0.;      coeff2_hlau2 = 3.0;
+        sigma_lau = 2.6;          sigma_llau = 1.0;       sigma_hlau = 7.;
+        turnon_lau = 100.;        turnon_llau = 100.;     turnon_hlau = 110.;
+      }
+      else if(order==3)
+      {
+        coeff1_lau3 = 0.49;       coeff1_llau3 = 0.;    coeff1_hlau3 = 1.0;
+        coeff2_lau3 = 0.01;       coeff2_llau3 = 0.;    coeff2_hlau3 = 1.0;
+        coeff3_lau3 = 0.1;        coeff3_llau3 = 0.;    coeff3_hlau3 = 5.0;
+        sigma_lau = 3.0;          sigma_llau = 1.;      sigma_hlau = 12.;
+        turnon_lau = 100;         turnon_llau = 98.;   turnon_hlau = 115.;
+      } 
+      else if(order==4)
+      {
+        coeff1_lau4 = 0.0;        coeff1_llau4 = 0.;    coeff1_hlau4 = 0.5;
+        coeff2_lau4 = 0.0;        coeff2_llau4 = 0.;    coeff2_hlau4 = 0.5;
+        coeff3_lau4 = 0.0;        coeff3_llau4 = 0.;    coeff3_hlau4 = 0.5;
+        coeff4_lau4 = 0.5;        coeff4_llau4 = 0.;    coeff4_hlau4 = 1.0;
+        sigma_lau = 10.;          sigma_llau = 1.;      sigma_hlau = 15.;
+        turnon_lau = 115;         turnon_llau = 100;    turnon_hlau = 120.;
+      }
+    } // cat 2
+  }// if mass_ALP
+
+  else if(mass_ALP==25)
+  {  
+    if(cat==2)
+    {
+      if(order==1)
+      {
+        coeff1_lau1 = 0.0;        coeff1_llau1 = 0.;      coeff1_hlau1 = 1.0;
+        sigma_lau = 2.5;          sigma_llau = 1.0;       sigma_hlau = 7.;
+        turnon_lau = 100.;        turnon_llau = 98.;     turnon_hlau = 120.;
+      }
+      else if(order==2)
+      {
+        coeff1_lau2 = 0.0;        coeff1_llau2 = 0.;      coeff1_hlau2 = 0.5;
+        coeff2_lau2 = 0.5;        coeff2_llau2 = 0.;      coeff2_hlau2 = 5.0;
+        sigma_lau = 2.5;         sigma_llau = 1.0;       sigma_hlau = 7.;
+        turnon_lau = 100.;        turnon_llau = 98.;     turnon_hlau = 115.;
+      }
+      else if(order==3)
+      {
+        coeff1_lau3 = 0.49;       coeff1_llau3 = 0.;    coeff1_hlau3 = 1.0;
+        coeff2_lau3 = 0.01;       coeff2_llau3 = 0.;    coeff2_hlau3 = 5.0;
+        coeff3_lau3 = 0.1;        coeff3_llau3 = 0.;    coeff3_hlau3 = 1.0;
+        sigma_lau = 3.0;          sigma_llau = 1.;      sigma_hlau = 12.;
+        turnon_lau = 100;         turnon_llau = 98.;   turnon_hlau = 110.;
+      } 
+      else if(order==4)
+      {
+        coeff1_lau4 = 0.0;        coeff1_llau4 = 0.;    coeff1_hlau4 = 0.5;
+        coeff2_lau4 = 0.0;        coeff2_llau4 = 0.;    coeff2_hlau4 = 5.0;
+        coeff3_lau4 = 0.0;        coeff3_llau4 = 0.;    coeff3_hlau4 = 0.5;
+        coeff4_lau4 = 0.5;        coeff4_llau4 = 0.;    coeff4_hlau4 = 1.0;
+        sigma_lau = 10.;          sigma_llau = 1.;      sigma_hlau = 15.;
+        turnon_lau = 100;         turnon_llau = 98.;    turnon_hlau = 110.;
+      }
+    } // cat 2
+  }// if mass_ALP
+
+  else if(mass_ALP==30)
+  {  
+    if(cat==2)
+    {
+      if(order==1)
+      {
+        coeff1_lau1 = 0.0;        coeff1_llau1 = 0.;      coeff1_hlau1 = 1.0;
+        sigma_lau = 6.0;          sigma_llau = 1.0;       sigma_hlau = 10.;
+        turnon_lau = 100.;        turnon_llau = 98.;     turnon_hlau = 120.;
+      }
+      else if(order==2)
+      {
+        coeff1_lau2 = 0.0;        coeff1_llau2 = 0.;      coeff1_hlau2 = 0.5;
+        coeff2_lau2 = 0.9;        coeff2_llau2 = 0.;      coeff2_hlau2 = 3.0;
+        sigma_lau = 7.0;          sigma_llau = 1.0;       sigma_hlau = 8.;
+        turnon_lau = 101.;        turnon_llau = 100.;     turnon_hlau = 110.;
+      }
+      else if(order==3)
+      {
+        coeff1_lau3 = 0.00;       coeff1_llau3 = 0.;    coeff1_hlau3 = 1.0;
+        coeff2_lau3 = 0.00;       coeff2_llau3 = 0.;    coeff2_hlau3 = 1.0;
+        coeff3_lau3 = 0.2;        coeff3_llau3 = 0.;    coeff3_hlau3 = 1.0;
+        sigma_lau = 8.0;          sigma_llau = 1.;      sigma_hlau = 12.;
+        turnon_lau = 102.;         turnon_llau = 100.;   turnon_hlau = 115.;
+      } 
+      else if(order==4)
+      {
+        coeff1_lau4 = 0.0;        coeff1_llau4 = 0.;    coeff1_hlau4 = 0.5;
+        coeff2_lau4 = 0.0;        coeff2_llau4 = 0.;    coeff2_hlau4 = 0.5;
+        coeff3_lau4 = 1.0;        coeff3_llau4 = 1.0;    coeff3_hlau4 = 5.0;
+        coeff4_lau4 = 0.0;        coeff4_llau4 = 0.;    coeff4_hlau4 = 1.0;
+        sigma_lau = 8.;           sigma_llau = 1.;      sigma_hlau = 15.;
+        turnon_lau = 102.;         turnon_llau = 100;    turnon_hlau = 115.;
+      }
+    } // cat 2
+  }// if mass_ALP
+
   RooRealVar *sigma = new RooRealVar(Form("%s_sigma_p%d",prefix.c_str(),order),Form("%s_sigma_p%d",prefix.c_str(),order),sigma_lau,sigma_llau,sigma_hlau);
   RooRealVar *turnon = new RooRealVar(Form("%s_turnon_p%d",prefix.c_str(),order),Form("%s_turnon_p%d",prefix.c_str(),order),turnon_lau,turnon_llau,turnon_hlau);
   //coeffList->add(RooConst(1.0)); // no need for cnstant in this interface

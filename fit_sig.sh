@@ -68,9 +68,9 @@ export PYTHONPATH=$PYTHONPATH:/publicfs/cms/user/laipeizhu/CMSSW_14_1_0_pre4/src
 #     done
 #   done
 
-# python3 $dir_sig/scripts/signalFit.py --mass_ALP 1 --year 16 --channel ele --inputWSDir /publicfs/cms/user/laipeizhu/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+python3 $dir_sig/scripts/signalFit.py --mass_ALP 1 --year 16 --channel ele --inputWSDir /publicfs/cms/user/laipeizhu/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
 
-python3 $dir_sig/RunPlotter.py --mass_ALP 20 --years 16 --channel mu
+# python3 $dir_sig/RunPlotter.py --mass_ALP 20 --years 16 --channel mu
 
 for ((iBin=0; iBin<$nMass; iBin++))
     do

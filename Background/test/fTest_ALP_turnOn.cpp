@@ -54,16 +54,16 @@ namespace po = program_options;
 
 bool BLIND = false;
 bool runFtestCheckWithToys=false;
-float mgglow_ =2.;//FIXME
-float mgghigh_ =40;//FIXME
-float mggblindlow_ =12;//FIXME
-float mggblindhigh_ =17;//FIXME
+float mgglow_ =95.;//FIXME
+float mgghigh_ =180;//FIXME
+float mggblindlow_ =115;//FIXME
+float mggblindhigh_ =135;//FIXME
 
-float mgg_low =2.;//FIXME
-float mgg_high =40;//FIXME
+float mgg_low =95.;//FIXME
+float mgg_high =180.;//FIXME
 float nBinsForMass = 1.*(mgg_high-mgg_low);
-float mgg_blind_low =12;//FIXME
-float mgg_blind_high =17;//FIXME
+float mgg_blind_low =115;//FIXME
+float mgg_blind_high =135;//FIXME
 
 RooRealVar *intLumi_ = new RooRealVar("IntLumi","hacked int lumi", 1000.);
 
@@ -106,6 +106,14 @@ void runFit(RooAbsPdf *pdf, RooDataSet *data, double *NLL, int *stat_t, int MaxT
  
           stat = fitTest->status();
 	  minnll = fitTest->minNll();
+
+    // // Check parameters 
+    // RooArgList fittedParams = fitTest->floatParsFinal();
+    // for (int i = 0; i < fittedParams.getSize(); i++) {
+    //   RooRealVar* param = (RooRealVar*)fittedParams.at(i);
+    //   std::cout << "Parameter: " << param->GetName() << ", Value: " << param->getVal() << " ± " << param->getError() << std::endl;
+    // }
+
 	  if (stat!=0) params_test->assignValueOnly(fitTest->randomizePars());
 	  ntries++;
 	}
@@ -350,7 +358,7 @@ void plot(RooRealVar *mass, RooAbsPdf *pdf, RooDataSet *data, string name,vector
  // data->plotOn(plot,Binning(mgg_high-mgg_low));
   TCanvas *canv = new TCanvas();
   pdf->plotOn(plot);//,RooFit::NormRange("fitdata_1,fitdata_2"));
-  pdf->paramOn(plot,RooFit::Layout(0.13,0.96,0.89),RooFit::Format("NEA",AutoPrecision(1)));
+  pdf->paramOn(plot,RooFit::Layout(0.10,0.96,0.89),RooFit::Format("NEA",AutoPrecision(1)));
   if (BLIND) plot->SetMinimum(0.0001);
   plot->SetTitle("");
   plot->Draw();
@@ -408,8 +416,10 @@ void plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, RooDataSet
     if (icat<=6) col=color[icat];
     else {col=kBlack; style++;}
     catIndex->setIndex(icat);
-    pdfs->getCurrentPdf()->fitTo(*data,RooFit::Minos(0),RooFit::Minimizer("Minuit2","minimize"),RooFit::SumW2Error(kTRUE));	 //FIXME
-    pdfs->getCurrentPdf()->plotOn(plot,Binning(nBinsForMass), LineColor(col),LineStyle(style));//,RooFit::NormRange("fitdata_1,fitdata_2"));
+    // pdfs->getCurrentPdf()->fitTo(*data,RooFit::Minos(0),RooFit::Minimizer("Minuit2","minimize"),RooFit::SumW2Error(kTRUE));	 //FIXME
+    pdfs->getCurrentPdf()->fitTo(*data,RooFit::Minos(0),RooFit::Minimizer("Minuit2","minimize"),RooFit::SumW2Error(kFALSE));	 //FIXME
+    // pdfs->getCurrentPdf()->plotOn(plot,Binning(nBinsForMass), LineColor(col),LineStyle(style));//,RooFit::NormRange("fitdata_1,fitdata_2")); //Original
+    pdfs->getCurrentPdf()->plotOn(plot, RooFit::Binning(nBinsForMass), LineColor(col),LineStyle(style));//,RooFit::NormRange("fitdata_1,fitdata_2"));
     TObject *pdfLeg = plot->getObject(int(plot->numItems()-1));
     std::string ext = "";
     if (bestFitPdf==icat) {
@@ -417,6 +427,7 @@ void plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, RooDataSet
     pdf= pdfs->getCurrentPdf();
     nomBkgCurve = (RooCurve*)plot->getObject(plot->numItems()-1);
     bestcol = col;
+
     }
     leg->AddEntry(pdfLeg,Form("%s%s",pdfs->getCurrentPdf()->GetName(),ext.c_str()),"L");
   }
@@ -505,6 +516,7 @@ void plot(RooRealVar *mass, map<string,RooAbsPdf*> pdfs, RooDataSet *data, strin
   int i=0;
   int style=1;
   for (map<string,RooAbsPdf*>::iterator it=pdfs.begin(); it!=pdfs.end(); it++){
+    
     int col;
     if (i<=6) col=color[i];
     else {col=kBlack; style++;}
@@ -744,6 +756,8 @@ int main(int argc, char* argv[]){
 		std::cout << "[INFO] got intL and sqrts " << intL << ", " << sqrts << std::endl;
 	}
 
+  // debug
+  // Fit Function List
 	vector<string> functionClasses;
 	functionClasses.push_back("Bernstein");
 	functionClasses.push_back("Exponential");
@@ -853,7 +867,8 @@ int main(int argc, char* argv[]){
 			//	while (prob<0.05){
 			while (prob<0.05 && order < 7){ //FIXME
       //while (prob<0.05 && order < 4){ //FIXME
-				RooAbsPdf *bkgPdf = getPdf(pdfsModel,*funcType,order,Form("ftest_pdf_%d_%s",cat,ext.c_str()), mass_ALP);
+				
+        RooAbsPdf *bkgPdf = getPdf(pdfsModel,*funcType,order,Form("ftest_pdf_%d_%s",cat,ext.c_str()), mass_ALP);
         // cout << "Line 850 ======================================" << endl;
 				if (!bkgPdf){
 					// assume this order is not allowed
@@ -866,9 +881,10 @@ int main(int argc, char* argv[]){
 					//thisNll = fitRes->minNll();
           bkgPdf->Print();
 					runFit(bkgPdf,data,&thisNll,&fitStatus,/*max iterations*/3);//bkgPdf->fitTo(*data,Save(true),RooFit::Minimizer("Minuit2","minimize"));
+
           if (fitStatus!=0) std::cout << "[WARNING] Warning -- Fit status for " << bkgPdf->GetName() << " at " << fitStatus <<std::endl;
           
-					chi2 = 2.*(prevNll-thisNll);
+					chi2 = 2.*(prevNll-thisNll); //PZ
 					if (chi2<0. && order>1) chi2=0.;
 					if (prev_pdf!=NULL){
 						prob = getProbabilityFtest(chi2,order-prev_order,prev_pdf,bkgPdf,mass,data
@@ -894,6 +910,7 @@ int main(int argc, char* argv[]){
 
 			fprintf(resFile,"%15s & %d & %5.2f & %5.2f \\\\\n",funcType->c_str(),cache_order+1,chi2,prob);
 			choices.insert(pair<string,int>(*funcType,cache_order));
+
 			pdfs.insert(pair<string,RooAbsPdf*>(Form("%s%d",funcType->c_str(),cache_order),cache_pdf));
 
 			int truthOrder = cache_order;
@@ -910,9 +927,14 @@ int main(int argc, char* argv[]){
 				std::cout << "[INFO] Determining Envelope Functions for Family " << *funcType << ", cat " << cat << std::endl;
 				std::cout << "[INFO] Upper end Threshold for highest order function " << upperEnvThreshold <<std::endl;
 
+
 				while (prob<upperEnvThreshold){
 					RooAbsPdf *bkgPdf = getPdf(pdfsModel,*funcType,order,Form("env_pdf_cat%d_%s",cat,ext.c_str()), mass_ALP); //PZ
-					if (!bkgPdf ){
+					
+
+
+
+          if (!bkgPdf ){
 						// assume this order is not allowed
 						if (order >6) { std::cout << " [WARNING] could not add ] " << std::endl; break ;}
 						order++;
@@ -936,7 +958,20 @@ int main(int argc, char* argv[]){
 						// Calculate goodness of fit for the thing to be included (will use toys for lowstats)!
 						double gofProb =0;
 
-            if(fitStatus != 5)
+						// plot(mass,bkgPdf,data,Form("%s/%s%d_cat%d.pdf",outDir.c_str(),funcType->c_str(),order,cat),flashggCats_,fitStatus,&gofProb);
+          
+            // Check Parameters 
+            // RooArgSet* params = bkgPdf->getParameters((const RooArgSet*)nullptr);
+            // params->Print("v");  // This will print all parameters in verbose mode
+            // Loop over all the parameters to access their names, values, and errors
+            // TIterator* iter = params->createIterator();
+            // RooRealVar* param;
+            // while ((param = (RooRealVar*)iter->Next())) {
+            //     std::cout << "Parameter: " << param->GetName() << ", Value: " << param->getVal() 
+            //               << " ± " << param->getError() << std::endl;
+            // }
+
+            if(fitStatus != 5) // PZ
             {
 						  plot(mass,bkgPdf,data,Form("%s/%s%d_cat%d.pdf",outDir.c_str(),funcType->c_str(),order,cat),flashggCats_,fitStatus,&gofProb);
             }
@@ -947,6 +982,7 @@ int main(int argc, char* argv[]){
 
 								std::cout << "[INFO] Adding to Envelope " << bkgPdf->GetName() << " "<< gofProb
 									<< " 2xNLL + c is " << myNll + bkgPdf->getVariables()->getSize() <<  std::endl;
+                
 								allPdfs.insert(pair<string,RooAbsPdf*>(Form("%s%d",funcType->c_str(),order),bkgPdf));
 								storedPdfs.add(*bkgPdf);
 								pdforders.push_back(order);
@@ -992,6 +1028,7 @@ int main(int argc, char* argv[]){
 				//catindexname = Form("pdfindex_%d_%s_%s",cat,ext.c_str(),channelName.c_str());//bing
 				catname = Form("cat%d",cat);
 			}
+
 			RooCategory catIndex(catindexname.c_str(),"c");
 			RooMultiPdf *pdf = new RooMultiPdf(Form("CMS_hgg_%s_%s_bkgshape",catname.c_str(),ext.c_str()),"all pdfs",catIndex,storedPdfs);
 			//RooRealVar nBackground(Form("CMS_hgg_%s_%s_bkgshape_norm",catname.c_str(),ext.c_str()),"nbkg",data->sumEntries(),0,10E8);
@@ -1008,16 +1045,28 @@ int main(int argc, char* argv[]){
 			std::cout << "[INFO] Simple check of index "<< simplebestFitPdfIndex <<std::endl;
 
 			mass->setBins(nBinsForMass);
-			RooDataHist dataBinned(Form("roohist_data_mass_%s",catname.c_str()),"data",*mass,*dataFull);
+      RooDataHist dataBinned(Form("roohist_data_mass_%s",catname.c_str()),"data",*mass,*dataFull);
 
 			// Save it (also a binned version of the dataset
 			outputws->import(*pdf);
+
+          // Check Parameters 
+          // RooArgSet* params = pdf->getParameters((const RooArgSet*)nullptr);
+          // params->Print("v");  // This will print all parameters in verbose mode
+          // Loop over all the parameters to access their names, values, and errors
+          // TIterator* iter = params->createIterator();
+          // RooRealVar* param;
+          // while ((param = (RooRealVar*)iter->Next())) {
+          //     std::cout << "Parameter: " << param->GetName() << ", Value: " << param->getVal() 
+          //               << " ± " << param->getError() << std::endl;
+          // }
+
 			outputws->import(nBackground);
 			outputws->import(catIndex);
 			outputws->import(dataBinned);
 			outputws->import(*data);
 			plot(mass,pdf,&catIndex,data,Form("%s/multipdf_%s",outDir.c_str(),catname.c_str()),flashggCats_,cat,bestFitPdfIndex);
-
+      
 		}
 
 		}

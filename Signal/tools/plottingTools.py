@@ -89,12 +89,12 @@ def plotFTest(ssfs,_opt=1,_outdir='./',_extension='',_proc='',_cat='',_mass='125
     hists[k].SetMinimum(0)
     if hists[k].GetMaximum()>hmax: hmax = hists[k].GetMaximum()
     if hists[k].GetMinimum()<hmin: hmin = hists[k].GetMinimum()
-    if _mass == '120':
-      hists[k].GetXaxis().SetRangeUser(110,135)
-    elif _mass == '125':
-      hists[k].GetXaxis().SetRangeUser(115,140)
-    elif _mass=='130':
-      hists[k].GetXaxis().SetRangeUser(120,145)
+    # if _mass == '120':
+    #   hists[k].GetXaxis().SetRangeUser(110,135)
+    # elif _mass == '125':
+    #   hists[k].GetXaxis().SetRangeUser(115,140)
+    # elif _mass=='130':
+    #   hists[k].GetXaxis().SetRangeUser(120,145)
   # Extract data histogram
   hists['data'] = ssf.xvar.createHistogram("h_data%s"%_extension,ROOT.RooFit.Binning(ssf.nBins))
   ssf.DataHists[_mass].fillHistogram(hists['data'],ROOT.RooArgList(ssf.xvar))

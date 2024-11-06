@@ -38,7 +38,7 @@ for ((iChannel=0; iChannel<$nChannel; iChannel++))
     do
     for ((iYear=0; iYear<$nYear; iYear++))
       do
-        hep_sub $path_makeDatacard/runjob_gen_datacard_makeDatacard.sh -g cms -mem 2000 -wt mid -o $path_datacard_log/${ChannelList[$iChannel]}/${ALPmassList[$iALPmass]}_makeDatacard_job_${YearsList[$iYear]}_${ChannelList[$iChannel]}.log -e $path_datacard_log/${ChannelList[$iChannel]}/${ALPmassList[$iALPmass]}_makeDatacard_job_${YearsList[$iYear]}_${ChannelList[$iChannel]}.err -argu ${ALPmassList[$iALPmass]} ${YearsList[$iYear]} ${ChannelList[$iChannel]}
+        hep_sub $path_makeDatacard/runjob_gen_datacard_makeDatacard.sh -g cms -mem 3000 -wt mid -o $path_datacard_log/${ChannelList[$iChannel]}/${ALPmassList[$iALPmass]}_makeDatacard_job_${YearsList[$iYear]}_${ChannelList[$iChannel]}.log -e $path_datacard_log/${ChannelList[$iChannel]}/${ALPmassList[$iALPmass]}_makeDatacard_job_${YearsList[$iYear]}_${ChannelList[$iChannel]}.err -argu ${ALPmassList[$iALPmass]} ${YearsList[$iYear]} ${ChannelList[$iChannel]}
       done
     done
   done

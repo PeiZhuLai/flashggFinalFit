@@ -40,7 +40,7 @@ def get_options():
   parser.add_option("--cat", dest='cat', default='cat0', help="RECO category") # PZ
   parser.add_option('--mass', dest='mass', default='125', help="Mass point to fit") # PZ
   parser.add_option('--doPlots', dest='doPlots', default=True, action="store_true", help="Produce Signal fTest plots") # PZ
-  parser.add_option('--nBins', dest='nBins', default=80, type='int', help="Number of bins for fit")
+  parser.add_option('--nBins', dest='nBins', default=85, type='int', help="Number of bins for fit")
   parser.add_option('--threshold', dest='threshold', default=1, type='int', help="Threshold number of events")
   parser.add_option('--nGaussMax', dest='nGaussMax', default=5, type='int', help="Max number of gaussians to test")
   parser.add_option('--skipWV', dest='skipWV', default=True, action="store_true", help="Skip processing of WV case") # PZ

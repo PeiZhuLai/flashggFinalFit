@@ -59,7 +59,7 @@ def get_options():
   parser.add_option('--beamspotWidthData', dest='beamspotWidthData', default=3.5, type='float', help="Width of beamspot in data [cm]")
   parser.add_option('--beamspotWidthMC', dest='beamspotWidthMC', default=5.14, type='float', help="Width of beamspot in MC [cm]") # PZ
   parser.add_option('--MHPolyOrder', dest='MHPolyOrder', default=1, type='int', help="Order of polynomial for MH dependence")
-  parser.add_option('--nBins', dest='nBins', default=80, type='int', help="Number of bins for fit")
+  parser.add_option('--nBins', dest='nBins', default=85, type='int', help="Number of bins for fit")
   # Minimizer options
   parser.add_option('--minimizerMethod', dest='minimizerMethod', default='TNC', help="(Scipy) Minimizer method")
   parser.add_option('--minimizerTolerance', dest='minimizerTolerance', default=1e-8, type='float', help="(Scipy) Minimizer toleranve")

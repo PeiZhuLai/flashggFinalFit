@@ -31,9 +31,10 @@ mkdir -p $path_out_bkg
 mkdir -p $path_out_bkg/AllFitResults
 total_OutDir="$path_out_bkg/AllFitResults"
 
-# path_bkg="$path_out_bkg/10"
-# ./bin/fTest_ALP_turnOn -i $path_in_bkg/ALP_data_bkg_Am10_workspace.root --saveMultiPdf $path_bkg/CMS-HGG_mva_13TeV_multipdf.root -D $path_bkg/HZAmassInde_fTest --mass_ALP 10 -c 1 --isFlashgg 0 --isData 0 -f data, --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 > $path_bkg/ftest.log
-# exit 
+mkdir -p "$path_out_bkg/1"
+path_bkg="$path_out_bkg/1"
+./bin/fTest_ALP_turnOn -i $path_in_bkg/ALP_data_bkg_Am1_workspace.root --saveMultiPdf $path_bkg/CMS-HGG_mva_13TeV_multipdf.root -D $path_bkg/HZAmassInde_fTest --mass_ALP 1 -c 1 --isFlashgg 0 --isData 0 -f data, --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 > $path_bkg/ftest.log
+exit 
 
 for ((iBin=0; iBin<$nMass; iBin++))
     do
