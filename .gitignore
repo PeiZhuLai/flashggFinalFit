@@ -15,7 +15,6 @@ crabConfig_*
 
 # ROOT-related files
 *.root
-*.C
 *_cc.d
 *_cc.so
 *_C.d
@@ -23,6 +22,9 @@ crabConfig_*
 *\#*
 .\#*
 AutoDict_*
+Background/RootDict.cxx
+*/pelai.cc
+pelai.cc
 
 # Other temp files
 *.txt
@@ -33,7 +35,17 @@ AutoDict_*
 *.tmp
 *.pcm
 *.o
+*.err
+
 
 # Output dirs in signal and bkg
+*/bin/*
+*/lib/*
+
 Signal/outdir_*
+
 Background/outdir_*
+
+Datacard/yields_*
+
+Combine/t2w_jobs_*

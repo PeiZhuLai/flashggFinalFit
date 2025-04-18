@@ -18,12 +18,15 @@ args = parser.parse_args()
 mass = int(args.mass)
 shift = int(args.shift)
 
-myfile = TFile('/publicfs/cms/user/laipeizhu/ALP/Analysis_output/UL/run2/ALP_data.root')
-# mvaCuts = {1:0.955, 2:0.98, 3:0.985, 4:0.98, 5:0.985, 6:0.99, 7:0.985, 8:0.99, 9:0.99, 10:0.99, 15:0.99, 20:0.99, 25:0.985, 30:0.98}
-mvaCuts = {1:0.945, 2:0.975, 3:0.985, 4:0.985, 5:0.99, 6:0.99, 7:0.99, 8:0.995, 9:0.995, 10:0.995, 15:0.99, 20:0.99, 25:0.99, 30:0.99}
+myfile = TFile('/afs/cern.ch/work/p/pelai/HZa/ALP/Analysis_output/UL/run2/ALP_data.root')
+# myfile = TFile('/publicfs/cms/user/laipeizhu/ALP/Analysis_output/UL/run2/ALP_data.root')
+# mvaCuts = {1:0.955, 2:0.98, 3:0.985, 4:0.98, 5:0.985, 6:0.99, 7:0.985, 8:0.99, 9:0.99, 10:0.99, 15:0.99, 20:0.99, 25:0.985, 30:0.98} # zebing 
+# mvaCuts = {1:0.945, 2:0.975, 3:0.985, 4:0.985, 5:0.99, 6:0.99, 7:0.99, 8:0.995, 9:0.995, 10:0.995, 15:0.99, 20:0.99, 25:0.99, 30:0.99} # trial 20 times 420
+mvaCuts = {1:0.88, 2:0.94, 3:0.965, 4:0.955, 5:0.97, 6:0.975, 7:0.975, 8:0.975, 9:0.97, 10:0.975, 15:0.97, 20:0.97, 25:0.97, 30:0.96}
 mvaCut = mvaCuts[mass]
 
-BDT_filename="/publicfs/cms/user/laipeizhu/ALP/Analysis_code/train_MVA/model_Za_BDT_passedEvents.pkl"
+BDT_filename="/afs/cern.ch/work/p/pelai/HZa/ALP/Analysis_code/train_MVA/model_Za_BDT_passedEvents.pkl"
+# BDT_filename="/publicfs/cms/user/laipeizhu/ALP/Analysis_code/train_MVA/model_Za_BDT_passedEvents.pkl"
 model = pickle.load(open(BDT_filename, 'rb'))
 
 ####################
@@ -32,7 +35,8 @@ for year in ['16', '16APV','17','18']:
 
     print ("prepare year: "+year)
 
-    filename = '/publicfs/cms/user/laipeizhu/ALP/Analysis_output/UL/'+year+'/mc/ALP_M{0}.root'.format(mass)
+    filename = '/afs/cern.ch/work/p/pelai/HZa/ALP/Analysis_output/UL/'+year+'/mc/ALP_M{0}.root'.format(mass)
+    # filename = '/publicfs/cms/user/laipeizhu/ALP/Analysis_output/UL/'+year+'/mc/ALP_M{0}.root'.format(mass)
     myfile = TFile(filename)
     if myfile:
         print ("open " + filename + " success!")
@@ -117,11 +121,11 @@ for year in ['16', '16APV','17','18']:
         getattr(w,'import')(dataset)
         #getattr(w,'import')(dataset_WithoutWeight)
         if args.ele:
-            w.writeToFile("./output/sig/ele/ALP_sig_Am{0}_Hm{1}_{2}_ele.root".format(mass,mass_H,year))
+            w.writeToFile("/afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele/ALP_sig_Am{0}_Hm{1}_{2}_ele.root".format(mass,mass_H,year))
         elif args.mu:
-            w.writeToFile("./output/sig/mu/ALP_sig_Am{0}_Hm{1}_{2}_mu.root".format(mass,mass_H,year))
+            w.writeToFile("/afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu/ALP_sig_Am{0}_Hm{1}_{2}_mu.root".format(mass,mass_H,year))
         else:
-            w.writeToFile("./output/sig/lep/ALP_sig_Am{0}_Hm{1}_{2}_lep.root".format(mass,mass_H,year))
+            w.writeToFile("/afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/lep/ALP_sig_Am{0}_Hm{1}_{2}_lep.root".format(mass,mass_H,year))
         del w
 
 #raw_input()

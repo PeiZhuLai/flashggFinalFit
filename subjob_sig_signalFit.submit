@@ -1,0 +1,679 @@
+# subjob_sig_signalFit
+universe              = vanilla
+executable            = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/runjob_sig_signalFit.sh
+getenv                = True
+request_memory        = 1000
++JobFlavour           = "tomorrow"
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/1_signalFit_job_16_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/1_signalFit_job_16_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/1_signalFit_job_16_ele.err
+arguments = 1 16 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/1_signalFit_job_16APV_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/1_signalFit_job_16APV_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/1_signalFit_job_16APV_ele.err
+arguments = 1 16APV ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/1_signalFit_job_17_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/1_signalFit_job_17_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/1_signalFit_job_17_ele.err
+arguments = 1 17 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/1_signalFit_job_18_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/1_signalFit_job_18_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/1_signalFit_job_18_ele.err
+arguments = 1 18 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/2_signalFit_job_16_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/2_signalFit_job_16_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/2_signalFit_job_16_ele.err
+arguments = 2 16 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/2_signalFit_job_16APV_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/2_signalFit_job_16APV_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/2_signalFit_job_16APV_ele.err
+arguments = 2 16APV ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/2_signalFit_job_17_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/2_signalFit_job_17_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/2_signalFit_job_17_ele.err
+arguments = 2 17 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/2_signalFit_job_18_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/2_signalFit_job_18_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/2_signalFit_job_18_ele.err
+arguments = 2 18 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/3_signalFit_job_16_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/3_signalFit_job_16_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/3_signalFit_job_16_ele.err
+arguments = 3 16 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/3_signalFit_job_16APV_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/3_signalFit_job_16APV_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/3_signalFit_job_16APV_ele.err
+arguments = 3 16APV ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/3_signalFit_job_17_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/3_signalFit_job_17_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/3_signalFit_job_17_ele.err
+arguments = 3 17 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/3_signalFit_job_18_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/3_signalFit_job_18_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/3_signalFit_job_18_ele.err
+arguments = 3 18 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/4_signalFit_job_16_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/4_signalFit_job_16_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/4_signalFit_job_16_ele.err
+arguments = 4 16 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/4_signalFit_job_16APV_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/4_signalFit_job_16APV_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/4_signalFit_job_16APV_ele.err
+arguments = 4 16APV ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/4_signalFit_job_17_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/4_signalFit_job_17_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/4_signalFit_job_17_ele.err
+arguments = 4 17 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/4_signalFit_job_18_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/4_signalFit_job_18_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/4_signalFit_job_18_ele.err
+arguments = 4 18 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/5_signalFit_job_16_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/5_signalFit_job_16_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/5_signalFit_job_16_ele.err
+arguments = 5 16 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/5_signalFit_job_16APV_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/5_signalFit_job_16APV_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/5_signalFit_job_16APV_ele.err
+arguments = 5 16APV ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/5_signalFit_job_17_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/5_signalFit_job_17_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/5_signalFit_job_17_ele.err
+arguments = 5 17 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/5_signalFit_job_18_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/5_signalFit_job_18_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/5_signalFit_job_18_ele.err
+arguments = 5 18 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/6_signalFit_job_16_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/6_signalFit_job_16_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/6_signalFit_job_16_ele.err
+arguments = 6 16 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/6_signalFit_job_16APV_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/6_signalFit_job_16APV_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/6_signalFit_job_16APV_ele.err
+arguments = 6 16APV ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/6_signalFit_job_17_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/6_signalFit_job_17_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/6_signalFit_job_17_ele.err
+arguments = 6 17 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/6_signalFit_job_18_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/6_signalFit_job_18_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/6_signalFit_job_18_ele.err
+arguments = 6 18 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/7_signalFit_job_16_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/7_signalFit_job_16_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/7_signalFit_job_16_ele.err
+arguments = 7 16 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/7_signalFit_job_16APV_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/7_signalFit_job_16APV_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/7_signalFit_job_16APV_ele.err
+arguments = 7 16APV ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/7_signalFit_job_17_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/7_signalFit_job_17_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/7_signalFit_job_17_ele.err
+arguments = 7 17 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/7_signalFit_job_18_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/7_signalFit_job_18_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/7_signalFit_job_18_ele.err
+arguments = 7 18 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/8_signalFit_job_16_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/8_signalFit_job_16_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/8_signalFit_job_16_ele.err
+arguments = 8 16 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/8_signalFit_job_16APV_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/8_signalFit_job_16APV_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/8_signalFit_job_16APV_ele.err
+arguments = 8 16APV ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/8_signalFit_job_17_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/8_signalFit_job_17_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/8_signalFit_job_17_ele.err
+arguments = 8 17 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/8_signalFit_job_18_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/8_signalFit_job_18_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/8_signalFit_job_18_ele.err
+arguments = 8 18 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/9_signalFit_job_16_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/9_signalFit_job_16_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/9_signalFit_job_16_ele.err
+arguments = 9 16 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/9_signalFit_job_16APV_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/9_signalFit_job_16APV_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/9_signalFit_job_16APV_ele.err
+arguments = 9 16APV ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/9_signalFit_job_17_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/9_signalFit_job_17_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/9_signalFit_job_17_ele.err
+arguments = 9 17 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/9_signalFit_job_18_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/9_signalFit_job_18_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/9_signalFit_job_18_ele.err
+arguments = 9 18 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/10_signalFit_job_16_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/10_signalFit_job_16_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/10_signalFit_job_16_ele.err
+arguments = 10 16 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/10_signalFit_job_16APV_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/10_signalFit_job_16APV_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/10_signalFit_job_16APV_ele.err
+arguments = 10 16APV ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/10_signalFit_job_17_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/10_signalFit_job_17_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/10_signalFit_job_17_ele.err
+arguments = 10 17 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/10_signalFit_job_18_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/10_signalFit_job_18_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/10_signalFit_job_18_ele.err
+arguments = 10 18 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/15_signalFit_job_16_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/15_signalFit_job_16_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/15_signalFit_job_16_ele.err
+arguments = 15 16 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/15_signalFit_job_16APV_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/15_signalFit_job_16APV_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/15_signalFit_job_16APV_ele.err
+arguments = 15 16APV ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/15_signalFit_job_17_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/15_signalFit_job_17_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/15_signalFit_job_17_ele.err
+arguments = 15 17 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/15_signalFit_job_18_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/15_signalFit_job_18_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/15_signalFit_job_18_ele.err
+arguments = 15 18 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/20_signalFit_job_16_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/20_signalFit_job_16_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/20_signalFit_job_16_ele.err
+arguments = 20 16 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/20_signalFit_job_16APV_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/20_signalFit_job_16APV_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/20_signalFit_job_16APV_ele.err
+arguments = 20 16APV ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/20_signalFit_job_17_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/20_signalFit_job_17_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/20_signalFit_job_17_ele.err
+arguments = 20 17 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/20_signalFit_job_18_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/20_signalFit_job_18_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/20_signalFit_job_18_ele.err
+arguments = 20 18 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/25_signalFit_job_16_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/25_signalFit_job_16_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/25_signalFit_job_16_ele.err
+arguments = 25 16 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/25_signalFit_job_16APV_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/25_signalFit_job_16APV_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/25_signalFit_job_16APV_ele.err
+arguments = 25 16APV ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/25_signalFit_job_17_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/25_signalFit_job_17_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/25_signalFit_job_17_ele.err
+arguments = 25 17 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/25_signalFit_job_18_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/25_signalFit_job_18_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/25_signalFit_job_18_ele.err
+arguments = 25 18 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/30_signalFit_job_16_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/30_signalFit_job_16_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/30_signalFit_job_16_ele.err
+arguments = 30 16 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/30_signalFit_job_16APV_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/30_signalFit_job_16APV_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/30_signalFit_job_16APV_ele.err
+arguments = 30 16APV ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/30_signalFit_job_17_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/30_signalFit_job_17_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/30_signalFit_job_17_ele.err
+arguments = 30 17 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/30_signalFit_job_18_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/30_signalFit_job_18_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/30_signalFit_job_18_ele.err
+arguments = 30 18 ele /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/1_signalFit_job_16_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/1_signalFit_job_16_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/1_signalFit_job_16_mu.err
+arguments = 1 16 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/1_signalFit_job_16APV_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/1_signalFit_job_16APV_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/1_signalFit_job_16APV_mu.err
+arguments = 1 16APV mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/1_signalFit_job_17_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/1_signalFit_job_17_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/1_signalFit_job_17_mu.err
+arguments = 1 17 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/1_signalFit_job_18_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/1_signalFit_job_18_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/1_signalFit_job_18_mu.err
+arguments = 1 18 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/2_signalFit_job_16_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/2_signalFit_job_16_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/2_signalFit_job_16_mu.err
+arguments = 2 16 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/2_signalFit_job_16APV_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/2_signalFit_job_16APV_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/2_signalFit_job_16APV_mu.err
+arguments = 2 16APV mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/2_signalFit_job_17_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/2_signalFit_job_17_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/2_signalFit_job_17_mu.err
+arguments = 2 17 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/2_signalFit_job_18_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/2_signalFit_job_18_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/2_signalFit_job_18_mu.err
+arguments = 2 18 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/3_signalFit_job_16_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/3_signalFit_job_16_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/3_signalFit_job_16_mu.err
+arguments = 3 16 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/3_signalFit_job_16APV_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/3_signalFit_job_16APV_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/3_signalFit_job_16APV_mu.err
+arguments = 3 16APV mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/3_signalFit_job_17_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/3_signalFit_job_17_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/3_signalFit_job_17_mu.err
+arguments = 3 17 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/3_signalFit_job_18_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/3_signalFit_job_18_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/3_signalFit_job_18_mu.err
+arguments = 3 18 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/4_signalFit_job_16_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/4_signalFit_job_16_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/4_signalFit_job_16_mu.err
+arguments = 4 16 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/4_signalFit_job_16APV_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/4_signalFit_job_16APV_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/4_signalFit_job_16APV_mu.err
+arguments = 4 16APV mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/4_signalFit_job_17_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/4_signalFit_job_17_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/4_signalFit_job_17_mu.err
+arguments = 4 17 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/4_signalFit_job_18_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/4_signalFit_job_18_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/4_signalFit_job_18_mu.err
+arguments = 4 18 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/5_signalFit_job_16_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/5_signalFit_job_16_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/5_signalFit_job_16_mu.err
+arguments = 5 16 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/5_signalFit_job_16APV_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/5_signalFit_job_16APV_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/5_signalFit_job_16APV_mu.err
+arguments = 5 16APV mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/5_signalFit_job_17_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/5_signalFit_job_17_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/5_signalFit_job_17_mu.err
+arguments = 5 17 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/5_signalFit_job_18_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/5_signalFit_job_18_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/5_signalFit_job_18_mu.err
+arguments = 5 18 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/6_signalFit_job_16_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/6_signalFit_job_16_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/6_signalFit_job_16_mu.err
+arguments = 6 16 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/6_signalFit_job_16APV_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/6_signalFit_job_16APV_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/6_signalFit_job_16APV_mu.err
+arguments = 6 16APV mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/6_signalFit_job_17_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/6_signalFit_job_17_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/6_signalFit_job_17_mu.err
+arguments = 6 17 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/6_signalFit_job_18_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/6_signalFit_job_18_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/6_signalFit_job_18_mu.err
+arguments = 6 18 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/7_signalFit_job_16_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/7_signalFit_job_16_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/7_signalFit_job_16_mu.err
+arguments = 7 16 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/7_signalFit_job_16APV_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/7_signalFit_job_16APV_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/7_signalFit_job_16APV_mu.err
+arguments = 7 16APV mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/7_signalFit_job_17_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/7_signalFit_job_17_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/7_signalFit_job_17_mu.err
+arguments = 7 17 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/7_signalFit_job_18_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/7_signalFit_job_18_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/7_signalFit_job_18_mu.err
+arguments = 7 18 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/8_signalFit_job_16_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/8_signalFit_job_16_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/8_signalFit_job_16_mu.err
+arguments = 8 16 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/8_signalFit_job_16APV_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/8_signalFit_job_16APV_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/8_signalFit_job_16APV_mu.err
+arguments = 8 16APV mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/8_signalFit_job_17_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/8_signalFit_job_17_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/8_signalFit_job_17_mu.err
+arguments = 8 17 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/8_signalFit_job_18_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/8_signalFit_job_18_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/8_signalFit_job_18_mu.err
+arguments = 8 18 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/9_signalFit_job_16_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/9_signalFit_job_16_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/9_signalFit_job_16_mu.err
+arguments = 9 16 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/9_signalFit_job_16APV_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/9_signalFit_job_16APV_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/9_signalFit_job_16APV_mu.err
+arguments = 9 16APV mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/9_signalFit_job_17_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/9_signalFit_job_17_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/9_signalFit_job_17_mu.err
+arguments = 9 17 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/9_signalFit_job_18_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/9_signalFit_job_18_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/9_signalFit_job_18_mu.err
+arguments = 9 18 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/10_signalFit_job_16_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/10_signalFit_job_16_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/10_signalFit_job_16_mu.err
+arguments = 10 16 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/10_signalFit_job_16APV_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/10_signalFit_job_16APV_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/10_signalFit_job_16APV_mu.err
+arguments = 10 16APV mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/10_signalFit_job_17_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/10_signalFit_job_17_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/10_signalFit_job_17_mu.err
+arguments = 10 17 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/10_signalFit_job_18_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/10_signalFit_job_18_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/10_signalFit_job_18_mu.err
+arguments = 10 18 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/15_signalFit_job_16_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/15_signalFit_job_16_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/15_signalFit_job_16_mu.err
+arguments = 15 16 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/15_signalFit_job_16APV_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/15_signalFit_job_16APV_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/15_signalFit_job_16APV_mu.err
+arguments = 15 16APV mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/15_signalFit_job_17_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/15_signalFit_job_17_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/15_signalFit_job_17_mu.err
+arguments = 15 17 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/15_signalFit_job_18_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/15_signalFit_job_18_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/15_signalFit_job_18_mu.err
+arguments = 15 18 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/20_signalFit_job_16_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/20_signalFit_job_16_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/20_signalFit_job_16_mu.err
+arguments = 20 16 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/20_signalFit_job_16APV_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/20_signalFit_job_16APV_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/20_signalFit_job_16APV_mu.err
+arguments = 20 16APV mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/20_signalFit_job_17_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/20_signalFit_job_17_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/20_signalFit_job_17_mu.err
+arguments = 20 17 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/20_signalFit_job_18_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/20_signalFit_job_18_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/20_signalFit_job_18_mu.err
+arguments = 20 18 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/25_signalFit_job_16_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/25_signalFit_job_16_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/25_signalFit_job_16_mu.err
+arguments = 25 16 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/25_signalFit_job_16APV_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/25_signalFit_job_16APV_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/25_signalFit_job_16APV_mu.err
+arguments = 25 16APV mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/25_signalFit_job_17_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/25_signalFit_job_17_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/25_signalFit_job_17_mu.err
+arguments = 25 17 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/25_signalFit_job_18_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/25_signalFit_job_18_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/25_signalFit_job_18_mu.err
+arguments = 25 18 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/30_signalFit_job_16_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/30_signalFit_job_16_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/30_signalFit_job_16_mu.err
+arguments = 30 16 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/30_signalFit_job_16APV_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/30_signalFit_job_16APV_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/30_signalFit_job_16APV_mu.err
+arguments = 30 16APV mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/30_signalFit_job_17_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/30_signalFit_job_17_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/30_signalFit_job_17_mu.err
+arguments = 30 17 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/30_signalFit_job_18_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/30_signalFit_job_18_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/30_signalFit_job_18_mu.err
+arguments = 30 18 mu /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
+queue
+

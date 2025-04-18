@@ -42,9 +42,9 @@ nBins=( 180 200 50 220 220 190 200 200 200 200 150 500 200 150 200 200 300 200 2
 #nBins=( 200 120 120 120 130 120 300 400 120 120 120 120 ) ## DCB+Gaus
 nMass=${#massList[@]}
 
-dir_sig="/publicfs/cms/user/laipeizhu/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal"
-source /publicfs/cms/user/laipeizhu/CMSSW_14_1_0_pre4/src/flashggFinalFit/setup.sh
-export PYTHONPATH=$PYTHONPATH:/publicfs/cms/user/laipeizhu/CMSSW_14_1_0_pre4/src/flashggFinalFit/tools:/publicfs/cms/user/laipeizhu/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/tools
+dir_sig="/afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal"
+source /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/setup.sh
+export PYTHONPATH=$PYTHONPATH:/afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/tools:/afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/tools
 
 
 # python3 ./fTest.py --mass_ALP 1 --year 16 --mass 125 --channel ele --ext 16_ele --inputWSDir /publicfs/cms/user/laipeizhu/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
@@ -68,7 +68,7 @@ export PYTHONPATH=$PYTHONPATH:/publicfs/cms/user/laipeizhu/CMSSW_14_1_0_pre4/src
 #     done
 #   done
 
-python3 $dir_sig/scripts/signalFit.py --mass_ALP 1 --year 16 --channel ele --inputWSDir /publicfs/cms/user/laipeizhu/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/ele
+python3 $dir_sig/scripts/signalFit.py --mass_ALP 1 --year 16 --channel mu --inputWSDir /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/sig/mu
 
 # python3 $dir_sig/RunPlotter.py --mass_ALP 20 --years 16 --channel mu
 

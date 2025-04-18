@@ -702,72 +702,82 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 		mcat->setIndex(pInd);
 		// Always refit since we cannot be sure the best fit pdf is being fitted
 		mpdf->getCurrentPdf()->fitTo(*data);
-		string name_temp,name_temp1,name,order;//bing
+
+		string full_function_name, function_name, function_order, printed_name;
 		int color_id;
-		name_temp=mpdf->getCurrentPdf()->GetName();//bing
-		if(name_temp.substr(16).c_str()[0]=='b'){
-			name_temp1 = name_temp.substr(16);
-			order = name_temp.substr(20);
-			color_id = stoi(order)-1;
-			if(order == '1'){
-				name = "1st Bernstein";
+		full_function_name = mpdf->getCurrentPdf()->GetName(); // PZ 
+		function_name = full_function_name.substr(full_function_name.length()-5, 4); // bern or ( xexp, xpow, xlau )
+		function_order = full_function_name.substr(full_function_name.length()-1, 1);
+
+		// full_function_name could be "env_pdf_cat0_13TeV_bern2" or "env_pdf_cat0_13TeV_exp1_gauxexp1"
+		// substr(19): to delete first 19 characters (from 0) env_pdf_cat0_13TeV_bern2 -> bern2
+		// substr(0, 4): to retain first 4 characters, 0, 1, 2, 3; bern4 -> bern
+		// substr(start, length) from 18 and retain 4 characters
+		// full_function_name.find('_') = 3
+		// (env_pdf_cat0_13TeV_bern2) -> full_function_name.length() = 24 (from 1 to 24)
+		// (env_pdf_cat0_13TeV_exp1_gauxexp1) -> full_function_name.length() = 32 ((from 1 to 32)
+		
+		if(function_name=="bern"){
+			color_id = std::stoi(function_order)-1;
+			if(function_order == '1'){
+				printed_name = "1st Bernstein";
 			}
-			else if(order == '2'){
-				name = "2nd Bernstein";
+			else if(function_order == '2'){
+				printed_name = "2nd Bernstein";
 			}
-			else if(order == '3'){
-				name = "3rd Bernstein";
+			else if(function_order == '3'){
+				printed_name = "3rd Bernstein";
 			}
 			else{
-				name = order+"th Bernstein";
+				printed_name = function_order+"th Bernstein";
 			}
 		}
 		else{
-			name_temp1 = name_temp.substr(16).substr(0,name_temp.find('_')+1);
-			order = name_temp1.substr(3);
-			if(name_temp1.substr(0, name_temp1.length() - 1) == "exp"){
-				name = "Exponential";
-				color_id = stoi(order)+4-1;
-				if(order == '3'){
+			function_name = full_function_name.substr(full_function_name.length()-4, 3); //( exp, pow, lau )
+
+			if(function_name == "exp"){
+				printed_name = "Exponential";
+				color_id = std::stoi(function_order)+4-1;
+				if(function_order == '3'){
 				color_id = color_id -1;
 				}
 			}
-			else if(name_temp1.substr(0, name_temp1.length() - 1) == "pow"){
-				name = "Power Law";
-				color_id = stoi(order)+6-1;
+			else if(function_name == "pow"){
+				printed_name = "Power Law";
+				color_id = std::stoi(function_order)+6-1;
 			}
 			else{
-				name = "Laurent";
-				color_id = stoi(order)+8-2;
+				printed_name = "Laurent";
+				color_id = std::stoi(function_order)+8-2;
 			}
 
-			
-			if(order == '1'){
-				name = "1st "+name;
+			if(function_order == '1'){
+				printed_name = "1st "+printed_name;
 			}
-			else if(order == '2'){
-				name = "2nd "+name;
+			else if(function_order == '2'){
+				printed_name = "2nd "+printed_name;
 			}
-			else if(order == '3'){
-				name = "3rd "+name;
+			else if(function_order == '3'){
+				printed_name = "3rd "+printed_name;
 			}
 			else{
-				name = order+"th "+name;
+				printed_name = function_order+"th "+printed_name;
 			}
 		}//PZ
-		//mpdf->getCurrentPdf()->plotOn(plot,LineColor(color[color_id]),LineWidth(2));
+
 		mpdf->getCurrentPdf()->plotOn(plot, Binning(nbin), LineColor(TColor::GetColor(color[color_id].c_str()) ), LineWidth(3));//PZ
 		TObject *legObj = plot->getObject(plot->numItems()-1);
 		//leg->AddEntry(legObj,mpdf->getCurrentPdf()->GetName(),"L");
 		
-		cout<<"[[DEBUG]]: "<< name_temp1 << name << order <<"color"<<color_id <<endl;
+		// cout<<"[[DEBUG]]: "<< "printed_name: " << printed_name <<" ===== color: "<<color_id <<endl;
+		
 		if(mpdf->getNumPdfs() > 6)
 		{
-			leg->AddEntry(legObj,name.c_str(),"L");//PZ
+			leg->AddEntry(legObj,printed_name.c_str(),"L");//PZ
 		}
 		else
 		{
-			leg_s->AddEntry(legObj,name.c_str(),"L");//PZ
+			leg_s->AddEntry(legObj,printed_name.c_str(),"L");//PZ
 		}
 	}
 
@@ -800,14 +810,16 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 	plot->Draw();
 	if (!unblind) plot->SetMinimum(0.0001);
 	
-	if(mpdf->getNumPdfs() > 6)
-	{
-		leg->Draw();
+	std::cout << "Number of PDFs: " << mpdf->getNumPdfs() << std::endl;
+
+	if (leg->GetNRows() > 0 && mpdf->getNumPdfs() > 6) {
+    	leg->Draw("same");
+	} else if (leg_s->GetNRows() > 0) {
+    	leg_s->Draw("same");
+	} else {
+    	std::cout << "Warning: Legend has no entries to display." << std::endl;
 	}
-	else
-	{
-		leg_s->Draw();
-	}
+
 
 	TLatex *latex = new TLatex();
 	latex->SetTextSize(0.05);
@@ -820,11 +832,9 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 	canv->Update();
 	canv->Print(Form("%s.pdf",name.c_str())); // PZ
 
-
-	// canv->Print(Form("%s.pdf",name.c_str()));
 	// canv->Print(Form("%s.png",name.c_str()));
 	// canv->Print(Form("%s.eps",name.c_str()));
-	//canv->Print(Form("%s.svg",name.c_str()));
+	// canv->Print(Form("%s.svg",name.c_str()));
 	// canv->Print(Form("%s.C",name.c_str()));
 	delete canv;
 }
@@ -952,8 +962,11 @@ int main(int argc, char* argv[]){
 	TFile *outFile = TFile::Open(outFileName.c_str(),"RECREATE");
 	RooWorkspace *outWS = new RooWorkspace("bkgplotws","bkgplotws");
 
-	RooAbsData *data = (RooDataSet*)inWS->data(Form("data_mass_%s",catname.c_str()));
-	if (useBinnedData) data = (RooDataHist*)inWS->data(Form("roohist_data_mass_%s",catname.c_str()));
+	RooAbsData *data = (RooDataHist*)inWS->data(Form("roohist_data_mass_%s",catname.c_str()));
+
+	// RooAbsData *data = (RooDataSet*)inWS->data(Form("data_mass_%s",catname.c_str()));
+	// if (useBinnedData) data = (RooDataHist*)inWS->data(Form("roohist_data_mass_%s",catname.c_str()));
+	// if (useBinnedData) data = (RooDataHist*)inWS->data(Form("data_mass_%s",catname.c_str()));
 
 	RooAbsPdf *bpdf = 0;
 	RooMultiPdf *mpdf = 0;
@@ -961,10 +974,10 @@ int main(int argc, char* argv[]){
 	if (isMultiPdf) {
 		mpdf = (RooMultiPdf*)inWS->pdf(Form("CMS_hgg_%s_%dTeV_bkgshape",catname.c_str(),sqrts));
 		//mcat = (RooCategory*)inWS->cat(Form("pdfindex_%s_%dTeV",catname.c_str(),sqrts));//FIXED
-		mcat = (RooCategory*)inWS->cat(Form("pdfindex_%s_%dTeV",to_string(cat).c_str(),sqrts));
+		mcat = (RooCategory*)inWS->cat(Form("pdfindex_cat%s_%dTeV",to_string(cat).c_str(),sqrts));
 		//mcat = (RooCategory*)inWS->cat(Form("pdfindex_%s_%dTeV_%s",to_string(cat).c_str(),sqrts,channelName.c_str()));//bing
 		if (!mpdf || !mcat){
-			cout << "[ERROR] "<< "Can't find multipdfs (" << Form("CMS_hgg_%s_%dTeV_bkgshape",catname.c_str(),sqrts) << ") or multicat ("<< Form("pdfindex_%s_%dTeV",catname.c_str(),sqrts) <<")" << endl;
+			cout << "[ERROR] "<< "Can't find multipdfs (" << Form("CMS_hgg_%s_%dTeV_bkgshape",catname.c_str(),sqrts) << ") or multicat ("<< Form("pdfindex_cat%s_%dTeV",catname.c_str(),sqrts) <<")" << endl;
 			//cout << "[ERROR] "<< "Can't find multipdfs (" << Form("CMS_hgg_%s_%dTeV_bkgshape",catname.c_str(),sqrts) << ") or multicat ("<< Form("pdfindex_%s_%dTeV_%s",catname.c_str(),sqrts,channelName.c_str()) <<")" << endl;//bing
 			exit(0);
 		}
@@ -975,7 +988,7 @@ int main(int argc, char* argv[]){
 			cout << "[ERROR] "<< "Cant't find background pdf " << Form("pdf_data_pol_model_%dTeV_%s",sqrts,catname.c_str()) << endl;
 			exit(0);
 		}
-		mcat = new RooCategory(Form("pdfindex_%s_%dTeV",catname.c_str(),sqrts),"c");
+		mcat = new RooCategory(Form("pdfindex_cat%s_%dTeV",catname.c_str(),sqrts),"c");
 		//mcat = new RooCategory(Form("pdfindex_%s_%dTeV_%s",catname.c_str(),sqrts,channelName.c_str()),"c");//bing
 		RooArgList temp;
 		temp.add(*bpdf);
@@ -985,6 +998,7 @@ int main(int argc, char* argv[]){
 	cout << "[INFO] "<< "Current PDF and data:" << endl;
 	cout<< "[INFO] " << "\t"; mpdf->getCurrentPdf()->Print();
 	cout << "[INFO] "<< "\t"; data->Print();
+
 
 	// plot all the pdfs for reference
 	if (isMultiPdf || verbose_) 
@@ -1005,6 +1019,7 @@ int main(int argc, char* argv[]){
 		 if (mpdf->getCurrentPdf()->IsA()->InheritsFrom(RooBernsteinFast<7>::Class())) mpdf->getCurrentPdf()->forceNumInt();
 		 }
 		 */
+
 
 	// reset to best fit
 	int bf = getBestFitFunction(mpdf,data,mcat,!verbose_);

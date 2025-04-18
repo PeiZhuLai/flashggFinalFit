@@ -35,7 +35,7 @@ if opt.mode not in models:
 
 extStr = "_%s"%opt.channel if opt.channel != '' else ''
 print(" --> Running text2workspace for model: %s"%opt.mode)
-print(" --> Input: /publicfs/cms/user/laipeizhu/CMSSW_14_1_0_pre4/src/flashggFinalFit/Datacard/output_Datacard%s/%s_pruned_datacard_%s_%s.txt --> Output: ./output_datacard_rootfile%s/%s_Datacard_%s_%s_%s.root"%(extStr,opt.mass_ALP,opt.year,opt.channel, extStr,opt.mass_ALP,opt.year,opt.channel,opt.mode,))
+print(" --> Input: /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Datacard/output_Datacard%s/%s_pruned_datacard_%s_%s.txt --> Output: ./output_datacard_rootfile%s/%s_Datacard_%s_%s_%s.root"%(extStr,opt.mass_ALP,opt.year,opt.channel, extStr,opt.mass_ALP,opt.year,opt.channel,opt.mode,))
 
 if not os.path.isdir(f"./t2w_jobs_{opt.channel}"): os.system(f"mkdir ./t2w_jobs_{opt.channel}")
 if not os.path.isdir(f"./output_datacard_rootfile_{opt.channel}"): os.system(f"mkdir ./output_datacard_rootfile_{opt.channel}")
@@ -48,7 +48,7 @@ fsub.write("eval `scramv1 runtime -sh`\n\n")
 # if not os.path.isdir("./output_Datacard%s"%extStr): os.system("mkdir ./output_Datacard%s"%extStr)
 # fdataName = "./output_Datacard%s/%s_pruned_datacard_%s_%s.txt"%(extStr,opt.mass_ALP,opt.year,opt.channel)
 # fsub.write("text2workspace.py Datacard%s.txt -o Datacard%s_%s.root %s %s"%(opt.ext,opt.ext,opt.mode,opt.common_opts,models[opt.mode]))
-fsub.write("text2workspace.py /publicfs/cms/user/laipeizhu/CMSSW_14_1_0_pre4/src/flashggFinalFit/Datacard/output_Datacard%s/%s_pruned_datacard_%s_%s.txt -o ./output_datacard_rootfile%s/%s_Datacard_%s_%s_%s.root %s %s"%(extStr,opt.mass_ALP,opt.year,opt.channel,  extStr,opt.mass_ALP,opt.year,opt.channel,opt.mode,  opt.common_opts,models[opt.mode]))
+fsub.write("text2workspace.py /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Datacard/output_Datacard%s/%s_pruned_datacard_%s_%s.txt -o ./output_datacard_rootfile%s/%s_Datacard_%s_%s_%s.root %s %s"%(extStr,opt.mass_ALP,opt.year,opt.channel,  extStr,opt.mass_ALP,opt.year,opt.channel,opt.mode,  opt.common_opts,models[opt.mode]))
 fsub.close()
 
 # Change permission for file

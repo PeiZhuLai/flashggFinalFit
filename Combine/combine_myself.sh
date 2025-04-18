@@ -17,12 +17,14 @@ nYear=${#YearsList[@]}
 
 
 # Expected (--doObserved False)
-path_datacard="/publicfs/cms/user/laipeizhu/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine"
-combine -M AsymptoticLimits $path_datacard/output_datacard_rootfile_ele/1_Datacard_16_ele_mu_inclusive.root -v 3 --cminDefaultMinimizerStrategy 0 --setParameterRanges MH=120,130:r=-100,100
+# path_datacard="/afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine"
+# combine -M AsymptoticLimits $path_datacard/output_datacard_rootfile_ele/2_Datacard_16_ele_mu_inclusive.root -v 3 --cminDefaultMinimizerStrategy 0 -m 125 --setParameterRanges MH=115,135:r=-1000,1000 
 
-# path_datacard="/publicfs/cms/user/laipeizhu/CMSSW_14_1_0_pre4/src/flashggFinalFit/Datacard/output_Datacard_ele/1_pruned_datacard_16_ele.txt"
-# combine -M AsymptoticLimits -v 3 $path_datacard --cminDefaultMinimizerStrategy 0 --setParameterRanges MH=120,130 -m 125
-# combine -M AsymptoticLimits -v 3 $path_datacard --cminDefaultMinimizerStrategy 0 -t -1 --setParameterRanges MH=120,130 -m 125
+path_datacard="/afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Datacard/output_Datacard_ele/1_pruned_datacard_16_ele.txt"
+combine -M AsymptoticLimits -v 3 $path_datacard --cminDefaultMinimizerStrategy 0 --setParameterRanges MH=120,130 -m 125 
+# combine -M AsymptoticLimits -v 3 $path_datacard --cminDefaultMinimizerStrategy 0 --setParameterRanges MH=120,130 -m 125  --freezeParameters Test
+# combine -M MultiDimFit -v 3 $path_datacard --freezeParameters Test
+# combine -M AsymptoticLimits -v 3 $path_datacard --cminDefaultMinimizerStrategy 0 -t -1 --setParameterRanges MH=120,130 -m 125 --freezeParameters Test
 
 # First step to debug 
 # path_datacard="/publicfs/cms/user/laipeizhu/CMSSW_14_1_0_pre4/src/flashggFinalFit/Datacard/output_Datacard_ele/1_pruned_datacard_16_ele.txt"

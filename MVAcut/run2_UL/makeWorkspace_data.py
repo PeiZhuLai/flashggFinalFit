@@ -1,5 +1,7 @@
 #############################
 from ROOT import *
+from ROOT import RooFit
+import gc
 
 from xgboost import XGBClassifier
 import pickle
@@ -14,18 +16,21 @@ args = parser.parse_args()
 
 mass = int(args.mass)
 
-BDT_filename="/publicfs/cms/user/laipeizhu/ALP/Analysis_code/train_MVA/model_Za_BDT_passedEvents.pkl"
+BDT_filename="/afs/cern.ch/work/p/pelai/HZa/ALP/Analysis_code/train_MVA/model_Za_BDT_passedEvents.pkl"
+# BDT_filename="/publicfs/cms/user/laipeizhu/ALP/Analysis_code/train_MVA/model_Za_BDT_passedEvents.pkl"
 if args.interp:
     mvaCuts = {11:0.99, 12:0.99, 13:0.99, 14:0.99, 16:0.99, 17:0.99, 18:0.99, 19:0.99, 21:0.99, 22:0.99, 23:0.985, 24:0.985, 26:0.985, 27:0.985, 28:0.98, 29:0.98}
 else:
-    mvaCuts = {1:0.945, 2:0.975, 3:0.985, 4:0.985, 5:0.99, 6:0.99, 7:0.99, 8:0.995, 9:0.995, 10:0.995, 15:0.99, 20:0.99, 25:0.99, 30:0.99}
-    # mvaCuts = {1:0.955, 2:0.98, 3:0.985, 4:0.98, 5:0.985, 6:0.99, 7:0.985, 8:0.99, 9:0.99, 10:0.99, 15:0.99, 20:0.99, 25:0.985, 30:0.98}
+    # mvaCuts = {1:0.955, 2:0.98, 3:0.985, 4:0.98, 5:0.985, 6:0.99, 7:0.985, 8:0.99, 9:0.99, 10:0.99, 15:0.99, 20:0.99, 25:0.985, 30:0.98} # zebing
+    # mvaCuts = {1:0.945, 2:0.975, 3:0.985, 4:0.985, 5:0.99, 6:0.99, 7:0.99, 8:0.995, 9:0.995, 10:0.995, 15:0.99, 20:0.99, 25:0.99, 30:0.99} #  trial 20 times 420
+    mvaCuts = {1:0.88, 2:0.94, 3:0.965, 4:0.955, 5:0.97, 6:0.975, 7:0.975, 8:0.975, 9:0.97, 10:0.975, 15:0.97, 20:0.97, 25:0.97, 30:0.96}
 
 mvaCut = mvaCuts[mass]
 model = pickle.load(open(BDT_filename, 'rb'))
 
 ############################
-myfile = TFile('/publicfs/cms/user/laipeizhu/ALP/Analysis_output/UL/run2/ALP_data.root')
+myfile = TFile('/afs/cern.ch/work/p/pelai/HZa/ALP/Analysis_output/UL/run2/ALP_data.root')
+# myfile = TFile('/publicfs/cms/user/laipeizhu/ALP/Analysis_output/UL/run2/ALP_data.root')
 mychain = myfile.Get('passedEvents')
 entries = mychain.GetEntriesFast()
 
@@ -43,7 +48,7 @@ getattr(w,'import')(CMS_hza_mass)
 
 data_mass_cat0 = RooDataSet("data_mass_cat0","data_mass_cat0",RooArgSet(CMS_hza_mass))
 
-# ROOT.gROOT.SetOwnership(data_mass_cat0, False)
+data_mass_cat0_clone = data_mass_cat0.Clone()
 
 for jentry in range(entries):
     nb = mychain.GetEntry(jentry)
@@ -60,7 +65,7 @@ for jentry in range(entries):
     if MVA_value < mvaCut:continue
 
     CMS_hza_mass.setVal(mychain.H_m)
-    data_mass_cat0.add(RooArgSet(CMS_hza_mass))
+    data_mass_cat0_clone.add(RooArgSet(CMS_hza_mass))
 
 # c1 = TCanvas("c1","With Weight")
 # c1.cd()
@@ -69,9 +74,17 @@ for jentry in range(entries):
 # massDist.Draw()
 # c1.SaveAs("ALP_data_bkg_Am{0}_workspace.png".format(mass))
 
-getattr(w,'import')(data_mass_cat0)
-# getattr(w, 'import')(data_mass_cat0, ROOT.RooFit.RecycleConflictNodes())
+getattr(w,'import')(data_mass_cat0_clone)
+# getattr(w, 'import')(data_mass_cat0_clone, RooFit.RecycleConflictNodes()) # PZ
 
-w.writeToFile("./output/data/ALP_data_bkg_Am{0}_workspace.root".format(mass))
+w.writeToFile("/afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run2_UL/output/data/ALP_data_bkg_Am{0}_workspace.root".format(mass))
 
-del w
+myfile.Close()           # PZ, Close the ROOT file
+# del myfile               # PZ, Delete the file object to clear ROOT's memory
+
+gc.collect()
+
+# data_mass_cat0_clone.Delete()  # PZ, Explicitly delete the dataset
+# del data_mass_cat0_clone       # PZ, Delete the object to release memory
+# del w
+
