@@ -72,7 +72,7 @@ for year in ['2022preEE']:
         ArgSet.Print("v")
         print ("#"*51)
 
-        dataset = RooDataSet("ggh_{0}_13p6TeV_cat0".format(mass_H),"ggh_{0}_13p6TeV_cat0".format(mass_H), ArgSet, "CMS_hza_weight")
+        dataset = RooDataSet("ggh_{0}_13TeV_cat0".format(mass_H),"ggh_{0}_13TeV_cat0".format(mass_H), ArgSet, "CMS_hza_weight")
         #dataset_WithoutWeight = RooDataSet("dataset_WithoutWeight","dataset_WithoutWeight", ArgSet)
 
         #dataset.Print("v")
@@ -126,11 +126,11 @@ for year in ['2022preEE']:
         getattr(w,'import')(dataset)
         #getattr(w,'import')(dataset_WithoutWeight)
         if args.ele:
-            w.writeToFile("/afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run3/output/sig/ele/ALP_sig_Am{0}_Hm{1}_{2}_ele.root".format(mass,mass_H,year))
+            w.writeToFile("/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run3_ReReco/output/sig/ele/ALP_sig_Am{0}_Hm{1}_{2}_ele.root".format(mass,mass_H,year))
         elif args.mu:
-            w.writeToFile("/afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run3/output/sig/mu/ALP_sig_Am{0}_Hm{1}_{2}_mu.root".format(mass,mass_H,year))
+            w.writeToFile("/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run3_ReReco/output/sig/mu/ALP_sig_Am{0}_Hm{1}_{2}_mu.root".format(mass,mass_H,year))
         else:
-            w.writeToFile("/afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run3/output/sig/lep/ALP_sig_Am{0}_Hm{1}_{2}_lep.root".format(mass,mass_H,year))
+            w.writeToFile("/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run3_ReReco/output/sig/lep/ALP_sig_Am{0}_Hm{1}_{2}_lep.root".format(mass,mass_H,year))
         del w
 
 #raw_input()

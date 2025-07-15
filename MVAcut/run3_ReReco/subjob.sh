@@ -6,7 +6,7 @@ massList=( 1 2 3 4 5 6 7 8 9 10 15 20 25 30 )
 
 nMass=${#massList[@]}
 
-path_code='/afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run3'
+path_code='/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run3'
 
 for ((iBin=0; iBin<$nMass; iBin++))
 do

@@ -25,11 +25,10 @@ else
 fi
 unset __conda_setup
 # <<< conda initialize <<<
-conda init
 
 conda activate higgs-alp-ana
 
-path_code='/afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run3'
+path_code='/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run3_ReReco'
 
 # python $path_code/makeWorkspace_data.py -m $1
 
@@ -40,11 +39,7 @@ python $path_code/makeWorkspace_sig.py -m $1 --ele
 python $path_code/makeWorkspace_sig.py -m $1 --mu
 
 # Commission Test
-
 # python3 $path_code/makeWorkspace_data.py -m 1
-
 # python $path_code/makeWorkspace_sig.py -m 5
-
 # python $path_code/makeWorkspace_sig.py -m 5 --ele
-
 # python $path_code/makeWorkspace_sig.py -m 5 --mu

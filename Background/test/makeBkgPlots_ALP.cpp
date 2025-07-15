@@ -66,10 +66,10 @@ namespace po = boost::program_options;
 
 bool verbose_=false;
 
-float mgg_low =2.0;//FIXME
-float mgg_high =40;//FIXME
-float mgg_blind_low =12;//FIXME
-float mgg_blind_high =17;//FIXME
+float mgg_low =95;//FIXME
+float mgg_high =180;//FIXME
+float mgg_blind_low =115;//FIXME
+float mgg_blind_high =135;//FIXME
 float nbin = 85;
 
 // 180 - 95 = 85
@@ -659,16 +659,17 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 	//plot->GetXaxis()->SetTitle("m_{a} (GeV)");//FIXED
 	// plot->GetXaxis()->SetTitle("\\mathrm{m}_{\\ell\\ell\\gamma\\gamma} \\ \\mathrm{(GeV)}");//bing
 
-	
+	cout << "unblind: " << unblind << endl;
 	if (!unblind) {
-		//mgg->setRange("unblind_up",135,180);
-		//mgg->setRange("unblind_down",100,115);
+		cout << "Into the blind" << endl;
+		// mgg->setRange("unblind_up",135,180);
+		// mgg->setRange("unblind_down",100,115);
 		mgg->setRange("unblind_up",mgg_blind_high,mgg_high);//bing
 		mgg->setRange("unblind_down",mgg_low,mgg_blind_low);//bing
-		data->plotOn(plot,Binning(nbin),CutRange("unblind_down,unblind_up"));
+		data->plotOn(plot,RooFit::Binning(nbin),RooFit::CutRange("unblind_down,unblind_up"));
 	}
 	else {
-		data->plotOn(plot,Binning(nbin));
+		data->plotOn(plot,RooFit::Binning(nbin));
 	}
 
 	// Number of Leg 8, 7, 6,   5, 4, 
@@ -765,7 +766,8 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 			}
 		}//PZ
 
-		mpdf->getCurrentPdf()->plotOn(plot, Binning(nbin), LineColor(TColor::GetColor(color[color_id].c_str()) ), LineWidth(3));//PZ
+		// mpdf->getCurrentPdf()->plotOn(plot, RooFit::Binning(nbin), LineColor(TColor::GetColor(color[color_id].c_str())), LineWidth(3));//PZ RooFit::Binning(nbin) induces errors
+		mpdf->getCurrentPdf()->plotOn(plot, LineColor(TColor::GetColor(color[color_id].c_str())), LineWidth(3));//PZ
 		TObject *legObj = plot->getObject(plot->numItems()-1);
 		//leg->AddEntry(legObj,mpdf->getCurrentPdf()->GetName(),"L");
 		
@@ -826,7 +828,9 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 	latex->SetTextFont(42);
 	latex->SetNDC();
 	latex->DrawLatex(0.111,0.94,("m_{a} = "+to_string(int(ma))+" GeV").c_str());
-	CMS_lumi( canv, 4, 0);
+	// CMS_lumi( canv, 4, 0);
+	latex->DrawLatex(0.66,0.93,("62.5 fb^{-1} (13.6 TeV)"));
+
 
 	canv->Modified();
 	canv->Update();
@@ -840,7 +844,7 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 }
 
 int main(int argc, char* argv[]){
-  gSystem->Load("$CMSSW_BASE/lib/$SCRAM_ARCH/libHiggsAnalysisGBRLikelihood.so");
+//   gSystem->Load("$CMSSW_BASE/lib/$SCRAM_ARCH/libHiggsAnalysisGBRLikelihood.so"); //PZ
   //gStyle->SetPadTickX(1);//bing
   //gStyle->SetPadTickY(1);//bing
 
@@ -853,7 +857,7 @@ int main(int argc, char* argv[]){
   lumi_13TeV ="2.6 fb^{-1}";
   lumi_8TeV  = "19.1 fb^{-1}"; // default is "19.7 fb^{-1}"
   lumi_7TeV  = "4.9 fb^{-1}";  // default is "5.1 fb^{-1}"
-  lumi_sqrtS = "13 TeV";       // used with iPeriod = 0, e.g. for simulation-only plots (default is an empty string)
+  lumi_sqrtS = "13.6 TeV";       // used with iPeriod = 0, e.g. for simulation-only plots (default is an empty string)
 
 
 	string bkgFileName;
@@ -882,8 +886,8 @@ int main(int argc, char* argv[]){
 	string flashggCatsStr_;
 	vector<string> flashggCats_;
   	double higgsResolution_=0.5;
-	float mggblindlow_ =12;//bing
-	float mggblindhigh_ =17;//bing
+	float mggblindlow_ =115;//bing
+	float mggblindhigh_ =135;//bing
 
 	po::options_description desc("Allowed options");
 	desc.add_options()
@@ -952,7 +956,8 @@ int main(int argc, char* argv[]){
 		exit(0);
 	}
 	RooRealVar *mgg = (RooRealVar*)inWS->var("CMS_hza_mass");//FIXED
-  string catname;
+	mgg->setBins(nbin); //PZ 
+string catname;
 	if (isFlashgg_){
 		catname = Form("%s",flashggCats_[cat].c_str());
 	} else {
@@ -1055,7 +1060,7 @@ int main(int argc, char* argv[]){
 	plot->GetXaxis()->SetLabelSize(0);//PZ
 
 	plot->SetTitle("");
-	data->plotOn(plot,Binning(nbin),Invisible());
+	data->plotOn(plot,RooFit::Binning(nbin),Invisible());
 	//data->plotOn(plot,Binning(nbin));//bing
   	///start extra bit for ratio plot///
   	RooHist *plotdata = (RooHist*)plot->getObject(plot->numItems()-1);
@@ -1232,10 +1237,10 @@ int main(int argc, char* argv[]){
 		//mgg->setRange("unblind_down",100,115);
 		mgg->setRange("unblind_up",mggblindhigh_,mhHigh);//bing
 		mgg->setRange("unblind_down",mhLow,mggblindlow_);//bing
-		data->plotOn(plot,Binning(nbin),CutRange("unblind_down,unblind_up"));
+		data->plotOn(plot,RooFit::Binning(nbin),RooFit::CutRange("unblind_down,unblind_up")); // PZ
 	}
 	else {
-		data->plotOn(plot,Binning(nbin));
+		data->plotOn(plot,RooFit::Binning(nbin));
 	}
 
 	if (doBands) {
@@ -1325,7 +1330,7 @@ int main(int argc, char* argv[]){
 	latex->SetNDC();
 	latex->DrawLatex(0.111,0.93,("m_{a} = "+to_string(int(mavalue_))+" GeV").c_str());
 
-	latex->DrawLatex(0.71,0.93,("138 fb^{-1} (13 TeV)"));
+	latex->DrawLatex(0.67,0.93,("62.5 fb^{-1} (13.6 TeV)"));
 
 	TLatex *cmslatex = new TLatex();
 	cmslatex->SetTextSize(0.03);
@@ -1393,7 +1398,7 @@ int main(int argc, char* argv[]){
   	//Second Plot
 	pad2->cd();
 	//TH1 *hdummy = new TH1D("hdummyweight","",80,100,180);
-	TH1 *hdummy = new TH1D("hdummyweight","",80,mhLow,mhHigh);//bing
+	TH1 *hdummy = new TH1D("hdummyweight","",85,mhLow,mhHigh);//bing
 
 	// hdummy->SetMaximum(hdatasub->GetHistogram()->GetMaximum()+1);
 	// hdummy->SetMinimum(hdatasub->GetHistogram()->GetMinimum()-1);

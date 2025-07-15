@@ -80,7 +80,7 @@ for jentry in range(entries):
 getattr(w,'import')(data_mass_cat0_clone)
 # getattr(w, 'import')(data_mass_cat0_clone, RooFit.RecycleConflictNodes()) # PZ
 
-w.writeToFile("/afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run3/output/data/ALP_data_bkg_Am{0}_workspace.root".format(mass))
+w.writeToFile("/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run3_ReReco/output/data/ALP_data_bkg_Am{0}_workspace.root".format(mass))
 
 myfile.Close()           # PZ, Close the ROOT file
 # del myfile             # PZ, Delete the file object to clear ROOT's memory

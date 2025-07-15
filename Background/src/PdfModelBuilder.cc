@@ -218,13 +218,13 @@ RooAbsPdf* PdfModelBuilder::getBernsteinStepxGau(string prefix, int order, int m
 
   if(mass_ALP == 1)
   {
-    param_bern = 10.0;         param_lbern = 0.01;       param_hbern = 45.;
+    param_bern = 10.0;         param_lbern = 0.01;     param_hbern = 45.;
     sigma_bern = 5;            sigma_lbern = 1.;       sigma_hbern = 15.;
     turnon_bern = 105;         turnon_lbern = 100;     turnon_hbern = 115;
   }
   else if(mass_ALP == 2)
   {
-    param_bern = 10;          param_lbern = 0.01;      param_hbern = 35.;
+    param_bern = 10;          param_lbern = 0.01;     param_hbern = 35.;
     sigma_bern = 3.;          sigma_lbern = 1.;       sigma_hbern = 15.;
     turnon_bern = 105;        turnon_lbern = 100;     turnon_hbern = 110;
   }
@@ -256,6 +256,18 @@ RooAbsPdf* PdfModelBuilder::getBernsteinStepxGau(string prefix, int order, int m
   {
     param_bern = 10;           param_lbern = 0.01;     param_hbern = 35.;
     sigma_bern = 2.;          sigma_lbern = 1.;      sigma_hbern = 15.;
+    turnon_bern = 105;        turnon_lbern = 100;     turnon_hbern = 110;
+  }
+  else if(mass_ALP == 15)
+  {
+    param_bern = 10;          param_lbern = 0.01;     param_hbern = 35.;
+    sigma_bern = 5.;          sigma_lbern = 3.;       sigma_hbern = 15.;
+    turnon_bern = 105;        turnon_lbern = 100;     turnon_hbern = 110;
+  }
+  else if(mass_ALP == 30)
+  {
+    param_bern = 10;          param_lbern = 0.01;     param_hbern = 35.;
+    sigma_bern = 5.;          sigma_lbern = 3.;       sigma_hbern = 15.;
     turnon_bern = 105;        turnon_lbern = 100;     turnon_hbern = 110;
   }
 
@@ -787,7 +799,7 @@ RooAbsPdf* PdfModelBuilder::getPowerLawStepxGau(string prefix, int order, int ca
         coeff3_pow3 = 0.0;      coeff3_lpow3 = 0.;    coeff3_hpow3 = 1.;
         par1_pow3 = -8.51;      par1_lpow3 = -15.;    par1_hpow3 = -5.;
         par3_pow3 = -10.3;      par3_lpow3 = -15.;    par3_hpow3 = -5;
-        sigma_pow = 11.0;       sigma_lpow = 5.;      sigma_hpow = 15.;
+        sigma_pow = 11.0;       sigma_lpow = 1.;      sigma_hpow = 15.;
         turnon_pow = 105.;      turnon_lpow = 100.;   turnon_hpow = 120.;
       } 
       else if(order==5)
@@ -798,7 +810,7 @@ RooAbsPdf* PdfModelBuilder::getPowerLawStepxGau(string prefix, int order, int ca
         par1_pow5 = -8.0;       par1_lpow5 = -15.;    par1_hpow5 = -5.;
         par3_pow5 = -10.0;      par3_lpow5 = -10.;    par3_hpow5 = -2.;
         par5_pow5 = -6.0;       par5_lpow5 = -10;     par5_hpow5 = -1.;
-        sigma_pow = 11;         sigma_lpow = 9.;      sigma_hpow = 15.;
+        sigma_pow = 11;         sigma_lpow = 1.;      sigma_hpow = 15.;
         turnon_pow = 105.;      turnon_lpow = 100.;   turnon_hpow = 115.;
       }
     }
@@ -1370,18 +1382,18 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
     if(cat==2)
     {
       if(order==1){
-      coeff1_exp1 = 1.0;      coeff1_lexp1 = 0.;    coeff1_hexp1 = 2.;
-      par1_exp1 = -0.085;     par1_lexp1 = -0.2;   par1_hexp1 = 0.;
-      sigma_exp = 13;          sigma_lexp = 10;       sigma_hexp = 15.;
-      turnon_exp = 107.;      turnon_lexp = 100.;   turnon_hexp = 110.;
+      coeff1_exp1 = 1.0;      coeff1_lexp1 = 0.;      coeff1_hexp1 = 2.;
+      par1_exp1 = -0.085;     par1_lexp1 = -0.2;      par1_hexp1 = 0.;
+      sigma_exp = 3;          sigma_lexp = 3;       sigma_hexp = 12.;
+      turnon_exp = 107.;      turnon_lexp = 100.;     turnon_hexp = 110.;
       }
       else if(order==3){
-      coeff1_exp3 = 1.0;        coeff1_lexp3 = 0.1;    coeff1_hexp3 = 2.;
-      coeff3_exp3 = 1.0;        coeff3_lexp3 = 0.5;    coeff3_hexp3 = 2.;
-      par1_exp3 = -0.16;        par1_lexp3 = -0.25;   par1_hexp3 = -0.1;
-      par3_exp3 = -0.07;        par3_lexp3 = -0.1;    par3_hexp3 = -0.01;
-      sigma_exp = 12.;           sigma_lexp = 10.;      sigma_hexp = 20.;
-      turnon_exp = 106.;        turnon_lexp = 100.;   turnon_hexp = 115.;
+      coeff1_exp3 = 1.0;        coeff1_lexp3 = 0.1;     coeff1_hexp3 = 2.;
+      coeff3_exp3 = 1.0;        coeff3_lexp3 = 0.5;     coeff3_hexp3 = 2.;
+      par1_exp3 = -0.16;        par1_lexp3 = -0.25;     par1_hexp3 = -0.1;
+      par3_exp3 = -0.07;        par3_lexp3 = -0.1;      par3_hexp3 = -0.01;
+      sigma_exp = 12.;          sigma_lexp = 10.;       sigma_hexp = 20.;
+      turnon_exp = 106.;        turnon_lexp = 100.;     turnon_hexp = 115.;
       } 
       else if(order==5)
       {
@@ -1518,7 +1530,7 @@ RooAbsPdf* PdfModelBuilder::getLaurentSeries(string prefix, int order){
   //bkgPdfs.insert(pair<string,RooAbsPdf*>(pdf->GetName(),pdf));
 
    //bing
-  RooRealVar *mean1 = new RooRealVar("mean1","mean1",0.0) ;
+    RooRealVar *mean1 = new RooRealVar("mean1","mean1",0.0) ;
     RooRealVar *sigma1 = new RooRealVar("sigma1","sigma1",5,-10.,20.) ;
     RooGaussian *gaus1 = new RooGaussian("gaus1","gaus1",*obs_var,*mean1,*sigma1) ;
     RooRealVar *step_value1 = new RooRealVar("step_value1", "step_value1",115.,110.,130.) ;

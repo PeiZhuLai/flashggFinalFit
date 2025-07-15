@@ -7,7 +7,7 @@ request_memory = 2000MB
 request_cpus = 1
 
 # Path to the executable script
-executable = /afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run3/runjob.sh
+executable = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run3_ReReco/runjob.sh
 
 # Log, output, and error files with unique filenames
 output = log_file/job$(mass).out

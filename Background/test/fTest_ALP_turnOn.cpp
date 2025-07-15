@@ -52,7 +52,7 @@ using namespace boost;
 
 namespace po = program_options;
 
-bool BLIND = false;
+bool BLIND = true;
 bool runFtestCheckWithToys=false;
 float mgglow_ =95.;//FIXME
 float mgghigh_ =180;//FIXME
