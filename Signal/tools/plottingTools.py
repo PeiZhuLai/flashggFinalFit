@@ -163,7 +163,7 @@ def plotFTest(ssfs,_opt=1,_outdir='./',_extension='',_proc='',_cat='',_mass='125
   lat.SetTextSize(0.045)
   lat.SetTextFont(52)  # 斜體字 Preliminary 標籤
   lat.DrawLatex(0.245, 0.965, "Simulation Preliminary")
-  lat.DrawLatex(0.74,0.97,("138 fb^{-1} (13 TeV)"))
+  lat.DrawLatex(0.71,0.97,("62.5 fb^{-1} (13.6 TeV)"))
   canv.Update()
   canv.SaveAs(f"{_outdir}/{_Amass}_fTest_{_year}_{_channel}_Hm{_Hmass}.pdf")
 
@@ -238,7 +238,7 @@ def plotFTestResults(ssfs,_opt,_outdir="./",_extension='',_proc='',_cat='',_mass
   lat.SetTextSize(0.045)
   lat.SetTextFont(52)  # 斜體字 Preliminary 標籤
   lat.DrawLatex(0.20, 0.965, "Simulation Preliminary")
-  lat.DrawLatex(0.74,0.97,("138 fb^{-1} (13 TeV)"))
+  lat.DrawLatex(0.71,0.97,("62.5 fb^{-1} (13.6 TeV)"))
   canv.Update()
   canv.SaveAs(f"{_outdir}/{_Amass}_fTest_{_year}_{_channel}_Hm{_Hmass}_chi2_vs_nGauss.pdf")
 
@@ -409,7 +409,7 @@ def plotPdfComponents(ssf,_outdir='./',_extension='',_proc='',_cat='',_Amass='1'
   lat.SetTextSize(0.045)
   lat.SetTextFont(52)  # 斜體字 Preliminary 標籤
   lat.DrawLatex(0.255, 0.965, "Simulation Preliminary")
-  lat.DrawLatex(0.74,0.97,("138 fb^{-1} (13 TeV)"))
+  lat.DrawLatex(0.71,0.97,("62.5 fb^{-1} (13.6 TeV)"))
 
   lat1 = ROOT.TLatex()
   lat1.SetTextFont(42)
@@ -509,7 +509,7 @@ def plotInterpolation(_finalModel,_outdir='./',_massPoints='120,121,122,123,124,
   lat.SetTextSize(0.045)
   lat.SetTextFont(52)  # 斜體字 Preliminary 標籤
   lat.DrawLatex(0.24, 0.965, "Simulation Preliminary")
-  lat.DrawLatex(0.74,0.97,("138 fb^{-1} (13 TeV)"))
+  lat.DrawLatex(0.71,0.97,("62.5 fb^{-1} (13.6 TeV)"))
 
   canv.Update()
   canv.SaveAs(f"{_outdir}/model_vs_mH_{_Amass}_{_year}_{_channel}.pdf")
@@ -616,7 +616,7 @@ def plotSplines(_finalModel,_outdir="./",_nominalMass='125',splinesToPlot=['xs',
   lat.SetTextSize(0.045)
   lat.SetTextFont(52)  # 斜體字 Preliminary 標籤
   lat.DrawLatex(0.25, 0.965, "Simulation Preliminary")
-  lat.DrawLatex(0.74,0.97,("138 fb^{-1} (13 TeV)"))
+  lat.DrawLatex(0.71,0.97,("62.5 fb^{-1} (13.6 TeV)"))
   canv.Update()
   canv.SaveAs(f"{_outdir}/{_finalModel.name}_splines_{_Amass}_{_year}_{_channel}.pdf")
 
@@ -748,7 +748,7 @@ def plotSignalModel(_hists,_opt,_outdir=".",offset=0.07,_Amass='1',_year='16', _
   lat0.SetNDC()
   lat0.SetTextSize(0.05)
   lat0.DrawLatex(0.19,0.92,"#bf{CMS} #it{%s}"%_opt.label)
-  lat0.DrawLatex(0.83,0.92,"%s TeV"%(sqrts__.split("TeV")[0]))
+  lat0.DrawLatex(0.80,0.92,"%s TeV"%("13.6"))
   lat0.DrawLatex(0.16+offset,0.81,"H #rightarrow Za #rightarrow ll#gamma#gamma")
 
   # Load translations

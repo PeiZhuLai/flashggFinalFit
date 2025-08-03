@@ -324,6 +324,7 @@ fm = FinalModel(ssfMap,opt.proc,opt.cat,opt.ext,opt.year,sqrts__,nominalDatasets
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # SAVE: to output workspace
 foutDir = "%s/outdir_%s/signalFit/output"%(swd__,opt.channel)
+os.makedirs(foutDir, exist_ok=True)
 foutName = f"{swd__}/outdir_{opt.channel}/signalFit/output/{opt.mass_ALP}_CMS-HGG_sigfit_{opt.year}_{opt.channel}_Hm125.root"
 print("\n --> Saving output workspace to file: %s"%foutName)
 if not os.path.isdir(foutDir): os.system("mkdir %s"%foutDir)
