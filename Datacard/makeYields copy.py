@@ -88,57 +88,53 @@ print(" ........................................................................
 
 # Signal processes
 for year in years:
-  # PZ: define lep channel
-  if opt.channel == 'leptons':
-    leps = ['ele', 'mu']
-  else:
-    leps = [opt.channel]
-
   for proc in procs:
-    for lep_channel in leps:
 
-      # Identifier
-      _id = "%s_%s_%s_%s_%s"%(proc,year,lep_channel,opt.cat,sqrts__)
-      origin_id = "%s_%s_%s_%s"%(proc,year,opt.cat,sqrts__)
-      
-      # Mapping to STXS definition here
-      _procOriginal = proc
-      _proc = "%s_%s_%s"%(procToDatacardName(proc),year,lep_channel)
-      _proc_s0 = procToData(proc.split("_")[0])
+    # Identifier
+    _id = "%s_%s_%s_%s"%(proc,year,opt.cat,sqrts__)
 
-      # Define category: add year tag if not merging
-      if opt.mergeYears: _cat = opt.cat
-      else: _cat = "%s_%s"%(opt.cat,year)
+    # Mapping to STXS definition here
+    _procOriginal = proc
+    _proc = "%s_%s_%s"%(procToDatacardName(proc),year,decayMode)
+    _proc_s0 = procToData(proc.split("_")[0])
 
-      # Input Signal flashgg ws 
-      _inputWSFile = glob.glob(f"{inputWSDirMap[year]}/sig/{lep_channel}/ALP_sig_Am{opt.mass_ALP}_Hm{opt.mass}_{year}_{lep_channel}.root")[0] # PZ
-      
-      _nominalDataName = "%s_%s_%s_%s"%(_proc_s0,opt.mass,sqrts__,opt.cat)
+    # Define category: add year tag if not merging
+    if opt.mergeYears: _cat = opt.cat
+    else: _cat = "%s_%s"%(opt.cat,year)
 
-      # If opt.skipZeroes check nominal yield if 0 then do not add
-      skipProc = False
-      if opt.skipZeroes:
-        f = ROOT.TFile(_inputWSFile)
-        w = f.Get(inputWSName__)
-        sumw = w.data(_nominalDataName).sumEntries()
-        if sumw == 0.: skipProc = True
-        w.Delete()
-        f.Close()
-      if skipProc: continue
+    # Input Signal flashgg ws 
+    # _inputWSFile = glob.glob("%s/*M%s*_%s.root"%(inputWSDirMap[year],opt.mass,proc))[0]
+    # _inputWSFile = glob.glob(f"{opt.inputWSDir}/ALP_sig_Am{opt.mass_ALP}_Hm{opt.mass}_{opt.year}_{opt.channel}.root")[0] # PZ
+    _inputWSFile = glob.glob(f"{inputWSDirMap[year]}/sig/{opt.channel}/ALP_sig_Am{opt.mass_ALP}_Hm{opt.mass}_{opt.year}_{opt.channel}.root")[0] # PZ
+    
+    _nominalDataName = "%s_%s_%s_%s"%(_proc_s0,opt.mass,sqrts__,opt.cat)
 
-      # Input Signal model ws 
-      if opt.cat == "NOTAG": _modelWSFile, _model = '-', '-'
-      else:
-        _modelWSFile = f"{opt.sigModelWSDir}/outdir_{lep_channel}/signalFit/output/{opt.mass_ALP}_CMS-HGG_sigfit_{year}_{lep_channel}_Hm125.root"
+    # If opt.skipZeroes check nominal yield if 0 then do not add
+    skipProc = False
+    if opt.skipZeroes:
+      f = ROOT.TFile(_inputWSFile)
+      w = f.Get(inputWSName__)
+      sumw = w.data(_nominalDataName).sumEntries()
+      if sumw == 0.: skipProc = True
+      w.Delete()
+      f.Close()
+    if skipProc: continue
 
-        _model = "%s_%s:%s_%s"%(outputWSName__,sqrts__,outputWSObjectTitle__,origin_id)
+    # Input Signal model ws 
+    if opt.cat == "NOTAG": _modelWSFile, _model = '-', '-'
+    else:
+      # foutName = f"{swd__}/outdir_{opt.channel}/signalFit/output/{opt.mass_ALP}_CMS-HGG_sigfit_{opt.year}_{opt.channel}_Hm125.root"
+      _modelWSFile = f"{opt.sigModelWSDir}/outdir_{opt.channel}/signalFit/output/{opt.mass_ALP}_CMS-HGG_sigfit_{opt.year}_{opt.channel}_Hm125.root"
+      # _modelWSFile = "%s/CMS-HGG_sigfit_%s_%s.root"%(opt.sigModelWSDir,opt.sigModelExt,_cat)
 
-      # Extract rate from lumi
-      _rate = float(lumiMap[year])*1000
+      _model = "%s_%s:%s_%s"%(outputWSName__,sqrts__,outputWSObjectTitle__,_id)
 
-      # Add signal process to dataFrame:
-      print(" --> Adding to dataFrame: (proc,cat) = (%s,%s)"%(_proc,_cat))
-      data.loc[len(data)] = [year,'sig',_procOriginal,_proc,_proc_s0,_cat,_inputWSFile,_nominalDataName,_modelWSFile,_model,_rate]
+    # Extract rate from lumi
+    _rate = float(lumiMap[year])*1000
+
+    # Add signal process to dataFrame:
+    print(" --> Adding to dataFrame: (proc,cat) = (%s,%s)"%(_proc,_cat))
+    data.loc[len(data)] = [year,'sig',_procOriginal,_proc,_proc_s0,_cat,_inputWSFile,_nominalDataName,_modelWSFile,_model,_rate]
 
 # Background and data processes
 if( not opt.skipBkg)&( opt.cat != "NOTAG" ):
@@ -146,6 +142,7 @@ if( not opt.skipBkg)&( opt.cat != "NOTAG" ):
   _proc_data = "data_obs"
   if opt.mergeYears:
     _cat = opt.cat
+    # _modelWSFile = "%s/CMS-HGG_%s_%s.root"%(opt.bkgModelWSDir,opt.bkgModelExt,_cat)
     _modelWSFile = "%s/%s/CMS-HGG_mva_13TeV_multipdf.root"%(opt.bkgModelWSDir,opt.mass_ALP) #Pei-Zhu
     _model_bkg = "%s:CMS_%s_%s_%s_bkgshape"%(bkgWSName__,decayMode,_cat,sqrts__)
     _model_data = "%s:roohist_data_mass_%s"%(bkgWSName__,_cat)
@@ -162,8 +159,10 @@ if( not opt.skipBkg)&( opt.cat != "NOTAG" ):
     for year in years:
       _cat = "%s_%s"%(opt.cat,year)
       _catStripYear = opt.cat
+      # _modelWSFile = "%s/CMS-HGG_%s_%s.root"%(opt.bkgModelWSDir,opt.bkgModelExt,_cat)
       _modelWSFile = "%s/%s/CMS-HGG_mva_13TeV_multipdf.root"%(opt.bkgModelWSDir,opt.mass_ALP) #Pei-Zhu
       _model_bkg = "%s:CMS_%s_%s_%s_bkgshape"%(bkgWSName__,decayMode,_cat,sqrts__)
+      # _model_data = "%s:roohist_data_mass_%s"%(bkgWSName__,_catStripYear)
       _model_data = "%s:roohist_data_mass_%s"%(bkgWSName__,_cat) # Pei-Zhu 
       _proc_s0 = 'ggH' #not needed for data/bkg
       _inputWSFile = "%s/data/ALP_data_bkg_Am%s_workspace.root"%(inputWSDirMap[year],opt.mass_ALP) #not needed for data/bkg # Pei-Zhu 
@@ -283,6 +282,6 @@ for ir,r in data[data['type']=='sig'].iterrows():
 # SAVE YIELDS DATAFRAME
 print(" ..........................................................................................")
 extStr = "_%s"%opt.channel if opt.channel != '' else ''
-print(" --> Saving yields dataframe: ./yields%s/%s_datacard_%s.pkl"%(extStr,opt.mass_ALP,opt.channel))
+print(" --> Saving yields dataframe: ./yields%s/%s_datacard_%s_%s.pkl"%(extStr,opt.mass_ALP,opt.year,opt.channel))
 if not os.path.isdir("./yields%s"%extStr): os.system("mkdir ./yields%s"%extStr)
-with open("./yields%s/%s_datacard_%s.pkl"%(extStr,opt.mass_ALP,opt.channel),"wb") as fD: pickle.dump(data,fD)
+with open("./yields%s/%s_datacard_%s_%s.pkl"%(extStr,opt.mass_ALP,opt.year,opt.channel),"wb") as fD: pickle.dump(data,fD)

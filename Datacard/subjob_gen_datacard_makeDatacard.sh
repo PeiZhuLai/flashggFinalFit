@@ -2,9 +2,10 @@
 
 # Configuration variables
 ChannelList=( ele mu )
-ALPmassList=( 1 2 3 4 5 6 7 8 9 10 15 20 25 30 )
-YearsList=( 16 16APV 17 18 )
-BaseDir="/afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Datacard"
+# ALPmassList=( 1 2 3 4 5 6 7 8 9 10 15 20 25 30 )
+ALPmassList=( 5 15 30 )
+YearsList=( 2022preEE )
+BaseDir="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Datacard"
 Executable="$BaseDir/runjob_gen_datacard_makeDatacard.sh"
 LogDir="$BaseDir/logfiles"
 SubmitFile="subjob_gen_datacard_makeDatacard.submit"

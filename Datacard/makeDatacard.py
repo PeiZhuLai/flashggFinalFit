@@ -20,7 +20,7 @@ def get_options():
 
   parser.add_option('--ext', dest='ext', default='', help="Extension (used when running RunYields.py)")
   # For pruning processes
-  parser.add_option('--prune', dest='prune', default=True, action="store_true", help="Prune proc x cat which make up less than pruneThreshold (default 0.1%) of given total category")
+  parser.add_option('--prune', dest='prune', default=False, action="store_true", help="Prune proc x cat which make up less than pruneThreshold (default 0.1%) of given total category")
   parser.add_option('--pruneThreshold', dest='pruneThreshold', default=0.001, type='float', help="Threshold with which to prune proc x cat as fraction of total category yield (default=0.1%)")
   parser.add_option('--doTrueYield', dest='doTrueYield', default=True, action="store_true", help="For pruning: use true number of expected events for proc x cat i.e. Product(XS,BR,eff*acc,lumi). If false then will just use sum of weights (= eff x acc)")
   parser.add_option('--mass', dest='mass', default='125', help="MH mass: required for doTrueYield")
@@ -52,7 +52,7 @@ if opt.doSTXSScaleCorrelationScheme: from tools.STXS_tools import STXSScaleCorre
 print(" --> Loading per category dataframes into single dataframe")
 extStr = "_%s"%opt.channel if opt.channel != '' else ''
 # pkl_files = glob.glob("./yields%s/*.pkl"%extStr)
-pkl_files = glob.glob("./yields%s/%s_datacard_%s_%s.pkl"%(extStr,opt.mass_ALP,opt.years,opt.channel))
+pkl_files = glob.glob("./yields%s/%s_datacard_%s.pkl"%(extStr,opt.mass_ALP,opt.channel))
 pkl_files.sort() # Categories in alphabetical order
 data = pd.DataFrame()
 for f_pkl_name in pkl_files:
@@ -156,7 +156,7 @@ if opt.prune:
 if opt.saveDataFrame:
   print(" ..........................................................................................")
   print(" --> Saving dataFrame: %s.pkl"%opt.output)
-  with open("./yields%s/%s_pruned_Datacard_%s_%s.pkl"%(extStr,opt.mass_ALP,opt.years,opt.channel),"wb") as fD: pickle.dump(data,fD)
+  with open("./yields%s/%s_pruned_Datacard_%s.pkl"%(extStr,opt.mass_ALP,opt.channel),"wb") as fD: pickle.dump(data,fD)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # WRITE TO .TXT FILE
@@ -164,7 +164,7 @@ print(" ........................................................................
 extStr = "_%s"%opt.channel if opt.channel != '' else ''
 if not os.path.isdir("./output_Datacard%s"%extStr): os.system("mkdir ./output_Datacard%s"%extStr)
 # fdataName = "%s.txt"%opt.output
-fdataName = "./output_Datacard%s/%s_pruned_datacard_%s_%s.txt"%(extStr,opt.mass_ALP,opt.years,opt.channel)
+fdataName = "./output_Datacard%s/%s_pruned_datacard_%s.txt"%(extStr,opt.mass_ALP,opt.channel)
 print(" --> Writing to datacard file: %s"%fdataName)
 from tools.writeToDatacard import writePreamble, writeProcesses, writeSystematic, writeMCStatUncertainty, writePdfIndex, writeBreak
 fdata = open(fdataName,"w")
@@ -195,9 +195,14 @@ if opt.doMCStatUncertainty:
     print(" --> [ERROR] in writing MC stat uncertainty systematic. Leaving")
     leave()
 writeBreak(fdata)
+
+# Otherwise the AsymptoticLimits cannot work
+fdata.write("CMS_hgg_nuisance_pho_Smear_M1_ChanEle  param  0.0  1.0\n") 
+
 if not writePdfIndex(fdata,data,opt):
   print(" --> [ERROR] in writing pdf indices. Leaving...")
   leave()
+
 fdata.close()
 
 leave()
