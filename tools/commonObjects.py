@@ -11,7 +11,7 @@ pwd__ = "%s/Plots"%cwd__
 twd__ = "%s/Trees2WS"%cwd__
 
 # Centre of mass energy string
-sqrts__ = "13TeV"
+sqrts__ = "13p6TeV"
 
 # Luminosity map in fb^-1: for using UL 2018
 # lumiMap = {

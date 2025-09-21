@@ -209,7 +209,7 @@ def plotFTestResults(ssfs,_opt,_outdir="./",_extension='',_proc='',_cat='',_mass
   haxes.GetXaxis().SetLabelOffset(0.009)
 
   haxes.SetMaximum(1.2*ymax)
-  haxes.SetMinimum(0)
+  haxes.SetMinimum(0.5)
   # haxes.GetXaxis().SetRangeUser(0.5,5.5)
   haxes.GetXaxis().SetLimits(0.6,5.4)
   haxes.Draw()

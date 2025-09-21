@@ -1,0 +1,43 @@
+# subjob_sig_RunPlotter
+universe              = vanilla
+executable            = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/runjob_sig_RunPlotter.sh
+getenv                = True
+request_memory        = 2000
++JobFlavour           = "workday"
+
+log = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/5_RunPlotter_job_2022preEE_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/5_RunPlotter_job_2022preEE_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/5_RunPlotter_job_2022preEE_ele.err
+arguments = 5 2022preEE ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/15_RunPlotter_job_2022preEE_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/15_RunPlotter_job_2022preEE_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/15_RunPlotter_job_2022preEE_ele.err
+arguments = 15 2022preEE ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/30_RunPlotter_job_2022preEE_ele.log
+output = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/30_RunPlotter_job_2022preEE_ele.out
+error = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/30_RunPlotter_job_2022preEE_ele.err
+arguments = 30 2022preEE ele
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/5_RunPlotter_job_2022preEE_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/5_RunPlotter_job_2022preEE_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/5_RunPlotter_job_2022preEE_mu.err
+arguments = 5 2022preEE mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/15_RunPlotter_job_2022preEE_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/15_RunPlotter_job_2022preEE_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/15_RunPlotter_job_2022preEE_mu.err
+arguments = 15 2022preEE mu
+queue
+
+log = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/30_RunPlotter_job_2022preEE_mu.log
+output = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/30_RunPlotter_job_2022preEE_mu.out
+error = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/30_RunPlotter_job_2022preEE_mu.err
+arguments = 30 2022preEE mu
+queue
+

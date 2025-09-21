@@ -50,78 +50,22 @@ def get_options():
   return parser.parse_args()
 (opt,args) = get_options()
 
-# --- helpers: robust file and workspace resolution ---
-def resolve_ws_file(input_dir, channel, year):
-  """Pick a ROOT file under input_dir in order of preference."""
-  prefs = [
-    f"{input_dir}/ws_{channel}_{year}.root",
-    f"{input_dir}/ws_{channel}_*.root",
-    f"{input_dir}/ws_*.root",
-    f"{input_dir}/*.root",
-  ]
-  for pat in prefs:
-    matches = sorted(glob.glob(pat))
-    if matches:
-      return matches[0]
-  raise RuntimeError(f"No ROOT ws file found under {input_dir}")
-
-def _find_workspace_recursive(dir_obj):
-  for key in dir_obj.GetListOfKeys():
-    name = key.GetName()
-    obj = dir_obj.Get(name)
-    if not obj:
-      continue
-    if obj.InheritsFrom("RooWorkspace"):
-      return obj
-    if obj.InheritsFrom("TDirectory"):
-      ws = _find_workspace_recursive(obj)
-      if ws:
-        return ws
-  return None
-
-def get_workspace(rootfile, name_hint=None):
-  """Return a RooWorkspace from rootfile; use name_hint if provided, else first RooWorkspace found."""
-  obj = None
-  if name_hint:
-    obj = rootfile.Get(name_hint)
-    # if hint points to a directory, search inside
-    if obj and obj.InheritsFrom("TDirectory"):
-      ws = _find_workspace_recursive(obj)
-      if ws:
-        return ws
-  if obj and obj.InheritsFrom("RooWorkspace"):
-    return obj
-  # fallback: first RooWorkspace anywhere
-  ws = _find_workspace_recursive(rootfile)
-  return ws
-
 ROOT.gStyle.SetOptStat(0)
 ROOT.gROOT.SetBatch(True)
 if opt.doPlots: 
   # if not os.path.isdir("%s/outdir_%s/fTest/Plots"%(swd__,opt.ext)): os.system("mkdir -p %s/outdir_%s/fTest/Plots"%(swd__,opt.ext))
   if not os.path.isdir("%s/outdir_%s/fTest/Plots"%(swd__,opt.channel)): os.system("mkdir -p %s/outdir_%s/fTest/Plots"%(swd__,opt.channel))
 
-# Load xvar to fit (robust)
+# Load xvar to fit
 print(f"Looking for files in: {opt.inputWSDir}")
-ws_file_for_init = resolve_ws_file(opt.inputWSDir, opt.channel, opt.year)
-f0 = ROOT.TFile(ws_file_for_init, "read")
-inputWS0 = get_workspace(f0, inputWSName__)
-if not inputWS0:
-  print(f"Error: Could not find RooWorkspace (hint='{inputWSName__}') in file: {ws_file_for_init}")
-  leave()
+nominalWSFileName = glob.glob("%s/ALP_sig_*"%(opt.inputWSDir))[0]
+f0 = ROOT.TFile(nominalWSFileName,"read")
+inputWS0 = f0.Get(inputWSName__)
 xvar = inputWS0.var(opt.xvar)
-if not xvar:
-  print(f"Error: Workspace does not contain variable '{opt.xvar}'")
-  leave()
 xvarFit = xvar.Clone()
-# prefer workspace dZ if present, else create dummy
-dZ_ws = inputWS0.var("dZ")
-if dZ_ws:
-  dZ = dZ_ws
-  aset = ROOT.RooArgSet(xvar, dZ)
-else:
-  dZ = ROOT.RooRealVar("dZ", "dZ", 0)
-  aset = ROOT.RooArgSet(xvar)  # do not include non-existing var
+dZ = ROOT.RooRealVar("dZ", "dZ", 0)  # PZ
+# dZ = inputWS0.var("dZ")
+aset = ROOT.RooArgSet(xvar,dZ)
 f0.Close()
 
 # Create MH var
@@ -134,13 +78,9 @@ df = pd.DataFrame(columns=['proc','sumEntries','nRV','nWV'])
 procYields = od()
 for proc in opt.procs.split(","):
   print(f"Looking for files in: {opt.inputWSDir}")
-  WSFileName = resolve_ws_file(opt.inputWSDir, opt.channel, opt.year)
+  WSFileName = glob.glob(f"{opt.inputWSDir}/ALP_sig_Am{opt.mass_ALP}_Hm{opt.mass}_{opt.year}_{opt.channel}.root")[0]
   f = ROOT.TFile(WSFileName,"read")
-  inputWS = get_workspace(f, inputWSName__)
-  if not inputWS:
-    print(f"Error: Could not find RooWorkspace (hint='{inputWSName__}') in file: {WSFileName}")
-    f.Close()
-    continue
+  inputWS = f.Get(inputWSName__) 
   d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(proc.split("_")[0]),opt.mass,sqrts__,opt.cat)),aset)
   # d = d.reduce(aset, "abs(dZ) <= 1.")  # PZ
   df.loc[len(df)] = [proc,d.sumEntries(),1,1]
@@ -165,13 +105,9 @@ for pidx, proc in enumerate(procsToFTest):
 
   # Split dataset to RV/WV: ssf requires input as dict (with mass point as key)
   datasets_RV, datasets_WV = od(), od()
-  WSFileName = resolve_ws_file(opt.inputWSDir, opt.channel, opt.year) # PZ
+  WSFileName = glob.glob(f"{opt.inputWSDir}/ALP_sig_Am{opt.mass_ALP}_Hm{opt.mass}_{opt.year}_{opt.channel}.root")[0] # PZ
   f = ROOT.TFile(WSFileName,"read")
-  inputWS = get_workspace(f, inputWSName__)
-  if not inputWS:
-    print(f"Error: Could not find RooWorkspace (hint='{inputWSName__}') in file: {WSFileName}")
-    f.Close()
-    continue
+  inputWS = f.Get(inputWSName__)
   d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(proc.split("_")[0]),opt.mass,sqrts__,opt.cat)),aset) # PZ
   # datasets_RV[opt.mass] = splitRVWV(d,aset,mode="RV")
   # datasets_WV[opt.mass] = splitRVWV(d,aset,mode="WV")
