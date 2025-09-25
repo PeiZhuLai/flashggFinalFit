@@ -6,9 +6,10 @@ ChannelList=( ele mu )
 ALPmassList=( 5 15 30 )
 YearsList=( 2022preEE )
 BaseDir="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit"
-Executable="$BaseDir/runjob_sig_signalFit.sh"
+EosDir="/eos/home-p/pelai/HZa/root_MVAcut"
+Executable="$BaseDir/shellScripts/sig_sys/2_runjob_sig_signalFit.sh"
 LogDir="$BaseDir/Signal/log_files"
-SubmitFile="subjob_sig_signalFit.submit"
+SubmitFile="2_subjob_sig_signalFit.submit"
 
 # Create log directory if it doesn't exist
 mkdir -p "$LogDir"
@@ -31,7 +32,7 @@ for iChannel in "${!ChannelList[@]}"; do
       log_file="$LogDir/${ChannelList[iChannel]}/${ALPmassList[iALPmass]}_signalFit_job_${YearsList[iYear]}_${ChannelList[iChannel]}.log"
       output_file="$LogDir/${ChannelList[iChannel]}/${ALPmassList[iALPmass]}_signalFit_job_${YearsList[iYear]}_${ChannelList[iChannel]}.out"
       error_file="$LogDir/${ChannelList[iChannel]}/${ALPmassList[iALPmass]}_signalFit_job_${YearsList[iYear]}_${ChannelList[iChannel]}.err"
-      arguments="${ALPmassList[iALPmass]} ${YearsList[iYear]} ${ChannelList[iChannel]} $BaseDir/MVAcut/run3_ReReco/output/sig/${ChannelList[iChannel]}"
+      arguments="${ALPmassList[iALPmass]} ${YearsList[iYear]} ${ChannelList[iChannel]} $EosDir/ALP_M${ALPmassList[iALPmass]}/ws_Tree2WS"
 
       echo "log = $log_file" >> $SubmitFile
       echo "output = $output_file" >> $SubmitFile

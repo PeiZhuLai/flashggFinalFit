@@ -32,8 +32,8 @@ lumiMap = {
     'combined':137.65, 
     'merged':137.65,
     # Set 2022preEE to 62.5 for lack of signal MC samples 
-    # '2022preEE':8.00,
-    '2022preEE':62.50,
+    '2022preEE':7.98,
+    # '2022preEE':62.50,
     '2022postEE':26.70,
     '2023preBPix':17.79,
     '2023postBPix':9.45

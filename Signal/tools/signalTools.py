@@ -9,7 +9,10 @@ from commonObjects import *
 # Functions for manip RooDataSets / cut the _d to be left only _argset
 # _d = RooDataSet
 # _argset = RooArgSet
-def reduceDataset(_d,_argset): return _d.reduce(_argset)
+def reduceDataset(_d,_argset):
+    if not _d:
+        raise RuntimeError("reduceDataset: input dataset is None; check dataset name in workspace.")
+    return _d.reduce(ROOT.RooFit.SelectVars(_argset))
 
 def splitRVWV(_d,_argset,mode="RV"):
   # Split into RV/WV senario at dZ = 1cm

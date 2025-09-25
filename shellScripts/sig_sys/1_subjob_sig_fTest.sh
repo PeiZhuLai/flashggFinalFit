@@ -34,7 +34,7 @@ for iChannel in "${!ChannelList[@]}"; do
         log_file="$LogDir/${ChannelList[iChannel]}/${ALPmassList[iALPmass]}_fTest_job_${YearsList[iYear]}_${ChannelList[iChannel]}_Hm${HmassList[iHmass]}.log"
         output_file="$LogDir/${ChannelList[iChannel]}/${ALPmassList[iALPmass]}_fTest_job_${YearsList[iYear]}_${ChannelList[iChannel]}_Hm${HmassList[iHmass]}.out"
         error_file="$LogDir/${ChannelList[iChannel]}/${ALPmassList[iALPmass]}_fTest_job_${YearsList[iYear]}_${ChannelList[iChannel]}_Hm${HmassList[iHmass]}.err"
-        arguments="${ALPmassList[iALPmass]} ${YearsList[iYear]} ${HmassList[iHmass]} ${ChannelList[iChannel]} $EosDir/ALP_M${ALPmassList[iALPmass]}/ws_Tree2WS/ws_${ChannelList[iChannel]}_${YearsList[iYear]}"
+        arguments="${ALPmassList[iALPmass]} ${YearsList[iYear]} ${HmassList[iHmass]} ${ChannelList[iChannel]} $EosDir/ALP_M${ALPmassList[iALPmass]}/ws_Tree2WS"
 
         echo "log = $log_file" >> $SubmitFile
         echo "output = $output_file" >> $SubmitFile

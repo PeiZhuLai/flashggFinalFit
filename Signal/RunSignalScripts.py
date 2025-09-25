@@ -12,6 +12,11 @@ from tools.submissionTools import *
 
 def get_options():
   parser = OptionParser()
+  
+  parser.add_option('--mass_ALP', dest='mass_ALP', default=1, type='int', help="ALP mass") # PZ
+  parser.add_option('--year', dest='year', default='16', help="year") # PZ
+  parser.add_option("--channel", dest='channel', default='', help="ele, mu, or leptons") # PZ
+
   # Take inputs from config file
   parser.add_option('--inputConfig', dest='inputConfig', default='', help="Name of input config file (if specified will ignore other options)")
   parser.add_option('--mode', dest='mode', default='', help="Which script to run. Options: ['fTest','getDiagProc','calcPhotonSyst','signalFit','packageOnly','sigPlotsOnly']")
@@ -44,7 +49,6 @@ if opt.inputConfig != '':
     options['cats']         = _cfg['cats']
     options['ext']          = _cfg['ext']
     options['analysis']     = _cfg['analysis']
-    options['year']         = _cfg['year']
     options['massPoints']   = _cfg['massPoints']
     options['scales']       = _cfg['scales']
     options['scalesCorr']   = _cfg['scalesCorr']
@@ -58,7 +62,10 @@ if opt.inputConfig != '':
     options['jobOpts']                 = opt.jobOpts
     options['groupSignalFitJobsByCat'] = opt.groupSignalFitJobsByCat
     options['printOnly']               = opt.printOnly
-  
+    options['year']        = opt.year
+    options['mass_ALP']    = opt.mass_ALP
+    options['channel']     = opt.channel
+
     #Delete copy of file
     os.system("rm config.py")
   

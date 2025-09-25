@@ -100,6 +100,10 @@ def plotFTest(ssfs,_opt=1,_outdir='./',_extension='',_proc='',_cat='',_mass='125
   ssf.DataHists[_mass].fillHistogram(hists['data'],ROOT.RooArgList(ssf.xvar))
   hists['data'].GetXaxis().CenterTitle(True)
   hists['data'].GetYaxis().CenterTitle(True)
+  print(f"float(ssf.nBins): {float(ssf.nBins)}")
+  print("xvar:", ssf.xvar.getMin(), ssf.xvar.getMax())
+  print("nBins:", ssf.nBins)
+  print("bin width:", (ssf.xvar.getMax()-ssf.xvar.getMin())/ssf.nBins)
   hists['data'].Scale(float(ssf.nBins)/1600)
   hists['data'].SetMarkerStyle(20)
   hists['data'].SetMarkerColor(1)
@@ -561,7 +565,7 @@ def plotSplines(_finalModel,_outdir="./",_nominalMass='125',splinesToPlot=['xs',
   haxes.GetXaxis().CenterTitle(True)
   haxes.GetYaxis().CenterTitle(True)
 
-  haxes.GetYaxis().SetTitle("X/X(m_{H}=125)")
+  haxes.GetYaxis().SetTitle("Varied Yield / Yield(m_{H}=125)")
   haxes.GetYaxis().SetTitleFont(42)
   haxes.GetYaxis().SetTitleSize(0.055)
   haxes.GetYaxis().SetTitleOffset(1.3)
@@ -580,13 +584,15 @@ def plotSplines(_finalModel,_outdir="./",_nominalMass='125',splinesToPlot=['xs',
   haxes.SetMinimum(xmin)
   haxes.Draw()
   # Define legend
-  leg = ROOT.TLegend(0.20,0.18,0.50,0.43)
+  leg = ROOT.TLegend(0.20,0.18,0.50,0.48)
   leg.SetFillStyle(0)
   leg.SetFillColor(0)
   leg.SetLineColor(0)
   leg.SetBorderSize(0)
   leg.SetTextFont(42)
   leg.SetTextSize(0.045)
+  channeltext = "Electron" if _channel == 'ele' else "Muon"
+  leg.SetHeader(f"{channeltext} Channel", "L")
   # Draw graphs
   for x, gr in grs.items(): 
     gr.SetLineColor(colorMap[x])
@@ -596,9 +602,9 @@ def plotSplines(_finalModel,_outdir="./",_nominalMass='125',splinesToPlot=['xs',
     gr.SetLineWidth(3)
     gr.Draw("Same PL")
     if x == "norm": leg.AddEntry(gr,"N_{exp}: @%s = %.2f"%(_nominalMass,xnom['norm']))
-    if x == "xs": leg.AddEntry(gr,"#sigma: @%s = %.2f pb"%(_nominalMass,xnom['xs']))
-    if x == "br": leg.AddEntry(gr,"#bf{#it{#Beta}}: @%s = %.2f%%"%(_nominalMass,100*xnom['br']))
-    if x == "ea": leg.AddEntry(gr,"#epsilon x #it{#Alpha}: @%s = %.2f%%"%(_nominalMass,100*xnom['ea']))
+    if x == "xs": leg.AddEntry(gr,"#sigma: @%s = %.1f pb"%(_nominalMass,xnom['xs']))
+    if x == "br": leg.AddEntry(gr,"#bf{#it{#Beta}}: @%s = %.0f%%"%(_nominalMass,100*xnom['br']))
+    if x == "ea": leg.AddEntry(gr,"#epsilon x #it{#Alpha}: @%s = %.3f%%"%(_nominalMass,100*xnom['ea']))
     if x == "fracRV": leg.AddEntry(gr,"RV fraction: @%s = %.2f%%"%(_nominalMass,100*xnom['fracRV']))
   leg.Draw("Same")
   grs['norm'].Draw("Same PL")
@@ -616,7 +622,14 @@ def plotSplines(_finalModel,_outdir="./",_nominalMass='125',splinesToPlot=['xs',
   lat.SetTextSize(0.045)
   lat.SetTextFont(52)  # 斜體字 Preliminary 標籤
   lat.DrawLatex(0.25, 0.965, "Simulation Preliminary")
-  lat.DrawLatex(0.71,0.97,("62.5 fb^{-1} (13.6 TeV)"))
+  # 以 _finalModel.year 從 lumiMap 取亮度，並依年份選擇能量顯示
+  try:
+    lumi_fb = float(lumiMap[_finalModel.year])
+  except KeyError:
+    lumi_fb = float(lumiMap.get('combined', 0.0))
+  year_key = str(_finalModel.year)
+  energy_text = "13.6 TeV" if (year_key.startswith("2022") or year_key.startswith("2023")) else "13 TeV"
+  lat.DrawLatex(0.70, 0.97, f"{lumi_fb:.2f} fb^{{-1}} ({energy_text})")
   canv.Update()
   canv.SaveAs(f"{_outdir}/{_finalModel.name}_splines_{_Amass}_{_year}_{_channel}.pdf")
 

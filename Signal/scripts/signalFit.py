@@ -1,4 +1,7 @@
 import ROOT
+# 在載入 pandas/numpy 之前抑制 numpy.core.getlimits 相關的 UserWarning
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning, module=r"numpy\.core\.getlimits")
 import pandas as pd
 import pickle
 import math
@@ -22,10 +25,75 @@ from plottingTools import *
 MHLow, MHHigh = '120', '130'
 MHNominal = '125'
 
-print(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ HGG SIGNAL FITTER ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ")
+print(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ HZallgg SIGNAL FITTER ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ")
 def leave():
-  print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ HGG SIGNAL FITTER (END) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ")
+  print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ HZallgg SIGNAL FITTER (END) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ")
   exit()
+
+# 新增：穩健取得 RooWorkspace 的工具函式
+def get_workspace(tfile, ws_hint):
+  # 優先用 hint 嘗試抓取
+  obj = tfile.Get(ws_hint) if ws_hint else None
+  def _find_ws(node):
+    if not node: 
+      return None
+    # 直接是 RooWorkspace
+    if hasattr(ROOT, "RooWorkspace") and node.InheritsFrom("RooWorkspace"):
+      return node
+    # 在目錄裡遞迴找
+    if node.InheritsFrom("TDirectory"):
+      keys = node.GetListOfKeys()
+      if keys:
+        for k in keys:
+          o = k.ReadObj()
+          ws = _find_ws(o)
+          if ws:
+            return ws
+    return None
+
+  ws = _find_ws(obj)
+  if ws:
+    return ws
+
+  # 常見名稱的回退列表
+  candidates = [
+    ws_hint,
+    "CMS_hza_workspace",
+    "cms_hgg_13TeV",
+    "workspace",
+    "w",
+    "CMS_hgg_workspace"
+  ]
+  for name in candidates:
+    if not name:
+      continue
+    o = tfile.Get(name)
+    ws = _find_ws(o)
+    if ws:
+      return ws
+
+  # 全檔遞迴搜尋
+  ws = _find_ws(tfile)
+  if ws:
+    return ws
+
+  print(" --> [ERROR] Could not retrieve RooWorkspace from file: %s" % tfile.GetName())
+  print("     Please check inputWSName__ and file structure. tfile content:")
+  tfile.ls()
+  leave()
+
+# 新增：從 workspace 以名稱穩健取得 RooAbsData 的工具函式
+def get_dataset(ws, name):
+  ds = ws.data(name)
+  if ds:
+    return ds
+  print(" --> [ERROR] Dataset '%s' not found in workspace '%s'." % (name, ws.GetName()))
+  try:
+    print("     Workspace content:")
+    ws.Print()
+  except Exception:
+    pass
+  leave()
 
 def get_options():
   parser = OptionParser()
@@ -38,9 +106,9 @@ def get_options():
   parser.add_option("--proc", dest='proc', default='GG2H', help="Signal process") # PZ
   parser.add_option("--cat", dest='cat', default='cat0', help="RECO category") # PZ
   parser.add_option("--year", dest='year', default='2016', help="Year")
-  parser.add_option("--analysis", dest='analysis', default='STXS', help="Analysis handle: used to specify replacement map and XS*BR normalisations")
-  parser.add_option('--massPoints', dest='massPoints', default='120,125,130', help="Mass points to fit")
-  parser.add_option('--skipBeamspotReweigh', dest='skipBeamspotReweigh', default=True, action="store_true", help="Skip beamspot reweigh to match beamspot distribution in data") # PZ
+  parser.add_option("--analysis", dest='analysis', default='HZa', help="Analysis handle: used to specify replacement map and XS*BR normalisations")
+  parser.add_option('--massPoints', dest='massPoints', default='125', help="Mass points to fit")
+  parser.add_option('--skipBeamspotReweigh', dest='skipBeamspotReweigh', default=False, action="store_true", help="Skip beamspot reweigh to match beamspot distribution in data") # PZ
   parser.add_option('--doPlots', dest='doPlots', default=True, action="store_true", help="Produce Signal Fitting plots") # PZ
   parser.add_option("--doVoigtian", dest='doVoigtian', default=False, action="store_true", help="Use Voigtians instead of Gaussians for signal models with Higgs width as parameter")
   parser.add_option("--useDCB", dest='useDCB', default=False, action="store_true", help="Use DCB in signal fitting")
@@ -59,7 +127,7 @@ def get_options():
   parser.add_option('--beamspotWidthData', dest='beamspotWidthData', default=3.5, type='float', help="Width of beamspot in data [cm]")
   parser.add_option('--beamspotWidthMC', dest='beamspotWidthMC', default=5.14, type='float', help="Width of beamspot in MC [cm]") # PZ
   parser.add_option('--MHPolyOrder', dest='MHPolyOrder', default=1, type='int', help="Order of polynomial for MH dependence")
-  parser.add_option('--nBins', dest='nBins', default=85, type='int', help="Number of bins for fit")
+  parser.add_option('--nBins', dest='nBins', default=80, type='int', help="Number of bins for fit")
   # Minimizer options
   parser.add_option('--minimizerMethod', dest='minimizerMethod', default='TNC', help="(Scipy) Minimizer method")
   parser.add_option('--minimizerTolerance', dest='minimizerTolerance', default=1e-8, type='float', help="(Scipy) Minimizer toleranve")
@@ -91,10 +159,27 @@ if opt.analysis not in globalXSBRMap:
 else: xsbrMap = globalXSBRMap[opt.analysis]
 
 # Load RooRealVars
-nominalWSFileName = glob.glob(f"{opt.inputWSDir}/ALP_sig_Am{opt.mass_ALP}_Hm125_{opt.year}_{opt.channel}.root")[0] # PZ
+nominalWSFileName = glob.glob(f"{opt.inputWSDir}/ws_{opt.channel}_{opt.year}.root")[0] # PZ
 f0 = ROOT.TFile(nominalWSFileName,"read")
-inputWS0 = f0.Get(inputWSName__)
+inputWS0 = get_workspace(f0, inputWSName__)
 xvar = inputWS0.var(opt.xvar)
+# 若變數不存在則提示可能的變數名稱
+if not xvar:
+  print(f" --> [ERROR] Variable '{opt.xvar}' not found in workspace '{inputWS0.GetName()}'.")
+  try:
+    var_iter = inputWS0.allVars().createIterator()
+    hints = []
+    v = var_iter.Next()
+    while v:
+      n = v.GetName()
+      if "mass" in n or "CMS" in n:
+        hints.append(n)
+      v = var_iter.Next()
+    if hints:
+      print("     Available candidates containing 'mass' or 'CMS': %s" % ", ".join(sorted(set(hints))[:15]))
+  except Exception:
+    pass
+  leave()
 xvarFit = xvar.Clone()
 dZ = ROOT.RooRealVar("dZ", "dZ", 0)  # PZ
 # dZ = inputWS0.var("dZ")
@@ -116,12 +201,12 @@ MH.setConstant(True)
 
 if opt.skipZeroes:
   # Extract nominal mass dataset and see if entries == 0
-  WSFileName = glob.glob(f"{opt.inputWSDir}/ALP_sig_Am{opt.mass_ALP}_Hm125_{opt.year}_{opt.channel}.root")[0]
+  WSFileName = glob.glob(f"{opt.inputWSDir}/ws_{opt.channel}_{opt.year}.root")[0]
   f = ROOT.TFile(WSFileName,"read")
-  inputWS = f.Get(inputWSName__)
-  d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(proc.split("_")[0]),opt.mass,sqrts__,opt.cat)),aset)
-  # d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(opt.proc.split("_")[0]),MHNominal,sqrts__,opt.cat)),aset)
-  if( d.numEntries() == 0. )|( d.sumEntries <= 0. ):
+  inputWS = get_workspace(f, inputWSName__)
+  dname = "%s_%s_%s_%s"%(procToData(opt.proc.split("_")[0]),MHNominal,sqrts__,opt.cat)
+  d = reduceDataset(get_dataset(inputWS, dname), aset)
+  if (d.numEntries() == 0.) or (d.sumEntries() <= 0.):
     print(" --> (%s,%s) has zero events. Will not construct signal model"%(opt.proc,opt.cat))
     exit()
   inputWS.Delete()
@@ -163,12 +248,11 @@ nominalDatasets = od()
 # For RV (or if skipping vertex scenario split)
 datasetRVForFit = od()
 for mp in opt.massPoints.split(","):
-  WSFileName = glob.glob(f"{opt.inputWSDir}/ALP_sig_Am{opt.mass_ALP}_Hm{mp}_{opt.year}_{opt.channel}.root")[0] # PZ
-  # WSFileName = glob.glob("%s/output*M%s*%s.root"%(opt.inputWSDir,mp,procRVFit))[0]
+  WSFileName = glob.glob(f"{opt.inputWSDir}/ws_{opt.channel}_{opt.year}.root")[0] # PZ
   f = ROOT.TFile(WSFileName,"read")
-  inputWS = f.Get(inputWSName__)
-  d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(procRVFit.split("_")[0]),mp,sqrts__,opt.cat)),aset) # PZ
-  # d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(procRVFit.split("_")[0]),mp,sqrts__,catRVFit)),aset)
+  inputWS = get_workspace(f, inputWSName__)
+  dname = "%s_%s_%s_%s"%(procToData(procRVFit.split("_")[0]),mp,sqrts__,opt.cat)  # PZ
+  d = reduceDataset(get_dataset(inputWS, dname), aset)
   nominalDatasets[mp] = d.Clone()
   if opt.skipVertexScenarioSplit: datasetRVForFit[mp] = d
   else: datasetRVForFit[mp] = splitRVWV(d,aset,mode="RV")
@@ -180,12 +264,11 @@ if( datasetRVForFit[MHNominal].numEntries() < opt.replacementThreshold  )|( data
   nominal_numEntries = datasetRVForFit[MHNominal].numEntries()
   procReplacementFit, catReplacementFit = rMap['procRVMap'][opt.cat], rMap['catRVMap'][opt.cat]
   for mp in opt.massPoints.split(","):
-    WSFileName = glob.glob(f"{opt.inputWSDir}/ALP_sig_Am{opt.mass_ALP}_Hm{mp}_{opt.year}_{opt.channel}.root")[0] # PZ
-    # WSFileName = glob.glob("%s/output*M%s*%s.root"%(opt.inputWSDir,mp,procReplacementFit))[0]
+    WSFileName = glob.glob(f"{opt.inputWSDir}/ws_{opt.channel}_{opt.year}.root")[0] # PZ
     f = ROOT.TFile(WSFileName,"read")
-    inputWS = f.Get(inputWSName__)
-    d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(procReplacementFit.split("_")[0]),mp,sqrts__,opt.cat)),aset) # PZ
-    # d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(procReplacementFit.split("_")[0]),mp,sqrts__,catReplacementFit)),aset)
+    inputWS = get_workspace(f, inputWSName__)
+    dname = "%s_%s_%s_%s"%(procToData(procReplacementFit.split("_")[0]),mp,sqrts__,opt.cat)  # PZ
+    d = reduceDataset(get_dataset(inputWS, dname), aset)
     if opt.skipVertexScenarioSplit: datasetRVForFit[mp] = d
     else: datasetRVForFit[mp] = splitRVWV(d,aset,mode="RV")
     inputWS.Delete()
@@ -221,12 +304,11 @@ else:
 if not opt.skipVertexScenarioSplit:
   datasetWVForFit = od()
   for mp in opt.massPoints.split(","):
-    WSFileName = glob.glob(f"{opt.inputWSDir}/ALP_sig_Am{opt.mass_ALP}_Hm{mp}_{opt.year}_{opt.channel}.root")[0] # PZ
-    # WSFileName = glob.glob("%s/output*M%s*%s.root"%(opt.inputWSDir,mp,procWVFit))[0]
+    WSFileName = glob.glob(f"{opt.inputWSDir}/ws_{opt.channel}_{opt.year}.root")[0] # PZ
     f = ROOT.TFile(WSFileName,"read")
-    inputWS = f.Get(inputWSName__)
-    d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(proc.split("_")[0]),mp,sqrts__,opt.cat)),aset) # PZ
-    # d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(procWVFit.split("_")[0]),mp,sqrts__,catWVFit)),aset)
+    inputWS = get_workspace(f, inputWSName__)
+    dname = "%s_%s_%s_%s"%(procToData(proc.split("_")[0]),mp,sqrts__,opt.cat)  # PZ
+    d = reduceDataset(get_dataset(inputWS, dname), aset)
     datasetWVForFit[mp] = splitRVWV(d,aset,mode="WV")
     inputWS.Delete()
     f.Close()
@@ -236,18 +318,17 @@ if not opt.skipVertexScenarioSplit:
     nominal_numEntries = datasetWVForFit[MHNominal].numEntries()
     procReplacementFit, catReplacementFit = rMap['procWV'], rMap['catWV']
     for mp in opt.massPoints.split(","):
-      WSFileName = glob.glob(f"{opt.inputWSDir}/ALP_sig_Am{opt.mass_ALP}_Hm{mp}_{opt.year}_{opt.channel}.root")[0] # PZ
-      # WSFileName = glob.glob("%s/output*M%s*%s.root"%(opt.inputWSDir,mp,procReplacementFit))[0]
+      WSFileName = glob.glob(f"{opt.inputWSDir}/ws_{opt.channel}_{opt.year}.root")[0] # PZ
       f = ROOT.TFile(WSFileName,"read")
-      inputWS = f.Get(inputWSName__)
-      d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(proc.split("_")[0]),mp,sqrts__,opt.cat)),aset) # PZ
-      # d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(procReplacementFit.split("_")[0]),mp,sqrts__,catReplacementFit)),aset)
+      inputWS = get_workspace(f, inputWSName__)
+      dname = "%s_%s_%s_%s"%(procToData(proc.split("_")[0]),mp,sqrts__,opt.cat)  # PZ
+      d = reduceDataset(get_dataset(inputWS, dname), aset)
       datasetWVForFit[mp] = splitRVWV(d,aset,mode="WV")
       inputWS.Delete()
       f.Close()
     # Check if replacement dataset has too few entries: if so throw error
     if( datasetWVForFit[MHNominal].numEntries() < opt.replacementThreshold )|( datasetWVForFit[MHNominal].sumEntries() < 0. ):
-      print(" --> [ERROR] replacement dataset (%s,%s) has too few entries (%g < %g)"%(procReplacementFit,catReplacementFit,datasetWVForFit[MHNominal].numEntries,opt.replacementThreshold))
+      print(" --> [ERROR] replacement dataset (%s,%s) has too few entries (%g < %g)"%(procReplacementFit,catReplacementFit,datasetWVForFit[MHNominal].numEntries(),opt.replacementThreshold))
       sys.exit(1)
     else:
       procWVFit, catWVFit = procReplacementFit, catReplacementFit
@@ -346,4 +427,4 @@ if opt.doPlots:
     plotPdfComponents(ssfWV,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.channel),_extension="WV_",_proc=procWVFit,_cat=catRVFit, _Amass=opt.mass_ALP,_year=opt.year,_channel=opt.channel) 
   # Plot interpolation
   plotInterpolation(fm,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.channel), _Amass=opt.mass_ALP,_year=opt.year,_channel=opt.channel) 
-  plotSplines(fm,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.channel),_nominalMass=MHNominal, _Amass=opt.mass_ALP,_year=opt.year,_channel=opt.channel) 
+  plotSplines(fm,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.channel),_nominalMass=MHNominal, _Amass=opt.mass_ALP,_year=opt.year,_channel=opt.channel)

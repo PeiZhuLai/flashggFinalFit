@@ -1,8 +1,15 @@
 # Python script to hold replacement model mapping for different analyses
 from collections import OrderedDict as od
 
+
 # Add analyses to globalReplacementMap. See "STXS" as an example
 globalReplacementMap = od()
+
+globalReplacementMap['HZa'] = od()
+globalReplacementMap['HZa']['procRVMap'] = od()
+globalReplacementMap["HZa"]["procRVMap"]["cat0"] = "cat0"
+globalReplacementMap["HZa"]["catRVMap"] = od()
+globalReplacementMap["HZa"]["catRVMap"]["cat0"] = "cat0"
 
 # Example analysis which with cats Untagged_Tag0,VBF_Tag0
 globalReplacementMap['example'] = od()

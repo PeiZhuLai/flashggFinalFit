@@ -153,9 +153,32 @@ class FinalModel:
     # Loop over mass points  
     ea, mh = [], []
     for mp in self.massPoints.split(","):
-      mh.append(float(mp))
-      sumw = self.datasets[mp].sumEntries()
-      ea.append(sumw) 
+      mh_val = float(mp)
+      mh.append(mh_val)
+
+      # Evaluate XS and BR splines at this mass point (they already include xsbrMap factors)
+      self.MH.setVal(mh_val)
+      xs_val = float(self.Splines['xs'].getVal())
+      br_val = float(self.Splines['br'].getVal())
+      lumi_fb = float(lumiMap[self.year])
+
+      print("mp", mp, "EA(sumEntries) =", self.datasets[mp].sumEntries())
+      print("XS =", xs_val)
+      print("BR =", br_val)
+      print("Lumi =", lumi_fb)
+
+      # sumw is already N_{exp} with fb unit. does not need to be multiplied by 1000
+      # The print EA should be same as sumw = self.datasets[mp].sumEntries()
+      # sumw will be multiplied by ( xs * br * keepfb * lumi(fb) ) so that we have to divide them
+      keepfb = 1000.0
+      
+      # However, we only use a half of dataset for training, so we need to multiply by 2
+      # So, sumw = self.datasets[mp].sumEntries() * 2
+      test2Allstats = 2.0
+      denom = xs_val * br_val * lumi_fb * keepfb
+      sumw = test2Allstats * self.datasets[mp].sumEntries() / denom if denom > 0. else 1.0
+      ea.append(sumw)
+
     # If single mass point then add MHLow and MHHigh dummy points for constant ea
     if len(ea) == 1: ea, mh = [ea[0],ea[0],ea[0]], [float(self.MHLow),mh[0],float(self.MHHigh)]
     # Convert to numpy arrays and make spline

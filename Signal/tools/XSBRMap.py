@@ -10,6 +10,13 @@ globalXSBRMap = od()
 #globalXSBRMap['example']['decay'] = {'mode':'constant','factor':1}
 #globalXSBRMap['example']['PROCNAME'] = {'mode':'constant','factor':0.001}
 
+# analysis = HZa
+# process = GG2H
+globalXSBRMap['HZa'] = od()
+globalXSBRMap['HZa']['decay'] = {'mode':'constant','factor':1}
+globalXSBRMap['HZa']['GG2H'] = {'mode':'constant','factor':0.1}
+
+
 # For case of inclusive production mode then have no additional factor beyond V branching ratios
 globalXSBRMap['example'] = od()
 globalXSBRMap['example']['decay'] = {'mode':'hgg'}
