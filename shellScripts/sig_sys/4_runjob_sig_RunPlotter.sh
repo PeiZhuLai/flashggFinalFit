@@ -1,8 +1,8 @@
 #!/bin/bash
-# /bin/hostname
-# gcc -v
 pwd
 source /cvmfs/cms.cern.ch/cmsset_default.sh
+CMSSW_TOP="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4"
+cd "${CMSSW_TOP}/src"
 cmsenv
 
 dir_sig="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal"

@@ -95,6 +95,75 @@ def get_dataset(ws, name):
     pass
   leave()
 
+# 新增：systematics 合併工具
+def _to_list(val):
+  if not val: return []
+  if isinstance(val, (list, tuple, set)): return [str(x) for x in val if str(x)]
+  return [x for x in re.split(r'[,\s]+', str(val).strip()) if x]
+
+def _uniq(seq):
+  seen = set(); out = []
+  for x in seq:
+    if x not in seen:
+      out.append(x); seen.add(x)
+  return out
+
+def build_channel_systematics(channel, skip, scales, scalesCorr, scalesGlobal, smears):
+  if skip:
+    return {
+      'scales'      : scales,
+      'scalesCorr'  : scalesCorr,
+      'scalesGlobal': scalesGlobal,
+      'smears'      : smears,
+    }
+
+  base_scales      = ['PhotonScale']
+  base_scalesCorr  = ['FNUF','Material']
+  base_scalesGlobal= _to_list(scalesGlobal)  # 保持使用者自定義，不做預設
+  base_smears      = ['PhotonSmear']
+
+  user_scales     = _to_list(scales)
+  user_scalesCorr = _to_list(scalesCorr)
+  user_smears     = _to_list(smears)
+
+  ele_scales  = ['ElectronScale']
+  ele_smears  = ['ElectronSmear']
+  mu_scales   = ['MuonPtScale']
+  mu_smears   = ['MuonPtSmear']
+
+  ch = (channel or '').lower()
+  if ch in ('ele', 'electron', 'e'):
+    keep_scales = base_scales + ele_scales + user_scales
+    keep_smears = base_smears + ele_smears + user_smears
+    # 剔除 muon 專屬
+    keep_scales = [x for x in keep_scales if x not in mu_scales]
+    keep_smears = [x for x in keep_smears if x not in mu_smears]
+  elif ch in ('mu', 'muon', 'm'):
+    keep_scales = base_scales + mu_scales + user_scales
+    keep_smears = base_smears + mu_smears + user_smears
+    # 剔除 electron 專屬
+    keep_scales = [x for x in keep_scales if x not in ele_scales]
+    keep_smears = [x for x in keep_smears if x not in ele_smears]
+  elif ch in ('leptons', 'emu', 'combined'):
+    keep_scales = base_scales + ele_scales + mu_scales + user_scales
+    keep_smears = base_smears + ele_smears + mu_smears + user_smears
+  else:
+    # 未知 channel：僅合併使用者輸入與 photon 預設
+    keep_scales = base_scales + user_scales
+    keep_smears = base_smears + user_smears
+
+  keep_scales     = _uniq(keep_scales)
+  keep_scalesCorr = _uniq(base_scalesCorr + user_scalesCorr)
+  keep_scalesGlob = _uniq(base_scalesGlobal)  # 僅去重
+  keep_smears     = _uniq(keep_smears)
+
+  return {
+    'scales'      : ','.join(keep_scales),
+    'scalesCorr'  : ','.join(keep_scalesCorr),
+    'scalesGlobal': ','.join(keep_scalesGlob),
+    'smears'      : ','.join(keep_smears),
+  }
+
 def get_options():
   parser = OptionParser()
   parser.add_option('--mass_ALP', dest='mass_ALP', default=1, type='int', help="ALP mass") # PZ
@@ -116,7 +185,9 @@ def get_options():
   parser.add_option('--skipVertexScenarioSplit', dest='skipVertexScenarioSplit', default=True, action="store_true", help="Skip vertex scenario split") # PZ
   parser.add_option('--skipZeroes', dest='skipZeroes', default=False, action="store_true", help="Skip proc x cat is numEntries = 0., or sumEntries < 0.")
   # For systematics
-  parser.add_option('--skipSystematics', dest='skipSystematics', default=True, action="store_true", help="Skip shape systematics in signal model") # PZ
+  parser.add_option('--skipSystematics', dest='skipSystematics', default=True, action="store_false", help="Skip shape systematics in signal model") # PZ
+  # 新增一個直觀的別名旗標（出現即啟用系統誤差），與舊旗標相容
+  parser.add_option('--doSystematics', dest='doSystematics', default=False, action="store_true", help="Enable shape systematics in signal model (alias)")
   parser.add_option('--useDiagonalProcForSyst', dest='useDiagonalProcForSyst', default=False, action="store_true", help="Use diagonal process for systematics (requires diagonal mapping produced by getDiagProc script)")
   parser.add_option("--scales", dest='scales', default='', help="Photon shape systematics: scales")
   parser.add_option("--scalesCorr", dest='scalesCorr', default='', help='Photon shape systematics: scalesCorr')
@@ -134,8 +205,44 @@ def get_options():
   return parser.parse_args()
 (opt,args) = get_options()
 
+# 解析與正規化最終的系統誤差開關，兼容 --skipSystematics 與 --doSystematics
+# 規則：有 --doSystematics 或（有 --skipSystematics 旗標）=> 啟用系統
+#      其他情況 => 依預設（目前為停用系統）
+doSystematics = bool(getattr(opt, 'doSystematics', False) or (not opt.skipSystematics))
+# 回填以維持 downstream 參考 opt.skipSystematics 的相容性
+opt.skipSystematics = (not doSystematics)
+
+# 清楚列印設定，避免混淆
+print(f" [CFG] Systematics: {'ENABLED' if doSystematics else 'DISABLED'} (opt.skipSystematics={opt.skipSystematics})")
+
 ROOT.gStyle.SetOptStat(0)
 ROOT.gROOT.SetBatch(True)
+
+# 用 channel 計算系統誤差（若 skipSystematics 為 True 則不變）
+_sys = build_channel_systematics(opt.channel, opt.skipSystematics, opt.scales, opt.scalesCorr, opt.scalesGlobal, opt.smears)
+if doSystematics:
+  print(" [INFO] 使用之系統誤差 (channel=%s)" % opt.channel)
+  print("        scales      :", _sys['scales'] or "(none)")
+  print("        scalesCorr  :", _sys['scalesCorr'] or "(none)")
+  print("        scalesGlobal:", _sys['scalesGlobal'] or "(none)")
+  print("        smears      :", _sys['smears'] or "(none)")
+
+# 保留原本的 channel-based 覆寫，但改用 doSystematics 判斷，且僅印訊息
+if doSystematics:
+  if opt.channel == 'ele':
+    _forced = {
+      'scales'     : ['PhotonScale','ElectronScale'],
+      'scalesCorr' : ['FNUF','Material'],
+      'smears'     : ['PhotonSmear','ElectronSmear'],
+    }
+    print(" [INFO] channel=ele -> 覆寫系統列表:", _forced)
+  elif opt.channel == 'mu':
+    _forced = {
+      'scales'     : ['PhotonScale','MuonPtScale'],
+      'scalesCorr' : ['FNUF','Material'],
+      'smears'     : ['PhotonSmear','MuonPtSmear'],
+    }
+    print(" [INFO] channel=mu -> 覆寫系統列表:", _forced)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # SETUP: signal fit
@@ -400,7 +507,14 @@ if not opt.skipVertexScenarioSplit:
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # FINAL MODEL: construction
 print("\n --> Constructing final model")
-fm = FinalModel(ssfMap,opt.proc,opt.cat,opt.ext,opt.year,sqrts__,nominalDatasets,xvar,MH,MHLow,MHHigh,opt.massPoints,xsbrMap,procSyst,opt.scales,opt.scalesCorr,opt.scalesGlobal,opt.smears,opt.doVoigtian,opt.useDCB,opt.skipVertexScenarioSplit,opt.skipSystematics)
+fm = FinalModel(
+  ssfMap,opt.proc,opt.cat,opt.ext,opt.year,sqrts__,
+  nominalDatasets,xvar,MH,MHLow,MHHigh,opt.massPoints,
+  xsbrMap,procSyst,
+  _sys['scales'], _sys['scalesCorr'], _sys['scalesGlobal'], _sys['smears'],
+  opt.doVoigtian,opt.useDCB,opt.skipVertexScenarioSplit,opt.skipSystematics,
+  channel=opt.channel, mass_ALP=opt.mass_ALP
+)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # SAVE: to output workspace

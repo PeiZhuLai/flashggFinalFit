@@ -1,6 +1,6 @@
 # subjob_sig_signalFit
 universe              = vanilla
-executable            = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/shellScripts/sig_sys/1_runjob_sig_signalFit.sh
+executable            = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/shellScripts/sig_sys/3_runjob_sig_signalFit.sh
 getenv                = True
 request_memory        = 1000
 +JobFlavour           = "workday"

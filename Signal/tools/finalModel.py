@@ -75,7 +75,7 @@ def initialiseXSBR():
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
 class FinalModel:
   # Constructor
-  def __init__(self,_ssfMap,_proc,_cat,_ext,_year,_sqrts,_datasets,_xvar,_MH,_MHLow,_MHHigh,_massPoints,_xsbrMap,_procSyst,_scales,_scalesCorr,_scalesGlobal,_smears,_doVoigtian,_useDCB,_skipVertexScenarioSplit,_skipSystematics):
+  def __init__(self,_ssfMap,_proc,_cat,_ext,_year,_sqrts,_datasets,_xvar,_MH,_MHLow,_MHHigh,_massPoints,_xsbrMap,_procSyst,_scales,_scalesCorr,_scalesGlobal,_smears,_doVoigtian,_useDCB,_skipVertexScenarioSplit,_skipSystematics,_channel=None,_mass_ALP=None,channel=None,mass_ALP=None,**kwargs):
     self.ssfMap = _ssfMap
     self.proc = _proc
     self.procSyst = _procSyst # Signal process used for systematics (useful for low stat cases)
@@ -115,7 +115,13 @@ class FinalModel:
     self.XSBR = initialiseXSBR() 
     self.buildXSBRSplines()
     self.buildEffAccSpline()
+    # 兼容 channel/mass_ALP 別名（以無底線參數優先，再回退到有底線參數，最後讀 kwargs）
+    self.channel = channel if channel is not None else (_channel if _channel is not None else kwargs.get('channel'))
+    self.mass_ALP = mass_ALP if mass_ALP is not None else (_mass_ALP if _mass_ALP is not None else kwargs.get('mass_ALP'))
     # If not skip systematics: add nuisance params to dict
+    if (self.channel is None or self.mass_ALP is None) and not self.skipSystematics:
+      print(" [WARN] FinalModel: channel/mass_ALP 未提供，將關閉系統學項以避免崩潰")
+      self.skipSystematics = True
     if not self.skipSystematics: self.buildNuisanceMap()
     # Build final pdfs
     if not self.skipVertexScenarioSplit: 
@@ -212,7 +218,9 @@ class FinalModel:
       if getattr(self,sType) != '': self.NuisanceMap[sType] = od()
 
     # Extract calcPhotonSyst output
-    psname = "%s/outdir_%s/calcPhotonSyst/pkl/%s.pkl"%(swd__,self.ext,self.cat)
+    # with open("%s/outdir_%s/calcPhotonSyst/pkl/%s_%s.pkl"%(swd__,opt.channel,opt.mass_ALP,opt.year),"wb") as f: pickle.dump(data,f) 
+    psname = "%s/outdir_%s/calcPhotonSyst/pkl/%s_%s.pkl"%(swd__,self.channel,self.mass_ALP,self.year)
+
     if not os.path.exists(psname):
       print(" --> [ERROR] Photon systematics do not exist (%s). Please run calcPhotonSyst mode first or skip systematics (--skipSystematics)"%psname)
       sys.exit(1)
@@ -355,6 +363,7 @@ class FinalModel:
     dependents.add(self.MH)
     dependents.add(self.Splines[dmSplineName])
     if not skipSystematics:
+      # print("Doing Systematics for mean")
       # Add systematics
       formula += "*(1."
       # Global
@@ -440,4 +449,4 @@ class FinalModel:
     wsout.imp(self.Functions['final_normThisLumi'],ROOT.RooFit.RecycleConflictNodes())
     wsout.imp(self.Pdfs['final_extend'],ROOT.RooFit.RecycleConflictNodes())
     wsout.imp(self.Pdfs['final_extendThisLumi'],ROOT.RooFit.RecycleConflictNodes())
-    for d in self.Datasets.values(): wsout.imp(d) 
+    for d in self.Datasets.values(): wsout.imp(d)
