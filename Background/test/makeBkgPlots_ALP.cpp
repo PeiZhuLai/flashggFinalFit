@@ -88,7 +88,7 @@ int getBestFitFunction(RooMultiPdf *bkg, RooAbsData *data, RooCategory *cat, boo
 	params->snapshot(snap);
 	params->snapshot(clean);
 	if (!silent) {
-		std::cout << "[INFO] CLEAN SET OF PARAMETERS" << std::endl;
+		std::cout << "[INFO] BEFORE FITTING" << std::endl;
 		params->Print("V");
 		std::cout << "-----------------------" << std::endl;
 	}
@@ -106,7 +106,7 @@ int getBestFitFunction(RooMultiPdf *bkg, RooAbsData *data, RooCategory *cat, boo
 
 		if (!silent) {
 			// 原本誤用 std.println 會導致編譯錯誤
-			std::cout << "[INFO] BEFORE FITTING" << stdendl;
+			std::cout << "[INFO] BEFORE FITTING" << std::endl;
 			params->Print("V");
 			std::cout << "-----------------------" << std::endl;
 		}
@@ -1085,7 +1085,7 @@ string catname;
 	cout<< "[INFO] " << "\t"; data->Print();
 
 	// plot the data
-	TLegend *leg = new TLegend(0.68,0.60,1.1,0.80);
+	TLegend *leg = new TLegend(0.68,0.57,1.1,0.80);
 	leg->SetFillColor(0);
 	leg->SetLineColor(0);
 	leg->SetFillStyle(0);
@@ -1125,7 +1125,7 @@ string catname;
 		e->SetMarkerStyle(20);
 		e->SetMarkerSize(1.3);
 	}
-	leg->AddEntry(nomBkgCurve,"Bkg fit","L");
+	leg->AddEntry(nomBkgCurve,"Bkg Fit","L");
 
 	// Bands
 	TGraphAsymmErrors *oneSigmaBand = new TGraphAsymmErrors();
@@ -1269,18 +1269,47 @@ string catname;
 		outWS->import(*mpdf);
 		outWS->import(*data);
 
-	TCanvas *canv = new TCanvas("c", "c", 800, 600); // PZ
+	TCanvas *canv = new TCanvas("c_ratio", "c_ratio", 800, 600); // PZ
 	///start extra bit for ratio plot///
 	bool doRatioPlot_=1;
-	TPad *pad1 = new TPad("pad1","pad1",0,0.40,1,0.98);
-	TPad *pad2 = new TPad("pad2","pad2",0,0.02,1,0.40);
-	pad1->SetMargin(0.114, 0.05, 0.02, 0.1);//left//right//bottom//top
 
-  	pad2->SetMargin(0.114, 0.05, 0.35, 0.01);//left//right//bottom//top
+	// 調整上下兩個 pad 的分割位置與邊距：先設定邊距，再 Draw
+	double splitY = 0.36; // 原本 0.40，數值越小下半框越矮、兩圖間距也受 pad2.TopMargin 影響
+	TPad *pad1 = new TPad("pad1","pad1",0,splitY,1,0.98);
+	TPad *pad2 = new TPad("pad2","pad2",0,0.02,1,splitY);
 
-  	pad2->Draw();
-  	pad1->Draw();
-  	pad1->cd();
+	// 先設定邊距（在 Draw 之前）
+	pad1->SetLeftMargin(0.114);
+	pad1->SetRightMargin(0.04);
+	pad1->SetBottomMargin(0.05); // 上半框 X 軸隱藏，底邊距改再多也不會有視覺差異
+	pad1->SetTopMargin(0.100);
+	pad1->SetTicks(1,1);
+
+	pad2->SetLeftMargin(0.114);
+	pad2->SetRightMargin(0.04);
+	pad2->SetBottomMargin(0.40);
+	pad2->SetTopMargin(0.005); // 關鍵：縮小兩圖間距請調這裡
+	pad2->SetTicks(1,1);
+
+	// 再畫 pad，避免 Draw 後再改 margin 不明顯
+	pad2->Draw();
+	pad1->Draw();
+
+	// 依序切換 pad，避免後續設定覆蓋
+	pad1->cd();
+	// ...existing code...
+	pad1->Modified();
+	pad1->Update();
+
+	canv->cd();
+	pad2->cd();
+	// 這裡不再重設 pad2 的邊距（已於 Draw 前設定）
+	// ...existing code...
+	pad2->Modified();
+	pad2->Update();
+
+	// 回到上半部 pad 繪圖
+	pad1->cd();
   	// enf extra bit for ratio plot///
 	canv->SetTickx(); canv->SetTicky();
 	//RooRealVar *lumi = (RooRealVar*)inWS->var("IntLumi");
@@ -1394,7 +1423,7 @@ string catname;
 	latex->SetNDC();
 	latex->DrawLatex(0.111,0.93,("m_{a} = "+to_string(int(mavalue_))+" GeV").c_str());
 
-	latex->DrawLatex(0.67,0.93,("62.5 fb^{-1} (13.6 TeV)"));
+	latex->DrawLatex(0.66,0.93,("62.5 fb^{-1} (13.6 TeV)"));
 
 	TLatex *cmslatex = new TLatex();
 	cmslatex->SetTextSize(0.03);
@@ -1468,19 +1497,19 @@ string catname;
 	// hdummy->SetMinimum(hdatasub->GetHistogram()->GetMinimum()-1);
 	//hdummy->GetYaxis()->SetTitle("data - best fit PDF");
 	hdummy->GetYaxis()->SetTitle("Data - Bkg"); //PZ
-	hdummy->GetYaxis()->SetTitleSize(0.136);
-	hdummy->GetYaxis()->SetTitleOffset(0.38);
+	hdummy->GetYaxis()->SetTitleSize(0.127);
+	hdummy->GetYaxis()->SetTitleOffset(0.39);
 	hdummy->GetYaxis()->CenterTitle(true);
 
 	hdummy->GetYaxis()->SetLabelSize(0.12);
 
 //   hdummy->GetXaxis()->SetTitle("\\mathrm{m}_{\\ell\\ell\\gamma\\gamma} \\ \\mathrm{(GeV)}");//PZ
   	hdummy->GetXaxis()->SetTitle("m_{ ll#gamma#gamma} (GeV)");
-	hdummy->GetXaxis()->SetTitleSize(0.15);
+	hdummy->GetXaxis()->SetTitleSize(0.17);
 	hdummy->GetXaxis()->SetTitleFont(42);
 	hdummy->GetXaxis()->SetTitleOffset(1.1);
 
-	hdummy->GetXaxis()->SetLabelSize(0.13);
+	hdummy->GetXaxis()->SetLabelSize(0.15);
 	hdummy->GetXaxis()->SetLabelFont(42);
 	hdummy->GetXaxis()->SetLabelOffset(0.008);
 
@@ -1502,19 +1531,25 @@ string catname;
 	hdatasub->Draw("PESAME");
 	// enf extra bit for ratio plot///
     // CMS_lumi( pad1, 4, 0);
-		canv->Print(Form("%s/bkgplot_%.0f.pdf",total_OutDir.c_str(),mavalue_));
 
-		canv->Print(Form("%s/bkgplot_%s.pdf",outDir.c_str(),catname.c_str()));
-		// canv->Print(Form("%s/bkgplot_%s.png",outDir.c_str(),catname.c_str()));
-		// canv->Print(Form("%s/bkgplot_%s.eps",outDir.c_str(),catname.c_str()));
-		// canv->Print(Form("%s/bkgplot_%s.C",outDir.c_str(),catname.c_str()));
-		canv->SetName(Form("bkgplot_%s",catname.c_str()));
-		outFile->cd();
-		canv->Write();
-		outWS->Write();
-		outFile->Close();
+	// 確保兩個 pad 的 margin 與內容更新後再輸出
+	pad1->Modified(); pad1->Update();
+	pad2->Modified(); pad2->Update();
+	canv->Modified(); canv->Update();
 
-		inFile->Close();
+	canv->Print(Form("%s/bkgplot_%.0f.pdf",total_OutDir.c_str(),mavalue_));
 
-		return 0;
+	canv->Print(Form("%s/bkgplot_%s.pdf",outDir.c_str(),catname.c_str()));
+	// canv->Print(Form("%s/bkgplot_%s.png",outDir.c_str(),catname.c_str()));
+	// canv->Print(Form("%s/bkgplot_%s.eps",outDir.c_str(),catname.c_str()));
+	// canv->Print(Form("%s/bkgplot_%s.C",outDir.c_str(),catname.c_str()));
+	canv->SetName(Form("bkgplot_%s",catname.c_str()));
+	outFile->cd();
+	canv->Write();
+	outWS->Write();
+	outFile->Close();
+
+	inFile->Close();
+
+	return 0;
 	}

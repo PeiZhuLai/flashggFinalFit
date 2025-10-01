@@ -452,7 +452,7 @@ void plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, RooAbsData
   leg->SetFillColor(0);
   leg->SetBorderSize(0);
   leg->SetFillStyle(0);
-  leg->SetTextSize(0.05);
+  leg->SetTextSize(0.06);
   RooPlot *plot = mass->frame();
 
   mass->setRange("unblindReg_1",mgg_low,mgg_blind_low);
