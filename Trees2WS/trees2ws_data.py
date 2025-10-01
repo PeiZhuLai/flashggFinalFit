@@ -11,7 +11,7 @@ def get_options():
   parser.add_option('--inputConfig',dest='inputConfig', default="", help='Input config: specify list of variables/analysis categories')
   parser.add_option('--inputTreeFile',dest='inputTreeFile', default=None, help='Input tree file')
   parser.add_option('--outputWSDir',dest='outputWSDir', default=None, help='Output dir (default is same as input dir)')
-  parser.add_option('--applyMassCut',dest='applyMassCut', default=False, action="store_true", help='Apply cut on CMS_hgg_mass')
+  parser.add_option('--applyMassCut',dest='applyMassCut', default=False, action="store_true", help='Apply cut on CMS_hza_mass')
   parser.add_option('--massCutRange',dest='massCutRange', default='100,180', help='CMS_hgg_mass cut range')
   return parser.parse_args()
 (opt,args) = get_options()
@@ -41,7 +41,7 @@ def add_vars_to_workspace(_ws=None,_dataVars=None):
   getattr(_ws,'import')(intLumi)
   _vars = od()
   for var in _dataVars:
-    if var == "CMS_hgg_mass":
+    if var == "CMS_hza_mass":
       _vars[var] = ROOT.RooRealVar(var,var,125.,100.,180.)
       _vars[var].setBins(160)
     elif var == "dZ":
@@ -106,9 +106,10 @@ if not os.path.exists(outputWSDir): os.system("mkdir %s"%outputWSDir)
 outputWSFile = outputWSDir+"/"+opt.inputTreeFile.split("/")[-1]
 print(" --> Creating output workspace: (%s)"%outputWSFile)
 fout = ROOT.TFile(outputWSFile,"RECREATE")
-foutdir = fout.mkdir(inputWSName__.split("/")[0])
-foutdir.cd()
-ws = ROOT.RooWorkspace(inputWSName__.split("/")[1],inputWSName__.split("/")[1])
+# foutdir = fout.mkdir(inputWSName__.split("/")[0])
+# foutdir.cd()
+# ws = ROOT.RooWorkspace(inputWSName__.split("/")[1],inputWSName__.split("/")[1])
+ws = ROOT.RooWorkspace(inputWSName__,inputWSName__)
 
 # Add variables to workspace
 varNames = add_vars_to_workspace(ws,dataVars)
@@ -119,19 +120,19 @@ aset = make_argset(ws,varNames)
 # Loop over categories and 
 for cat in cats:
   print(" --> Extracting events from category: %s"%cat)
-  if inputTreeDir == '': treeName = "Data_%s_%s"%(sqrts__,cat)
-  else: treeName = "%s/Data_%s_%s"%(inputTreeDir,sqrts__,cat)
+  if inputTreeDir == '': treeName = "Data_%s"%(sqrts__)
+  else: treeName = "%s/Data_%s"%(inputTreeDir,sqrts__)
   print("    * tree: %s"%treeName)
   t = f.Get(treeName)
 
   # Define dataset for cat
-  dname = "Data_%s_%s"%(sqrts__,cat)  
+  dname = "Data_%s"%(sqrts__)  
   d = ROOT.RooDataSet(dname,dname,aset,'weight')
 
   # Loop over events in tree and add to dataset with weight 1
   for ev in t:
     if opt.applyMassCut:
-      if(getattr(ev,"CMS_hgg_mass") < float(opt.massCutRange.split(",")[0])) | (getattr(ev,"CMS_hgg_mass") > float(opt.massCutRange.split(",")[1])): continue
+      if(getattr(ev,"CMS_hza_mass") < float(opt.massCutRange.split(",")[0])) | (getattr(ev,"CMS_hza_mass") > float(opt.massCutRange.split(",")[1])): continue
     for var in dataVars: 
       if var == "weight": continue
       ws.var(var).setVal(getattr(ev,var))

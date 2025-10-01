@@ -58,7 +58,8 @@ decayMode = 'hgg'
 years_to_process = ['2016','2017','2018','2022preEE','2022postEE', '2023preBPix', '2023postBPix']
 
 # flashgg input WS objects
-# inputWSName__ = "tagsDumper/cms_hgg_13TeV"
+# inputWSName__ = "tagsDumper/cms_hza_13TeV"
+# inputWSName__ = "tagsDumper/CMS_hza_workspace"
 inputWSName__ = "CMS_hza_workspace"
 inputNuisanceExtMap = {'scales':'','scalesCorr':'','smears':''}
 # Signal output WS objects

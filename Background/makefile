@@ -1,106 +1,134 @@
 # name of the library
 LIBNAME = BackgroundProfileFitting
 
-#Necessary to use shell built-in commands
-SHELL=bash
+# Necessary to use shell built-in commands
+SHELL = bash
 
 # figure out os
-UNAME := $(shell uname)
-BASEDIR = $(shell pwd)
+UNAME   := $(shell uname)
+BASEDIR := $(shell pwd)
 
+# create directories
 $(shell mkdir -p bin)
 $(shell mkdir -p lib)
 $(shell mkdir -p obj)
 
+# ---- turn off built-in implicit rules to avoid accidental link steps ----
+.SUFFIXES:
+MAKEFLAGS += --no-builtin-rules
+
+# includes & libs
 USERINCLUDES += -I$(ROOTSYS)/include
+# also bring in root-config cflags (includes -I and necessary macros)
+USERINCLUDES += $(shell root-config --cflags)
+
 ifeq ($(UNAME),Darwin)
-$(info Found OS Darwin - using mac osx build)
-BOOST_PATH=/Applications/boost_1_49_0
-USERINCLUDES += -I$(BOOST_PATH)/include/
-USERLIBS += -L$(BOOST_PATH)/libs/ -lboost_regex -lboost_program_options
+  $(info Found OS Darwin - using mac osx build)
+  BOOST_PATH=/Applications/boost_1_49_0
+  USERINCLUDES += -I$(BOOST_PATH)/include/
+  USERLIBS += -L$(BOOST_PATH)/libs/ -lboost_regex -lboost_program_options
 endif
+
 ifeq ($(UNAME),Linux)
-$(info Found OS Linux - using linux build)
-BOOST_PATH=$(shell scram tool info boost | awk -F= '/BOOST_BASE/ {  print $$2  }')
-USERINCLUDES += -I$(BOOST_PATH)/include/
-USERINCLUDES += -I $(CMSSW_BASE)/src/ -I $(CMSSW_RELEASE_BASE)/src/
-USERLIBS += -L$(BOOST_PATH)/lib/ -lboost_regex -lboost_program_options 
-USERINCLUDES += -I$(ROOFITSYS)/include
-USERLIBS += -L$(ROOFITSYS)/lib -lRooFit -lRooFitCore -lRooStats
-USERLIBS += -L$(CMSSW_BASE)/lib 
+  $(info Found OS Linux - using linux build)
+  BOOST_PATH=$(shell scram tool info boost | awk -F= '/BOOST_BASE/ {  print $$2  }')
+  USERINCLUDES += -I$(BOOST_PATH)/include/
+  USERINCLUDES += -I $(CMSSW_BASE)/src/ -I $(CMSSW_RELEASE_BASE)/src/
+  USERLIBS += -L$(BOOST_PATH)/lib/ -lboost_regex -lboost_program_options
+  USERINCLUDES += -I$(ROOFITSYS)/include
+  USERLIBS += -L$(ROOFITSYS)/lib -lRooFit -lRooFitCore -lRooStats
+  USERLIBS += -L$(CMSSW_BASE)/lib
 endif
 
-USERLIBS += $(shell root-config --glibs) -lTMVA -lMinuit -lFoam -lRooFit -lRooFitCore -lMathMore -lRooStats 
-CXXFLAGS = -Wall -g -Wl,-rpath=$(BASEDIR)/lib  -std=c++17
-LDFLAGS = -shared -W 
+USERLIBS += $(shell root-config --glibs) -lTMVA -lMinuit -lFoam -lRooFit -lRooFitCore -lMathMore -lRooStats
+CXXFLAGS = -Wall -g -Wl,-rpath=$(BASEDIR)/lib -std=c++17
+# global hardening: all compiles with -fPIC and disable LTO to avoid mixed-link issues
+CXXFLAGS += -fPIC -fno-lto
+LDFLAGS = -shared -W
 
-CXX=g++
-LD=g++
+CXX = g++
+LD  = g++
 
-INCLUDE +=  -I $(BASEDIR)/interface
-INCLUDE += $(USERINCLUDES)
+# dirs
+LIBDIR  = $(BASEDIR)/lib
+EXEDIR  = $(BASEDIR)/bin
+MACRODIR= $(BASEDIR)/src
+SRCDIR  = $(BASEDIR)/src
+OBJDIR  = $(BASEDIR)/obj
+INCDIR  = $(BASEDIR)/interface
+TESTDIR = $(BASEDIR)/test
+DOCDIR  = $(BASEDIR)/docs
+
+OBJ_EXT  = o
+TEST_EXT = cpp
+
+# include paths
+INCLUDE  += -I $(INCDIR)
+INCLUDE  += $(USERINCLUDES)
 CXXFLAGS += $(INCLUDE)
 
 LIBS += $(USERLIBS)
 LIBS += -L$(CMSSW_BASE)/lib/$(SCRAM_ARCH)/ -lHiggsAnalysisCombinedLimit
-# this is where you  would normaly have the lib, bin and source directories
-LIBDIR = $(BASEDIR)/lib
-EXEDIR = $(BASEDIR)/bin
-MACRODIR = $(BASEDIR)/src
-SRCDIR = $(BASEDIR)/src
-OBJDIR = $(BASEDIR)/obj
-INCDIR = $(BASEDIR)/interface
-TESTDIR = $(BASEDIR)/test
-DOCDIR= $(BASEDIR)/docs
-OBJ_EXT=o
-TEST_EXT=cpp
 
-ROOT_DICT=RootDict.cxx
-ROOT_OBJ=$(subst .cxx,.$(OBJ_EXT),$(ROOT_DICT))
-SRCS=$(wildcard $(BASEDIR)/src/*.cc)
-EXES=$(wildcard $(BASEDIR)/test/*.cpp)
-HEADERS=$(wildcard $(BASEDIR)/interface/*.h)
-OBJS=$(subst $(SRCDIR), $(OBJDIR),$(subst .cc,.$(OBJ_EXT),$(SRCS)))
-BINS=$(subst $(TESTDIR), $(EXEDIR),$(subst .$(TEST_EXT),,$(EXES)))
+# files
+ROOT_DICT = $(OBJDIR)/RootDict.cxx
+ROOT_OBJ  = $(OBJDIR)/RootDict.$(OBJ_EXT)
 
-all:  $(BINS)
+SRCS    := $(wildcard $(SRCDIR)/*.cc)
+EXES    := $(wildcard $(TESTDIR)/*.$(TEST_EXT))
+HEADERS := $(wildcard $(INCDIR)/*.h)
 
-$(EXEDIR)/%: $(TESTDIR)/%.cpp $(LIBDIR)/lib$(LIBNAME).so $(BASEDIR)/interface/*.h  
+# robust mappings (avoid whitespace issues of subst)
+OBJS := $(patsubst $(SRCDIR)/%.cc,$(OBJDIR)/%.$(OBJ_EXT),$(SRCS))
+BINS := $(patsubst $(TESTDIR)/%.$(TEST_EXT),$(EXEDIR)/%,$(EXES))
+
+# guards: forbid treating these as link targets
+src/%: ;
+interface/%: ;
+obj/%: ;
+
+.PHONY: all clean lib vars
+
+all: $(BINS)
+
+$(EXEDIR)/%: $(TESTDIR)/%.$(TEST_EXT) $(LIBDIR)/lib$(LIBNAME).so $(INCDIR)/*.h
 	@echo Compiling executable $@
-	@$(CXX) -o $@ $(CXXFLAGS) $< $(ROOT_DICT) $(ROOTCLASSES) $(LIBS) -L$(LIBDIR) -l$(LIBNAME) $(USERLIBSX)
+	@$(CXX) -o $@ $(CXXFLAGS) $< -L$(LIBDIR) -l$(LIBNAME) $(LIBS)
 
-$(OBJDIR)/%.$(OBJ_EXT): $(SRCDIR)/%.cc $(ROOT_DICT) 
+$(OBJDIR)/%.$(OBJ_EXT): $(SRCDIR)/%.cc $(ROOT_DICT)
 	@echo Making object $@
-	@$(CXX) $(CXXFLAGS) -fPIC -c $<  -o $@
+	@$(CXX) $(CXXFLAGS) -c $< -o $@
 
 $(LIBDIR)/lib$(LIBNAME).so: $(OBJS) $(ROOT_OBJ)
 	@echo Building shared library $@
-	@$(LD) $(LDFLAGS) -o $(LIBDIR)/lib$(LIBNAME).so $^ $(LIBS)
-	
-$(ROOT_DICT): $(SRCS) $(HEADERS)
+	@$(LD) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+# 1) 由頭文件產生 RootDict.cxx
+$(ROOT_DICT): $(HEADERS)
 	@echo Making dictionary $@
-	@rootcint -f $@ -c -L$(ROOFITSYS)/lib -I$(ROOFITSYS)/include $(HEADERS)
-	@$(CXX) $(CXXFLAGS) -fPIC -c $(ROOT_DICT) -o $(ROOT_OBJ)
+	@rootcint -f $@ -c -I$(INCDIR) $(HEADERS)
 
-
+# 2) 由 RootDict.cxx 編譯出 RootDict.o
+$(ROOT_OBJ): $(ROOT_DICT)
+	@echo Compiling dictionary object $@
+	@$(CXX) $(CXXFLAGS) -fPIC -c $(ROOT_DICT) -o $@
+	
 lib: $(LIBDIR)/lib$(LIBNAME).so
 
 vars:
-	@echo "LIBS: " $(LIBS)
-	@echo "CXXFLAGS: " $(CXXFLAGS)
-	@echo "Header files: " $(HEADERS)
-	@echo "Source files: " $(SRCS) 
-	@echo "Root H files: " $(ROOTHEADERS)
-	@echo "Root S files: " $(ROOTCLASSES) 
-	@echo "Object files: " $(OBJS)
-	@echo "Executables:  " $(TARGETS)
+	@echo "LIBS:            " $(LIBS)
+	@echo "CXXFLAGS:        " $(CXXFLAGS)
+	@echo "Header files:    " $(HEADERS)
+	@echo "Source files:    " $(SRCS)
+	@echo "Object files:    " $(OBJS)
+	@echo "Executables:     " $(BINS)
+	@echo "ROOT_DICT:       " $(ROOT_DICT)
+	@echo "ROOT_OBJ:        " $(ROOT_OBJ)
 
 clean:
-	@echo "Cleaning: " 
+	@echo "Cleaning:"
 	@echo "  " $(OBJS)
 	@echo "  " $(LIBDIR)/lib$(LIBNAME).so
 	@echo "  " $(BINS)
 	@echo "  " $(ROOT_DICT)
-	@rm -rf $(OBJS) $(LIBDIR)/lib$(LIBNAME).so $(BINS) $(ROOT_DICT)
-
-
+	@rm -rf $(OBJS) $(LIBDIR)/lib$(LIBNAME).so $(BINS) $(ROOT_DICT) $(ROOT_OBJ) $(OBJDIR)/RootDict_rdict.pcm

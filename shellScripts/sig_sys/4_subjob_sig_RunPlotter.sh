@@ -6,7 +6,7 @@ ChannelList=( ele mu )
 ALPmassList=( 5 15 30 )
 YearsList=( 2022preEE )
 BaseDir="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit"
-Executable="$BaseDir/4_runjob_sig_RunPlotter.sh"
+Executable="$BaseDir/shellScripts/sig_sys/4_runjob_sig_RunPlotter.sh"
 LogDir="$BaseDir/Signal/log_files"
 SubmitFile="4_subjob_sig_RunPlotter.submit"
 

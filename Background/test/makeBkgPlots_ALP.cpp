@@ -58,6 +58,7 @@
 #include "../../tdrStyle/CMS_lumi.C"
 
 #include <TSystem.h>
+#include "TLegendEntry.h" // 新增：使用 TLegendEntry* 設定 legend 樣式需要完整型別
 
 using namespace RooFit;
 using namespace std;
@@ -104,7 +105,8 @@ int getBestFitFunction(RooMultiPdf *bkg, RooAbsData *data, RooCategory *cat, boo
 		//RooAbsReal *nllm = bkg->getCurrentPdf()->createNLL(*data);
 
 		if (!silent) {
-			std::cout << "[INFO] BEFORE FITTING" << std::endl;
+			// 原本誤用 std.println 會導致編譯錯誤
+			std::cout << "[INFO] BEFORE FITTING" << stdendl;
 			params->Print("V");
 			std::cout << "-----------------------" << std::endl;
 		}
@@ -646,7 +648,8 @@ void profileExtendTerm(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, Roo
 	}
 }
 
-void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCategory *mcat, string name, int cat, bool unblind, int isFlashgg, std::vector<string> flashggCats, double ma){
+// 讓圖例可標註最佳函式：新增可選參數 bestFitPdfIdx，預設 -1 時於函式內自動計算
+void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCategory *mcat, string name, int cat, bool unblind, int isFlashgg, std::vector<string> flashggCats, double ma, int bestFitPdfIdx = -1){
 	string catname;
 	if (isFlashgg){
 		catname = Form("%s",flashggCats[cat].c_str());
@@ -666,14 +669,23 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 		// mgg->setRange("unblind_down",100,115);
 		mgg->setRange("unblind_up",mgg_blind_high,mgg_high);//bing
 		mgg->setRange("unblind_down",mgg_low,mgg_blind_low);//bing
-		data->plotOn(plot,RooFit::Binning(nbin),RooFit::CutRange("unblind_down,unblind_up"));
+		data->plotOn(plot,
+			RooFit::Binning(nbin),
+			RooFit::CutRange("unblind_down,unblind_up"),
+			RooFit::MarkerStyle(20),
+			RooFit::MarkerSize(1.3)
+		);
 	}
 	else {
-		data->plotOn(plot,RooFit::Binning(nbin));
+		data->plotOn(plot,
+			RooFit::Binning(nbin),
+			RooFit::MarkerStyle(20),
+			RooFit::MarkerSize(1.3)
+		);
 	}
 
 	// Number of Leg 8, 7, 6,   5, 4, 
-	TLegend *leg = new TLegend(0.63,0.47,1.,0.91);
+	TLegend *leg = new TLegend(0.61,0.45,1.,0.89);
 	leg->SetFillColor(0);
 	leg->SetLineColor(0);
 	leg->SetFillStyle(0);
@@ -681,7 +693,7 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 	leg->SetTextFont(52);
 	leg->SetTextSize(0.045);
 
-	TLegend *leg_s = new TLegend(0.63,0.55,1.,0.91);
+	TLegend *leg_s = new TLegend(0.61,0.53,1.,0.89);
 	leg_s->SetFillColor(0);
 	leg_s->SetLineColor(0);
 	leg_s->SetFillStyle(0);
@@ -691,95 +703,112 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 
 
 	TObject *dataLeg = (TObject*)plot->getObject(plot->numItems()-1);//bing
-	leg->AddEntry(dataLeg,"Data","LEP");//PZ
-	leg_s->AddEntry(dataLeg,"Data","LEP");//PZ
+	if (auto rh = dynamic_cast<RooHist*>(dataLeg)) {
+		rh->SetMarkerStyle(20);
+		rh->SetMarkerSize(1.3);
+	} else if (auto gae = dynamic_cast<TGraphAsymmErrors*>(dataLeg)) {
+		gae->SetMarkerStyle(20);
+		gae->SetMarkerSize(1.3);
+	}
+	// 原先直接 AddEntry 可能無法控制 legend 樣式，改用 TLegendEntry
+	if (mpdf->getNumPdfs() > 6) {
+		if (auto e = leg->AddEntry(dataLeg,"Data","LEP")) {
+			e->SetMarkerStyle(20);
+			e->SetMarkerSize(1.3);
+		}
+	} else {
+		if (auto e = leg_s->AddEntry(dataLeg,"Data","LEP")) {
+			e->SetMarkerStyle(20);
+			e->SetMarkerSize(1.3);
+		}
+	}
 
 	// Black, Red, Blue, Green, Pink, Teal,  
 	// 4 Bernstein, 2 Exponential, 1 Power Law, 3 Laurent
-	// int color[10] = {kBlue,kBlue+3,kGreen+3,kTeal+9,  kRed,kRed+2,  kYellow+2,  kOrange-3,kPink+7,kCyan+2};
 	string color[11] = {"#031927","#FE0000","#0000FE","#00FF00",  "#FE00FF","#00FFFF",  "#FFCC00",  "#EBB9DF","#7F7EFF","#8CBA80", };
+
+	// 小工具：轉小寫、擷取尾端數字作為階數、產生序數字尾
+	auto toLower = [](std::string s){
+		for (auto &c : s) c = std::tolower(c);
+		return s;
+	};
+	auto extractOrder = [](const std::string& s)->int{
+		int i = static_cast<int>(s.size()) - 1;
+		std::string digits;
+		while (i >= 0 && std::isdigit(static_cast<unsigned char>(s[i]))) {
+			digits.insert(digits.begin(), s[i]);
+			--i;
+		}
+		if (digits.empty()) return 1;
+		try { return std::stoi(digits); } catch (...) { return 1; }
+	};
+	auto ordinal = [](int n)->std::string{
+		if (n % 100 >= 11 && n % 100 <= 13) return std::to_string(n) + "th";
+		switch (n % 10) {
+			case 1: return std::to_string(n) + "st";
+			case 2: return std::to_string(n) + "nd";
+			case 3: return std::to_string(n) + "rd";
+			default: return std::to_string(n) + "th";
+		}
+	};
+
+	// 在圖前先決定最佳 pdf index（若未提供則自動掃描），並保護外部 state
+	int originalIndex = mcat->getIndex();
+	int bestIdx = bestFitPdfIdx;
+	if (bestIdx < 0) {
+		RooArgSet* params = mpdf->getParameters(*data);
+		RooArgSet preParams;
+		params->snapshot(preParams);
+		// 靜默模式計算最佳函式
+		bestIdx = getBestFitFunction(mpdf, data, mcat, /*silent=*/true);
+		// 還原
+		params->assignValueOnly(preParams);
+		mcat->setIndex(originalIndex);
+	}
 
 	for (int pInd=0; pInd<mpdf->getNumPdfs(); pInd++){
 		mcat->setIndex(pInd);
 		// Always refit since we cannot be sure the best fit pdf is being fitted
 		mpdf->getCurrentPdf()->fitTo(*data);
 
-		string full_function_name, function_name, function_order, printed_name;
-		int color_id;
-		full_function_name = mpdf->getCurrentPdf()->GetName(); // PZ 
-		function_name = full_function_name.substr(full_function_name.length()-5, 4); // bern or ( xexp, xpow, xlau )
-		function_order = full_function_name.substr(full_function_name.length()-1, 1);
-
-		// full_function_name could be "env_pdf_cat0_13TeV_bern2" or "env_pdf_cat0_13TeV_exp1_gauxexp1"
-		// substr(19): to delete first 19 characters (from 0) env_pdf_cat0_13TeV_bern2 -> bern2
-		// substr(0, 4): to retain first 4 characters, 0, 1, 2, 3; bern4 -> bern
-		// substr(start, length) from 18 and retain 4 characters
-		// full_function_name.find('_') = 3
-		// (env_pdf_cat0_13TeV_bern2) -> full_function_name.length() = 24 (from 1 to 24)
-		// (env_pdf_cat0_13TeV_exp1_gauxexp1) -> full_function_name.length() = 32 ((from 1 to 32)
-		
-		if(function_name=="bern"){
-			color_id = std::stoi(function_order)-1;
-			if(function_order == '1'){
-				printed_name = "1st Bernstein";
-			}
-			else if(function_order == '2'){
-				printed_name = "2nd Bernstein";
-			}
-			else if(function_order == '3'){
-				printed_name = "3rd Bernstein";
-			}
-			else{
-				printed_name = function_order+"th Bernstein";
-			}
+		// 以穩健方式解析名稱與階數，避免 substr 下溢
+		std::string full_function_name = mpdf->getCurrentPdf()->GetName();
+		std::string lname = toLower(full_function_name);
+		int order = extractOrder(lname);
+		std::string type;
+		int base = 0;
+		if (lname.find("bern") != std::string::npos) {
+			type = "Bern"; base = 0;
+		} else if (lname.find("exp") != std::string::npos) {
+			type = "Exp"; base = 4;
+		} else if (lname.find("pow") != std::string::npos) {
+			type = "Pow"; base = 6;
+		} else if (lname.find("lau") != std::string::npos) {
+			type = "Lau"; base = 8;
+		} else {
+			type = "Background"; base = 0;
 		}
-		else{
-			function_name = full_function_name.substr(full_function_name.length()-4, 3); //( exp, pow, lau )
+		int color_id = base + order - 1;
+		int maxColor = (sizeof(color)/sizeof(color[0])) - 1;
+		if (color_id < 0) color_id = 0;
+		if (color_id > maxColor) color_id = maxColor;
 
-			if(function_name == "exp"){
-				printed_name = "Exponential";
-				color_id = std::stoi(function_order)+4-1;
-				if(function_order == '3'){
-				color_id = color_id -1;
-				}
-			}
-			else if(function_name == "pow"){
-				printed_name = "Power Law";
-				color_id = std::stoi(function_order)+6-1;
-			}
-			else{
-				printed_name = "Laurent";
-				color_id = std::stoi(function_order)+8-2;
-			}
+		std::string printed_name = type + std::to_string(order);
 
-			if(function_order == '1'){
-				printed_name = "1st "+printed_name;
-			}
-			else if(function_order == '2'){
-				printed_name = "2nd "+printed_name;
-			}
-			else if(function_order == '3'){
-				printed_name = "3rd "+printed_name;
-			}
-			else{
-				printed_name = function_order+"th "+printed_name;
-			}
-		}//PZ
-
-		// mpdf->getCurrentPdf()->plotOn(plot, RooFit::Binning(nbin), LineColor(TColor::GetColor(color[color_id].c_str())), LineWidth(3));//PZ RooFit::Binning(nbin) induces errors
-		mpdf->getCurrentPdf()->plotOn(plot, LineColor(TColor::GetColor(color[color_id].c_str())), LineWidth(3));//PZ
+		mpdf->getCurrentPdf()->plotOn(plot, LineColor(TColor::GetColor(color[color_id].c_str())), LineWidth(3));
 		TObject *legObj = plot->getObject(plot->numItems()-1);
-		//leg->AddEntry(legObj,mpdf->getCurrentPdf()->GetName(),"L");
-		
-		// cout<<"[[DEBUG]]: "<< "printed_name: " << printed_name <<" ===== color: "<<color_id <<endl;
-		
+
+		// 加註 (Best Fit) 到圖例
+		std::string label = printed_name;
+		if (pInd == bestIdx) label += " (Best Fit)";
+
 		if(mpdf->getNumPdfs() > 6)
 		{
-			leg->AddEntry(legObj,printed_name.c_str(),"L");//PZ
+			leg->AddEntry(legObj,label.c_str(),"L");
 		}
 		else
 		{
-			leg_s->AddEntry(legObj,printed_name.c_str(),"L");//PZ
+			leg_s->AddEntry(legObj,label.c_str(),"L");
 		}
 	}
 
@@ -878,7 +907,8 @@ int main(int argc, char* argv[]){
 	bool makeCrossCheckProfPlots=false;
 	int mhLow;
 	int mhHigh;
-	int sqrts;
+	// int sqrts;
+	std::string sqrts; // 改為字串以支援 13p6
 	float intLumi;
 	double mhvalue_;
 	double mavalue_;
@@ -915,7 +945,7 @@ int main(int argc, char* argv[]){
 		("maVal", po::value<double>(&mavalue_)->default_value(1),												"Choose the Ma for the plots")
 		("higgsResolution", po::value<double>(&higgsResolution_)->default_value(1.),							"Starting point for scan")
 		("intLumi", po::value<float>(&intLumi)->default_value(0.),												"What intLumi in fb^{-1}")
-		("sqrts,S", po::value<int>(&sqrts)->default_value(8),													"Which centre of mass is this data from?")
+		("sqrts,S", po::value<string>(&sqrts)->default_value("13p6TeV"),                                           "Which centre of mass is this data from?")
 		("isFlashgg",  po::value<int>(&isFlashgg_)->default_value(1),  								    	    "Use Flashgg output ")
 		("flashggCats,f", po::value<string>(&flashggCatsStr_)->default_value("UntaggedTag_0,UntaggedTag_1,UntaggedTag_2,UntaggedTag_3,VBFTag_0,VBFTag_1,VBFTag_2,TTHHadronicTag,TTHLeptonicTag,VHHadronicTag,VHTightTag,VHLooseTag,VHEtTag"),       "Flashgg category names to consider")
 		("verbose,v", 																							"Verbose");
@@ -964,6 +994,11 @@ string catname;
 		catname = Form("cat%d",cat);
 	}
 
+	// 以輸入的 sqrts 形成 extStr，若未帶 TeV 則自動補上
+	std::string extStr = sqrts;
+	if (!extStr.empty() && extStr.find("TeV") == std::string::npos) extStr += "TeV";
+	std::cout << "[INFO] sqrts=" << sqrts << " -> extStr=" << extStr << std::endl;
+
 	TFile *outFile = TFile::Open(outFileName.c_str(),"RECREATE");
 	RooWorkspace *outWS = new RooWorkspace("bkgplotws","bkgplotws");
 
@@ -977,24 +1012,39 @@ string catname;
 	RooMultiPdf *mpdf = 0;
 	RooCategory *mcat = 0;
 	if (isMultiPdf) {
-		mpdf = (RooMultiPdf*)inWS->pdf(Form("CMS_hgg_%s_%dTeV_bkgshape",catname.c_str(),sqrts));
-		//mcat = (RooCategory*)inWS->cat(Form("pdfindex_%s_%dTeV",catname.c_str(),sqrts));//FIXED
-		mcat = (RooCategory*)inWS->cat(Form("pdfindex_cat%s_%dTeV",to_string(cat).c_str(),sqrts));
-		//mcat = (RooCategory*)inWS->cat(Form("pdfindex_%s_%dTeV_%s",to_string(cat).c_str(),sqrts,channelName.c_str()));//bing
+		// 與 fTest 端命名一致：CMS_hgg_%s_%s_bkgshape
+		mpdf = (RooMultiPdf*)inWS->pdf(Form("CMS_hgg_%s_%s_bkgshape",catname.c_str(),extStr.c_str()));
+		// 類別索引名稱：
+		// - isFlashgg: pdfindex_%s_%s
+		// - 非 isFlashgg: pdfindex_cat%d_%s
+		if (isFlashgg_) {
+			mcat = (RooCategory*)inWS->cat(Form("pdfindex_%s_%s",catname.c_str(),extStr.c_str()));
+		} else {
+			mcat = (RooCategory*)inWS->cat(Form("pdfindex_cat%d_%s",cat,extStr.c_str()));
+		}
 		if (!mpdf || !mcat){
-			cout << "[ERROR] "<< "Can't find multipdfs (" << Form("CMS_hgg_%s_%dTeV_bkgshape",catname.c_str(),sqrts) << ") or multicat ("<< Form("pdfindex_cat%s_%dTeV",catname.c_str(),sqrts) <<")" << endl;
-			//cout << "[ERROR] "<< "Can't find multipdfs (" << Form("CMS_hgg_%s_%dTeV_bkgshape",catname.c_str(),sqrts) << ") or multicat ("<< Form("pdfindex_%s_%dTeV_%s",catname.c_str(),sqrts,channelName.c_str()) <<")" << endl;//bing
+			cout << "[ERROR] " << "Can't find multipdfs (" 
+			     << Form("CMS_hgg_%s_%s_bkgshape",catname.c_str(),extStr.c_str())
+			     << ") or multicat ("
+			     << (isFlashgg_ ? Form("pdfindex_%s_%s",catname.c_str(),extStr.c_str())
+			                    : Form("pdfindex_cat%d_%s",cat,extStr.c_str()))
+			     << ")" << endl;
 			exit(0);
 		}
 	}
 	else {
-		bpdf = (RooAbsPdf*)inWS->pdf(Form("pdf_data_pol_model_%dTeV_%s",sqrts,catname.c_str()));
+		// 單一 pdf 情境不影響讀檔，但也以字串樣板命名新類別，保持一致
+		bpdf = (RooAbsPdf*)inWS->pdf(Form("pdf_data_pol_model_%s_%s",catname.c_str(),extStr.c_str()));
 		if (!bpdf){
-			cout << "[ERROR] "<< "Cant't find background pdf " << Form("pdf_data_pol_model_%dTeV_%s",sqrts,catname.c_str()) << endl;
+			cout << "[ERROR] " << "Cant't find background pdf " 
+			     << Form("pdf_data_pol_model_%s_%s",catname.c_str(),extStr.c_str()) << endl;
 			exit(0);
 		}
-		mcat = new RooCategory(Form("pdfindex_cat%s_%dTeV",catname.c_str(),sqrts),"c");
-		//mcat = new RooCategory(Form("pdfindex_%s_%dTeV_%s",catname.c_str(),sqrts,channelName.c_str()),"c");//bing
+		if (isFlashgg_) {
+			mcat = new RooCategory(Form("pdfindex_%s_%s",catname.c_str(),extStr.c_str()),"c");
+		} else {
+			mcat = new RooCategory(Form("pdfindex_cat%d_%s",cat,extStr.c_str()),"c");
+		}
 		RooArgList temp;
 		temp.add(*bpdf);
 		mpdf = new RooMultiPdf(Form("tempmpdf_%s",catname.c_str()),"",*mcat,temp);
@@ -1008,6 +1058,7 @@ string catname;
 	// plot all the pdfs for reference
 	if (isMultiPdf || verbose_) 
 	{
+		// 無需改動呼叫介面；若要沿用主流程的最佳 index，可改傳最後一個參數，否則函式內會自動計算
 		plotAllPdfs(mgg,data,mpdf,mcat,Form("%s/allPdfs_%s",outDir.c_str(),catname.c_str()),cat,unblind, isFlashgg_, flashggCats_, mavalue_);
 		plotAllPdfs(mgg,data,mpdf,mcat,Form("%s/allPdfs_%.0f",total_OutDir.c_str(),mavalue_),cat,unblind, isFlashgg_, flashggCats_, mavalue_);
 	}
@@ -1069,7 +1120,11 @@ string catname;
 	mpdf->getCurrentPdf()->plotOn(plot,LineColor(kBlue),LineWidth(3));
 	RooCurve *nomBkgCurve = (RooCurve*)plot->getObject(plot->numItems()-1);
 
-	leg->AddEntry(dataLeg,"Data","LEP");
+	// 原先：leg->AddEntry(dataLeg,"Data","LEP");
+	if (auto e = leg->AddEntry(dataLeg,"Data","LEP")) {
+		e->SetMarkerStyle(20);
+		e->SetMarkerSize(1.3);
+	}
 	leg->AddEntry(nomBkgCurve,"Bkg fit","L");
 
 	// Bands
@@ -1237,10 +1292,19 @@ string catname;
 		//mgg->setRange("unblind_down",100,115);
 		mgg->setRange("unblind_up",mggblindhigh_,mhHigh);//bing
 		mgg->setRange("unblind_down",mhLow,mggblindlow_);//bing
-		data->plotOn(plot,RooFit::Binning(nbin),RooFit::CutRange("unblind_down,unblind_up")); // PZ
+		data->plotOn(plot,
+			RooFit::Binning(nbin),
+			RooFit::CutRange("unblind_down,unblind_up"),
+			RooFit::MarkerStyle(20),
+			RooFit::MarkerSize(1.3)
+		); // PZ
 	}
 	else {
-		data->plotOn(plot,RooFit::Binning(nbin));
+		data->plotOn(plot,
+			RooFit::Binning(nbin),
+			RooFit::MarkerStyle(20),
+			RooFit::MarkerSize(1.3)
+		);
 	}
 
 	if (doBands) {
@@ -1429,14 +1493,14 @@ string catname;
 	if (doBands) oneSigmaBand_r->Draw("L3 SAME");
   	hdummy->GetYaxis()->SetNdivisions(505);
 
-  //TLine *line3 = new TLine(100,0.,180,0.);
-  TLine *line3 = new TLine(mhLow,0.,mhHigh,0.);//PZ
-  line3->SetLineColor(kBlue);
-  //line3->SetLineStyle(kDashed);
-  line3->SetLineWidth(3.0);
-  line3->Draw();
-  hdatasub->Draw("PESAME");
-  // enf extra bit for ratio plot///
+	//TLine *line3 = new TLine(100,0.,180,0.);
+	TLine *line3 = new TLine(mhLow,0.,mhHigh,0.);//PZ
+	line3->SetLineColor(kBlue);
+	//line3->SetLineStyle(kDashed);
+	line3->SetLineWidth(3.0);
+	line3->Draw();
+	hdatasub->Draw("PESAME");
+	// enf extra bit for ratio plot///
     // CMS_lumi( pad1, 4, 0);
 		canv->Print(Form("%s/bkgplot_%.0f.pdf",total_OutDir.c_str(),mavalue_));
 

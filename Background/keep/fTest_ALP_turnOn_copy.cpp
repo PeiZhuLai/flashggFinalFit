@@ -45,9 +45,6 @@
 
 #include "../../tdrStyle/tdrstyle.C"
 #include "../../tdrStyle/CMS_lumi.C"
-// 新增：集中式樣式設定
-#include "../interface/PlotStyle.h"
-#include "TStyle.h" // 新增：使用 gStyle 設定軸樣式
 
 using namespace std;
 using namespace RooFit;
@@ -57,15 +54,12 @@ namespace po = program_options;
 
 bool BLIND = true;
 bool runFtestCheckWithToys=false;
-// 新增：只畫圖不做任何 fit 的快速模式
-bool PLOT_ONLY = false;
-
-float mgglow_ =110.;//FIXME
+float mgglow_ =95.;//FIXME
 float mgghigh_ =180;//FIXME
 float mggblindlow_ =115;//FIXME
 float mggblindhigh_ =135;//FIXME
 
-float mgg_low =110.;//FIXME
+float mgg_low =95.;//FIXME
 float mgg_high =180.;//FIXME
 float nBinsForMass = 1.*(mgg_high-mgg_low);
 float mgg_blind_low =115;//FIXME
@@ -77,18 +71,15 @@ TRandom3 *RandomGen = new TRandom3();
 
 RooAbsPdf* getPdf(PdfModelBuilder &pdfsModel, string type, int order, const char* ext="", int mass_ALP=1)
 {
-  // if (type=="Bernstein") return pdfsModel.getBernsteinStepxGau(Form("%s_bern%d",ext,order),order, mass_ALP);//PZ
-  // else if (type=="Chebychev") return pdfsModel.getChebychev(Form("%s_cheb%d",ext,order),order);
-  // else if (type=="Exponential") return pdfsModel.getExponentialStepxGau(Form("%s_exp%d",ext,order),order,2, mass_ALP);//PZ
-  // else if (type=="PowerLaw") return pdfsModel.getPowerLawStepxGau(Form("%s_pow%d",ext,order),order,2, mass_ALP);//PZ
-  // else if (type=="Laurent") return pdfsModel.getLaurentStepxGau(Form("%s_lau%d",ext,order),order,2, mass_ALP);//PZ
-  
-  if (type=="Bernstein") return pdfsModel.getBernsteinStepxGau("Bern",order, mass_ALP);//PZ
-  else if (type=="Chebychev") return pdfsModel.getChebychev("Che",order);
-  else if (type=="Exponential") return pdfsModel.getExponentialStepxGau("Exp",order,2, mass_ALP);//PZ
-  else if (type=="PowerLaw") return pdfsModel.getPowerLawStepxGau("Pow",order,2, mass_ALP);//PZ
-  else if (type=="Laurent") return pdfsModel.getLaurentStepxGau("Lau",order,2, mass_ALP);//PZ
-
+  if (type=="Bernstein") return pdfsModel.getBernsteinStepxGau(Form("%s_bern%d",ext,order),order, mass_ALP);//PZ
+  // if (type=="Bernstein") return pdfsModel.getBernstein(Form("%s_bern%d",ext,order),order);
+  else if (type=="Chebychev") return pdfsModel.getChebychev(Form("%s_cheb%d",ext,order),order);
+  else if (type=="Exponential") return pdfsModel.getExponentialStepxGau(Form("%s_exp%d",ext,order),order,2, mass_ALP);//PZ
+    //return pdfsModel.getExponentialSingle(Form("%s_exp%d",ext,order),order);
+  else if (type=="PowerLaw") return pdfsModel.getPowerLawStepxGau(Form("%s_pow%d",ext,order),order,2, mass_ALP);//PZ
+    // return pdfsModel.getPowerLawSingle(Form("%s_pow%d",ext,order),order);
+  else if (type=="Laurent") return pdfsModel.getLaurentStepxGau(Form("%s_lau%d",ext,order),order,2, mass_ALP);//PZ
+    // return pdfsModel.getLaurentSeries(Form("%s_lau%d",ext,order),order);
   else 
   {
     cerr << "[ERROR] -- getPdf() -- type " << type << " not recognised." << endl;
@@ -98,12 +89,6 @@ RooAbsPdf* getPdf(PdfModelBuilder &pdfsModel, string type, int order, const char
 
 
 void runFit(RooAbsPdf *pdf, RooAbsData *data, double *NLL, int *stat_t, int MaxTries){
-  // 新增：plotOnly 模式直接略過
-  if (PLOT_ONLY) {
-    if (stat_t) *stat_t = 0;
-    if (NLL) *NLL = 0.;
-    return;
-  }
   if (!pdf) {
     std::cerr << "[ERROR] runFit called with null pdf. Skip fit." << std::endl;
     if (stat_t) *stat_t = 5;
@@ -148,9 +133,6 @@ void runFit(RooAbsPdf *pdf, RooAbsData *data, double *NLL, int *stat_t, int MaxT
 	*NLL = minnll;
 }
 double getProbabilityFtest(double chi2, int ndof,RooAbsPdf *pdfNull, RooAbsPdf *pdfTest, RooRealVar *mass, RooAbsData *data, std::string name){
-
-  // 新增：plotOnly 模式快速回傳（仍用漸進解）
-  if (PLOT_ONLY) return TMath::Prob(chi2,ndof);
 
   double prob_asym = TMath::Prob(chi2,ndof);
   if (!data || !pdfNull || !pdfTest || !mass) {
@@ -284,9 +266,6 @@ double getProbabilityFtest(double chi2, int ndof,RooAbsPdf *pdfNull, RooAbsPdf *
 }
 
 double getGoodnessOfFit(RooRealVar *mass, RooAbsPdf *mpdf, RooAbsData *data, std::string name){
-  // 新增：plotOnly 模式直接回傳 1.0（僅為快速繪圖用途）
-  if (PLOT_ONLY) return 1.0;
-
   if (!data || !mpdf || !mass) {
     std::cerr << "[WARN] getGoodnessOfFit called with null input. Return prob=0." << std::endl;
     return 0.;
@@ -396,22 +375,16 @@ void plot(RooRealVar *mass, RooAbsPdf *pdf, RooAbsData *data, string name,vector
   RooPlot *plot = mass->frame();
   mass->setRange("unblindReg_1",mgg_low,mgg_blind_low);
   mass->setRange("unblindReg_2",mgg_blind_high,mgg_high);
-
-  // 正確：在 RooPlot 上設定 X/Y 軸標題與樣式
-  plot->GetXaxis()->SetTitle("m_{ll#gamma#gamma} (GeV)");
-  plot->GetXaxis()->SetTitleSize(0.05);
-  plot->GetYaxis()->SetTitle("Events / 1 GeV");
-  plot->GetYaxis()->SetTitleSize(0.05);
-
   if (BLIND) {
     data->plotOn(plot,Binning(mgg_high-mgg_low),CutRange("unblindReg_1"));
     data->plotOn(plot,Binning(mgg_high-mgg_low),CutRange("unblindReg_2"));
-    // data->plotOn(plot,Binning(mgg_high-mgg_low),Invisible());
+    data->plotOn(plot,Binning(mgg_high-mgg_low),Invisible());
   }
   else data->plotOn(plot,Binning(nBinsForMass));
 
-  TCanvas *canv = new TCanvas("","",800,800);
-  pdf->plotOn(plot);
+ // data->plotOn(plot,Binning(mgg_high-mgg_low));
+  TCanvas *canv = new TCanvas();
+  pdf->plotOn(plot);//,RooFit::NormRange("fitdata_1,fitdata_2"));
   pdf->paramOn(plot,RooFit::Layout(0.10,0.96,0.89),RooFit::Format("NEA",AutoPrecision(1)));
   if (BLIND) plot->SetMinimum(0.0001);
   plot->SetTitle("");
@@ -422,10 +395,12 @@ void plot(RooRealVar *mass, RooAbsPdf *pdf, RooAbsData *data, string name,vector
   lat->DrawLatex(0.1,0.92,Form("#chi^{2} = %.3f, Prob = %.2f, Fit Status = %d ",chi2*(nBinsForMass-np),*prob,status));
   canv->SaveAs(name.c_str());
 
+	//plot_chi2->Draw();
+  //canv->SaveAs((name+"debug").c_str());
+
   delete canv;
   delete lat;
 }
-
 void plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, RooAbsData *data, string name, vector<string> flashggCats_, int cat, int bestFitPdf=-1){
   if (!pdfs || !mass || !catIndex) return;
   if (!data) {
@@ -433,26 +408,10 @@ void plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, RooAbsData
     return;
   }
 
-  // 套用畫布與全域樣式（僅開啟 ticks，不加粗線寬）
-  TCanvas *canv = new TCanvas("","",800,800);
-  canv->SetLeftMargin(PlotStyleCfg::canvasLeftMargin);
-  canv->SetRightMargin(PlotStyleCfg::canvasRightMargin);
-  canv->SetTopMargin(PlotStyleCfg::canvasTopMargin);
-  canv->SetBottomMargin(PlotStyleCfg::canvasBottomMargin);
-  gStyle->SetOptStat(PlotStyleCfg::showStatBox ? 1 : 0);
-  gStyle->SetPadTickX(PlotStyleCfg::axisTickX);
-  gStyle->SetPadTickY(PlotStyleCfg::axisTickY);
-
-  // 移除本地硬編顏色陣列，改用 PlotStyleCfg::colorForIndex
-  // int color[7] = {kBlue,kRed,kMagenta,kGreen+1,kOrange+7,kAzure+10,kBlack};
-  TLegend *leg = new TLegend(PlotStyleCfg::multipdfLegendX1,
-                             PlotStyleCfg::multipdfLegendY1,
-                             PlotStyleCfg::multipdfLegendX2,
-                             PlotStyleCfg::multipdfLegendY2);
+  int color[7] = {kBlue,kRed,kMagenta,kGreen+1,kOrange+7,kAzure+10,kBlack};
+  TLegend *leg = new TLegend(0.5,0.55,0.92,0.88);
   leg->SetFillColor(0);
-  leg->SetBorderSize(0);
-  leg->SetFillStyle(0);
-  leg->SetTextSize(0.05);
+  leg->SetLineColor(1);
   RooPlot *plot = mass->frame();
 
   mass->setRange("unblindReg_1",mgg_low,mgg_blind_low);
@@ -463,67 +422,44 @@ void plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, RooAbsData
     data->plotOn(plot,Binning(mgg_high-mgg_low),Invisible());
   }
   else data->plotOn(plot,Binning(nBinsForMass));
+  TCanvas *canv = new TCanvas();
   ///start extra bit for ratio plot///
   RooHist *plotdata = (RooHist*)plot->getObject(plot->numItems()-1);
-  bool doRatioPlot_= PlotStyleCfg::enableRatio;
-  TPad *pad1 = new TPad("pad1","pad1",0,PlotStyleCfg::pad2Height,1,1);
-  TPad *pad2 = new TPad("pad2","pad2",0,0,1,PlotStyleCfg::pad2Height);
-  // ---------- Top Margin / pad1 Top Margin ------------
-  pad1->SetTopMargin(PlotStyleCfg::pad1TopMargin);
-  // ------ Space between two pads ---------
-  pad1->SetBottomMargin(PlotStyleCfg::pad1BottomMargin);
-  pad2->SetTopMargin(PlotStyleCfg::pad2TopMargin);
-  //----------------------------------------
-  // ---------- Bottom Margin / pad2 Bottom Margin ------
-  pad2->SetBottomMargin(PlotStyleCfg::pad2BottomMargin);
-
-  pad1->SetLeftMargin(PlotStyleCfg::canvasLeftMargin);
-  pad1->SetRightMargin(PlotStyleCfg::canvasRightMargin);
-  pad2->SetLeftMargin(PlotStyleCfg::canvasLeftMargin);
-  pad2->SetRightMargin(PlotStyleCfg::canvasRightMargin);
-  pad1->SetTicks(1,1);
-  pad2->SetTicks(1,1);
-  pad2->Draw();
+  bool doRatioPlot_=1;
+  TPad *pad1 = new TPad("pad1","pad1",0,0.25,1,1);
+  TPad *pad2 = new TPad("pad2","pad2",0,0,1,0.35);
+  pad1->SetBottomMargin(0.18);
+  pad2->SetTopMargin(0.00001);
+  pad2->SetBottomMargin(0.25);
   pad1->Draw();
+  pad2->Draw();
   pad1->cd();
   // enf extra bit for ratio plot///
 
   int currentIndex = catIndex->getIndex();
   TObject *datLeg = plot->getObject(int(plot->numItems()-1));
-  // leg->AddEntry(datLeg,Form("Data - %s",flashggCats_[cat].c_str()),"LEP");
-  leg->AddEntry(datLeg,"Data","LEP");
+  leg->AddEntry(datLeg,Form("Data - %s",flashggCats_[cat].c_str()),"LEP");
   int style=1;
   RooAbsPdf *pdf = nullptr;        // ensure initialized
   RooCurve *nomBkgCurve = nullptr; // ensure initialized
   int bestcol= -1;
-
-  // 新增：蒐集所有已繪製 pdf 曲線以便找最大 y
-  std::vector<RooCurve*> pdfCurves;
-
   for (int icat=0;icat<catIndex->numTypes();icat++){
-    int col = PlotStyleCfg::colorForIndex(icat);
-    if (icat>6) { col=kBlack; style++; }
+    int col;
+    if (icat<=6) col=color[icat];
+    else {col=kBlack; style++;}
     catIndex->setIndex(icat);
-    // 新增：plotOnly 模式下不做 fit，只畫目前參數形狀
-    if (!PLOT_ONLY) {
-      pdfs->getCurrentPdf()->fitTo(*data,RooFit::Minos(0),RooFit::Minimizer("Minuit2","minimize"),RooFit::SumW2Error(kFALSE));
-    }
-    pdfs->getCurrentPdf()->plotOn(plot, RooFit::Binning(nBinsForMass), LineColor(col),LineStyle(style));
-
-    // 新增：記錄本次 plotOn 產生的曲線
-    {
-      TObject *lastObj = plot->getObject(int(plot->numItems()-1));
-      RooCurve *thisCurve = dynamic_cast<RooCurve*>(lastObj);
-      if (thisCurve) pdfCurves.push_back(thisCurve);
-    }
-
+    // pdfs->getCurrentPdf()->fitTo(*data,RooFit::Minos(0),RooFit::Minimizer("Minuit2","minimize"),RooFit::SumW2Error(kTRUE));	 //FIXME
+    pdfs->getCurrentPdf()->fitTo(*data,RooFit::Minos(0),RooFit::Minimizer("Minuit2","minimize"),RooFit::SumW2Error(kFALSE));	 //FIXME
+    // pdfs->getCurrentPdf()->plotOn(plot,Binning(nBinsForMass), LineColor(col),LineStyle(style));//,RooFit::NormRange("fitdata_1,fitdata_2")); //Original
+    pdfs->getCurrentPdf()->plotOn(plot, RooFit::Binning(nBinsForMass), LineColor(col),LineStyle(style));//,RooFit::NormRange("fitdata_1,fitdata_2"));
     TObject *pdfLeg = plot->getObject(int(plot->numItems()-1));
     std::string ext = "";
     if (bestFitPdf==icat) {
-      ext=" (Best Fit) ";
-      pdf= pdfs->getCurrentPdf();
-      nomBkgCurve = (RooCurve*)plot->getObject(plot->numItems()-1);
-      bestcol = col;
+    ext=" (Best Fit Pdf) ";
+    pdf= pdfs->getCurrentPdf();
+    nomBkgCurve = (RooCurve*)plot->getObject(plot->numItems()-1);
+    bestcol = col;
+
     }
     leg->AddEntry(pdfLeg,Form("%s%s",pdfs->getCurrentPdf()->GetName(),ext.c_str()),"L");
   }
@@ -531,46 +467,11 @@ void plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, RooAbsData
   if (!pdf) pdf = pdfs->getCurrentPdf();
   // If still null or no curve, skip ratio part safely
   bool canDoRatio = (pdf && nomBkgCurve);
-
-  // 上 pad：只顯示 Y 軸並放大字級；X 軸交由下 pad 顯示
-  plot->GetYaxis()->SetTitle("Events / 1 GeV");
-  plot->GetYaxis()->SetTitleFont(PlotStyleCfg::axisTitleFont);
-  plot->GetYaxis()->SetLabelFont(PlotStyleCfg::axisLabelFont);
-  plot->GetYaxis()->SetTitleSize(PlotStyleCfg::pad1axisTitleSizeY);
-  plot->GetYaxis()->SetLabelSize(PlotStyleCfg::pad1axisLabelSizeY);
-  plot->GetYaxis()->SetTitleOffset(PlotStyleCfg::pad1axisTitleOffsetY);
-  plot->GetXaxis()->SetTitle("");
-  plot->GetXaxis()->SetLabelSize(0.0); // 上 pad 不顯示 X label
-
-  // // 新增：以 pdf 曲線的最大值 * 1.5 設定 y 軸上限（優先使用 best-fit 曲線）
-  // auto curveMaxY = [](const RooCurve* c)->double {
-  //   if (!c) return 0.;
-  //   int n = c->GetN();
-  //   double maxy = 0., x, y;
-  //   for (int i=0;i<n;i++) { c->GetPoint(i,x,y); if (y>maxy) maxy = y; }
-  //   return maxy;
-  // };
-  // double yMaxPdf = 0.;
-  // if (nomBkgCurve) {
-  //   yMaxPdf = curveMaxY(nomBkgCurve);
-  // } else {
-  //   for (auto c : pdfCurves) {
-  //     double vy = curveMaxY(c);
-  //     if (vy > yMaxPdf) yMaxPdf = vy;
-  //   }
-  // }
-  // if (yMaxPdf > 0.) {
-  //   plot->SetMaximum(2.0*yMaxPdf);
-  // }
-
   plot->SetTitle(Form("Category %s",flashggCats_[cat].c_str()));
   if (BLIND) plot->SetMinimum(0.0001);
   plot->Draw();
   leg->Draw("same");
-  // -------- 要交錯呼叫ㄧ次才會改變 ---------
-  CMS_lumi(canv, 22, 0);
-  // CMS_lumi(canv, 22, 0, "Preliminary");
-  // -------------------------------------
+  CMS_lumi( canv, 0, 0);
   ///start extra bit for ratio plot///
   TH1D *hbplottmp = nullptr;
   if (canDoRatio) {
@@ -612,36 +513,19 @@ void plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, RooAbsData
   TH1 *hdummy = new TH1D("hdummyweight","",mgg_high-mgg_low,mgg_low,mgg_high);
   hdummy->SetMaximum(hdatasub->GetHistogram()->GetMaximum()+1);
   hdummy->SetMinimum(hdatasub->GetHistogram()->GetMinimum()-1);
-
-  // 下 pad：依高度放大字級，確保清楚可讀
-  const double kScale = 1.0/PlotStyleCfg::pad2Height; // 例如 1/0.35 ≈ 2.86
+  hdummy->GetYaxis()->SetTitle("data - best fit PDF");
+  hdummy->GetYaxis()->SetTitleSize(0.12);
+  //hdummy->GetXaxis()->SetTitle("m_{a} (GeV)");
   hdummy->GetXaxis()->SetTitle("m_{ll#gamma#gamma} (GeV)");
-  hdummy->GetYaxis()->SetTitle("Data - Best Fit");
-
-  hdummy->GetXaxis()->SetTitleFont(PlotStyleCfg::axisTitleFont);
-  hdummy->GetYaxis()->SetTitleFont(PlotStyleCfg::axisTitleFont);
-  hdummy->GetXaxis()->SetLabelFont(PlotStyleCfg::axisLabelFont);
-  hdummy->GetYaxis()->SetLabelFont(PlotStyleCfg::axisLabelFont);
-
-  hdummy->GetYaxis()->SetTitleSize(PlotStyleCfg::pad2axisTitleSizeY);
-  hdummy->GetYaxis()->SetLabelSize(PlotStyleCfg::pad2axisLabelSizeY);
-  hdummy->GetYaxis()->SetTitleOffset(PlotStyleCfg::pad2axisTitleOffsetY);
-
-  hdummy->GetXaxis()->SetTitleSize(PlotStyleCfg::pad2axisTitleSizeX);
-  hdummy->GetXaxis()->SetLabelSize(PlotStyleCfg::pad2axisLabelSizeX);
-  hdummy->GetXaxis()->SetTitleOffset(PlotStyleCfg::pad2axisTitleOffsetX);
-
-  if (PlotStyleCfg::axisCenterTitle) {
-    hdummy->GetXaxis()->CenterTitle(true);
-    hdummy->GetYaxis()->CenterTitle(true);
-  }
-  hdummy->GetYaxis()->SetNdivisions(808);
+  hdummy->GetXaxis()->SetTitleSize(0.12);
   hdummy->Draw("HIST");
+  hdummy->GetYaxis()->SetNdivisions(808);
 
   if (canDoRatio) {
     TLine *line3 = new TLine(mgg_low,0.,mgg_high,0.);
     line3->SetLineColor(bestcol);
-    line3->SetLineWidth(PlotStyleCfg::zeroLineWidth);
+    //line3->SetLineStyle(kDashed);
+    line3->SetLineWidth(5.0);
     line3->Draw();
     hdatasub->Draw("PESAME");
   }
@@ -659,13 +543,9 @@ void plot(RooRealVar *mass, map<string,RooAbsPdf*> pdfs, RooAbsData *data, strin
     return;
   }
 
-  // 移除本地硬編顏色陣列，改用 PlotStyleCfg::colorForIndex
-  // int color[7] = {kBlue,kRed,kMagenta,kGreen+1,kOrange+7,kAzure+10,kBlack};
+  int color[7] = {kBlue,kRed,kMagenta,kGreen+1,kOrange+7,kAzure+10,kBlack};
   TCanvas *canv = new TCanvas();
-  TLegend *leg = new TLegend(PlotStyleCfg::truthLegendX1,
-                             PlotStyleCfg::truthLegendY1,
-                             PlotStyleCfg::truthLegendX2,
-                             PlotStyleCfg::truthLegendY2);
+  TLegend *leg = new TLegend(0.6,0.65,0.88,0.88);
   leg->SetFillColor(0);
   leg->SetLineColor(0);
   RooPlot *plot = mass->frame();
@@ -681,10 +561,9 @@ void plot(RooRealVar *mass, map<string,RooAbsPdf*> pdfs, RooAbsData *data, strin
 
   TObject *datLeg = plot->getObject(int(plot->numItems()-1));
 	if(flashggCats_.size() >0){
-  // leg->AddEntry(datLeg,Form("Data - %s",flashggCats_[cat].c_str()),"LEP");
-  leg->AddEntry(datLeg,"Data","LEP");
+  leg->AddEntry(datLeg,Form("Data - %s",flashggCats_[cat].c_str()),"LEP");
 	} else {
-  leg->AddEntry(datLeg,"Data","LEP");
+  leg->AddEntry(datLeg,Form("Data - %d",cat),"LEP");
 	}
   int i=0;
   int style=1;
@@ -693,12 +572,13 @@ void plot(RooRealVar *mass, map<string,RooAbsPdf*> pdfs, RooAbsData *data, strin
       std::cerr << "[WARN] plot(map): skip null pdf entry " << it->first << std::endl;
       continue;
     }
-    int col = PlotStyleCfg::colorForIndex(i);
-    if (i>6) { col=kBlack; style++; }
+    int col;
+    if (i<=6) col=color[i];
+    else {col=kBlack; style++;}
     it->second->plotOn(plot,LineColor(col),LineStyle(style));//,RooFit::NormRange("fitdata_1,fitdata_2"));
     TObject *pdfLeg = plot->getObject(int(plot->numItems()-1));
     std::string ext = "";
-    if (bestFitPdf==i) ext=" (Best Fit) ";
+    if (bestFitPdf==i) ext=" (Best Fit Pdf) ";
     leg->AddEntry(pdfLeg,Form("%s%s",it->first.c_str(),ext.c_str()),"L");
     i++;
   }
@@ -727,12 +607,6 @@ void transferMacros(TFile *inFile, TFile *outFile){
 }
 int getBestFitFunction(RooMultiPdf *bkg, RooAbsData *data, RooCategory *cat, bool silent=false){
 
-  // 新增：plotOnly 模式直接回傳 index 0
-  if (PLOT_ONLY) {
-    if (!silent) std::cout << "[INFO] plotOnly mode: skip best-fit scan, use index 0." << std::endl;
-    cat->setIndex(0);
-    return 0;
-  }
 
 	double global_minNll = 1E10;
 	int best_index = 0;
@@ -756,7 +630,7 @@ int getBestFitFunction(RooMultiPdf *bkg, RooAbsData *data, RooCategory *cat, boo
 		params->assignValueOnly(clean);
 		cat->setIndex(id);
 
-		 //RooAbsReal *nllm = bkg->getCurrentPdf()->createNLL(*data);
+		//RooAbsReal *nllm = bkg->getCurrentPdf()->createNLL(*data);
 
 		if (!silent) {
 			/*
@@ -851,7 +725,6 @@ int main(int argc, char* argv[]){
     ("isData",  po::value<bool>(&isData_)->default_value(1),  								    	            "Use Data not MC ")
 		("flashggCats,f", po::value<string>(&flashggCatsStr_)->default_value("UntaggedTag_0,UntaggedTag_1,UntaggedTag_2,UntaggedTag_3,UntaggedTag_4,VBFTag_0,VBFTag_1,VBFTag_2,TTHHadronicTag,TTHLeptonicTag,VHHadronicTag,VHTightTag,VHLooseTag,VHEtTag"),       "Flashgg category names to consider")
     ("datasetName", po::value<std::string>(&datasetName_)->default_value("Data_13p6TeV"),                                   "Override dataset name in workspace") // NEW
-    ("plotOnly",                                                                         "Skip all fits; build minimal pdf set and only plot styles") // 新增
     ("verbose,v",                                                                               "Run with more output")
     ("mhLow,L", po::value<float>(&mgglow_)->default_value(95.),                                 "Low ALP mass point")
     ("mhHigh,H", po::value<float>(&mgghigh_)->default_value(180.),                              "High ALP mass point")
@@ -865,12 +738,6 @@ int main(int argc, char* argv[]){
   if (vm.count("is2011")) is2011=true;
 	if (vm.count("unblind")) BLIND=false;
   saveMultiPdf = vm.count("saveMultiPdf");
-  // 新增：解析 plotOnly
-  if (vm.count("plotOnly")) {
-    PLOT_ONLY = true;
-    runFtestCheckWithToys = false;
-    if (verbose) std::cout << "[INFO] plotOnly mode enabled: all fits/toys skipped." << std::endl;
-  }
 
   if (vm.count("verbose")) verbose=true;
   if (vm.count("runFtestCheckWithToys")) runFtestCheckWithToys=true;
@@ -973,8 +840,6 @@ int main(int argc, char* argv[]){
 	FILE *resFile ;
 	if  (singleCategory >-1) resFile = fopen(Form("%s/fTestResults_%s.txt",outDir.c_str(),flashggCats_[singleCategory].c_str()),"w");
 	else resFile = fopen(Form("%s/fTestResults.txt",outDir.c_str()),"w");
-  // 新增：比照 BkgEnvelopeDCBExp.cpp 輸出 Envelope 結果
-  FILE *logFile = fopen(Form("%s/EnvelopeResults.txt",outDir.c_str()),"w");
 	vector<map<string,int> > choices_vec;
 	vector<map<string,std::vector<int> > > choices_envelope_vec;
 	vector<map<string,RooAbsPdf*> > pdfs_vec;
@@ -1001,6 +866,7 @@ int main(int argc, char* argv[]){
 		map<string,int> choices;
 		map<string,std::vector<int> > choices_envelope;
 		map<string,RooAbsPdf*> pdfs;
+		map<string,RooAbsPdf*> allPdfs;
 		string catname;
 		if (isFlashgg_){
 			catname = Form("%s",flashggCats_[cat].c_str());
@@ -1061,58 +927,6 @@ int main(int argc, char* argv[]){
 		double MinimimNLLSoFar=1e10;
 		int simplebestFitPdfIndex = 0;
 
-    if (PLOT_ONLY) {
-      // 快速模式：為每個函式家族建立一個低階次 PDF（order=1），不做 F-test
-      map<string,RooAbsPdf*> pdfs;
-      for (auto funcType : functionClasses) {
-        int order = 1;
-        RooAbsPdf *qpdf = getPdf(pdfsModel, funcType, order, Form("quick_pdf_cat%d_%s",cat,ext.c_str()), mass_ALP);
-        if (qpdf) {
-          // key 僅用於圖例標示
-          pdfs.insert(std::make_pair(Form("%s%d",funcType.c_str(),order), qpdf));
-          if (saveMultiPdf) storedPdfs.add(*qpdf);
-        }
-        // 填寫選擇結果的最小占位，避免後面寫檔崩潰
-        choices.insert(std::make_pair(funcType, order-1));
-      }
-
-      // truths plot（例如 truths_cat0.pdf）
-      plot(mass,pdfs,data,Form("%s/truths_cat%d",outDir.c_str(),cat),flashggCats_,cat);
-
-      // 若要求存 RooMultiPdf，直接用 quick set 建立，不做 best-fit 掃描
-      if (saveMultiPdf && storedPdfs.getSize()>0) {
-        string catindexname, catname;
-        if (isFlashgg_){
-          catindexname = Form("pdfindex_%s_%s",flashggCats_[cat].c_str(),ext.c_str());
-          catname = Form("%s",flashggCats_[cat].c_str());
-        } else {
-          catindexname = Form("pdfindex_cat%d_%s",cat,ext.c_str());
-          catname = Form("cat%d",cat);
-        }
-        RooCategory catIndex(catindexname.c_str(),"c");
-        RooMultiPdf *pdf = new RooMultiPdf(Form("CMS_hgg_%s_%s_bkgshape",catname.c_str(),ext.c_str()),"all pdfs",catIndex,storedPdfs);
-        RooRealVar nBackground(Form("CMS_hgg_%s_%s_bkgshape_norm",catname.c_str(),ext.c_str()),"nbkg",data->sumEntries(),0,3*data->sumEntries());
-        mass->setBins(nBinsForMass);
-        RooDataHist dataBinned(Form("roohist_data_mass_%s",catname.c_str()),"data",*mass,*dataFull);
-
-        outputws->import(*pdf);
-        outputws->import(nBackground);
-        outputws->import(catIndex);
-        outputws->import(dataBinned);
-        outputws->import(*data);
-
-        int bestFitPdfIndex = 0;
-        catIndex.setIndex(bestFitPdfIndex);
-        plot(mass,pdf,&catIndex,data,Form("%s/multipdf_%s",outDir.c_str(),catname.c_str()),flashggCats_,cat,bestFitPdfIndex);
-      }
-
-      // 保存本類別的占位資訊
-      choices_vec.push_back(choices);
-      choices_envelope_vec.push_back(map<string,std::vector<int> >());
-      pdfs_vec.push_back(map<string,RooAbsPdf*>());
-      continue; // 直接處理下一個 cat
-    }
-
 		// Standard F-Test to find the truth functions
 		for (vector<string>::iterator funcType=functionClasses.begin();
 				funcType!=functionClasses.end(); funcType++){
@@ -1129,8 +943,7 @@ int main(int argc, char* argv[]){
 			while (prob<0.05 && order < 7){ //FIXME
       //while (prob<0.05 && order < 4){ //FIXME
 				
-        // RooAbsPdf *bkgPdf = getPdf(pdfsModel,*funcType,order,Form("ftest_pdf_%d_%s",cat,ext.c_str()), mass_ALP);
-        RooAbsPdf *bkgPdf = getPdf(pdfsModel,*funcType,order,"", mass_ALP);
+        RooAbsPdf *bkgPdf = getPdf(pdfsModel,*funcType,order,Form("ftest_pdf_%d_%s",cat,ext.c_str()), mass_ALP);
         // cout << "Line 850 ======================================" << endl;
 				if (!bkgPdf){
 					// assume this order is not allowed
@@ -1195,8 +1008,7 @@ int main(int argc, char* argv[]){
 
 
 				while (prob<upperEnvThreshold){
-					// RooAbsPdf *bkgPdf = getPdf(pdfsModel,*funcType,order,Form("env_pdf_cat%d_%s",cat,ext.c_str()), mass_ALP); //PZ
-					RooAbsPdf *bkgPdf = getPdf(pdfsModel,*funcType,order,"", mass_ALP); //PZ
+					RooAbsPdf *bkgPdf = getPdf(pdfsModel,*funcType,order,Form("env_pdf_cat%d_%s",cat,ext.c_str()), mass_ALP); //PZ
 					
 
 
@@ -1246,15 +1058,11 @@ int main(int argc, char* argv[]){
 						if ((prob < upperEnvThreshold) ) { // Looser requirements for the envelope
 
 							if (gofProb > 0.01 || order == truthOrder ) {  // Good looking fit or one of our regular truth functions
+
 								std::cout << "[INFO] Adding to Envelope " << bkgPdf->GetName() << " "<< gofProb
 									<< " 2xNLL + c is " << myNll + bkgPdf->getVariables()->getSize() <<  std::endl;
-
-                // 新增：比照 BkgEnvelopeDCBExp.cpp 記錄 envelope 內容到 logFile
-                if (logFile) {
-                  int isTruth = (order==truthOrder) ? 1 : 0;
-                  fprintf(logFile,"category : %d , pdf : %s , gof : %f, isTruth : %d \n ",cat, bkgPdf->GetName(), gofProb, isTruth);
-                }
-
+                
+								allPdfs.insert(pair<string,RooAbsPdf*>(Form("%s%d",funcType->c_str(),order),bkgPdf));
 								storedPdfs.add(*bkgPdf);
 								pdforders.push_back(order);
 								// Keep track but we shall redo this later
@@ -1370,9 +1178,6 @@ int main(int argc, char* argv[]){
 			fprintf(dfile,"\n");
 		}
 		inFile->Close();
-
-    // 新增：收尾關閉 logFile
-    if (logFile) fclose(logFile);
 
 		return 0;
 	}

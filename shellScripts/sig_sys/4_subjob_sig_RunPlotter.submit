@@ -1,6 +1,6 @@
 # subjob_sig_RunPlotter
 universe              = vanilla
-executable            = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/runjob_sig_RunPlotter.sh
+executable            = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/shellScripts/sig_sys/4_runjob_sig_RunPlotter.sh
 getenv                = True
 request_memory        = 2000
 +JobFlavour           = "workday"

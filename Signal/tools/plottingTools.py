@@ -635,10 +635,10 @@ def plotSplines(_finalModel,_outdir="./",_nominalMass='125',splinesToPlot=['xs',
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Function for plotting final signal model: neat
-def plotSignalModel(_hists,_opt,_outdir=".",offset=0.07,_Amass='1',_year='16', _channel='ele'):
+def plotSignalModel(_hists,_opt,_outdir=".",offset=0.03,_Amass='1',_year='16', _channel='ele'):
   colorMap = {'16':38,'16APV':31, '17':30,'18':46,'2022preEE':38,'2022postEE':30}
   canv = ROOT.TCanvas("c","c",650,600)
-  canv.SetMargin(0.19, 0.035, 0.14, 0.09) # //left//right//bottom//top
+  canv.SetMargin(0.12+offset, 0.035, 0.14, 0.09) # //left//right//bottom//top
   canv.SetTickx()
   canv.SetTicky()
   h_axes = _hists['data'].Clone()
@@ -652,7 +652,7 @@ def plotSignalModel(_hists,_opt,_outdir=".",offset=0.07,_Amass='1',_year='16', _
   h_axes.GetYaxis().SetTitle(f"Events / {h_axes.GetBinWidth(1):.2f}")
   h_axes.GetYaxis().SetTitleFont(42)
   h_axes.GetYaxis().SetTitleSize(0.055)
-  h_axes.GetYaxis().SetTitleOffset(1.8)
+  h_axes.GetYaxis().SetTitleOffset(1.37+offset*2)
   h_axes.GetYaxis().SetLabelFont(42)
   h_axes.GetYaxis().SetLabelSize(0.05)
 
@@ -686,7 +686,10 @@ def plotSignalModel(_hists,_opt,_outdir=".",offset=0.07,_Amass='1',_year='16', _
     leg1.SetFillStyle(0)
     leg1.SetLineColor(0)
     leg1.SetTextSize(0.03)
-    for year in _opt.years.split(","): leg1.AddEntry(_hists['pdf_%s'%year],"%s: #scale[0.8]{#sigma_{eff} = %1.2f GeV}"%(year,getEffSigma(_hists['pdf_%s'%year])),"l")
+    for year in _opt.years.split(","):
+      key = f"pdf_{year}"
+      if key in _hists:
+        leg1.AddEntry(_hists[key], "%s: #scale[0.8]{#sigma_{eff} = %1.2f GeV}" % (year, getEffSigma(_hists[key])), "l")
     leg1.Draw("Same")
 
     leg2 = ROOT.TLegend(0.15+offset,0.3,0.5+offset,0.45)
@@ -743,10 +746,13 @@ def plotSignalModel(_hists,_opt,_outdir=".",offset=0.07,_Amass='1',_year='16', _
   _hists['pdf'].Draw("Same Hist C")
   if len(_opt.years.split(","))>1:
     for year in _opt.years.split(","):
-      _hists['pdf_%s'%year].SetLineColor( colorMap[year] )  
-      _hists['pdf_%s'%year].SetLineStyle(2)
-      _hists['pdf_%s'%year].SetLineWidth(3)
-      _hists['pdf_%s'%year].Draw("Same Hist C")
+      key = f"pdf_{year}"
+      if key not in _hists:
+        continue
+      _hists[key].SetLineColor( colorMap.get(year, 1) )
+      _hists[key].SetLineStyle(2)
+      _hists[key].SetLineWidth(3)
+      _hists[key].Draw("Same Hist C")
   # Set style: data
   _hists['data'].SetMarkerStyle(25)
   _hists['data'].SetMarkerColor(1)
@@ -760,7 +766,7 @@ def plotSignalModel(_hists,_opt,_outdir=".",offset=0.07,_Amass='1',_year='16', _
   lat0.SetTextAlign(11)
   lat0.SetNDC()
   lat0.SetTextSize(0.05)
-  lat0.DrawLatex(0.19,0.92,"#bf{CMS} #it{%s}"%_opt.label)
+  lat0.DrawLatex(0.12+offset,0.92,"#bf{CMS} #it{%s}"%_opt.label)
   lat0.DrawLatex(0.80,0.92,"%s TeV"%("13.6"))
   lat0.DrawLatex(0.16+offset,0.81,"H #rightarrow Za #rightarrow ll#gamma#gamma")
 
@@ -791,13 +797,18 @@ def plotSignalModel(_hists,_opt,_outdir=".",offset=0.07,_Amass='1',_year='16', _
   canv.Update()
 
   # Write effSigma to file
-  if len(_opt.years.split(",")) >1:
-    es = {}
-    es['combined'] = effSigma
-    for year in _opt.years.split(","): es[year] = getEffSigma(_hists['pdf_%s'%year])
-    with open("%s/effSigma_%s.json"%(_outdir,catExt),"w") as jf: json.dump(es,jf)
+  years = [y.strip() for y in _opt.years.split(",") if y.strip()]
+  es = {}
+  es['combined'] = effSigma
+  for year in years:
+    key = f"pdf_{year}"
+    if key in _hists:
+      es[year] = getEffSigma(_hists[key])
+    else:
+      # 缺少每年直方圖時，靜默使用 combined 的值
+      es[year] = effSigma
+  with open("%s/effSigma_%s_%s_%s.json"%(_outdir,_Amass,_year,_channel),"w") as jf:
+    json.dump(es,jf)
 
   # Save canvas
-  # canv.SaveAs("%s/smodel_%s%s%s.pdf"%(_outdir,catExt,procExt,yearExt))
-  # canv.SaveAs("%s/smodel_%s%s%s.png"%(_outdir,catExt,procExt,yearExt))
   canv.SaveAs(f"{_outdir}/smodel_{_Amass}_{_year}_{_channel}.pdf")

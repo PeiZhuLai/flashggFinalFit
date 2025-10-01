@@ -22,8 +22,8 @@ def get_options():
   parser.add_option("--xvar", dest="xvar", default='CMS_hza_mass:m_{ ll#gamma#gamma}:GeV', help="x-var (name:title:units)")
   parser.add_option("--mass", dest="mass", default='125', help="Mass of datasets")
   parser.add_option("--MH", dest="MH", default='125', help="Higgs mass (for pdf)")
-  parser.add_option("--nBins", dest="nBins", default=160, type='int', help="Number of bins")
-  parser.add_option("--pdf_nBins", dest="pdf_nBins", default=3200, type='int', help="Number of bins")
+  parser.add_option("--nBins", dest="nBins", default=80, type='int', help="Number of bins")
+  parser.add_option("--pdf_nBins", dest="pdf_nBins", default=1600, type='int', help="Number of bins")
   parser.add_option("--threshold", dest="threshold", default=0.001, type='float', help="Threshold to prune process from plot default = 0.1% of total category norm")
   parser.add_option("--translateCats", dest="translateCats", default=None, help="JSON to store cat translations")
   parser.add_option("--translateProcs", dest="translateProcs", default=None, help="JSON to store proc translations")
@@ -44,7 +44,7 @@ if opt.cats in ['all','wall']:
     cat = re.sub(".root","",f.split("/")[-1].split("_%s_"%opt.ext)[-1])
     inputFiles[cat] = f
     if citr == 0:
-      w = ROOT.TFile(f).Get("wsig_13TeV")
+      w = ROOT.TFile(f).Get("wsig_13p6TeV")
       xvar = w.var(opt.xvar.split(":")[0])
       xvar.setPlotLabel(opt.xvar.split(":")[1])
       xvar.setUnit(opt.xvar.split(":")[2])
@@ -55,7 +55,7 @@ else:
     f = f"{swd__}/outdir_{opt.channel}/signalFit/output/{opt.mass_ALP}_CMS-HGG_sigfit_{opt.years}_{opt.channel}_Hm125.root"
     inputFiles[cat] = f
     if citr == 0:
-      w = ROOT.TFile(f).Get("wsig_13TeV")
+      w = ROOT.TFile(f).Get("wsig_13p6TeV")
       xvar = w.var(opt.xvar.split(":")[0])
       xvar.setPlotLabel(opt.xvar.split(":")[1])
       xvar.setUnit(opt.xvar.split(":")[2])
@@ -79,7 +79,7 @@ for cat,f in inputFiles.items():
 
   # Open signal workspace
   fin = ROOT.TFile(f)
-  w = fin.Get("wsig_13TeV")
+  w = fin.Get("wsig_13p6TeV")
   w.var("MH").setVal(float(opt.MH))
 
   # Extract normalisations
@@ -135,7 +135,7 @@ for cat,f in inputFiles.items():
     # Extract pdf and create histogram
     pdf = w.pdf("extend%s_%sThisLumi"%(outputWSObjectTitle__,_id)) 
     hpdfs[_id] = pdf.createHistogram("h_pdf_%s"%_id,xvar,ROOT.RooFit.Binning(opt.pdf_nBins))
-    hpdfs[_id].Scale(wcat*float(opt.nBins)/320) # FIXME: hardcoded 320
+    hpdfs[_id].Scale(wcat*float(opt.nBins)/80) # FIXME: hardcoded 320
 
   # Fill total histograms: data, per-year pdfs and pdfs
   for _id,d in data_rwgt.items(): d.fillHistogram(hists['data'],alist)
@@ -149,14 +149,15 @@ for cat,f in inputFiles.items():
     hists['pdf'] += p
 
   # Per-year pdf histograms
-  if len(opt.years.split(",")) > 1:
-    for year in opt.years.split(","):
-      if 'pdf_%s'%year not in hists:
-        hists['pdf_%s'%year] = hists['pdf'].Clone()
-        hists['pdf_%s'%year].Reset()
-      # Fill
-      for _id,p in hpdfs.items():
-        if year in _id: hists['pdf_%s'%year] += p
+  # 以前僅在多年份時建立，導致單一年份在 plottingTools 查不到 key 而警告
+  for year in [y.strip() for y in opt.years.split(",") if y.strip()]:
+    if f'pdf_{year}' not in hists:
+      hists[f'pdf_{year}'] = hists['pdf'].Clone()
+      hists[f'pdf_{year}'].Reset()
+    # Fill
+    for _id,p in hpdfs.items():
+      if year in _id:
+        hists[f'pdf_{year}'] += p
    
   # Garbage removal
   # for d in data_rwgt.values(): d.Delete()

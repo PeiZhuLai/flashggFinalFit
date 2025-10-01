@@ -21,10 +21,10 @@ def setup_logging(level_str: str = "INFO") -> None:
     for name in noisy_loggers:
         logging.getLogger(name).setLevel(logging.WARNING if level > logging.DEBUG else level)
 
-optimized_BDT_Cut="/afs/cern.ch/work/p/pelai/HZa/HiggsZaAna/Plot/output/BDT_cut_all_ma_run3.txt"
+optimized_BDT_Cut="/afs/cern.ch/work/p/pelai/HZa/HiggsZaAna/Plot/output/MVAcut_points_run3.json"
 
 procductions = ["ggh"]
-INPUT_BASE = "/eos/home-p/pelai/HZa/Root_Dataset/run3_BDT/"
+INPUT_BASE = "/eos/home-p/pelai/HZa/root_P2Root/run3_BDT/"
 sig_samples = ["ALP_M5", "ALP_M15", "ALP_M30"]
 years_sig  = ["2022preEE"]  # 信號
 
@@ -37,19 +37,75 @@ def get_args():
     parser = ArgumentParser(description='Apply BDT signal correction to data')
     parser.add_argument('-c', '--config', default='data/training_config_BDT.json', help='Path to the training config file')
     parser.add_argument('-i', '--inputFolder', default='/eos/home-p/pelai/HZa/Root_Dataset/run3_BDT', help='Path to the input folder')
-    parser.add_argument('-o', '--outputFolder', default='/eos/home-p/pelai/HZa/root_MVAcut', help='Path to the output folder')
+    parser.add_argument('-o', '--outputFolder', default='/eos/home-p/pelai/HZa/root_MVAcut/sig', help='Path to the output folder')
     # 新增：控制日誌等級，預設 INFO；若需要完整追蹤，指定 --log-level DEBUG
     parser.add_argument('--log-level', default='INFO', choices=['DEBUG','INFO','WARNING','ERROR','CRITICAL'],
                         help='Logging level (default: INFO)')
     return parser.parse_args()
 
 def parse_mva_cuts(txt_path: str) -> Dict[int, float]:
-    with open(txt_path, "r") as f:
-        content = f.read()
-    m = re.search(r"\{.*\}", content, flags=re.S)
-    if not m:
-        return {}
-    return {int(k): float(v) for k, v in ast.literal_eval(m.group(0)).items()}
+    """
+    讀取優化後的 MVA cut。
+    支援：
+      1) JSON 格式：
+         {
+           "results": [
+             {"mA": 5, "MVAcut": 0.975, ...},
+             {"mA": 15, "MVAcut": 0.97, ...},
+             ...
+           ]
+         }
+         或者 {"5": 0.975, "15": 0.97, ...}
+      2) 舊 txt 格式（回退）：以大括號的字典字串表示。
+    回傳：{ mA(int): MVAcut(float) }
+    """
+    cuts: Dict[int, float] = {}
+
+    # 先嘗試 JSON
+    try:
+        with open(txt_path, "r") as f:
+            data = json.load(f)
+
+        if isinstance(data, dict) and "results" in data and isinstance(data["results"], list):
+            for item in data["results"]:
+                try:
+                    ma = int(item["mA"])
+                    cut = float(item["MVAcut"])
+                    cuts[ma] = cut
+                except (KeyError, TypeError, ValueError):
+                    continue
+        elif isinstance(data, dict):
+            # 也支援 {"5": 0.975, "15": 0.97, ...} 或 {"5": {"MVAcut": 0.975}, ...}
+            for k, v in data.items():
+                try:
+                    ma = int(k)
+                    cut = float(v if not isinstance(v, dict) else v.get("MVAcut"))
+                    cuts[ma] = cut
+                except (TypeError, ValueError):
+                    continue
+
+        if cuts:
+            logging.info(f"Loaded {len(cuts)} MVA cuts from JSON: {sorted(cuts.keys())}")
+            return cuts
+        else:
+            logging.warning("JSON parsed but no valid (mA, MVAcut) pairs found, will try legacy txt parsing.")
+    except Exception as e:
+        logging.warning(f"Failed to parse JSON '{txt_path}': {e}, will try legacy txt parsing.")
+
+    # 回退：舊的 txt 解析（維持相容）
+    try:
+        with open(txt_path, "r") as f:
+            content = f.read()
+        m = re.search(r"\{.*\}", content, flags=re.S)
+        if m:
+            legacy = {int(k): float(v) for k, v in ast.literal_eval(m.group(0)).items()}
+            logging.info(f"Loaded {len(legacy)} MVA cuts from legacy txt format.")
+            return legacy
+    except Exception as e:
+        logging.error(f"Failed to parse legacy txt format: {e}")
+
+    logging.error("No MVA cuts could be loaded; returning empty dict.")
+    return cuts
 
 # 新增：從樣本名抓取質量點
 def parse_ma_from_name(name: str) -> Optional[int]:
