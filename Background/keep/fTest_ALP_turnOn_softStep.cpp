@@ -418,20 +418,18 @@ void eachFunc_plot(RooRealVar *mass, RooAbsPdf *pdf, RooAbsData *data, string na
   }
   else data->plotOn(plot,Binning(nBinsForMass),RooFit::DataError(RooAbsData::SumW2));
 
-  float leftMargion = 0.14;
-  float bottomMargion = 0.13;
   TCanvas *canv = new TCanvas("","",800,800);
-  canv->SetLeftMargin(leftMargion);
-  canv->SetBottomMargin(bottomMargion);
+  canv->SetLeftMargin(0.14);
   canv->SetRightMargin(0.05);
   canv->SetTopMargin(0.07);
+  canv->SetBottomMargin(0.12);
 
   pdf->plotOn(plot);
   pdf->paramOn(plot,RooFit::Layout(0.14,0.96,0.89),RooFit::Format("NEA",AutoPrecision(1)));
   if (BLIND) plot->SetMinimum(0.0001);
   plot->SetTitle("");
-  plot->GetYaxis()->SetTitleOffset(leftMargion*10.);  // y 轴标题一般要更远一点，避免和数字重叠
-  plot->GetXaxis()->SetTitleOffset(bottomMargion*10.-0.05);  // 默认大约 1，可以稍微调大
+  plot->GetYaxis()->SetTitleOffset(1.4);  // y 轴标题一般要更远一点，避免和数字重叠
+  plot->GetXaxis()->SetTitleOffset(1.2);  // 默认大约 1，可以稍微调大
 
   plot->Draw();
   TLatex *lat = new TLatex();
@@ -673,23 +671,19 @@ void multipdf_plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, R
   delete canv;
 }
 
-// Truth Plot (no ratio plot, single canvas)
-void truth_plot(RooRealVar *mass,
-  std::map<std::string,RooAbsPdf*> pdfs,
-  RooAbsData *data,std::string name,
-  std::vector<std::string> flashggCats_,
-  int cat,int bestFitPdf = -1){
+// Truth Plot 
+void truth_plot(RooRealVar *mass, map<string,RooAbsPdf*> pdfs, RooAbsData *data, string name, vector<string> flashggCats_, int cat, int bestFitPdf=-1){
   if (!mass) return;
   if (!data) {
     std::cerr << "[WARN] truth_plot(map) called with null data. Skip plotting." << std::endl;
     return;
   }
 
-  // ---- 画布与全局样式 ----
+  // 與 RooMultiPdf 版本相同的畫布與樣式設定
   TCanvas *canv = new TCanvas("","",800,800);
   canv->SetLeftMargin(PlotStyleCfg::canvasLeftMargin);
   canv->SetRightMargin(PlotStyleCfg::canvasRightMargin);
-  canv->SetTopMargin(0.07);
+  canv->SetTopMargin(0.08);
   canv->SetBottomMargin(PlotStyleCfg::canvasBottomMargin);
 
   gStyle->SetOptStat(PlotStyleCfg::showStatBox ? 1 : 0);
@@ -702,123 +696,246 @@ void truth_plot(RooRealVar *mass,
   gStyle->SetLineStyleString(4,"[24 12] 0");
   gStyle->SetLineStyleString(5,"[4 8] 0");
 
-  // ---- 图例（非粗体）----
+  // Legend（保留 truths 位置設定）
   TLegend *leg = new TLegend(PlotStyleCfg::truthLegendX1,
-                PlotStyleCfg::truthLegendY1,
-                PlotStyleCfg::truthLegendX2,
-                PlotStyleCfg::truthLegendY2);
+                             PlotStyleCfg::truthLegendY1,
+                             PlotStyleCfg::truthLegendX2,
+                             PlotStyleCfg::truthLegendY2);
   leg->SetFillColor(0);
   leg->SetBorderSize(0);
   leg->SetFillStyle(0);
   leg->SetTextSize(0.04);
-  leg->SetTextFont(42); // 非粗体
+  leg->SetTextFont(42);
 
-  // ---- RooPlot ----
   RooPlot *plot = mass->frame();
 
-  // 盲区设置与数据绘制
-  mass->setRange("unblindReg_1", mgg_low,        mgg_blind_low);
-  mass->setRange("unblindReg_2", mgg_blind_high, mgg_high);
+  // 資料與盲區處理，與 RooMultiPdf 版本一致
+  mass->setRange("unblindReg_1",mgg_low,mgg_blind_low);
+  mass->setRange("unblindReg_2",mgg_blind_high,mgg_high);
   if (BLIND) {
-  data->plotOn(plot, Binning(mgg_high - mgg_low), CutRange("unblindReg_1"), RooFit::DataError(RooAbsData::SumW2));
-  data->plotOn(plot, Binning(mgg_high - mgg_low), CutRange("unblindReg_2"), RooFit::DataError(RooAbsData::SumW2));
-  data->plotOn(plot, Binning(mgg_high - mgg_low), Invisible()); // 占位，便于取 legend 对象
+    data->plotOn(plot,Binning(mgg_high-mgg_low),CutRange("unblindReg_1"),RooFit::DataError(RooAbsData::SumW2));
+    data->plotOn(plot,Binning(mgg_high-mgg_low),CutRange("unblindReg_2"),RooFit::DataError(RooAbsData::SumW2));
+    data->plotOn(plot,Binning(mgg_high-mgg_low),Invisible());
   } else {
-  data->plotOn(plot, Binning(mgg_high - mgg_low), RooFit::DataError(RooAbsData::SumW2));
+    data->plotOn(plot,Binning(mgg_high-mgg_low),RooFit::DataError(RooAbsData::SumW2));
   }
 
-  // 数据图例
   TObject *datLeg = plot->getObject(int(plot->numItems()-1));
-  if (datLeg) leg->AddEntry(datLeg, "Data", "LEP");
+  leg->AddEntry(datLeg,"Data","LEP");
 
-  // ---- 绘制各个 PDF ----
-  int i = 0, style = 1;
+  RooHist *plotdata = (RooHist*)plot->getObject(plot->numItems()-1);
+
+  // 建立上下兩個 pad
+  bool doRatioPlot_ = PlotStyleCfg::enableRatio;
+  if (name.find("truths_cat0") != std::string::npos) {
+    doRatioPlot_ = false;
+  }
+
+  if (!doRatioPlot_) {
+    canv->cd();
+    int i=0, style=1;
+    for (auto it = pdfs.begin(); it != pdfs.end(); ++it, ++i) {
+      RooAbsPdf* p = it->second;
+      if (!p) continue;
+      int col = PlotStyleCfg::colorForIndex(i);
+      if (col==kWhite || col==kYellow) col = kOrange+7;
+      if (i>6) { col=kBlack; style++; }
+      p->plotOn(plot, RooFit::Binning(nBinsForMass), LineColor(col), LineStyle(style), LineWidth(4));
+      TObject *pdfLeg = plot->getObject(int(plot->numItems()-1));
+      leg->AddEntry(pdfLeg, it->first.c_str(), "L");
+    }
+
+    plot->GetYaxis()->SetTitle("Events / 1 GeV");
+    plot->GetYaxis()->SetTitleFont(PlotStyleCfg::axisTitleFont);
+    plot->GetYaxis()->SetLabelFont(PlotStyleCfg::axisLabelFont);
+    plot->GetYaxis()->SetTitleSize(0.05);
+    plot->GetYaxis()->SetLabelSize(0.04);
+    plot->GetYaxis()->SetTitleOffset(1.2);
+
+    plot->GetXaxis()->SetTitle("m_{ll#gamma#gamma} (GeV)");
+    plot->GetXaxis()->SetTitleFont(PlotStyleCfg::axisTitleFont);
+    plot->GetXaxis()->SetLabelFont(PlotStyleCfg::axisLabelFont);
+    plot->GetXaxis()->SetTitleSize(0.05);
+    plot->GetXaxis()->SetLabelSize(0.04);
+    plot->GetXaxis()->SetTitleOffset(1.2);
+
+    plot->SetTitle(Form("Category %s",flashggCats_[cat].c_str()));
+    if (BLIND) plot->SetMinimum(0.0001);
+    plot->Draw();
+    CMS_lumi(canv, 22, 0);
+    leg->Draw("same");
+    canv->RedrawAxis();
+
+    canv->SaveAs(Form("%s.pdf",name.c_str()));
+    canv->SaveAs(Form("%s.png",name.c_str()));
+    delete canv;
+    return;
+  }
+
+  TPad *pad1 = new TPad("pad1","pad1",0, doRatioPlot_ ? PlotStyleCfg::pad2Height : 0.0, 1, 1);
+  TPad *pad2 = doRatioPlot_ ? new TPad("pad2","pad2",0,0,1,PlotStyleCfg::pad2Height) : nullptr;
+  pad1->SetTopMargin(PlotStyleCfg::pad1TopMargin);
+  pad1->SetBottomMargin(doRatioPlot_ ? PlotStyleCfg::pad1BottomMargin : PlotStyleCfg::canvasBottomMargin);
+  if (doRatioPlot_) {
+    pad2->SetTopMargin(PlotStyleCfg::pad2TopMargin);
+    pad2->SetBottomMargin(PlotStyleCfg::pad2BottomMargin);
+  }
+  pad1->SetLeftMargin(PlotStyleCfg::canvasLeftMargin);
+  pad1->SetRightMargin(PlotStyleCfg::canvasRightMargin);
+  if (doRatioPlot_) {
+    pad2->SetLeftMargin(PlotStyleCfg::canvasLeftMargin);
+    pad2->SetRightMargin(PlotStyleCfg::canvasRightMargin);
+  }
+  pad1->SetTicks(1,1);
+  if (doRatioPlot_) {
+    pad2->SetTicks(1,1);
+    pad2->Draw();
+  }
+  pad1->Draw();
+  pad1->cd();
+
+  // 繪製每個 pdf，樣式與 RooMultiPdf 版本一致
+  int i=0, style=1;
   RooCurve* nomBkgCurve = nullptr;
   int bestcol = -1;
   std::vector<RooCurve*> pdfCurves;
 
   for (auto it = pdfs.begin(); it != pdfs.end(); ++it, ++i) {
-  RooAbsPdf* p = it->second;
-  if (!p) {
-  std::cerr << "[WARN] truth_plot(map): skip null pdf entry " << it->first << std::endl;
-  continue;
+    RooAbsPdf* p = it->second;
+    if (!p) {
+      std::cerr << "[WARN] truth_plot(map): skip null pdf entry " << it->first << std::endl;
+      continue;
+    }
+    int col = PlotStyleCfg::colorForIndex(i);
+    if (col==kWhite || col==kYellow) col = kOrange+7;
+    if (i>6) { col=kBlack; style++; }
+
+    // 唯一命名，線寬、無填色
+    std::string curveName = Form("bkg_curve_%d",i);
+    p->plotOn(
+      plot,
+      RooFit::Binning(nBinsForMass),
+      LineColor(col),
+      LineStyle(style),
+      LineWidth(4),
+      Name(curveName.c_str())
+    );
+
+    RooCurve *thisCurve = dynamic_cast<RooCurve*>(plot->findObject(curveName.c_str()));
+    if (thisCurve) {
+      thisCurve->SetFillStyle(0);
+      thisCurve->SetLineWidth(4);
+      pdfCurves.push_back(thisCurve);
+    }
+
+    std::string ext = "";
+    if (bestFitPdf==i) {
+      ext=" (Best Fit) ";
+      nomBkgCurve = thisCurve ? thisCurve : (RooCurve*)plot->getObject(plot->numItems()-1);
+      bestcol = col;
+    }
+    TObject *pdfLeg = thisCurve ? (TObject*)thisCurve : plot->getObject(int(plot->numItems()-1));
+    leg->AddEntry(pdfLeg,Form("%s%s",it->first.c_str(),ext.c_str()),"L");
   }
+  bool canDoRatio = (nomBkgCurve!=nullptr);
 
-  int col = PlotStyleCfg::colorForIndex(i);
-  if (col == kWhite || col == kYellow) col = kOrange+7;
-  if (i > 6) { col = kBlack; style++; }
-
-  std::string curveName = Form("bkg_curve_%d", i);
-  p->plotOn(plot,
-  RooFit::Binning(nBinsForMass),
-  LineColor(col),
-  LineStyle(style),
-  LineWidth(4),
-  Name(curveName.c_str()));
-
-  RooCurve *thisCurve = dynamic_cast<RooCurve*>(plot->findObject(curveName.c_str()));
-  if (thisCurve) {
-  thisCurve->SetFillStyle(0);
-  thisCurve->SetLineWidth(4);
-  pdfCurves.push_back(thisCurve);
-  }
-
-  std::string ext = "";
-  if (bestFitPdf == i) {
-  ext = " (Best Fit) ";
-  nomBkgCurve = thisCurve ? thisCurve : (RooCurve*)plot->getObject(plot->numItems()-1);
-  bestcol = col;
-  }
-  TObject *pdfLeg = thisCurve ? (TObject*)thisCurve : plot->getObject(int(plot->numItems()-1));
-  if (pdfLeg) leg->AddEntry(pdfLeg, Form("%s%s", it->first.c_str(), ext.c_str()), "L");
-  }
-
-  // ---- 坐标轴样式 ----
+  // pad1 軸樣式與標題
   plot->GetYaxis()->SetTitle("Events / 1 GeV");
   plot->GetYaxis()->SetTitleFont(PlotStyleCfg::axisTitleFont);
   plot->GetYaxis()->SetLabelFont(PlotStyleCfg::axisLabelFont);
-  plot->GetYaxis()->SetTitleSize(0.05);
-  plot->GetYaxis()->SetLabelSize(0.04);
-  plot->GetYaxis()->SetTitleOffset(1.2);
+  plot->GetYaxis()->SetTitleSize(PlotStyleCfg::pad1axisTitleSizeY);
+  plot->GetYaxis()->SetLabelSize(PlotStyleCfg::pad1axisLabelSizeY);
+  plot->GetYaxis()->SetTitleOffset(PlotStyleCfg::pad1axisTitleOffsetY);
+  plot->GetXaxis()->SetTitle("m_{ll#gamma#gamma} GeV");
+  plot->GetXaxis()->SetLabelSize(doRatioPlot_ ? 0.0 : PlotStyleCfg::pad2axisLabelSizeX);
+  if (!doRatioPlot_) {
+    plot->GetXaxis()->SetTitleSize(PlotStyleCfg::pad2axisTitleSizeX);
+    plot->GetXaxis()->SetTitleOffset(PlotStyleCfg::pad2axisTitleOffsetX);
+  }
 
-  plot->GetXaxis()->SetTitle("m_{ll#gamma#gamma} (GeV)");
-  plot->GetXaxis()->SetTitleFont(PlotStyleCfg::axisTitleFont);
-  plot->GetXaxis()->SetLabelFont(PlotStyleCfg::axisLabelFont);
-  plot->GetXaxis()->SetTitleSize(0.05);
-  plot->GetXaxis()->SetLabelSize(0.04);
-  plot->GetXaxis()->SetTitleOffset(1.2);
-
-  plot->SetTitle(Form("Category %s", flashggCats_[cat].c_str()));
+  plot->SetTitle(Form("Category %s",flashggCats_[cat].c_str()));
   if (BLIND) plot->SetMinimum(0.0001);
-
-  // ---- 绘制到画布 ----
   plot->Draw();
-  // CMS_lumi(canv, 22, 0);
-  TLatex *lat = new TLatex();
-  lat->SetNDC();          // 使用 NDC 座標 (0–1)
-  lat->SetTextFont(42);   // 普通字體 (非粗體)
-  lat->SetTextSize(0.045);
-  lat->DrawLatex(PlotStyleCfg::canvasLeftMargin, 0.94, "#bf{CMS} #it{Preliminary}");
-  // 減越多，字越靠近左邊
-  lat->DrawLatex(1.-PlotStyleCfg::canvasRightMargin*10.-0.03, 0.94, "62.5 fb^{-1} (13.6 TeV)");
+  CMS_lumi(canv, 22, 0);
 
-  // 确保曲线在最上层
+  // 確保背景曲線在最上層
   for (auto* c : pdfCurves) {
-  if (!c) continue;
-  c->SetFillStyle(0);
-  c->SetLineWidth(3);
-  c->Draw("L same");
+    if (!c) continue;
+    c->SetFillStyle(0);
+    c->SetLineWidth(3);
+    c->Draw("L same");
   }
 
   leg->Draw("same");
-  canv->RedrawAxis();
+  pad1->RedrawAxis();
 
-  // ---- 输出 ----
-  canv->SaveAs(Form("%s.pdf", name.c_str()));
-  canv->SaveAs(Form("%s.png", name.c_str()));
+  // 計算殘差圖 Data - Best Fit（與 RooMultiPdf 版本一致）
+  if (doRatioPlot_) {
+    int npoints = plotdata->GetN();
+    double xtmp, ytmp;
+    int point = 0;
+    TGraphAsymmErrors *hdatasub = new TGraphAsymmErrors(npoints);
+    for (int ipoint=0; ipoint<npoints; ++ipoint) {
+      plotdata->GetPoint(ipoint, xtmp, ytmp);
+      double bkgval = 0.;
+      if (canDoRatio) {
+        bkgval = nomBkgCurve->interpolate(xtmp);
+      } else {
+        continue;
+      }
+      if (BLIND) {
+        if ((xtmp > mgg_blind_low) && (xtmp < mgg_blind_high)) continue;
+      }
+      double errhi = plotdata->GetErrorYhigh(ipoint);
+      double errlow = plotdata->GetErrorYlow(ipoint);
+      bool drawZeroBins_ = 1;
+      if (!drawZeroBins_) if (fabs(ytmp)<1e-5) continue;
+      hdatasub->SetPoint(point, xtmp, ytmp - bkgval);
+      hdatasub->SetPointError(point, 0., 0., errlow, errhi);
+      point++;
+    }
 
-  // ---- 清理 ----
-  delete leg;
+    pad2->cd();
+    TH1 *hdummy = new TH1D("hdummyweight","",mgg_high-mgg_low,mgg_low,mgg_high);
+    hdummy->SetMaximum(hdatasub->GetHistogram()->GetMaximum()+1);
+    hdummy->SetMinimum(hdatasub->GetHistogram()->GetMinimum()-1);
+
+    hdummy->GetXaxis()->SetTitle("m_{ll#gamma#gamma} (GeV)");
+    hdummy->GetYaxis()->SetTitle("Data - Best Fit");
+    hdummy->GetXaxis()->SetTitleFont(PlotStyleCfg::axisTitleFont);
+    hdummy->GetYaxis()->SetTitleFont(PlotStyleCfg::axisTitleFont);
+    hdummy->GetXaxis()->SetLabelFont(PlotStyleCfg::axisLabelFont);
+    hdummy->GetYaxis()->SetLabelFont(PlotStyleCfg::axisLabelFont);
+    hdummy->GetYaxis()->SetTitleSize(PlotStyleCfg::pad2axisTitleSizeY);
+    hdummy->GetYaxis()->SetLabelSize(PlotStyleCfg::pad2axisLabelSizeY);
+    hdummy->GetYaxis()->SetTitleOffset(PlotStyleCfg::pad2axisTitleOffsetY);
+    hdummy->GetXaxis()->SetTitleSize(PlotStyleCfg::pad2axisTitleSizeX);
+    hdummy->GetXaxis()->SetLabelSize(PlotStyleCfg::pad2axisLabelSizeX);
+    hdummy->GetXaxis()->SetTitleOffset(PlotStyleCfg::pad2axisTitleOffsetX);
+    if (PlotStyleCfg::axisCenterTitle) {
+      hdummy->GetXaxis()->CenterTitle(true);
+      hdummy->GetYaxis()->CenterTitle(true);
+    }
+    hdummy->GetYaxis()->SetNdivisions(808);
+    hdummy->Draw("HIST");
+
+    if (canDoRatio) {
+      TLine *line3 = new TLine(mgg_low,0.,mgg_high,0.);
+      line3->SetLineColor(bestcol);
+      line3->SetLineWidth(PlotStyleCfg::zeroLineWidth);
+      line3->Draw();
+      hdatasub->Draw("PESAME");
+    }
+  }
+
+  pad1->Modified(); pad1->Update();
+  if (doRatioPlot_) {
+    pad2->Modified(); pad2->Update();
+  }
+  canv->Modified(); canv->Update();
+
+  canv->SaveAs(Form("%s.pdf",name.c_str()));
+  canv->SaveAs(Form("%s.png",name.c_str()));
   delete canv;
 }
 

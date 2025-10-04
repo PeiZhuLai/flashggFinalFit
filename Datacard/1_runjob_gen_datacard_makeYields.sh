@@ -21,7 +21,7 @@ path_makeYields="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/sr
 ALPmassList=( 5 15 30 )
 
 # Test
-InputWSDir="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/MVAcut/run3_ReReco/output"
+InputWSDir="/eos/home-p/pelai/HZa/root_MVAcut"
 for iALPmass in "${!ALPmassList[@]}"; do
-    python3 $path_makeYields/makeYields.py --inputWSDirMap 2022preEE=$InputWSDir --mass_ALP ${ALPmassList[iALPmass]} --channel leptons
+    python3 $path_makeYields/makeYields.py --inputWSDirMap 2022preEE=$InputWSDir --mass_ALP ${ALPmassList[iALPmass]} --channel leptons --doSystematics
 done

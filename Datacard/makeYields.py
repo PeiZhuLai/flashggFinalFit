@@ -111,7 +111,7 @@ for year in years:
       else: _cat = "%s_%s"%(opt.cat,year)
 
       # Input Signal flashgg ws 
-      _inputWSFile = glob.glob(f"{inputWSDirMap[year]}/sig/{lep_channel}/ALP_sig_Am{opt.mass_ALP}_Hm{opt.mass}_{year}_{lep_channel}.root")[0] # PZ
+      _inputWSFile = glob.glob(f"{inputWSDirMap[year]}/sig/ALP_M{opt.mass_ALP}/ws_Tree2WS/ws_{lep_channel}_{year}.root") # Pei-Zhu
       
       _nominalDataName = "%s_%s_%s_%s"%(_proc_s0,opt.mass,sqrts__,opt.cat)
 

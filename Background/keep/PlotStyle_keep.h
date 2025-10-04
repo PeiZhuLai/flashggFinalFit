@@ -5,15 +5,15 @@
 
 namespace PlotStyleCfg {
   // Legend 位置：multipdf 視圖
-  static const double multipdfLegendX1 = 0.61;
+  static const double multipdfLegendX1 = 0.58;
   static const double multipdfLegendY1 = 0.60;
   static const double multipdfLegendX2 = 0.90;
   static const double multipdfLegendY2 = 0.88;
 
   // Legend 位置：truths 視圖
-  static const double truthLegendX1 = 0.62;
+  static const double truthLegendX1 = 0.60;
   static const double truthLegendY1 = 0.65;
-  static const double truthLegendX2 = 0.90;
+  static const double truthLegendX2 = 0.88;
   static const double truthLegendY2 = 0.88;
 
   // Ratio pad 幾何與樣式

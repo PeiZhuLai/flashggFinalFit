@@ -725,7 +725,7 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 
 	// Black, Red, Blue, Green, Pink, Teal,  
 	// 4 Bernstein, 2 Exponential, 1 Power Law, 3 Laurent
-	string color[11] = {"#031927","#FE0000","#0000FE","#00FF00",  "#FE00FF","#00FFFF",  "#FFCC00",  "#EBB9DF","#7F7EFF","#8CBA80", };
+	string color[12] = {"#031927","#FE0000","#0000FE","#00FF00", "#FE00FF","#00FFFF",  "#00FFFF", "#FFCC00",  "#EBB9DF","#7F7EFF","#8CBA80", "#9D8189"};
 
 	// 小工具：轉小寫、擷取尾端數字作為階數、產生序數字尾
 	auto toLower = [](std::string s){
@@ -782,9 +782,9 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 		} else if (lname.find("exp") != std::string::npos) {
 			type = "Exp"; base = 4;
 		} else if (lname.find("pow") != std::string::npos) {
-			type = "Pow"; base = 6;
+			type = "Pow"; base = 7;
 		} else if (lname.find("lau") != std::string::npos) {
-			type = "Lau"; base = 8;
+			type = "Lau"; base = 9;
 		} else {
 			type = "Background"; base = 0;
 		}
@@ -1085,13 +1085,13 @@ string catname;
 	cout<< "[INFO] " << "\t"; data->Print();
 
 	// plot the data
-	TLegend *leg = new TLegend(0.68,0.57,1.1,0.80);
+	TLegend *leg = new TLegend(0.68,0.48,1.1,0.80);
 	leg->SetFillColor(0);
 	leg->SetLineColor(0);
 	leg->SetFillStyle(0);
 	leg->SetBorderSize(0);
 	leg->SetTextFont(52);
-	leg->SetTextSize(0.09);
+	leg->SetTextSize(0.08);
 
 	gStyle->SetPadTickX(1);
 	gStyle->SetPadTickY(1);
@@ -1337,22 +1337,24 @@ string catname;
 	}
 
 	if (doBands) {
-		twoSigmaBand->SetLineColor(kYellow);
-		twoSigmaBand->SetFillColor(kYellow);
-		twoSigmaBand->SetMarkerColor(kYellow);
+		//2\sigam  #38FCFF
+		//1\sigma  #6BB0FF
+		twoSigmaBand->SetLineColor(TColor::GetColor("#38FCFF"));
+		twoSigmaBand->SetFillColor(TColor::GetColor("#38FCFF"));
+		twoSigmaBand->SetMarkerColor(TColor::GetColor("#38FCFF"));
 		twoSigmaBand->Draw("L3 SAME");
-		oneSigmaBand->SetLineColor(kGreen);
-		oneSigmaBand->SetFillColor(kGreen);
-		oneSigmaBand->SetMarkerColor(kGreen);
+		oneSigmaBand->SetLineColor(TColor::GetColor("#6BB0FF"));
+		oneSigmaBand->SetFillColor(TColor::GetColor("#6BB0FF"));
+		oneSigmaBand->SetMarkerColor(TColor::GetColor("#6BB0FF"));
 		oneSigmaBand->Draw("L3 SAME");
 		leg->AddEntry(oneSigmaBand,"#pm1#sigma","F");
 		leg->AddEntry(twoSigmaBand,"#pm2#sigma","F");
-		twoSigmaBand_r->SetLineColor(kYellow);
-		twoSigmaBand_r->SetFillColor(kYellow);
-		twoSigmaBand_r->SetMarkerColor(kYellow);
-		oneSigmaBand_r->SetLineColor(kGreen);
-		oneSigmaBand_r->SetFillColor(kGreen);
-		oneSigmaBand_r->SetMarkerColor(kGreen);
+		twoSigmaBand_r->SetLineColor(TColor::GetColor("#38FCFF"));
+		twoSigmaBand_r->SetFillColor(TColor::GetColor("#38FCFF"));
+		twoSigmaBand_r->SetMarkerColor(TColor::GetColor("#38FCFF"));
+		oneSigmaBand_r->SetLineColor(TColor::GetColor("#6BB0FF"));
+		oneSigmaBand_r->SetFillColor(TColor::GetColor("#6BB0FF"));
+		oneSigmaBand_r->SetMarkerColor(TColor::GetColor("#6BB0FF"));
 	}
 
 	if (doSignal){
