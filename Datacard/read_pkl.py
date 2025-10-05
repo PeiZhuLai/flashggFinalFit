@@ -1,7 +1,7 @@
 import pandas as pd
 
 # 直接读取
-df = pd.read_pickle("/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Datacard/yields_leptons/5_datacard_2022preEE_leptons.pkl")
+df = pd.read_pickle("/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Datacard/yields_leptons/5_datacard_leptons.pkl")
 
 # 看前几行
 print(df.head())

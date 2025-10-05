@@ -20,8 +20,12 @@
 # Specify as list in dict: e.g. 'tiers'=['inc','inorm','norm','ishape','shape']
 
 theory_systematics = [
-                {'name':'pdf_Higgs_ggH','title':'pdf_Higgs_ggH','type':'constant','prior':'lnN','correlateAcrossYears':1,'value':'theory_uncertainties/thu_ggh.json'},
-                {'name':'alphaS_ggH','title':'alphaS_ggH','type':'constant','prior':'lnN','correlateAcrossYears':1,'value':'theory_uncertainties/thu_ggh.json'},
+                # 若要改成 factory：示例 (請確認 workspace 內有對應權重或 hist)
+                # {'name':'QCDscale_ggH','title':'QCDscale_ggH','type':'factory','prior':'lnN','correlateAcrossYears':1,'tiers':['inc','inorm','norm','ishape','shape']},
+                # 'debug_constant': True
+                {'name':'QCDscale_ggH','title':'QCDscale_ggH','type':'constant','prior':'lnN','correlateAcrossYears':1,'value':'theory_uncertainties/thu_ggh.json', 'json_key_field':'procOriginal'},
+                {'name':'pdf_Higgs_ggH','title':'pdf_Higgs_ggH','type':'constant','prior':'lnN','correlateAcrossYears':1,'value':'theory_uncertainties/thu_ggh.json', 'json_key_field':'procOriginal'},
+                {'name':'alphaS_ggH','title':'alphaS_ggH','type':'constant','prior':'lnN','correlateAcrossYears':1,'value':'theory_uncertainties/thu_ggh.json', 'json_key_field':'procOriginal'},
               ]
 # PDF weight
 # for i in range(1,60): theory_systematics.append( {'name':'pdfWeight_%g'%i, 'title':'CMS_hgg_pdfWeight_%g'%i, 'type':'factory','prior':'lnN','correlateAcrossYears':1,'tiers':['shape']} )
@@ -38,6 +42,8 @@ experimental_systematics = [
                 {'name':'lumi_13p6TeV_Uncorrelated','title':'lumi_13p6TeV_Uncorrelated','type':'constant','prior':'lnN','correlateAcrossYears':0,'value':{'2022preEE':'1.013','2022postEE':'1.013','2023preBPix':'1.014','2023postBPix':'1.014'}},
 
                 # Trigger
+                # 命名規則: workspace 變數為 weight_<name>_{central,Up,Down} → 此處只需填 <name>
+                # 對應: weight_hlt_sf_central / weight_hlt_sf_Up / weight_hlt_sf_Down
                 {'name':'hlt_sf','title':'CMS_hza_trigger','type':'factory','prior':'lnN','correlateAcrossYears':0},
 
                 # Pileup

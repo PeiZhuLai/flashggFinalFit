@@ -22,5 +22,5 @@ path_makeDatacard="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/
 ALPmassList=( 5 15 30 )
 
 for iALPmass in "${!ALPmassList[@]}"; do
-    python3 $path_makeDatacard/makeDatacard.py --mass_ALP ${ALPmassList[iALPmass]} --years 2022preEE --channel leptons
+    python3 $path_makeDatacard/makeDatacard.py --mass_ALP ${ALPmassList[iALPmass]} --years 2022preEE --channel leptons --doSystematics
 done

@@ -19,6 +19,7 @@ path_makeYields="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/sr
 # python3 $path_makeYields/makeYields.py --inputWSDirMap $1 --mass_ALP $2 --year $3 --channel $4
 
 ALPmassList=( 5 15 30 )
+# ALPmassList=( 30 )
 
 # Test
 InputWSDir="/eos/home-p/pelai/HZa/root_MVAcut"

@@ -293,7 +293,7 @@ for lep_out in leptons_to_write:
       aset = make_argset(ws,varNames)
 
       # Define RooDataSet
-      dName = "%s_%s_%s_%s"%(opt.productionMode,opt.inputMass,sqrts__,cat)
+      dName = "%s_%s_Za_%s_%s_%s"%(opt.productionMode,opt.inputMass,lep_out,sqrts__,cat)
       d = ROOT.RooDataSet(dName,dName,aset,'weight') 
 
       # Loop over events in dataframe and add entry

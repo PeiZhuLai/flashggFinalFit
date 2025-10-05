@@ -18,29 +18,29 @@ years_sig=(2022preEE)  # 信號
 DO_SYSTEMATICS=1  # 設為 1 時會加上 --doSystematics
 leps=(ele mu)     # 逐個 lepton 輸出各自的 ws 檔
 
-# for year in "${years_sig[@]}"; do
-#     for ma in "${sig_samples[@]}"; do
-#         for lep in "${leps[@]}"; do
-#             path="/eos/home-p/pelai/HZa/root_MVAcut/sig/${ma}"
-#             extra_args=()
-#             if [ "${DO_SYSTEMATICS}" = "1" ]; then
-#                 extra_args+=(--doSystematics)
-#             fi
-#             python3 trees2ws.py --inputConfig config.py --inputTreeFile "${path}/output_${year}.root" --inputMass 125 --productionMode ggh --year "${year}" --lepton "${lep}" "${extra_args[@]}"
-#         done
-#     done
-# done
+for year in "${years_sig[@]}"; do
+    for ma in "${sig_samples[@]}"; do
+        for lep in "${leps[@]}"; do
+            path="/eos/home-p/pelai/HZa/root_MVAcut/sig/${ma}"
+            extra_args=()
+            if [ "${DO_SYSTEMATICS}" = "1" ]; then
+                extra_args+=(--doSystematics)
+            fi
+            python3 trees2ws.py --inputConfig config.py --inputTreeFile "${path}/output_${year}.root" --inputMass 125 --productionMode ggh --year "${year}" --lepton "${lep}" "${extra_args[@]}"
+        done
+    done
+done
 
-# ---- Data ----
-mAs_data=(1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30)
-data_samples=()
-for m in "${mAs_data[@]}"; do
-    data_samples+=("ALP_M${m}")
-done
-for ma in "${data_samples[@]}"; do
-    path="/eos/home-p/pelai/HZa/root_MVAcut/data/${ma}"
-    python3 trees2ws_data.py --inputConfig config.py --inputTreeFile "${path}/run3.root"
-done
+# # ---- Data ----
+# mAs_data=(1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30)
+# data_samples=()
+# for m in "${mAs_data[@]}"; do
+#     data_samples+=("ALP_M${m}")
+# done
+# for ma in "${data_samples[@]}"; do
+#     path="/eos/home-p/pelai/HZa/root_MVAcut/data/${ma}"
+#     python3 trees2ws_data.py --inputConfig config.py --inputTreeFile "${path}/run3.root"
+# done
 
 
 # # For CERN

@@ -22,6 +22,12 @@ XSBRMap = od()
 #XSBRMap['example']['VBF'] = {'mode':'qqH'}
 #XSBRMap['example']['WH2HQQ'] = {'mode':'WH','factor':BR_W_qq}
 
+# analysis = HZa
+# process = GG2H
+globalXSBRMap['HZa'] = od()
+globalXSBRMap['HZa']['decay'] = {'mode':'constant','factor':1}
+globalXSBRMap['HZa']['GG2H'] = {'mode':'constant','factor':0.1}
+
 # Tutorial analysis
 XSBRMap['tutorial'] = od()
 XSBRMap['tutorial']['decay'] = {'mode':'hgg'}

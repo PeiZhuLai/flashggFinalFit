@@ -1,6 +1,6 @@
 # Datacard making script: uses output pkl file of makeYields.py script
 
-print(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ HGG DATACARD MAKER RUN II ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ")
+print(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ HZa DATACARD MAKER RUN III ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ")
 import os, sys
 import re
 from optparse import OptionParser
@@ -9,7 +9,8 @@ import pandas as pd
 import glob
 import pickle
 from collections import OrderedDict as od
-from systematics import theory_systematics, experimental_systematics, signal_shape_systematics
+# from systematics import theory_systematics, experimental_systematics, signal_shape_systematics
+from systematics_HToZa import theory_systematics, experimental_systematics, signal_shape_systematics
 
 def get_options():
   parser = OptionParser()
@@ -24,7 +25,7 @@ def get_options():
   parser.add_option('--pruneThreshold', dest='pruneThreshold', default=0.001, type='float', help="Threshold with which to prune proc x cat as fraction of total category yield (default=0.1%)")
   parser.add_option('--doTrueYield', dest='doTrueYield', default=True, action="store_true", help="For pruning: use true number of expected events for proc x cat i.e. Product(XS,BR,eff*acc,lumi). If false then will just use sum of weights (= eff x acc)")
   parser.add_option('--mass', dest='mass', default='125', help="MH mass: required for doTrueYield")
-  parser.add_option('--analysis', dest='analysis', default='tutorial', help="Analysis extension: required for doTrueYield (see ./tools/XSBR.py for example)")
+  parser.add_option('--analysis', dest='analysis', default='HZa', help="Analysis extension: required for doTrueYield (see ./tools/XSBR.py for example)")
   # For yield/systematics:
   parser.add_option('--skipCOWCorr', dest='skipCOWCorr', default=False, action="store_true", help="Skip centralObjectWeight correction for events in acceptance")
   parser.add_option('--doSystematics', dest='doSystematics', default=False, action="store_true", help="Include systematics calculations and add to datacard")
@@ -38,7 +39,7 @@ def get_options():
 (opt,args) = get_options()
 
 def leave():
-  print(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ HGG DATACARD MAKER RUN II (END) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ")
+  print(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ HZa DATACARD MAKER RUN III (END) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ")
   exit(0)
 
 STXSMergingScheme, STXSScaleCorrelationScheme = None, None
@@ -93,6 +94,7 @@ if opt.doSystematics:
   print(" --> Adding theory systematics variations to dataFrame")
   # Add constant systematics to dataFrame
   for s in theory_systematics:
+    print(" --> Processing theory systematic: %s"%s['name'])
     if s['type'] == 'constant': data = addConstantSyst(data,s,opt)
   # Theory factory: group scale weights after calculation in relevant grouping scheme
   data = theorySystFactory(data, theory_systematics, theoryFactoryType, opt, stxsMergeScheme=STXSMergingScheme)
@@ -166,7 +168,9 @@ if not os.path.isdir("./output_Datacard%s"%extStr): os.system("mkdir ./output_Da
 # fdataName = "%s.txt"%opt.output
 fdataName = "./output_Datacard%s/%s_pruned_datacard_%s.txt"%(extStr,opt.mass_ALP,opt.channel)
 print(" --> Writing to datacard file: %s"%fdataName)
+
 from tools.writeToDatacard import writePreamble, writeProcesses, writeSystematic, writeMCStatUncertainty, writePdfIndex, writeBreak
+
 fdata = open(fdataName,"w")
 if not writePreamble(fdata,opt): 
   print(" --> [ERROR] in writing preamble. Leaving...")
@@ -197,7 +201,7 @@ if opt.doMCStatUncertainty:
 writeBreak(fdata)
 
 # Otherwise the AsymptoticLimits cannot work
-fdata.write("CMS_hgg_nuisance_pho_Smear_M1_ChanEle  param  0.0  1.0\n") 
+# fdata.write("CMS_hgg_nuisance_pho_Smear_M1_ChanEle  param  0.0  1.0\n") 
 
 if not writePdfIndex(fdata,data,opt):
   print(" --> [ERROR] in writing pdf indices. Leaving...")
