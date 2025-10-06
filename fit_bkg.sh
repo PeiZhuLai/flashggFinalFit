@@ -67,9 +67,9 @@ for ((iBin=0; iBin<$nMass; iBin++))
 
     # Syst
     # 1
-    ./bin/fTest_ALP_turnOn -i $dir_input/ALP_M${massList[$iBin]}/ws/run3.root --saveMultiPdf $path_bkg/CMS-HGG_mva_13TeV_multipdf.root -D $path_bkg/HZAmassInde_fTest --mass_ALP ${massList[$iBin]} -c 1 --isFlashgg 0 --isData 0 -f data, --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 > $path_bkg/ftest.log
+    ./bin/fTest_ALP_turnOn -i $dir_input/ALP_M${massList[$iBin]}/ws/run3.root --saveMultiPdf $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -D $path_bkg/HZAmassInde_fTest --mass_ALP ${massList[$iBin]} -c 1 --isFlashgg 0 --isData 0 -f data, --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 > $path_bkg/ftest.log
     # 2
-    ./bin/makeBkgPlots_ALP -b $path_bkg/CMS-HGG_mva_13TeV_multipdf.root -d $path_bkg/BkgPlots --total_OutDir $total_OutDir -o $path_bkg/BkgPlots.root --sqrts 13p6TeV --isMultiPdf --useBinnedData --massStep 2.5 --mhVal 125.0 --maVal ${massList[$iBin]} --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 --intLumi $Lumi_run3 -c 0 --isFlashgg 0 --doBands
+    ./bin/makeBkgPlots_ALP -b $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -d $path_bkg/BkgPlots --total_OutDir $total_OutDir -o $path_bkg/BkgPlots.root --sqrts 13p6TeV --isMultiPdf --useBinnedData --massStep 2.5 --mhVal 125.0 --maVal ${massList[$iBin]} --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 --intLumi $Lumi_run3 -c 0 --isFlashgg 0 --doBands
 
     # Nominal
     # 1
