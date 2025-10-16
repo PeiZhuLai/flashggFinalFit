@@ -58,7 +58,7 @@ class CMS_lumi:
         if lumi > 100:
             lumiText = f"{lumi:.0f}{self.lumi_sqrtS}"
         else:
-            lumiText = f"{lumi:.1f}{self.lumi_sqrtS}"
+            lumiText = f"{lumi:.2f}{self.lumi_sqrtS}"
 
         latex = TLatex()
         latex.SetNDC()

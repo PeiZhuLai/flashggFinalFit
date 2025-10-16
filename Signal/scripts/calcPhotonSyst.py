@@ -211,7 +211,7 @@ if opt.debugCols:
 for _proc in opt.procs.split(","):
   _WSFileName = resolve_ws_file(opt.inputWSDir, opt.channel, opt.year)
   # nominal (無 Za_<channel>)
-  _nominalDataName = "%s_125_%s_%s"%(procToData(_proc.split("_")[0]),sqrts__,opt.cat)
+  _nominalDataName = "%s_125_Za_%s_%s_%s"%(procToData(_proc.split("_")[0]),opt.channel,sqrts__,opt.cat)
   # 系統 (有 Za_<channel>)
   _sysDataPrefix = "%s_125_Za_%s_%s_%s"%(procToData(_proc.split("_")[0]),opt.channel,sqrts__,opt.cat)
   data = pd.concat([data,pd.DataFrame([{

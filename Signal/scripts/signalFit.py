@@ -266,6 +266,7 @@ if opt.analysis not in globalXSBRMap:
 else: xsbrMap = globalXSBRMap[opt.analysis]
 
 # Load RooRealVars
+print(f"{opt.inputWSDir}/ws_{opt.channel}_{opt.year}.root")
 nominalWSFileName = glob.glob(f"{opt.inputWSDir}/ws_{opt.channel}_{opt.year}.root")[0] # PZ
 f0 = ROOT.TFile(nominalWSFileName,"read")
 inputWS0 = get_workspace(f0, inputWSName__)
@@ -311,7 +312,7 @@ if opt.skipZeroes:
   WSFileName = glob.glob(f"{opt.inputWSDir}/ws_{opt.channel}_{opt.year}.root")[0]
   f = ROOT.TFile(WSFileName,"read")
   inputWS = get_workspace(f, inputWSName__)
-  dname = "%s_%s_%s_%s"%(procToData(opt.proc.split("_")[0]),MHNominal,sqrts__,opt.cat)
+  dname = "%s_%s_Za_%s_%s_%s"%(procToData(opt.proc.split("_")[0]),MHNominal,opt.channel,sqrts__,opt.cat)
   d = reduceDataset(get_dataset(inputWS, dname), aset)
   if (d.numEntries() == 0.) or (d.sumEntries() <= 0.):
     print(" --> (%s,%s) has zero events. Will not construct signal model"%(opt.proc,opt.cat))
@@ -358,7 +359,7 @@ for mp in opt.massPoints.split(","):
   WSFileName = glob.glob(f"{opt.inputWSDir}/ws_{opt.channel}_{opt.year}.root")[0] # PZ
   f = ROOT.TFile(WSFileName,"read")
   inputWS = get_workspace(f, inputWSName__)
-  dname = "%s_%s_%s_%s"%(procToData(procRVFit.split("_")[0]),mp,sqrts__,opt.cat)  # PZ
+  dname = "%s_%s_Za_%s_%s_%s"%(procToData(procRVFit.split("_")[0]),mp,opt.channel,sqrts__,opt.cat)  # PZ
   d = reduceDataset(get_dataset(inputWS, dname), aset)
   nominalDatasets[mp] = d.Clone()
   if opt.skipVertexScenarioSplit: datasetRVForFit[mp] = d
@@ -374,7 +375,7 @@ if( datasetRVForFit[MHNominal].numEntries() < opt.replacementThreshold  )|( data
     WSFileName = glob.glob(f"{opt.inputWSDir}/ws_{opt.channel}_{opt.year}.root")[0] # PZ
     f = ROOT.TFile(WSFileName,"read")
     inputWS = get_workspace(f, inputWSName__)
-    dname = "%s_%s_%s_%s"%(procToData(procReplacementFit.split("_")[0]),mp,sqrts__,opt.cat)  # PZ
+    dname = "%s_%s_Za_%s_%s_%s"%(procToData(procReplacementFit.split("_")[0]),mp,opt.channel,sqrts__,opt.cat)  # PZ
     d = reduceDataset(get_dataset(inputWS, dname), aset)
     if opt.skipVertexScenarioSplit: datasetRVForFit[mp] = d
     else: datasetRVForFit[mp] = splitRVWV(d,aset,mode="RV")
@@ -414,7 +415,7 @@ if not opt.skipVertexScenarioSplit:
     WSFileName = glob.glob(f"{opt.inputWSDir}/ws_{opt.channel}_{opt.year}.root")[0] # PZ
     f = ROOT.TFile(WSFileName,"read")
     inputWS = get_workspace(f, inputWSName__)
-    dname = "%s_%s_%s_%s"%(procToData(proc.split("_")[0]),mp,sqrts__,opt.cat)  # PZ
+    dname = "%s_%s_Za_%s_%s_%s"%(procToData(proc.split("_")[0]),mp,opt.channel,sqrts__,opt.cat)  # PZ
     d = reduceDataset(get_dataset(inputWS, dname), aset)
     datasetWVForFit[mp] = splitRVWV(d,aset,mode="WV")
     inputWS.Delete()
@@ -428,7 +429,7 @@ if not opt.skipVertexScenarioSplit:
       WSFileName = glob.glob(f"{opt.inputWSDir}/ws_{opt.channel}_{opt.year}.root")[0] # PZ
       f = ROOT.TFile(WSFileName,"read")
       inputWS = get_workspace(f, inputWSName__)
-      dname = "%s_%s_%s_%s"%(procToData(proc.split("_")[0]),mp,sqrts__,opt.cat)  # PZ
+      dname = "%s_%s_Za_%s_%s_%s"%(procToData(proc.split("_")[0]),MHNominal,opt.channel,mp,sqrts__,opt.cat)  # PZ
       d = reduceDataset(get_dataset(inputWS, dname), aset)
       datasetWVForFit[mp] = splitRVWV(d,aset,mode="WV")
       inputWS.Delete()

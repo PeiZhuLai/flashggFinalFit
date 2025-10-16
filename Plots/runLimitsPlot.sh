@@ -10,10 +10,19 @@ python3 makeLimitsPlot.py \
   --outdir limitPlots \
   --assume-xs 100 \
   --ggf-xs 51960 \
-  --lumi 62.5 \
+  --lumi 61.89 \
   --formats png,pdf \
   --masses 5,15,30 \
   --only xs,br,wilson
+
+# python3 makeLimitsPlot.py \
+#   --outdir limitPlots \
+#   --assume-xs 100 \
+#   --ggf-xs 56000 \
+#   --lumi 61.89 \
+#   --formats png,pdf \
+#   --masses 5,15,30 \
+#   --only xs,br,wilson
 
 # 只畫 Wilson:
 # python3 makeWilsonLimitsPlot.py --outdir limitPlots --assume-xs 100 --ggf-xs 52170 --lumi 62.5 --formats png,pdf --only wilson

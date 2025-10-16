@@ -800,7 +800,7 @@ void truth_plot(RooRealVar *mass,
   lat->SetTextSize(0.045);
   lat->DrawLatex(PlotStyleCfg::canvasLeftMargin, 0.94, "#bf{CMS} #it{Preliminary}");
   // 減越多，字越靠近左邊
-  lat->DrawLatex(1.-PlotStyleCfg::canvasRightMargin*10.-0.03, 0.94, "62.5 fb^{-1} (13.6 TeV)");
+  lat->DrawLatex(1.-PlotStyleCfg::canvasRightMargin*10.-0.03, 0.94, "61.89 fb^{-1} (13.6 TeV)");
 
   // 确保曲线在最上层
   for (auto* c : pdfCurves) {

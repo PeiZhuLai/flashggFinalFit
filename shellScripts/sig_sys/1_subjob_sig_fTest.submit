@@ -8,36 +8,36 @@ request_memory        = 1000
 log = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/5_fTest_job_2022preEE_ele_Hm125.log
 output = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/5_fTest_job_2022preEE_ele_Hm125.out
 error = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/5_fTest_job_2022preEE_ele_Hm125.err
-arguments = 5 2022preEE 125 ele /eos/home-p/pelai/HZa/root_MVAcut/ALP_M5/ws_Tree2WS
+arguments = 5 2022preEE 125 ele /eos/home-p/pelai/HZa/root_MVAcut/sig/ALP_M5/ws_Tree2WS
 queue
 
 log = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/15_fTest_job_2022preEE_ele_Hm125.log
 output = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/15_fTest_job_2022preEE_ele_Hm125.out
 error = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/15_fTest_job_2022preEE_ele_Hm125.err
-arguments = 15 2022preEE 125 ele /eos/home-p/pelai/HZa/root_MVAcut/ALP_M15/ws_Tree2WS
+arguments = 15 2022preEE 125 ele /eos/home-p/pelai/HZa/root_MVAcut/sig/ALP_M15/ws_Tree2WS
 queue
 
 log = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/30_fTest_job_2022preEE_ele_Hm125.log
 output = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/30_fTest_job_2022preEE_ele_Hm125.out
 error = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/ele/30_fTest_job_2022preEE_ele_Hm125.err
-arguments = 30 2022preEE 125 ele /eos/home-p/pelai/HZa/root_MVAcut/ALP_M30/ws_Tree2WS
+arguments = 30 2022preEE 125 ele /eos/home-p/pelai/HZa/root_MVAcut/sig/ALP_M30/ws_Tree2WS
 queue
 
 log = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/5_fTest_job_2022preEE_mu_Hm125.log
 output = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/5_fTest_job_2022preEE_mu_Hm125.out
 error = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/5_fTest_job_2022preEE_mu_Hm125.err
-arguments = 5 2022preEE 125 mu /eos/home-p/pelai/HZa/root_MVAcut/ALP_M5/ws_Tree2WS
+arguments = 5 2022preEE 125 mu /eos/home-p/pelai/HZa/root_MVAcut/sig/ALP_M5/ws_Tree2WS
 queue
 
 log = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/15_fTest_job_2022preEE_mu_Hm125.log
 output = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/15_fTest_job_2022preEE_mu_Hm125.out
 error = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/15_fTest_job_2022preEE_mu_Hm125.err
-arguments = 15 2022preEE 125 mu /eos/home-p/pelai/HZa/root_MVAcut/ALP_M15/ws_Tree2WS
+arguments = 15 2022preEE 125 mu /eos/home-p/pelai/HZa/root_MVAcut/sig/ALP_M15/ws_Tree2WS
 queue
 
 log = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/30_fTest_job_2022preEE_mu_Hm125.log
 output = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/30_fTest_job_2022preEE_mu_Hm125.out
 error = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/log_files/mu/30_fTest_job_2022preEE_mu_Hm125.err
-arguments = 30 2022preEE 125 mu /eos/home-p/pelai/HZa/root_MVAcut/ALP_M30/ws_Tree2WS
+arguments = 30 2022preEE 125 mu /eos/home-p/pelai/HZa/root_MVAcut/sig/ALP_M30/ws_Tree2WS
 queue
 

@@ -167,7 +167,7 @@ def plotFTest(ssfs,_opt=1,_outdir='./',_extension='',_proc='',_cat='',_mass='125
   lat.SetTextSize(0.045)
   lat.SetTextFont(52)  # 斜體字 Preliminary 標籤
   lat.DrawLatex(0.245, 0.965, "Simulation Preliminary")
-  lat.DrawLatex(0.71,0.97,("62.5 fb^{-1} (13.6 TeV)"))
+  lat.DrawLatex(0.71,0.97,("61.89 fb^{-1} (13.6 TeV)"))
   canv.Update()
   canv.SaveAs(f"{_outdir}/{_Amass}_fTest_{_year}_{_channel}_Hm{_Hmass}.pdf")
 
@@ -242,7 +242,7 @@ def plotFTestResults(ssfs,_opt,_outdir="./",_extension='',_proc='',_cat='',_mass
   lat.SetTextSize(0.045)
   lat.SetTextFont(52)  # 斜體字 Preliminary 標籤
   lat.DrawLatex(0.20, 0.965, "Simulation Preliminary")
-  lat.DrawLatex(0.71,0.97,("62.5 fb^{-1} (13.6 TeV)"))
+  lat.DrawLatex(0.71,0.97,("61.89 fb^{-1} (13.6 TeV)"))
   canv.Update()
   canv.SaveAs(f"{_outdir}/{_Amass}_fTest_{_year}_{_channel}_Hm{_Hmass}_chi2_vs_nGauss.pdf")
 
@@ -413,7 +413,7 @@ def plotPdfComponents(ssf,_outdir='./',_extension='',_proc='',_cat='',_Amass='1'
   lat.SetTextSize(0.045)
   lat.SetTextFont(52)  # 斜體字 Preliminary 標籤
   lat.DrawLatex(0.255, 0.965, "Simulation Preliminary")
-  lat.DrawLatex(0.71,0.97,("62.5 fb^{-1} (13.6 TeV)"))
+  lat.DrawLatex(0.71,0.97,("61.89 fb^{-1} (13.6 TeV)"))
 
   lat1 = ROOT.TLatex()
   lat1.SetTextFont(42)
@@ -513,7 +513,7 @@ def plotInterpolation(_finalModel,_outdir='./',_massPoints='120,121,122,123,124,
   lat.SetTextSize(0.045)
   lat.SetTextFont(52)  # 斜體字 Preliminary 標籤
   lat.DrawLatex(0.24, 0.965, "Simulation Preliminary")
-  lat.DrawLatex(0.71,0.97,("62.5 fb^{-1} (13.6 TeV)"))
+  lat.DrawLatex(0.71,0.97,("61.89 fb^{-1} (13.6 TeV)"))
 
   canv.Update()
   canv.SaveAs(f"{_outdir}/model_vs_mH_{_Amass}_{_year}_{_channel}.pdf")

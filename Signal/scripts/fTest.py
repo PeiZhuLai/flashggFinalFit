@@ -144,7 +144,7 @@ for proc in opt.procs.split(","):
     print(f"Error: Could not find RooWorkspace (hint='{inputWSName__}') in file: {WSFileName}")
     f.Close()
     continue
-  d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(proc.split("_")[0]),opt.mass,sqrts__,opt.cat)),aset)
+  d = reduceDataset(inputWS.data("%s_%s_Za_%s_%s_%s"%(procToData(proc.split("_")[0]),opt.mass,opt.channel,sqrts__,opt.cat)),aset)
   # d = d.reduce(aset, "abs(dZ) <= 1.")  # PZ
   df.loc[len(df)] = [proc,d.sumEntries(),1,1]
   inputWS.Delete()
@@ -175,7 +175,7 @@ for pidx, proc in enumerate(procsToFTest):
     print(f"Error: Could not find RooWorkspace (hint='{inputWSName__}') in file: {WSFileName}")
     f.Close()
     continue
-  d = reduceDataset(inputWS.data("%s_%s_%s_%s"%(procToData(proc.split("_")[0]),opt.mass,sqrts__,opt.cat)),aset) # PZ
+  d = reduceDataset(inputWS.data("%s_%s_Za_%s_%s_%s"%(procToData(proc.split("_")[0]),opt.mass,opt.channel,sqrts__,opt.cat)),aset) # PZ
   # datasets_RV[opt.mass] = splitRVWV(d,aset,mode="RV")
   # datasets_WV[opt.mass] = splitRVWV(d,aset,mode="WV")
   datasets_RV[opt.mass] = d #PZ

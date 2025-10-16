@@ -858,7 +858,7 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 	latex->SetNDC();
 	latex->DrawLatex(0.111,0.94,("m_{a} = "+to_string(int(ma))+" GeV").c_str());
 	// CMS_lumi( canv, 4, 0);
-	latex->DrawLatex(0.66,0.93,("62.5 fb^{-1} (13.6 TeV)"));
+	latex->DrawLatex(0.66,0.93,("61.89 fb^{-1} (13.6 TeV)"));
 
 
 	canv->Modified();
@@ -1425,7 +1425,7 @@ string catname;
 	latex->SetNDC();
 	latex->DrawLatex(0.111,0.93,("m_{a} = "+to_string(int(mavalue_))+" GeV").c_str());
 
-	latex->DrawLatex(0.66,0.93,("62.5 fb^{-1} (13.6 TeV)"));
+	latex->DrawLatex(0.66,0.93,("61.89 fb^{-1} (13.6 TeV)"));
 
 	TLatex *cmslatex = new TLatex();
 	cmslatex->SetTextSize(0.03);
