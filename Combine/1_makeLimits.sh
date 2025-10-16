@@ -14,6 +14,7 @@ mkdir -p output_combine_results
 
 for iALPmass in "${!ALPmassList[@]}"; do
     
+    # ---------- Asymptotic Limit ---------- 
     path_datacard="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Datacard/output_Datacard_leptons/${ALPmassList[iALPmass]}_pruned_datacard_leptons.txt"
     combine -M AsymptoticLimits $path_datacard --cminDefaultMinimizerStrategy 0 -m 125.38 --run blind --setParameterRanges MH=115,135 -n ${ALPmassList[iALPmass]}
     
