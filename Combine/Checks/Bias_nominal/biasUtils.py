@@ -1,4 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
+import os
 
 def rooArgSetToList(argset): ## taken from Andrea Marini's great repo here: https://github.com/amarini/rfwsutils/blob/master/wsutils.py#L300-L313
     """creates a python list with the contents of argset (which should be a RooArgSet)"""
@@ -45,4 +47,5 @@ def plotName(name):
 
 def run(cmd, dry=False):
    print(cmd)
-   if not dry: system(cmd)
+   if not dry: 
+       os.system(cmd)

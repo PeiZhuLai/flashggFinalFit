@@ -24,59 +24,10 @@ parser.add_option("--gaussianFit",action="store_true", default=False)
 print()
 if opts.nToys>opts.split and not opts.nToys%opts.split==0: raise RuntimeError('The number of toys %g needs to be smaller than or divisible by the split number %g'%(opts.nToys, opts.split))
 
-COMBINE_BASW = "/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/output_combine_results"
-limits_path = os.path.join(COMBINE_BASW, f"higgsCombine{opts.mA}.AsymptoticLimits.mH125.38.root")
-
 import ROOT as r
 r.gROOT.SetBatch(True)
 r.gStyle.SetOptStat(2211)
 import os
-import json
-
-def read_q50_from_limits(fname):
-    f = r.TFile.Open(fname, "READ")
-    if not f or f.IsZombie():
-        print(f"[RunBiasStudy] Cannot open limits file: {fname}")
-        return None
-    t = f.Get("limit")
-    if not t:
-        print(f"[RunBiasStudy] No TTree 'limit' in: {fname}")
-        f.Close()
-        return None
-    has_quant = bool(t.GetBranch("quantileExpected"))
-    q50 = None
-    eps = 1e-3
-    entries = []
-    for i in range(t.GetEntries()):
-        t.GetEntry(i)
-        try:
-            val = float(getattr(t, "limit"))
-        except Exception:
-            continue
-        qv = None
-        if has_quant:
-            try:
-                qv = float(getattr(t, "quantileExpected"))
-            except Exception:
-                qv = None
-        entries.append((qv, val))
-        if has_quant and qv is not None and abs(qv - 0.5) < eps:
-            q50 = val
-    if q50 is None and len(entries) >= 5:
-        offset = 1 if (entries[0][0] is not None and entries[0][0] < 0) else 0
-        try:
-            q50 = entries[offset + 2][1]
-        except Exception:
-            q50 = None
-    f.Close()
-    return q50
-
-_exp_q50 = read_q50_from_limits(limits_path)
-if _exp_q50 is not None:
-    opts.expectSignal = float(_exp_q50)
-    print(f"[RunBiasStudy] Using expectSignal from limits q50: {opts.expectSignal}")
-else:
-    print("[RunBiasStudy] Failed to read q50 from limits file, keep --expectSignal as given.")
 
 ws = r.TFile(opts.datacard).Get(opts.workspace)
 
@@ -143,7 +94,6 @@ if opts.fits:
 if opts.plots:
     if not os.path.isdir('BiasPlots'):
         os.makedirs('BiasPlots', exist_ok=True)
-    fit_results = {} if opts.gaussianFit else None
     for ipdf,pdfName in indexNameMap.items():
         name = shortName(pdfName)
         tfile = r.TFile(fitName(name))
@@ -168,12 +118,7 @@ if opts.plots:
                 continue
             hi = getattr(tree, 'r')
             diff = bf - opts.expectSignal
-            # unc = 0.5 * (hi-lo)
-            mu_true = float(opts.expectSignal)
-            if bf > mu_true:
-                unc = hi - bf           # 上誤差（應為正）
-            else:
-                unc = bf - lo           # 下誤差（應為正）
+            unc = 0.5 * (hi-lo)
             if unc > 0.: 
                 pullHist.Fill(diff/unc)
         canv = r.TCanvas()
@@ -181,28 +126,5 @@ if opts.plots:
         if opts.gaussianFit:
            r.gStyle.SetOptFit(111)
            pullHist.Fit('gaus')
-           f = pullHist.GetFunction('gaus')
-           if f:
-               fit_results[name] = {
-                   'mean': float(f.GetParameter(1)),
-                   'sigma': float(f.GetParameter(2))
-               }
         canv.SaveAs('%s.pdf'%plotName(name))
         canv.SaveAs('%s.png'%plotName(name))
-    if opts.gaussianFit and fit_results is not None:
-        out_json = os.path.join('BiasPlots', f"{opts.mA}_gaussfit.json")
-        payload = {
-            'mA': int(opts.mA),
-            'exp': float(_exp_q50) if _exp_q50 is not None else None,
-            'fit_results': fit_results
-        }
-        with open(out_json, 'w') as jf:
-            json.dump(payload, jf, indent=2, sort_keys=True)
-    else:
-        out_json = os.path.join('BiasPlots', f"{opts.mA}_exp.json")
-        payload = {
-            'mA': int(opts.mA),
-            'exp': float(_exp_q50) if _exp_q50 is not None else None
-        }
-        with open(out_json, 'w') as jf:
-            json.dump(payload, jf, indent=2, sort_keys=True)
