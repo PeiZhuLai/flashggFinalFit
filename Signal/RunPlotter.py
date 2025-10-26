@@ -166,5 +166,5 @@ for cat,f in inputFiles.items():
   fin.Close()
 
 # Make plot
-if not os.path.isdir("%s/outdir_%s/Plots"%(swd__,opt.channel)): os.system("mkdir %s/outdir_%s/Plots"%(swd__,opt.channel))
-plotSignalModel(hists,opt,_outdir="%s/outdir_%s/Plots"%(swd__,opt.channel), _Amass=opt.mass_ALP,_year=opt.years,_channel=opt.channel)
+if not os.path.isdir("%s/outdir_%s/signalFit/Plots"%(swd__,opt.channel)): os.system("mkdir %s/outdir_%s/signalFit/Plots"%(swd__,opt.channel))
+plotSignalModel(hists,opt,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.channel), _Amass=opt.mass_ALP,_year=opt.years,_channel=opt.channel)

@@ -9,7 +9,21 @@ dir_sig="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashg
 source /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/setup.sh
 export PYTHONPATH=$PYTHONPATH:/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/tools:/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/tools
 
-python3 $dir_sig/RunPlotter.py --mass_ALP $1 --years $2 --channel $3
+# ------------- Open for Condor -------------
+# python3 $dir_sig/RunPlotter.py --mass_ALP $1 --years $2 --channel $3
 
-# Dry run
+# ------------- Open for Dry Run -------------
 # python3 $dir_sig/RunPlotter.py --mass_ALP 5 --years 2022preEE --channel ele
+
+# ------------- Open for Local Run -------------
+mAs=( 5 15 30)
+channels=( ele mu )
+years=( 2022preEE )
+
+for mA in "${mAs[@]}"; do
+    for channel in "${channels[@]}"; do
+        for year in "${years[@]}"; do
+            python3 $dir_sig/RunPlotter.py --mass_ALP ${mA} --years ${year} --channel ${channel}
+        done
+    done
+done

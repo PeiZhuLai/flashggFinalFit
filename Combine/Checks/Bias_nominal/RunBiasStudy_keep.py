@@ -21,7 +21,7 @@ parser.add_option("--split",default=500,type="int")
 parser.add_option("--selectFunction",default=None)
 parser.add_option("--gaussianFit",action="store_true", default=False)
 # 新增選擇 expectSignal 來源的開關: arg | q50 | auto (預設 arg)
-parser.add_option("--expectFrom", default="q50",help="Source of expectSignal: 'arg' (use -e), 'q50' (use median from AsymptoticLimits), 'auto' (prefer q50, fallback to -e)")
+parser.add_option("--expectFrom", default="arg",help="Source of expectSignal: 'arg' (use -e), 'q50' (use median from AsymptoticLimits), 'auto' (prefer q50, fallback to -e)")
 (opts,args) = parser.parse_args()
 print()
 if opts.nToys>opts.split and not opts.nToys%opts.split==0: raise RuntimeError('The number of toys %g needs to be smaller than or divisible by the split number %g'%(opts.nToys, opts.split))
@@ -195,9 +195,7 @@ if opts.plots:
            if f:
                fit_results[name] = {
                    'mean': round(float(f.GetParameter(1)),4),
-                   'mean_err': round(float(f.GetParError(1)),4),
-                   'sigma': round(float(f.GetParameter(2)),4),
-                   'sigma_err': round(float(f.GetParError(2)),4)
+                   'sigma': round(float(f.GetParameter(2)),4)
                }
         canv.SaveAs('%s.pdf'%plotName(name))
         canv.SaveAs('%s.png'%plotName(name))

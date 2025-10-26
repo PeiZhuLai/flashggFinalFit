@@ -1,10 +1,9 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 from biasUtils import *
 
 from optparse import OptionParser
 parser = OptionParser()
-parser.add_option('--mA', dest='mA', default=5, type='int', help="ALP mass") # PZ
 parser.add_option("-d","--datacard",default="Datacard.root")
 parser.add_option("-w","--workspace",default="w")
 parser.add_option("-t","--toys",action="store_true", default=False)
@@ -12,7 +11,7 @@ parser.add_option("-n","--nToys",default=1000,type="int")
 parser.add_option("-f","--fits",action="store_true", default=False)
 parser.add_option("-p","--plots",action="store_true", default=False)
 parser.add_option("-e","--expectSignal",default=1.,type="float")
-parser.add_option("-m","--mH",default=125.38,type="float")
+parser.add_option("-m","--mH",default=125.,type="float")
 parser.add_option("-c","--combineOptions",default="")
 parser.add_option("-s","--seed",default=-1,type="int")
 parser.add_option("--dryRun",action="store_true", default=False)
@@ -27,7 +26,6 @@ if opts.nToys>opts.split and not opts.nToys%opts.split==0: raise RuntimeError('T
 import ROOT as r
 r.gROOT.SetBatch(True)
 r.gStyle.SetOptStat(2211)
-import os
 
 ws = r.TFile(opts.datacard).Get(opts.workspace)
 
@@ -58,8 +56,7 @@ for ipdf in range(multipdf.getNumPdfs()):
     indexNameMap[ipdf] = multipdf.getPdf(ipdf).GetName()
 
 if opts.toys:
-    if not os.path.isdir('BiasToys'):
-        os.makedirs('BiasToys', exist_ok=True)
+    if not path.isdir('BiasToysn'): system('mkdir -p BiasToys')
     toyCmdBase = 'combine -m %.4f -d %s -M GenerateOnly --expectSignal %.4f -s %g --saveToys %s '%(opts.mH, opts.datacard, opts.expectSignal, opts.seed, opts.combineOptions)
     for ipdf,pdfName in indexNameMap.items():
         name = shortName(pdfName)
@@ -67,16 +64,15 @@ if opts.toys:
             for isplit in range(opts.nToys//opts.split):
                 toyCmd = toyCmdBase + ' -t %g -n _%s_split%g --setParameters %s=%g --freezeParameters %s'%(opts.split, name, isplit, indexName, ipdf, indexName)
                 run(toyCmd, dry=opts.dryRun)
-                os.system('mv higgsCombine_%s* %s'%(name, toyName(name,split=isplit)))
+                system('mv higgsCombine_%s* %s'%(name, toyName(name,split=isplit)))
         else: 
             toyCmd = toyCmdBase + ' -t %g -n _%s --setParameters %s=%g --freezeParameters %s'%(opts.nToys, name, indexName, ipdf, indexName)
             run(toyCmd, dry=opts.dryRun)
-            os.system('mv higgsCombine_%s* %s'%(name, toyName(name)))
+            system('mv higgsCombine_%s* %s'%(name, toyName(name)))
 print()
 
 if opts.fits:
-    if not os.path.isdir('BiasFits'):
-        os.makedirs('BiasFits', exist_ok=True)
+    if not path.isdir('BiasFits'): system('mkdir -p BiasFits')
     fitCmdBase = 'combine -m %.4f -d %s -M MultiDimFit -P %s --algo singles %s '%(opts.mH, opts.datacard, opts.poi, opts.combineOptions)
     for ipdf,pdfName in indexNameMap.items():
         name = shortName(pdfName)
@@ -84,16 +80,15 @@ if opts.fits:
             for isplit in range(opts.nToys//opts.split):
                 fitCmd = fitCmdBase + ' -t %g -n _%s_split%g --toysFile=%s'%(opts.split, name, isplit, toyName(name,split=isplit))
                 run(fitCmd, dry=opts.dryRun)
-                os.system('mv higgsCombine_%s* %s'%(name, fitName(name,split=isplit)))
+                system('mv higgsCombine_%s* %s'%(name, fitName(name,split=isplit)))
             run('hadd %s BiasFits/*%s*split*.root'%(fitName(name),name), dry=opts.dryRun)
         else:
             fitCmd = fitCmdBase + ' -t %g -n _%s --toysFile=%s'%(opts.nToys, name, toyName(name))
             run(fitCmd, dry=opts.dryRun)
-            os.system('mv higgsCombine_%s* %s'%(name, fitName(name)))
+            system('mv higgsCombine_%s* %s'%(name, fitName(name)))
 
 if opts.plots:
-    if not os.path.isdir('BiasPlots'):
-        os.makedirs('BiasPlots', exist_ok=True)
+    if not path.isdir('BiasPlots'): system('mkdir -p BiasPlots')
     for ipdf,pdfName in indexNameMap.items():
         name = shortName(pdfName)
         tfile = r.TFile(fitName(name))

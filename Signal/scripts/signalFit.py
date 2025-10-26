@@ -22,7 +22,8 @@ from finalModel import *
 from plottingTools import *
 
 # Constant
-MHLow, MHHigh = '120', '130'
+# MHLow, MHHigh = '120', '130'
+MHLow, MHHigh = '100', '180' # In this way, the result will be as same as the fTest
 MHNominal = '125'
 
 print(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ HZallgg SIGNAL FITTER ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ")

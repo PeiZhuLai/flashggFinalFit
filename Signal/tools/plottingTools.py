@@ -109,7 +109,7 @@ def plotFTest(ssfs,_opt=1,_outdir='./',_extension='',_proc='',_cat='',_mass='125
   hists['data'].SetMarkerColor(1)
   hists['data'].SetLineColor(1)
   hists['data'].SetTitle("")
-  hists['data'].GetYaxis().SetTitle(f"Events / {hists['data'].GetBinWidth(1):.2f}")
+  hists['data'].GetYaxis().SetTitle(f"Events / {hists['data'].GetBinWidth(1):.2f} GeV")
   hists['data'].GetYaxis().SetTitleFont(42)
   hists['data'].GetYaxis().SetTitleSize(0.055)
   hists['data'].GetYaxis().SetTitleOffset(1.55)
@@ -127,7 +127,7 @@ def plotFTest(ssfs,_opt=1,_outdir='./',_extension='',_proc='',_cat='',_mass='125
   if _mass == '120':
     hists['data'].GetXaxis().SetRangeUser(110,135)
   elif _mass == '125':
-    hists['data'].GetXaxis().SetRangeUser(115,140)
+    hists['data'].GetXaxis().SetRangeUser(114,140)
   elif _mass == '130':
     hists['data'].GetXaxis().SetRangeUser(120,145)
   if hists['data'].GetMaximum()>hmax: hmax = hists['data'].GetMaximum()
@@ -156,18 +156,21 @@ def plotFTest(ssfs,_opt=1,_outdir='./',_extension='',_proc='',_cat='',_mass='125
   # Add Latex
   lat = ROOT.TLatex()
   lat.SetTextFont(42)
-  lat.SetTextAlign(13)
+  lat.SetTextAlign(13) # 左對齊
   lat.SetNDC()
   lat.SetTextSize(0.045)
-  # lat.DrawLatex(0.9,0.92,"( %s , %s , %s )"%(_extension,_proc,_cat))
-  lat.DrawLatex(0.20, 0.87, f"m_{{a}} = {_Amass} GeV")
+  channeltext = "Electron" if _channel == 'ele' else "Muon"
+  lat.DrawLatex(0.20, 0.87, f"{channeltext} Channel")
+  lat.DrawLatex(0.20, 0.79, f"m_{{a}} = {_Amass} GeV")
   lat.SetTextSize(0.05)  # 字體大小
   lat.SetTextFont(61)  # 粗體字 CMS 標籤
   lat.DrawLatex(0.155, 0.969, "CMS")
   lat.SetTextSize(0.045)
   lat.SetTextFont(52)  # 斜體字 Preliminary 標籤
   lat.DrawLatex(0.245, 0.965, "Simulation Preliminary")
-  lat.DrawLatex(0.71,0.97,("61.89 fb^{-1} (13.6 TeV)"))
+  lat.SetTextAlign(31)  # 右對齊
+  lat.SetTextFont(42)
+  lat.DrawLatex(0.97,0.93,(f"{lumiMap[_year]} fb^{{-1}} (13.6 TeV)"))
   canv.Update()
   canv.SaveAs(f"{_outdir}/{_Amass}_fTest_{_year}_{_channel}_Hm{_Hmass}.pdf")
 
@@ -242,7 +245,9 @@ def plotFTestResults(ssfs,_opt,_outdir="./",_extension='',_proc='',_cat='',_mass
   lat.SetTextSize(0.045)
   lat.SetTextFont(52)  # 斜體字 Preliminary 標籤
   lat.DrawLatex(0.20, 0.965, "Simulation Preliminary")
-  lat.DrawLatex(0.71,0.97,("61.89 fb^{-1} (13.6 TeV)"))
+  lat.SetTextAlign(31)  # 右對齊
+  lat.SetTextFont(42)
+  lat.DrawLatex(0.97,0.93,(f"{lumiMap[_year]} fb^{{-1}} (13.6 TeV)"))
   canv.Update()
   canv.SaveAs(f"{_outdir}/{_Amass}_fTest_{_year}_{_channel}_Hm{_Hmass}_chi2_vs_nGauss.pdf")
 
@@ -268,7 +273,7 @@ def plotPdfComponents(ssf,_outdir='./',_extension='',_proc='',_cat='',_Amass='1'
   hists['final'].SetMinimum(0)
   if hists['final'].GetMaximum()>hmax: hmax = hists['final'].GetMaximum()
   if hists['final'].GetMinimum()<hmin: hmin = hists['final'].GetMinimum()
-  hists['final'].GetXaxis().SetRangeUser(115,140)
+  hists['final'].GetXaxis().SetRangeUser(114,140)
   # hists['final'].GetXaxis().SetRangeUser(100,150)
   # Create data histogram
   hists['data'] = ssf.xvar.createHistogram("h_data%s"%_extension,ROOT.RooFit.Binning(ssf.nBins))
@@ -279,7 +284,7 @@ def plotPdfComponents(ssf,_outdir='./',_extension='',_proc='',_cat='',_Amass='1'
   hists['data'].SetMarkerColor(1)
   hists['data'].SetLineColor(1)
   hists['data'].SetTitle("")
-  hists['data'].GetYaxis().SetTitle(f"Events / {hists['data'].GetBinWidth(1):.2f}")
+  hists['data'].GetYaxis().SetTitle(f"Events / {hists['data'].GetBinWidth(1):.2f} GeV")
   hists['data'].GetYaxis().SetTitleFont(42)
   hists['data'].GetYaxis().SetTitleSize(0.055)
   hists['data'].GetYaxis().SetTitleOffset(1.55)
@@ -294,7 +299,7 @@ def plotPdfComponents(ssf,_outdir='./',_extension='',_proc='',_cat='',_Amass='1'
   hists['data'].GetXaxis().SetLabelOffset(0.009)
   
   hists['data'].SetMinimum(0)
-  hists['data'].GetXaxis().SetRangeUser(115,140)
+  hists['data'].GetXaxis().SetRangeUser(114,140)
   # hists['data'].GetXaxis().SetRangeUser(100,150)
   hists['data'].Scale(float(ssf.nBins)/1600)
 
@@ -405,22 +410,25 @@ def plotPdfComponents(ssf,_outdir='./',_extension='',_proc='',_cat='',_Amass='1'
   lat.SetTextAlign(13)
   lat.SetNDC()
   lat.SetTextSize(0.05)
-  # lat.DrawLatex(0.9,0.92,"( %s , %s , %s )"%(_extension,_proc,_cat))
-  lat.DrawLatex(0.22, 0.87, f"m_{{a}} = {_Amass} GeV")
+  channeltext = "Electron" if _channel == 'ele' else "Muon"
+  lat.DrawLatex(0.21, 0.87, f"{channeltext} Channel")
+  lat.DrawLatex(0.21, 0.79, f"m_{{a}} = {_Amass} GeV")
   lat.SetTextSize(0.05)  # 字體大小
   lat.SetTextFont(61)  # 粗體字 CMS 標籤
   lat.DrawLatex(0.165, 0.969, "CMS")
   lat.SetTextSize(0.045)
   lat.SetTextFont(52)  # 斜體字 Preliminary 標籤
   lat.DrawLatex(0.255, 0.965, "Simulation Preliminary")
-  lat.DrawLatex(0.71,0.97,("61.89 fb^{-1} (13.6 TeV)"))
+  lat.SetTextAlign(31)  # 右對齊
+  lat.SetTextFont(42)
+  lat.DrawLatex(0.97,0.93,(f"{lumiMap[_year]} fb^{{-1}} (13.6 TeV)"))
 
   lat1 = ROOT.TLatex()
   lat1.SetTextFont(42)
   lat1.SetTextAlign(13)
   lat1.SetNDC()
   lat1.SetTextSize(0.05)
-  lat1.DrawLatex(0.22,0.79,"#chi^{2}/dof = %.2f"%(ssf.getChi2()/ssf.Ndof))
+  lat1.DrawLatex(0.21,0.71,"#chi^{2}/dof = %.2f"%(ssf.getChi2()/ssf.Ndof))
 
   canv.Update()
   canv.SaveAs(f"{_outdir}/shape_pdf_components_{_Amass}_{_year}_{_channel}.pdf")
@@ -506,14 +514,18 @@ def plotInterpolation(_finalModel,_outdir='./',_massPoints='120,121,122,123,124,
   lat.SetTextAlign(13)
   lat.SetNDC()
   lat.SetTextSize(0.045)
-  lat.DrawLatex(0.20, 0.87, f"m_{{a}} = {_Amass} GeV")
+  lat.DrawLatex(0.20, 0.79, f"m_{{a}} = {_Amass} GeV")
+  channeltext = "Electron" if _channel == 'ele' else "Muon"
+  lat.DrawLatex(0.21, 0.87, f"{channeltext} Channel")
   lat.SetTextSize(0.05)  # 字體大小
   lat.SetTextFont(61)  # 粗體字 CMS 標籤
   lat.DrawLatex(0.15, 0.969, "CMS")
   lat.SetTextSize(0.045)
   lat.SetTextFont(52)  # 斜體字 Preliminary 標籤
   lat.DrawLatex(0.24, 0.965, "Simulation Preliminary")
-  lat.DrawLatex(0.71,0.97,("61.89 fb^{-1} (13.6 TeV)"))
+  lat.SetTextAlign(31)  # 右對齊
+  lat.SetTextFont(42)
+  lat.DrawLatex(0.97,0.93,(f"{lumiMap[_year]} fb^{{-1}} (13.6 TeV)"))
 
   canv.Update()
   canv.SaveAs(f"{_outdir}/model_vs_mH_{_Amass}_{_year}_{_channel}.pdf")
@@ -629,7 +641,10 @@ def plotSplines(_finalModel,_outdir="./",_nominalMass='125',splinesToPlot=['xs',
     lumi_fb = float(lumiMap.get('combined', 0.0))
   year_key = str(_finalModel.year)
   energy_text = "13.6 TeV" if (year_key.startswith("2022") or year_key.startswith("2023")) else "13 TeV"
-  lat.DrawLatex(0.70, 0.97, f"{lumi_fb:.2f} fb^{{-1}} ({energy_text})")
+  lat.SetTextAlign(31)  # 右對齊
+  lat.SetTextFont(42)
+  lat.DrawLatex(0.965, 0.93, f"{lumi_fb:.2f} fb^{{-1}} ({energy_text})")
+
   canv.Update()
   canv.SaveAs(f"{_outdir}/{_finalModel.name}_splines_{_Amass}_{_year}_{_channel}.pdf")
 
@@ -649,7 +664,7 @@ def plotSignalModel(_hists,_opt,_outdir=".",offset=0.03,_Amass='1',_year='16', _
   h_axes.GetXaxis().CenterTitle(True)
   h_axes.GetYaxis().CenterTitle(True)
   h_axes.SetTitle("")
-  h_axes.GetYaxis().SetTitle(f"Events / {h_axes.GetBinWidth(1):.2f}")
+  h_axes.GetYaxis().SetTitle(f"Events / {h_axes.GetBinWidth(1):.2f} GeV")
   h_axes.GetYaxis().SetTitleFont(42)
   h_axes.GetYaxis().SetTitleSize(0.055)
   h_axes.GetYaxis().SetTitleOffset(1.37+offset*2)
@@ -738,8 +753,12 @@ def plotSignalModel(_hists,_opt,_outdir=".",offset=0.03,_Amass='1',_year='16', _
     fwhmText.SetTextAlign(11)
     fwhmText.SetNDC()
     fwhmText.SetTextSize(0.045)
-    fwhmText.DrawLatex(0.165+offset,0.38,"FWHM = %1.2f GeV"%(fwhm_high-fwhm_low))
+    fwhmText.DrawLatex(0.165+offset,0.39,"FWHM = %1.2f GeV"%(fwhm_high-fwhm_low))
+    channeltext = "Electron" if _channel == 'ele' else "Muon"
+    fwhmText.DrawLatex(0.165+offset, 0.31, f"{channeltext} Channel")
+    fwhmText.DrawLatex(0.165+offset, 0.23, f"m_{{a}} = {_Amass} GeV")
 
+    
   # Set style pdf
   _hists['pdf'].SetLineColor(4)
   _hists['pdf'].SetLineWidth(3)

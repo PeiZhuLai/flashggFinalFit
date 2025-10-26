@@ -122,7 +122,7 @@ def draw_channel(channel, years, mAs, base_dir):
         xs, ys = [], []
         for m in mAs:
             json_path = os.path.join(
-                base_dir, "Signal", f"outdir_{channel}", "Plots",
+                base_dir, "Signal", f"outdir_{channel}", "signalFit", "Plots",
                 f"effSigma_{m}_{year}_{channel}.json"
             )
             val = read_effsigma(json_path, year=year)
@@ -235,7 +235,7 @@ def draw_channel(channel, years, mAs, base_dir):
 
     c.Update()
 
-    outdir = os.path.join(base_dir, "Signal", f"outdir_{channel}", "Plots")
+    outdir = os.path.join(base_dir, "Signal", f"outdir_{channel}", "signalFit", "Plots")
     ensure_dir(outdir)
     out_base = os.path.join(outdir, f"effSigmaVmA_{channel}")
     c.SaveAs(out_base + ".png")
