@@ -49,3 +49,4 @@ Background/outdir_*
 Datacard/yields_*
 
 Combine/t2w_jobs_*
+Combine/Checks/Bias_nominal/BiasJson/*_gaussfit.json

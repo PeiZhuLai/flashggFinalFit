@@ -34,8 +34,8 @@ TITLE  = "Bias study pull comparison"
 OUTTAG = "pull_overlay_distribution"
 OUTTAG_MEAN = "r_vs_bias"
 
-MEAN_VS_R_XMIN = -0.4
-MEAN_VS_R_XMAX =  0.4
+MEAN_VS_R_XMIN = -0.5
+MEAN_VS_R_XMAX =  0.5
 MEAN_VS_R_YMIN = None
 MEAN_VS_R_YMAX = None
 
@@ -374,7 +374,7 @@ def main():
         y_min = ROOT.gPad.GetUymin(); y_max = ROOT.gPad.GetUymax()
 
         vlines = []
-        for xv in (-0.14, 0.0, 0.14):
+        for xv in (-0.2, 0.0, 0.2):
             ln = keep(ROOT.TLine(xv, y_min, xv, y_max), c2)
             if abs(xv) < 1e-9:
                 ln.SetLineStyle(7); ln.SetLineColor(ROOT.kGray+2)

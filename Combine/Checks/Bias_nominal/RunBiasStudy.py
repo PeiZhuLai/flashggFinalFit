@@ -8,7 +8,7 @@ parser.add_option('--mA', dest='mA', default=5, type='int', help="ALP mass") # P
 parser.add_option("-d","--datacard",default="Datacard.root")
 parser.add_option("-w","--workspace",default="w")
 parser.add_option("-t","--toys",action="store_true", default=False)
-parser.add_option("-n","--nToys",default=1000,type="int")
+parser.add_option("-n","--nToys",default=2000,type="int")
 parser.add_option("-f","--fits",action="store_true", default=False)
 parser.add_option("-p","--plots",action="store_true", default=False)
 parser.add_option("-e","--expectSignal",default=1.,type="float")
