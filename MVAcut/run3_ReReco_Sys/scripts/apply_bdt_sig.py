@@ -25,8 +25,8 @@ optimized_BDT_Cut="/afs/cern.ch/work/p/pelai/HZa/HiggsZaAna/Plot/output/MVAcut_p
 
 procductions = ["ggh"]
 INPUT_BASE = "/eos/home-p/pelai/HZa/root_P2Root/run3_BDT/"
-sig_samples = ["ALP_M5", "ALP_M15", "ALP_M30"]
-years_sig  = ["2022preEE"]  # 信號
+sig_samples = ["mA_M1","mA_M2","mA_M3","mA_M4","mA_M5","mA_M6","mA_M7","mA_M8","mA_M9","mA_M10", "mA_M15", "mA_M20", "mA_M25", "mA_M30"]
+years_sig  = ["2022preEE","2022postEE","2023preBPix","2023postBPix","2024"]  # 信号
 
 # 新增：讀取 INPUT_BASE/*.root 用到的設定
 INPUT_BASE_TREE_NAME = "test"
@@ -36,7 +36,7 @@ def get_args():
     """Parse command-line arguments."""
     parser = ArgumentParser(description='Apply BDT signal correction to data')
     parser.add_argument('-c', '--config', default='data/training_config_BDT.json', help='Path to the training config file')
-    parser.add_argument('-i', '--inputFolder', default='/eos/home-p/pelai/HZa/Root_Dataset/run3_BDT', help='Path to the input folder')
+    parser.add_argument('-i', '--inputFolder', default='/eos/home-p/pelai/HZa/root_P2Root/run3_BDT', help='Path to the input folder')
     parser.add_argument('-o', '--outputFolder', default='/eos/home-p/pelai/HZa/root_MVAcut/sig', help='Path to the output folder')
     # 新增：控制日誌等級，預設 INFO；若需要完整追蹤，指定 --log-level DEBUG
     parser.add_argument('--log-level', default='INFO', choices=['DEBUG','INFO','WARNING','ERROR','CRITICAL'],
@@ -239,7 +239,7 @@ def process_files(output_folder, input_folder, pass_map: Dict[tuple, set], id_co
         "nominal", 
         "FNUF_up", "FNUF_down", "Material_up", "Material_down",
         "Electron_scale_up", "Electron_scale_down", "Electron_smear_up", "Electron_smear_down", 
-        "Muon_pt_scale_up", "Muon_pt_scale_down", "Muon_pt_smear_up", "Muon_pt_smear_down",
+        "Muon_scale_up", "Muon_scale_down", "Muon_smear_up", "Muon_smear_down",
         "Photon_scale_up", "Photon_scale_down", "Photon_smear_up", "Photon_smear_down"
     ]
 

@@ -15,7 +15,7 @@ trees2wsCfg = {
   # List of shape systematics: use string YEAR for year-dependent systematics
   'systematics':['FNUF', 'Material', 
   'ElectronScale', 'ElectronSmear', 
-  'MuonPtScale', 'MuonPtSmear', 
+  'MuonScale', 'MuonSmear', 
   'PhotonScale', 'PhotonSmear'],
 
   # Analysis categories: python list of cats or use 'auto' to extract from input tree

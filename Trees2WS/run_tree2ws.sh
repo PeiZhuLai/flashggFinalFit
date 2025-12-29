@@ -9,12 +9,12 @@ source /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggF
 export PYTHONPATH=$PYTHONPATH:/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/tools:/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/tools
 
 # ---- Signal With Uncertainty ----
-mAs_sig=(5 15 30)
+mAs_sig=(1 2 3 4 5 6 7 8 9 10 15 20 25 30)
 sig_samples=()
 for m in "${mAs_sig[@]}"; do
-    sig_samples+=("ALP_M${m}")
+    sig_samples+=("mA_M${m}")
 done
-years_sig=(2022preEE)  # 信號
+years_sig=(2022preEE 2022postEE 2023preBPix 2023postBPix 2024)  # 信號
 DO_SYSTEMATICS=1  # 設為 1 時會加上 --doSystematics
 leps=(ele mu)     # 逐個 lepton 輸出各自的 ws 檔
 
@@ -35,7 +35,7 @@ done
 # mAs_data=(1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30)
 # data_samples=()
 # for m in "${mAs_data[@]}"; do
-#     data_samples+=("ALP_M${m}")
+#     data_samples+=("mA_M${m}")
 # done
 # for ma in "${data_samples[@]}"; do
 #     path="/eos/home-p/pelai/HZa/root_MVAcut/data/${ma}"

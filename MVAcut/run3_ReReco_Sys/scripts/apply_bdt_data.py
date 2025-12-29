@@ -16,7 +16,7 @@ optimized_BDT_Cut="/afs/cern.ch/work/p/pelai/HZa/HiggsZaAna/Plot/output/MVAcut_p
 INPUT_BASE = "/eos/home-p/pelai/HZa/root_P2Root/run3_BDT/Data"
 mAs = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
 procductions = ['Data']
-years = ['2022preEE', '2022postEE', '2023preBPix', '2023postBPix']
+years = ['2022preEE', '2022postEE', '2023preBPix', '2023postBPix', '2024']
 
 # 讀 INPUT_BASE 的樹名與 iterate step
 INPUT_BASE_TREE_NAME = "inclusive"
@@ -191,7 +191,7 @@ def process_files(output_folder: str, input_folder: str, pass_map: Dict[tuple, s
     os.makedirs(output_folder, exist_ok=True)
     syst_variations = ["nominal"]
 
-    samples = [f"ALP_M{m}" for m in mAs]
+    samples = [f"mA_M{m}" for m in mAs]
     for year in years:
         for s in samples:
             out_dir = os.path.join(output_folder, s)
@@ -280,7 +280,7 @@ if __name__ == "__main__":
     setup_logging(args.log_level)
 
     mva_cuts = parse_mva_cuts(optimized_BDT_Cut)
-    samples = [f"ALP_M{m}" for m in mAs]
+    samples = [f"mA_M{m}" for m in mAs]
     pass_map, id_cols = build_pass_event_map(samples, years, INPUT_BASE, mva_cuts)
     process_files(args.outputFolder, INPUT_BASE, pass_map, id_cols, mva_cuts)
     # 新增：合併每個 mA 的年度輸出
