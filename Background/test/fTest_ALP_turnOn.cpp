@@ -119,6 +119,87 @@ void runFit(RooAbsPdf *pdf, RooAbsData *data, double *NLL, int *stat_t, int MaxT
     return;
   }
 
+
+  // [ROOT-FIX] Clamp the pdf observable range to the *actual* data range for this fit only.
+  // RooFit may abort when the pdf observable min/max extend beyond the dataset's effective range
+  // (especially for RooDataHist toys where edge bins can be empty).
+  // We clamp *both* the data's observable and the pdf's observable (they can be different clones),
+  // then restore afterwards.
+  RooRealVar* mData = dynamic_cast<RooRealVar*>(data && data->get() ? data->get()->find("CMS_hza_mass") : nullptr);
+  std::unique_ptr<RooArgSet> _obsSet(pdf ? pdf->getObservables(*data) : nullptr);
+  RooRealVar* mPdf = nullptr;
+  if (_obsSet) mPdf = dynamic_cast<RooRealVar*>(_obsSet->find("CMS_hza_mass"));
+  if (!mPdf && _obsSet && mData) mPdf = dynamic_cast<RooRealVar*>(_obsSet->find(mData->GetName()));
+  if (!mPdf) mPdf = mData;
+
+  struct RangeGuard {
+    RooRealVar* v = nullptr;
+    double oldMin = 0.0;
+    double oldMax = 0.0;
+    bool active = false;
+    explicit RangeGuard(RooRealVar* vv) : v(vv) {}
+    void clamp(double lo, double hi) {
+      if (!v) return;
+      oldMin = v->getMin();
+      oldMax = v->getMax();
+      v->setRange(lo, hi);
+      active = true;
+    }
+    ~RangeGuard() {
+      if (active && v) v->setRange(oldMin, oldMax);
+    }
+  } _rgPdf(mPdf), _rgData((mData && mData!=mPdf) ? mData : nullptr);
+
+  if (mData && mPdf) {
+    double dmin = 0.0, dmax = 0.0;
+    data->getRange(*mData, dmin, dmax);
+    const double lo = std::max(mPdf->getMin(), dmin);
+    const double hi = std::min(mPdf->getMax(), dmax);
+    if (hi > lo) {
+      _rgPdf.clamp(lo, hi);
+      if (mData!=mPdf) _rgData.clamp(lo, hi);
+    }
+  }
+
+
+// [ROOT-FIX] Clamp the observable range *locally* to the dataset's effective range for this fit.
+// This prevents RooFit aborts when the dataset (especially RooDataHist toys) has a narrower range
+// than the pdf observable (e.g. empty edge bins shrink the dataset range).
+RooRealVar* mData = dynamic_cast<RooRealVar*>(data && data->get() ? data->get()->find("CMS_hza_mass") : nullptr);
+std::unique_ptr<RooArgSet> _obsSet(pdf ? pdf->getObservables(*data) : nullptr);
+RooRealVar* mPdf = nullptr;
+if (_obsSet) mPdf = dynamic_cast<RooRealVar*>(_obsSet->find("CMS_hza_mass"));
+if (!mPdf && _obsSet && mData) mPdf = dynamic_cast<RooRealVar*>(_obsSet->find(mData->GetName()));
+if (!mData && data && data->get() && mPdf) mData = dynamic_cast<RooRealVar*>(data->get()->find(mPdf->GetName()));
+
+struct RangeGuard {
+  RooRealVar* v = nullptr;
+  double oldMin = 0.0;
+  double oldMax = 0.0;
+  bool active = false;
+  explicit RangeGuard(RooRealVar* vv) : v(vv) {}
+  void clamp(double lo, double hi) {
+    if (!v) return;
+    oldMin = v->getMin();
+    oldMax = v->getMax();
+    v->setRange(lo, hi);
+    active = true;
+  }
+  ~RangeGuard() {
+    if (active && v) v->setRange(oldMin, oldMax);
+  }
+} _rgPdf(mPdf), _rgData((mData && mData!=mPdf) ? mData : nullptr);
+
+if (mData && mPdf) {
+  double dmin = 0.0, dmax = 0.0;
+  data->getRange(*mData, dmin, dmax);
+  const double lo = std::max(mPdf->getMin(), dmin);
+  const double hi = std::min(mPdf->getMax(), dmax);
+  if (hi > lo) {
+    _rgPdf.clamp(lo, hi);
+    if (mData != mPdf) _rgData.clamp(lo, hi);
+  }
+}
   int tries = 0;
   int status = 1;
   double bestNll = 1e12;

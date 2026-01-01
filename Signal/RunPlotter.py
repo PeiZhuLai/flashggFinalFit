@@ -27,7 +27,7 @@ def get_options():
   parser.add_option("--threshold", dest="threshold", default=0.001, type='float', help="Threshold to prune process from plot default = 0.1% of total category norm")
   parser.add_option("--translateCats", dest="translateCats", default=None, help="JSON to store cat translations")
   parser.add_option("--translateProcs", dest="translateProcs", default=None, help="JSON to store proc translations")
-  parser.add_option("--label", dest="label", default='Simulation Preliminary', help="CMS Sub-label")
+  parser.add_option("--label", dest="label", default='Simulation', help="CMS Sub-label")
   parser.add_option("--doFWHM", dest="doFWHM", default=True, action='store_true', help="Do FWHM")
   parser.add_option("--input", dest="input", default="", help="Optional: explicit path to input ROOT file (overrides auto path building)")
   return parser.parse_args()

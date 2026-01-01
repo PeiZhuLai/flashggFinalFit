@@ -15,21 +15,18 @@ export PYTHONPATH=$PYTHONPATH:/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_1
 # ------------- Open for Dry Run -------------
 # python3 $dir_sig/RunPlotter.py --mass_ALP 5 --years 2022preEE --channel ele
 
+# python3 $dir_sig/RunPlotter.py --mass_ALP 30 --channel mu --years '2022preEE,2022postEE,2023preBPix,2023postBPix,2024'
+
 # ------------- Open for Local Run -------------
 mAs=( 1 2 3 4 5 6 7 8 9 10 15 20 25 30 )
 channels=( ele mu )
 years=( 2022preEE 2022postEE 2023preBPix 2023postBPix 2024)
 
-# for mA in "${mAs[@]}"; do
-#     for channel in "${channels[@]}"; do
-#         for year in "${years[@]}"; do
-#             python3 $dir_sig/RunPlotter.py --mass_ALP ${mA} --years ${year} --channel ${channel}
-#         done
-#     done
-# done
-
 for mA in "${mAs[@]}"; do
     for channel in "${channels[@]}"; do
-            python3 $dir_sig/RunPlotter.py --mass_ALP ${mA} --channel ${channel} --years '2022preEE,2022postEE,2023preBPix,2023postBPix,2024'
+        for year in "${years[@]}"; do
+            python3 $dir_sig/RunPlotter.py --mass_ALP ${mA} --years ${year} --channel ${channel}
+        done
+        python3 $dir_sig/RunPlotter.py --mass_ALP ${mA} --channel ${channel} --years '2022preEE,2022postEE,2023preBPix,2023postBPix,2024'
     done
 done

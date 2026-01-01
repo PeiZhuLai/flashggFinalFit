@@ -696,17 +696,20 @@ def plotSignalModel(_hists,_opt,_outdir=".",offset=0.03,_Amass='1',_year='16', _
 
   # Legend
   if len(_opt.years.split(","))>1:
-    leg0 = ROOT.TLegend(0.15+offset,0.6,0.5+offset,0.82)
+    leg0 = ROOT.TLegend(0.15+offset,0.644,0.5+offset,0.80)
     leg0.SetFillStyle(0)
     leg0.SetLineColor(0)
-    leg0.SetTextSize(0.03)
-    leg0.AddEntry(_hists['data'],"Simulation","ep")
+    leg0.SetBorderSize(0)
+    leg0.SetTextSize(0.045)
+    leg0.AddEntry(_hists['data'],"Simulation","lep")
     leg0.AddEntry(_hists['pdf'],"#splitline{Parametric}{model}","l")
+    # leg0.AddEntry(_hists['pdf'],"Parametric model","l")
     leg0.Draw("Same")
 
-    leg1 = ROOT.TLegend(0.17+offset,0.45,0.4+offset,0.61)
+    leg1 = ROOT.TLegend(0.15+offset,0.344,0.4+offset,0.614)
     leg1.SetFillStyle(0)
     leg1.SetLineColor(0)
+    leg1.SetBorderSize(0)
     leg1.SetTextSize(0.03)
     for year in _opt.years.split(","):
       key = f"pdf_{year}"
@@ -715,15 +718,17 @@ def plotSignalModel(_hists,_opt,_outdir=".",offset=0.03,_Amass='1',_year='16', _
           continue
       if hasattr(h, "GetEntries") and h.GetEntries() <= 0 and hasattr(h, "Integral") and h.Integral() <= 0:
           continue
-      leg1.AddEntry(h, "%s: #scale[0.8]{#sigma_{eff} = %1.2f GeV}" % (year, getEffSigma(h)), "l")
+      leg1.AddEntry(h, "%s: #scale[0.8]{#sigma_{eff} = %1.2f GeV}" % (year, getEffSigma(h)), "l")    
+    leg1.AddEntry(h_effSigma,"#sigma_{eff} = %1.2f GeV"%(0.5*(effSigma_high-effSigma_low)),"fl")
     leg1.Draw("Same")
 
-    leg2 = ROOT.TLegend(0.15+offset,0.3,0.5+offset,0.45)
-    leg2.SetFillStyle(0)
-    leg2.SetLineColor(0)
-    leg2.SetTextSize(0.03)
-    leg2.AddEntry(h_effSigma,"#sigma_{eff} = %1.2f GeV"%(0.5*(effSigma_high-effSigma_low)),"fl")
-    leg2.Draw("Same")
+    # leg2 = ROOT.TLegend(0.14+offset,0.394,0.5+offset,0.409)
+    # leg2.SetFillStyle(0)
+    # leg2.SetLineColor(0)
+    # leg2.SetBorderSize(0)
+    # leg2.SetTextSize(0.03)
+    # leg2.AddEntry(h_effSigma,"#sigma_{eff} = %1.2f GeV"%(0.5*(effSigma_high-effSigma_low)),"fl")
+    # leg2.Draw("Same")
   else:
     year = _opt.years
     leg = ROOT.TLegend(0.15+offset,0.45,0.5+offset,0.8)
@@ -753,7 +758,23 @@ def plotSignalModel(_hists,_opt,_outdir=".",offset=0.03,_Amass='1',_year='16', _
   vline_effSigma_high.Draw("Same")
 
   # Extract FWHM and set style
-  if _opt.doFWHM:
+  if len(_opt.years.split(","))>1 and _opt.doFWHM:
+    fwhm_low = _hists['pdf'].GetBinCenter(_hists['pdf'].FindFirstBinAbove(0.5*_hists['pdf'].GetMaximum()))
+    fwhm_high = _hists['pdf'].GetBinCenter(_hists['pdf'].FindLastBinAbove(0.5*_hists['pdf'].GetMaximum()))
+    fwhmArrow = ROOT.TArrow(fwhm_low,0.5*_hists['pdf'].GetMaximum(),fwhm_high,0.5*_hists['pdf'].GetMaximum(),0.02,"<>")
+    fwhmArrow.SetLineWidth(2)
+    fwhmArrow.Draw("Same <>")
+    fwhmText = ROOT.TLatex()
+    fwhmText.SetTextFont(42)
+    fwhmText.SetTextAlign(11)
+    fwhmText.SetNDC()
+    fwhmText.SetTextSize(0.045)
+    fwhmText.DrawLatex(0.155+offset,0.28,"FWHM = %1.2f GeV"%(fwhm_high-fwhm_low))
+    channeltext = "Electron" if _channel == 'ele' else "Muon"
+    # fwhmText.DrawLatex(0.165+offset, 0.31, f"{channeltext} Channel")
+    fwhmText.DrawLatex(0.155+offset, 0.21, f"m_{{a}} = {_Amass} GeV")
+  
+  elif len(_opt.years.split(","))==1 and _opt.doFWHM:
     fwhm_low = _hists['pdf'].GetBinCenter(_hists['pdf'].FindFirstBinAbove(0.5*_hists['pdf'].GetMaximum()))
     fwhm_high = _hists['pdf'].GetBinCenter(_hists['pdf'].FindLastBinAbove(0.5*_hists['pdf'].GetMaximum()))
     fwhmArrow = ROOT.TArrow(fwhm_low,0.5*_hists['pdf'].GetMaximum(),fwhm_high,0.5*_hists['pdf'].GetMaximum(),0.02,"<>")
@@ -766,8 +787,8 @@ def plotSignalModel(_hists,_opt,_outdir=".",offset=0.03,_Amass='1',_year='16', _
     fwhmText.SetTextSize(0.045)
     fwhmText.DrawLatex(0.165+offset,0.39,"FWHM = %1.2f GeV"%(fwhm_high-fwhm_low))
     channeltext = "Electron" if _channel == 'ele' else "Muon"
-    fwhmText.DrawLatex(0.165+offset, 0.31, f"{channeltext} Channel")
-    fwhmText.DrawLatex(0.165+offset, 0.23, f"m_{{a}} = {_Amass} GeV")
+    # fwhmText.DrawLatex(0.165+offset, 0.31, f"{channeltext} Channel")
+    fwhmText.DrawLatex(0.165+offset, 0.31, f"m_{{a}} = {_Amass} GeV")
 
     
   # Set style pdf
@@ -798,7 +819,10 @@ def plotSignalModel(_hists,_opt,_outdir=".",offset=0.03,_Amass='1',_year='16', _
   lat0.SetTextSize(0.05)
   lat0.DrawLatex(0.12+offset,0.92,"#bf{CMS} #it{%s}"%_opt.label)
   lat0.DrawLatex(0.80,0.92,"%s TeV"%("13.6"))
-  lat0.DrawLatex(0.16+offset,0.81,"H #rightarrow Za #rightarrow ll#gamma#gamma")
+  if channeltext == "Electron":
+    lat0.DrawLatex(0.16+offset,0.81,"H #rightarrow Za #rightarrow #e^{+}#e^{-} + 2#gamma")
+  else:
+    lat0.DrawLatex(0.16+offset,0.81,"H #rightarrow Za #rightarrow #mu^{+}#mu^{-} + 2#gamma")
 
   # Load translations
   translateCats = {} if _opt.translateCats is None else LoadTranslations(_opt.translateCats)
@@ -837,9 +861,18 @@ def plotSignalModel(_hists,_opt,_outdir=".",offset=0.03,_Amass='1',_year='16', _
     else:
       # 缺少每年直方圖時，靜默使用 combined 的值
       es[year] = effSigma
-  with open("%s/effSigma_%s_%s_%s.json"%(_outdir,_Amass,_year,_channel),"w") as jf:
-    json.dump(es,jf)
 
-  # Save canvas
-  canv.SaveAs(f"{_outdir}/smodel_{_Amass}_{_year}_{_channel}.pdf")
+  if len(_opt.years.split(","))>1:
+    
+    with open("%s/effSigma_%s_run3_%s.json"%(_outdir,_Amass,_channel),"w") as jf:
+      json.dump(es,jf)
+    # Save canvas
+    canv.SaveAs(f"{_outdir}/smodel_{_Amass}_run3_{_channel}.pdf")
+  
+  else:
+    
+    with open("%s/effSigma_%s_%s_%s.json"%(_outdir,_Amass,_year,_channel),"w") as jf:
+      json.dump(es,jf)
+    # Save canvas
+    canv.SaveAs(f"{_outdir}/smodel_{_Amass}_{_year}_{_channel}.pdf")
 
