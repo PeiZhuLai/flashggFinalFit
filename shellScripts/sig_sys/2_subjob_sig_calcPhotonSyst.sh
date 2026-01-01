@@ -2,9 +2,8 @@
 
 # Configuration variables
 ChannelList=( ele mu )
-# ALPmassList=( 1 2 3 4 5 6 7 8 9 10 15 20 25 30 )
-ALPmassList=( 5 15 30 )
-YearsList=( 2022preEE )
+ALPmassList=( 1 2 3 4 5 6 7 8 9 10 15 20 25 30 )
+YearsList=( 2022preEE 2022postEE 2023preBPix 2023postBPix 2024)
 BaseDir="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit"
 EosDir="/eos/home-p/pelai/HZa/root_MVAcut/sig"
 Executable="$BaseDir/shellScripts/sig_sys/2_runjob_sig_calcPhotonSyst.sh"
@@ -32,7 +31,7 @@ for iChannel in "${!ChannelList[@]}"; do
       log_file="$LogDir/${ChannelList[iChannel]}/${ALPmassList[iALPmass]}_calcPhotonSys_job_${YearsList[iYear]}_${ChannelList[iChannel]}.log"
       output_file="$LogDir/${ChannelList[iChannel]}/${ALPmassList[iALPmass]}_calcPhotonSys_job_${YearsList[iYear]}_${ChannelList[iChannel]}.out"
       error_file="$LogDir/${ChannelList[iChannel]}/${ALPmassList[iALPmass]}_calcPhotonSys_job_${YearsList[iYear]}_${ChannelList[iChannel]}.err"
-      arguments="${ALPmassList[iALPmass]} ${YearsList[iYear]} ${ChannelList[iChannel]} $EosDir/ALP_M${ALPmassList[iALPmass]}/ws_Tree2WS"
+      arguments="${ALPmassList[iALPmass]} ${YearsList[iYear]} ${ChannelList[iChannel]} $EosDir/mA_M${ALPmassList[iALPmass]}/ws_Tree2WS"
 
       echo "log = $log_file" >> $SubmitFile
       echo "output = $output_file" >> $SubmitFile

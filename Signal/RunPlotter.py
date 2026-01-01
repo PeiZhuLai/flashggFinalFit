@@ -29,11 +29,40 @@ def get_options():
   parser.add_option("--translateProcs", dest="translateProcs", default=None, help="JSON to store proc translations")
   parser.add_option("--label", dest="label", default='Simulation Preliminary', help="CMS Sub-label")
   parser.add_option("--doFWHM", dest="doFWHM", default=True, action='store_true', help="Do FWHM")
+  parser.add_option("--input", dest="input", default="", help="Optional: explicit path to input ROOT file (overrides auto path building)")
   return parser.parse_args()
 (opt,args) = get_options()
 
 ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
+
+def _ws_var(ws, name, required=True):
+  v = ws.var(name) if ws else None
+  if required and not v:
+    raise KeyError(f'Variable "{name}" not found in workspace')
+  return v
+
+def _ws_func(ws, name, required=False, context=""):
+  f = ws.function(name) if ws else None
+  if required and not f:
+    msg = f'Function "{name}" not found in workspace'
+    if context: msg += f" ({context})"
+    raise KeyError(msg)
+  if (not required) and (not f):
+    if context:
+      print(f'[WARN] Missing function "{name}" ({context}) -> skipping')
+    else:
+      print(f'[WARN] Missing function "{name}" -> skipping')
+  return f
+
+def _safe_getval(absreal):
+  # RooFit pythonization in some setups prefers an explicit RooArgSet
+  if not absreal:
+    return 0.0
+  try:
+    return float(absreal.getVal(ROOT.RooArgSet()))
+  except TypeError:
+    return float(absreal.getVal())
 
 # Extract input files: for first file extract xvar
 inputFiles = od()
@@ -51,16 +80,70 @@ if opt.cats in ['all','wall']:
       alist = ROOT.RooArgList(xvar)
     citr += 1
 else:
+  years_list = [y.strip() for y in opt.years.split(",") if y.strip()]
+  years_tag = "_".join(years_list)  # IMPORTANT: avoid commas in filename
   for cat in opt.cats.split(","):
-    f = f"{swd__}/outdir_{opt.channel}/signalFit/output/{opt.mass_ALP}_CMS-HGG_sigfit_{opt.years}_{opt.channel}_Hm125.root"
-    inputFiles[cat] = f
-    if citr == 0:
-      w = ROOT.TFile(f).Get("wsig_13p6TeV")
-      xvar = w.var(opt.xvar.split(":")[0])
-      xvar.setPlotLabel(opt.xvar.split(":")[1])
-      xvar.setUnit(opt.xvar.split(":")[2])
-      alist = ROOT.RooArgList(xvar)
-    citr += 1
+    tried = []
+
+    if opt.input:
+      f = opt.input
+      tried.append(f)
+      if not os.path.isfile(f):
+        raise OSError("Failed to open input ROOT file. Tried:\n  - " + "\n  - ".join(tried))
+      inputFiles[cat] = f
+      if citr == 0:
+        fin0 = ROOT.TFile.Open(f)
+        if not fin0 or fin0.IsZombie():
+          raise OSError(f"ROOT could not open file (zombie): {f}")
+        w = fin0.Get("wsig_13p6TeV")
+        if not w:
+          raise KeyError(f'Workspace "wsig_13p6TeV" not found in file: {f}')
+        xvar = w.var(opt.xvar.split(":")[0])
+        if not xvar:
+          raise KeyError(f'Variable "{opt.xvar.split(":")[0]}" not found in workspace in file: {f}')
+        xvar.setPlotLabel(opt.xvar.split(":")[1])
+        xvar.setUnit(opt.xvar.split(":")[2])
+        alist = ROOT.RooArgList(xvar)
+        fin0.Close()
+      citr += 1
+    else:
+      # NEW: build per-year file mapping (year -> file) for this category
+      yearFiles = od()
+      for y in years_list:
+        f_y = f"{swd__}/outdir_{opt.channel}/signalFit/output/{opt.mass_ALP}_CMS-HGG_sigfit_{y}_{opt.channel}_Hm125.root"
+        tried.append(f_y)
+        if os.path.isfile(f_y):
+          yearFiles[y] = f_y
+
+      # Optional fallback: combined-years file if no per-year files found
+      if len(yearFiles) == 0:
+        f_combined = f"{swd__}/outdir_{opt.channel}/signalFit/output/{opt.mass_ALP}_CMS-HGG_sigfit_{years_tag}_{opt.channel}_Hm125.root"
+        tried.append(f_combined)
+        if os.path.isfile(f_combined):
+          yearFiles["combined"] = f_combined
+
+      if len(yearFiles) == 0:
+        raise OSError("Failed to open input ROOT file(s). Tried:\n  - " + "\n  - ".join(tried))
+
+      inputFiles[cat] = yearFiles
+
+      # init xvar from the first available file
+      if citr == 0:
+        f0 = next(iter(yearFiles.values()))
+        fin0 = ROOT.TFile.Open(f0)
+        if not fin0 or fin0.IsZombie():
+          raise OSError(f"ROOT could not open file (zombie): {f0}")
+        w = fin0.Get("wsig_13p6TeV")
+        if not w:
+          raise KeyError(f'Workspace "wsig_13p6TeV" not found in file: {f0}')
+        xvar = w.var(opt.xvar.split(":")[0])
+        if not xvar:
+          raise KeyError(f'Variable "{opt.xvar.split(":")[0]}" not found in workspace in file: {f0}')
+        xvar.setPlotLabel(opt.xvar.split(":")[1])
+        xvar.setUnit(opt.xvar.split(":")[2])
+        alist = ROOT.RooArgList(xvar)
+        fin0.Close()
+      citr += 1
 
 # Load cat S/S+B weights
 if opt.loadCatWeights != '':
@@ -70,100 +153,143 @@ if opt.loadCatWeights != '':
 hists = od()
 hists['data'] = xvar.createHistogram("h_data", ROOT.RooFit.Binning(opt.nBins))
 
+# Pre-create per-year pdf histograms to guarantee they are real TH1 objects (never None)
+_years_list = [y.strip() for y in opt.years.split(",") if y.strip()]
+for year in _years_list:
+  hists[f'pdf_{year}'] = xvar.createHistogram(f"h_pdf_{year}", ROOT.RooFit.Binning(opt.pdf_nBins))
+  hists[f'pdf_{year}'].Reset()
+
+# NEW: always create combined pdf hist (so plotSignalModel can always use it)
+hists['pdf'] = xvar.createHistogram("h_pdf", ROOT.RooFit.Binning(opt.pdf_nBins))
+hists['pdf'].Reset()
+
 # Loop over files
-for cat,f in inputFiles.items():
-  print(" --> Processing %s: file = %s"%(cat,f))
+for cat, f_or_map in inputFiles.items():
+  print(" --> Processing %s: file = %s"%(cat, f_or_map))
 
   # Define cat weight
   wcat = catsWeights[cat] if opt.loadCatWeights != '' else 1.
 
-  # Open signal workspace
-  fin = ROOT.TFile(f)
-  w = fin.Get("wsig_13p6TeV")
-  w.var("MH").setVal(float(opt.MH))
+  # Normalize to a per-cat year->file map
+  if isinstance(f_or_map, (str, bytes)):
+    yearFileMap = od()
+    for y in _years_list:
+      yearFileMap[y] = f_or_map
+  else:
+    yearFileMap = f_or_map  # already year -> file
 
-  # Extract normalisations
+  # Containers across years (for this category)
   norms = od()
   data_rwgt = od()
   hpdfs = od()
-  for year in opt.years.split(","):
+
+  # First pass: compute catNorm across years (from their own files)
+  catNorm = 0.0
+  for year, f in yearFileMap.items():
+    fin = ROOT.TFile.Open(f)
+    if not fin or fin.IsZombie():
+      raise OSError(f"Failed to open file (zombie): {f}")
+    w = fin.Get("wsig_13p6TeV")
+    if not w:
+      raise KeyError(f'Workspace "wsig_13p6TeV" not found in file: {f}')
+    _ws_var(w, "MH").setVal(float(opt.MH))
+    intLumiVar = _ws_var(w, "IntLumi", required=True)
+    intLumiVar.setVal(lumiScaleFactor*lumiMap.get(year, lumiMap.get(str(year), 0.0)))
+
     if opt.procs == 'all':
-      allNorms = w.allFunctions().selectByName("*%s*normThisLumi"%year)
+      allNorms = w.allFunctions().selectByName(f"*{year}*normThisLumi")
       for norm in rooiter(allNorms):
-        proc = norm.GetName().split("%s_"%outputWSObjectTitle__)[-1].split("_%s"%year)[0]
+        proc = norm.GetName().split("%s_"%outputWSObjectTitle__)[-1].split(f"_{year}")[0]
         k  =  "%s__%s"%(proc,year)
         _id = "%s_%s_%s_%s"%(proc,year,cat,sqrts__)
-        norms[k] = w.function("%s_%s_normThisLumi"%(outputWSObjectTitle__,_id))
+        fname = "%s_%s_normThisLumi"%(outputWSObjectTitle__,_id)
+        fn = _ws_func(w, fname, required=False, context=f"cat={cat}, year={year}, proc={proc}")
+        if fn:
+          norms[k] = fn
+          catNorm += _safe_getval(fn)
     else:
       for proc in opt.procs.split(","):
         k = "%s__%s"%(proc,year)
         _id = "%s_%s_%s_%s"%(proc,year,cat,sqrts__)
-        norms[k] = w.function("%s_%s_normThisLumi"%(outputWSObjectTitle__,_id))
-    
-  # Iterate over norms: extract total category norm
-  catNorm = 0
-  for k, norm in norms.items():
-    proc, year = k.split("__")
-    w.var("IntLumi").setVal(lumiScaleFactor*lumiMap[year])
-    catNorm += norm.getVal()
+        fname = "%s_%s_normThisLumi"%(outputWSObjectTitle__,_id)
+        fn = _ws_func(w, fname, required=False, context=f"cat={cat}, year={year}, proc={proc}")
+        if fn:
+          norms[k] = fn
+          catNorm += _safe_getval(fn)
 
-  # Iterate over norms and extract data sets + pdfs
-  for k, norm in norms.items():
-    proc, year = k.split("__")
-    _id = "%s_%s_%s_%s"%(proc,year,cat,sqrts__)
-    w.var("IntLumi").setVal(lumiScaleFactor*lumiMap[year])
+    fin.Close()
 
-    # Prune
-    nval = norm.getVal()
-    if nval < opt.threshold*catNorm: continue # Prune processes which contribute less that threshold of signal mod
+  if catNorm <= 0 and len(norms) == 0:
+    raise RuntimeError(
+      f"No valid normThisLumi functions found for cat={cat}. "
+      f"Check procs/years and workspace contents in the provided year files."
+    )
 
-    # Make empty copy of dataset
-    d = w.data("sig_mass_m%s_%s"%(opt.mass,_id))
-    d_rwgt = d.emptyClone(_id)
-    
-    # Calc norm factor
-    if d.sumEntries() == 0: nf = 0
-    else: nf = nval/d.sumEntries()
-    # Fill dataset with correct normalisation + reweight if using cat weights
-    for i in range(d.numEntries()):
-      p = d.get(i)
-      rw, rwe = d.weight()*nf*wcat, d.weightError()*nf*wcat
-      d_rwgt.add(p,rw,rwe)
-    # Add dataset to container
-    data_rwgt[_id] = d_rwgt
+  # Second pass: fill datasets/pdfs per year from that year's file ONLY
+  for year, f in yearFileMap.items():
+    fin = ROOT.TFile.Open(f)
+    if not fin or fin.IsZombie():
+      raise OSError(f"Failed to open file (zombie): {f}")
+    w = fin.Get("wsig_13p6TeV")
+    if not w:
+      raise KeyError(f'Workspace "wsig_13p6TeV" not found in file: {f}')
+    _ws_var(w, "MH").setVal(float(opt.MH))
+    intLumiVar = _ws_var(w, "IntLumi", required=True)
+    intLumiVar.setVal(lumiScaleFactor*lumiMap.get(year, lumiMap.get(str(year), 0.0)))
 
-    # Extract pdf and create histogram
-    pdf = w.pdf("extend%s_%sThisLumi"%(outputWSObjectTitle__,_id)) 
-    hpdfs[_id] = pdf.createHistogram("h_pdf_%s"%_id,xvar,ROOT.RooFit.Binning(opt.pdf_nBins))
-    hpdfs[_id].Scale(wcat*float(opt.nBins)/80) # FIXME: hardcoded 320
+    # gather procs for this year (only)
+    if opt.procs == 'all':
+      allNorms = w.allFunctions().selectByName(f"*{year}*normThisLumi")
+      procs_this_year = []
+      for norm in rooiter(allNorms):
+        proc = norm.GetName().split("%s_"%outputWSObjectTitle__)[-1].split(f"_{year}")[0]
+        procs_this_year.append(proc)
+    else:
+      procs_this_year = [p.strip() for p in opt.procs.split(",") if p.strip()]
 
-  # Fill total histograms: data, per-year pdfs and pdfs
-  for _id,d in data_rwgt.items(): d.fillHistogram(hists['data'],alist)
+    for proc in procs_this_year:
+      _id = "%s_%s_%s_%s"%(proc,year,cat,sqrts__)
+      fname = "%s_%s_normThisLumi"%(outputWSObjectTitle__,_id)
+      norm = _ws_func(w, fname, required=False, context=f"cat={cat}, year={year}, proc={proc}")
+      if not norm:
+        continue
 
-  # Sum pdf histograms
-  for _id,p in hpdfs.items():
-    if 'pdf' not in hists: 
-      hists['pdf'] = p.Clone("h_pdf")
-      hists['pdf'].Reset()
-    # Fill
-    hists['pdf'] += p
+      nval = _safe_getval(norm)
+      if catNorm > 0 and nval < opt.threshold*catNorm:
+        continue
 
-  # Per-year pdf histograms
-  # 以前僅在多年份時建立，導致單一年份在 plottingTools 查不到 key 而警告
-  for year in [y.strip() for y in opt.years.split(",") if y.strip()]:
-    if f'pdf_{year}' not in hists:
-      hists[f'pdf_{year}'] = hists['pdf'].Clone()
-      hists[f'pdf_{year}'].Reset()
-    # Fill
-    for _id,p in hpdfs.items():
-      if year in _id:
-        hists[f'pdf_{year}'] += p
-   
-  # Garbage removal
-  # for d in data_rwgt.values(): d.Delete()
-  # for p in hpdfs.values(): p.Delete()
-  # w.Delete()
-  fin.Close()
+      d = w.data("sig_mass_m%s_%s"%(opt.mass,_id))
+      if not d:
+        print(f'[WARN] Missing dataset sig_mass_m{opt.mass}_{_id} -> skipping')
+        continue
+      d_rwgt = d.emptyClone(_id)
+
+      nf = 0 if d.sumEntries() == 0 else nval/d.sumEntries()
+      for i in range(d.numEntries()):
+        p = d.get(i)
+        rw, rwe = d.weight()*nf*wcat, d.weightError()*nf*wcat
+        d_rwgt.add(p,rw,rwe)
+      data_rwgt[_id] = d_rwgt
+
+      pdf = w.pdf("extend%s_%sThisLumi"%(outputWSObjectTitle__,_id))
+      if not pdf:
+        print(f'[WARN] Missing pdf extend{outputWSObjectTitle__}_{_id}ThisLumi -> skipping')
+        continue
+      hpdfs[_id] = pdf.createHistogram("h_pdf_%s"%_id,xvar,ROOT.RooFit.Binning(opt.pdf_nBins))
+      hpdfs[_id].Scale(wcat*float(opt.nBins)/80)
+
+      # per-year accumulation is explicit (no string guessing)
+      if f'pdf_{year}' in hists:
+        hists[f'pdf_{year}'] += hpdfs[_id]
+
+      # NEW: combined accumulation happens here too
+      hists['pdf'] += hpdfs[_id]
+
+    fin.Close()
+
+  # Fill total data histogram (across years)
+  for _id,d in data_rwgt.items(): 
+    d.fillHistogram(hists['data'],alist)
 
 # Make plot
 if not os.path.isdir("%s/outdir_%s/signalFit/Plots"%(swd__,opt.channel)): os.system("mkdir %s/outdir_%s/signalFit/Plots"%(swd__,opt.channel))

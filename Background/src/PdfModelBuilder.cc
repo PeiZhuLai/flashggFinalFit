@@ -17,23 +17,17 @@
 #include "RooConstVar.h"
 #include "RooFitResult.h"
 #include "RooRandom.h"
-//bing
 #include "RooGaussian.h"
 #include "RooFFTConvPdf.h"
 #include "RooProdPdf.h"
 #include "RooNumConvPdf.h"
 #include "RooGaussModel.h"
-// 新增：允許在 RooGenericPdf 內使用 TMath::Erf
 #include "TMath.h"
-// 新增：使用 RooAbsData 的繪圖誤差設定
 #include "RooAbsData.h"
-
 #include "boost/algorithm/string/split.hpp"
 #include "boost/algorithm/string/classification.hpp"
 #include "boost/algorithm/string/predicate.hpp"
-
 #include "../interface/PdfModelBuilder.h"
-
 #include "HiggsAnalysis/CombinedLimit/interface/HGGRooPdfs.h"
 #include "HiggsAnalysis/CombinedLimit/interface/HZGRooPdfs.h"
 #include "HiggsAnalysis/CombinedLimit/interface/RooBernsteinFast.h"
@@ -65,10 +59,6 @@ PdfModelBuilder::PdfModelBuilder():
   recognisedPdfTypes.push_back("ExponentialStepxGau");
 
   wsCache = new RooWorkspace("PdfModelBuilderCache");
-
-  // 移除：此 ROOT 版本不支援 RooAbsData::setDefaultErrorType
-  // RooAbsData::setDefaultErrorType(RooAbsData::SumW2);
-
 };
 
 PdfModelBuilder::~PdfModelBuilder(){};
@@ -96,53 +86,34 @@ RooAbsPdf* PdfModelBuilder::getChebychev(string prefix, int order){
   RooArgList *coeffList = new RooArgList();
   for (int i=0; i<order; i++){
     string name = Form("%s_p%d",prefix.c_str(),i);
-    //params.insert(pair<string,RooRealVar*>(name, new RooRealVar(name.c_str(),name.c_str(),1.0,0.,5.)));
     RooRealVar *param = new RooRealVar(name.c_str(),name.c_str(),0.01,-10.,10.);
-    //RooFormulaVar *form = new RooFormulaVar(Form("%s_sq",name.c_str()),Form("%s_sq",name.c_str()),"@0*@0",RooArgList(*param));
     params.insert(pair<string,RooRealVar*>(name,param));
-    //prods.insert(pair<string,RooFormulaVar*>(name,form));
     coeffList->add(*params[name]);
   }
-  //RooChebychev *cheb = new RooChebychev(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
   RooPolynomial *cheb = new RooPolynomial(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
   return cheb;
-  //bkgPdfs.insert(pair<string,RooAbsPdf*>(bern->GetName(),bern));
-
 }
 
 RooAbsPdf* PdfModelBuilder::getBernstein(string prefix, int order){
   
   RooArgList *coeffList = new RooArgList();
-  //coeffList->add(RooConst(1.0)); // no need for cnstant in this interface
   for (int i=0; i<order; i++){
     string name = Form("%s_p%d",prefix.c_str(),i);
-    //params.insert(pair<string,RooRealVar*>(name, new RooRealVar(name.c_str(),name.c_str(),1.0,0.,5.)));
     RooRealVar *param = new RooRealVar(name.c_str(),name.c_str(),0.1*(i+1),-5.,5.);
     RooFormulaVar *form = new RooFormulaVar(Form("%s_sq",name.c_str()),Form("%s_sq",name.c_str()),"@0*@0",RooArgList(*param));
     params.insert(pair<string,RooRealVar*>(name,param));
     prods.insert(pair<string,RooFormulaVar*>(name,form));
     coeffList->add(*prods[name]);
   }
-  //bing
   RooRealVar *fgaus = new RooRealVar("fgaus", "gaus fraction",0.5,0.,1.) ;
-  RooRealVar *mean = new RooRealVar(Form("%s_mean",prefix.c_str()),Form("%s_mean",prefix.c_str()),10,0.0,10.0) ;
-  RooRealVar *sigma = new RooRealVar(Form("%s_sigma",prefix.c_str()),Form("%s_sigma",prefix.c_str()),8,-10.,20.) ;
+  RooRealVar *mean = new RooRealVar(Form("%s_mean",prefix.c_str()),Form("%s_mean",prefix.c_str()),0.0,-5.0,5.0) ;
+  mean->setConstant(true);
+  RooRealVar *sigma = new RooRealVar(Form("%s_sigma",prefix.c_str()),Form("%s_sigma",prefix.c_str()),8,0.2,30.0) ;
   RooGaussian *gaus = new RooGaussian(Form("%s_gaus",prefix.c_str()),Form("%s_gaus",prefix.c_str()),*obs_var,*mean,*sigma) ;
-
   RooRealVar *step_value = new RooRealVar(Form("%s_step",prefix.c_str()), Form("%s_step",prefix.c_str()), 105., 100., 110.);
-  // 新增：平滑 turn-on 的寬度參數
   RooRealVar *step_width = new RooRealVar(Form("%s_stepWidth",prefix.c_str()), Form("%s_stepWidth",prefix.c_str()), 2.0, 0.2, 20.0);
-    
-  //RooBernstein *bern = new RooBernstein(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
   if (order==1) {
 	 RooBernsteinFast<1> *bern = new RooBernsteinFast<1>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
-  	//bing
-    //RooAddPdf *bern_gaus = new RooAddPdf(prefix.append("gaus").c_str(),prefix.append("gaus").c_str(),RooArgList(*bern,*gaus),*fgaus) ;
-
-    //RooFFTConvPdf *bern_gaus = new RooFFTConvPdf(prefix.append("gaus").c_str(),prefix.append("gaus").c_str(), *obs_var, *bern, *gaus);
-    //RooGenericPdf *step_func = new RooGenericPdf("step_func", "step_func", "1e-20+( @0 > @1) * @2", RooArgSet(*obs_var, *step_value, *bern));
-
-    // 用 erf sigmoid 取代硬切
     RooGenericPdf *soft_step = new RooGenericPdf(
       Form("%s_softstep",prefix.c_str()), Form("%s_softstep",prefix.c_str()),
       "1e-20 + 0.5*(1.0 + TMath::Erf((@0-@1)/(@2*sqrt(2.)))) * @3",
@@ -151,13 +122,9 @@ RooAbsPdf* PdfModelBuilder::getBernstein(string prefix, int order){
     obs_var->setRange(-200, 500);
     RooFFTConvPdf *bern_gaus = new RooFFTConvPdf(Form("%s_berngaus",prefix.c_str()), Form("%s_berngaus",prefix.c_str()), *obs_var, *gaus, *soft_step);
     obs_var->setRange(95, 180);
-    //return bern;
     return bern_gaus;
   } else if (order==2) {
 	RooBernsteinFast<2> *bern = new RooBernsteinFast<2>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
-  	//bing
-    //RooAddPdf *bern_gaus = new RooAddPdf(prefix.append("gaus").c_str(),prefix.append("gaus").c_str(),RooArgList(*bern,*gaus),*fgaus) ;
-    //RooFFTConvPdf *bern_gaus = new RooFFTConvPdf(prefix.append("gaus").c_str(),prefix.append("gaus").c_str(), *obs_var, *bern, *gaus);
     RooGenericPdf *soft_step = new RooGenericPdf(
       Form("%s_softstep",prefix.c_str()), Form("%s_softstep",prefix.c_str()),
       "1e-20 + 0.5*(1.0 + TMath::Erf((@0-@1)/(@2*sqrt(2.)))) * @3",
@@ -166,13 +133,9 @@ RooAbsPdf* PdfModelBuilder::getBernstein(string prefix, int order){
     obs_var->setRange(-200, 500);
     RooFFTConvPdf *bern_gaus = new RooFFTConvPdf(Form("%s_berngaus",prefix.c_str()), Form("%s_berngaus",prefix.c_str()), *obs_var, *gaus, *soft_step);
     obs_var->setRange(95, 180);
-    //return bern;
     return bern_gaus;
   } else if (order==3) {
 	RooBernsteinFast<3> *bern = new RooBernsteinFast<3>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
-  	//bing
-    //RooAddPdf *bern_gaus = new RooAddPdf(prefix.append("gaus").c_str(),prefix.append("gaus").c_str(),RooArgList(*bern,*gaus),*fgaus) ;
-    //RooFFTConvPdf *bern_gaus = new RooFFTConvPdf(prefix.append("gaus").c_str(),prefix.append("gaus").c_str(), *obs_var, *bern, *gaus);
      RooGenericPdf *soft_step = new RooGenericPdf(
       Form("%s_softstep",prefix.c_str()), Form("%s_softstep",prefix.c_str()),
       "1e-20 + 0.5*(1.0 + TMath::Erf((@0-@1)/(@2*sqrt(2.)))) * @3",
@@ -181,13 +144,9 @@ RooAbsPdf* PdfModelBuilder::getBernstein(string prefix, int order){
     obs_var->setRange(-200, 500);
     RooFFTConvPdf *bern_gaus = new RooFFTConvPdf(Form("%s_berngaus",prefix.c_str()), Form("%s_berngaus",prefix.c_str()), *obs_var, *gaus, *soft_step);
     obs_var->setRange(95, 180);
-    //return bern;
     return bern_gaus;
   } else if (order==4) {
 	RooBernsteinFast<4> *bern = new RooBernsteinFast<4>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
-  	//bing
-    //RooAddPdf *bern_gaus = new RooAddPdf(prefix.append("gaus").c_str(),prefix.append("gaus").c_str(),RooArgList(*bern,*gaus),*fgaus) ;
-    //RooFFTConvPdf *bern_gaus = new RooFFTConvPdf(prefix.append("gaus").c_str(),prefix.append("gaus").c_str(), *obs_var, *bern, *gaus);
      RooGenericPdf *soft_step = new RooGenericPdf(
       Form("%s_softstep",prefix.c_str()), Form("%s_softstep",prefix.c_str()),
       "1e-20 + 0.5*(1.0 + TMath::Erf((@0-@1)/(@2*sqrt(2.)))) * @3",
@@ -196,13 +155,9 @@ RooAbsPdf* PdfModelBuilder::getBernstein(string prefix, int order){
     obs_var->setRange(-200, 500);
     RooFFTConvPdf *bern_gaus = new RooFFTConvPdf(Form("%s_berngaus",prefix.c_str()), Form("%s_berngaus",prefix.c_str()), *obs_var, *gaus, *soft_step);
     obs_var->setRange(95, 180);
-    //return bern;
     return bern_gaus;
   } else if (order==5) {
 	RooBernsteinFast<5> *bern = new RooBernsteinFast<5>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
-  	//bing
-    //RooAddPdf *bern_gaus = new RooAddPdf(prefix.append("gaus").c_str(),prefix.append("gaus").c_str(),RooArgList(*bern,*gaus),*fgaus) ;
-    //RooFFTConvPdf *bern_gaus = new RooFFTConvPdf(prefix.append("gaus").c_str(),prefix.append("gaus").c_str(), *obs_var, *bern, *gaus);
      RooGenericPdf *soft_step = new RooGenericPdf(
       Form("%s_softstep",prefix.c_str()), Form("%s_softstep",prefix.c_str()),
       "1e-20 + 0.5*(1.0 + TMath::Erf((@0-@1)/(@2*sqrt(2.)))) * @3",
@@ -211,13 +166,9 @@ RooAbsPdf* PdfModelBuilder::getBernstein(string prefix, int order){
     obs_var->setRange(-200, 500);
     RooFFTConvPdf *bern_gaus = new RooFFTConvPdf(Form("%s_berngaus",prefix.c_str()), Form("%s_berngaus",prefix.c_str()), *obs_var, *gaus, *soft_step);
     obs_var->setRange(95, 180);
-    //return bern;
     return bern_gaus;
   } else if (order==6) {
 	RooBernsteinFast<6> *bern = new RooBernsteinFast<6>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
-  	//bing
-    //RooAddPdf *bern_gaus = new RooAddPdf(prefix.append("gaus").c_str(),prefix.append("gaus").c_str(),RooArgList(*bern,*gaus),*fgaus) ;
-    //RooFFTConvPdf *bern_gaus = new RooFFTConvPdf(prefix.append("gaus").c_str(),prefix.append("gaus").c_str(), *obs_var, *bern, *gaus);
      RooGenericPdf *soft_step = new RooGenericPdf(
       Form("%s_softstep",prefix.c_str()), Form("%s_softstep",prefix.c_str()),
       "1e-20 + 0.5*(1.0 + TMath::Erf((@0-@1)/(@2*sqrt(2.)))) * @3",
@@ -226,35 +177,23 @@ RooAbsPdf* PdfModelBuilder::getBernstein(string prefix, int order){
     obs_var->setRange(-200, 500);
     RooFFTConvPdf *bern_gaus = new RooFFTConvPdf(Form("%s_berngaus",prefix.c_str()), Form("%s_berngaus",prefix.c_str()), *obs_var, *gaus, *soft_step);
     obs_var->setRange(95, 180);
-    //return bern;
     return bern_gaus;
-//  } else if (order==7) {
-//	RooBernsteinFast<7> *bern = new RooBernsteinFast<7>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
- // 	return bern;
   } else {
 	return NULL;
   }
-
-  //return bern;
-  //bkgPdfs.insert(pair<string,RooAbsPdf*>(bern->GetName(),bern));
-
 }
 
 RooAbsPdf* PdfModelBuilder::getBernsteinStepxGau(string prefix, int order, int mass_ALP){
-  // 參數：較溫和的初值與範圍，避免極端值導致繪圖出框或數值不穩
   double turnon_bern = 105., turnon_lbern = 100., turnon_hbern = 110.;
   double sigma_bern  = 1.5,  sigma_lbern  = 1.0,  sigma_hbern  = 8.0;
 
-  // 高斯解析度模型：以 0 為均值（卷積核），sigma 可調
   RooRealVar *g_mean  = new RooRealVar(Form("%s_gmean",prefix.c_str()),Form("%s_gmean",prefix.c_str()),0.);
   RooRealVar *g_sigma = new RooRealVar(Form("%s_gsigma",prefix.c_str()),Form("%s_gsigma",prefix.c_str()), sigma_bern, sigma_lbern, sigma_hbern);
   RooGaussian *gaus   = new RooGaussian(Form("%s_gaus",prefix.c_str()),Form("%s_gaus",prefix.c_str()),*obs_var,*g_mean,*g_sigma);
 
-  // 轉折位置與寬度（用 erf 平滑 turn-on）
   RooRealVar *step_value = new RooRealVar(Form("%s_step",prefix.c_str()), Form("%s_step",prefix.c_str()), turnon_bern, turnon_lbern, turnon_hbern);
   RooRealVar *step_width = new RooRealVar(Form("%s_stepWidth",prefix.c_str()), Form("%s_stepWidth",prefix.c_str()), 2.0, 0.2, 20.0);
 
-  // 建 BernsteinFast<N>，係數使用平方以保證正定，與 getBernstein 保持一致
   RooArgList coeffList;
   std::vector<RooRealVar*> rawPars;
   std::vector<RooFormulaVar*> sqPars;
@@ -277,16 +216,12 @@ RooAbsPdf* PdfModelBuilder::getBernsteinStepxGau(string prefix, int order, int m
   else if (order==6) bern = new RooBernsteinFast<6>(Form("%s_bern",prefix.c_str()),Form("%s_bern",prefix.c_str()),*obs_var,coeffList);
   else return NULL;
 
-  // 平滑 step × bern：使用 RooGenericPdf 乘上 bern
-  // 避免 max(...) 解析相容性，直接加上小常數以保正
   RooGenericPdf *soft_step_times_bern = new RooGenericPdf(
     Form("%s_softstepxbern",prefix.c_str()), Form("%s_softstepxbern",prefix.c_str()),
     "1e-30 + 0.5*(1.0 + TMath::Erf((@0-@1)/(@2*sqrt(2.)))) * @3",
     RooArgList(*obs_var, *step_value, *step_width, *bern)
   );
 
-  // 與高斯做 FFT 卷積：model convolved with resolution
-  // 提前設定 FFT binning 與合適的 buffer，降低邊界假影與折返
   obs_var->setBins(8192, "fft");
   RooFFTConvPdf *conv = new RooFFTConvPdf(
     Form("%s",prefix.c_str()), Form("%s",prefix.c_str()),
@@ -300,6 +235,7 @@ RooAbsPdf* PdfModelBuilder::getBernsteinStepxGau(string prefix, int order, int m
 RooAbsPdf* PdfModelBuilder::getPowerLawStepxGau(string prefix, int order, int cat, int mass_ALP){
   if(order%2==0) return NULL;
   RooRealVar *mean = new RooRealVar(Form("%s_mean",prefix.c_str()),Form("%s_mean",prefix.c_str()),0.);
+  mean->setConstant(true);
   double sigma_pow,sigma_lpow,sigma_hpow;
   double turnon_pow,turnon_lpow,turnon_hpow;
   double par1_pow1, par1_pow3, par3_pow3, par1_pow5, par3_pow5, par5_pow5;
@@ -333,15 +269,11 @@ RooAbsPdf* PdfModelBuilder::getPowerLawStepxGau(string prefix, int order, int ca
   
   RooRealVar *sigma = new RooRealVar(Form("%s_sigma_p%d",prefix.c_str(),order),Form("%s_sigma_p%d",prefix.c_str(),order),sigma_pow,sigma_lpow,sigma_hpow);
   RooRealVar *turnon = new RooRealVar(Form("%s_turnon_p%d",prefix.c_str(),order),Form("%s_turnon_p%d",prefix.c_str(),order),turnon_pow,turnon_lpow,turnon_hpow);
-  // 新增：平滑 turn-on 的寬度參數
   RooRealVar *width  = new RooRealVar(Form("%s_width_p%d",prefix.c_str(),order),Form("%s_width_p%d",prefix.c_str(),order),2.0,0.2,20.0);
-  //coeffList->add(RooConst(1.0)); // no need for cnstant in this interface
   
     if (order==1) {
       RooRealVar *p1          = new RooRealVar(Form("%s_p1_pow1",prefix.c_str()),Form("%s_p1_pow1",prefix.c_str()),par1_pow1,par1_lpow1,par1_hpow1);
       RooRealVar *cp1         = new RooRealVar(Form("%s_cp1_pow1",prefix.c_str()),Form("%s_cp1_pow1",prefix.c_str()),coeff1_pow1,coeff1_lpow1,coeff1_hpow1);
-    	//RooGenericPdf *step     = new RooGenericPdf(Form("%s_step_pow1",prefix.c_str()),Form("%s_step_pow1",prefix.c_str()), "1e-20+(@0 > @1)*(@3*(@0)^(@2))", RooArgList(*obs_var,*turnon,*p1,*cp1));
-      // 用 erf sigmoid 取代硬切
       RooGenericPdf *soft_step = new RooGenericPdf(
         Form("%s_soft_pow1",prefix.c_str()),Form("%s_soft_pow1",prefix.c_str()),
         "1e-20+0.5*(1.0+TMath::Erf((@0-@1)/(@2*sqrt(2.))))*(@4*(@0)^(@3))",
@@ -355,7 +287,6 @@ RooAbsPdf* PdfModelBuilder::getPowerLawStepxGau(string prefix, int order, int ca
       RooRealVar *cp1         = new RooRealVar(Form("%s_cp1_pow3",prefix.c_str()),Form("%s_cp1_pow3",prefix.c_str()),coeff1_pow3,coeff1_lpow3,coeff1_hpow3);
       RooRealVar *p3          = new RooRealVar(Form("%s_p3_pow3",prefix.c_str()),Form("%s_p3_pow3",prefix.c_str()),par3_pow3,par3_lpow3,par3_hpow3);
       RooRealVar *cp3         = new RooRealVar(Form("%s_cp3_pow3",prefix.c_str()),Form("%s_cp3_pow3",prefix.c_str()),coeff3_pow3,coeff3_lpow3,coeff3_hpow3);
-    	//RooGenericPdf *step     = new RooGenericPdf(Form("%s_step_pow3",prefix.c_str()),Form("%s_step_pow3",prefix.c_str()), "1e-20+(@0 > @1)*(@3*(@0)^(@2)+@5*(@0)^(@4))", RooArgList(*obs_var,*turnon,*p1,*cp1,*p3,*cp3));
       RooGenericPdf *soft_step = new RooGenericPdf(
         Form("%s_soft_pow3",prefix.c_str()),Form("%s_soft_pow3",prefix.c_str()),
         "1e-20+0.5*(1.0+TMath::Erf((@0-@1)/(@2*sqrt(2.))))*(@4*(@0)^(@3)+@6*(@0)^(@5))",
@@ -399,7 +330,6 @@ RooAbsPdf* PdfModelBuilder::getPowerLawGeneric(string prefix, int order){
     string formula="";
     RooArgList *dependents = new RooArgList();
     dependents->add(*obs_var);
-    // first do recursive fraction
     if (order>1) {
       formula += "(1.-";
       for (int i=1; i<=nfracs; i++){
@@ -428,8 +358,6 @@ RooAbsPdf* PdfModelBuilder::getPowerLawGeneric(string prefix, int order){
     RooGenericPdf *pow = new RooGenericPdf(prefix.c_str(),prefix.c_str(),formula.c_str(),*dependents);
     pow->Print("v");
     return pow;
-    //bkgPdfs.insert(pair<string,RooAbsPdf*>(pow->GetName(),pow));
-
   }
 }
 
@@ -450,8 +378,6 @@ RooAbsPdf* PdfModelBuilder::getPowerLaw(string prefix, int order){
   }
   RooPowerLawSum *pow = new RooPowerLawSum(prefix.c_str(),prefix.c_str(),*obs_var,coefList);
   return pow;
-  //bkgPdfs.insert(pair<string,RooAbsPdf*>(pow->GetName(),pow));
-
 }
 
 RooAbsPdf* PdfModelBuilder::getExponential(string prefix, int order){
@@ -471,16 +397,13 @@ RooAbsPdf* PdfModelBuilder::getExponential(string prefix, int order){
   }
   RooPowerLawSum *exp = new RooPowerLawSum(prefix.c_str(),prefix.c_str(),*obs_var,coefList);
   return exp;
-  //bkgPdfs.insert(pair<string,RooAbsPdf*>(exp->GetName(),exp));
-
 }
 
 RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int cat, int mass_ALP){
   if(order%2==0) return NULL;
-  // RooAbsReal::defaultIntegratorConfig()->setEpsAbs(1e-1);
-  // RooAbsReal::defaultIntegratorConfig()->setEpsRel(1e-1);
 
   RooRealVar *mean = new RooRealVar(Form("%s_mean",prefix.c_str()),Form("%s_mean",prefix.c_str()),0.);
+  mean->setConstant(true);
   double sigma_exp,sigma_lexp,sigma_hexp;
   double turnon_exp,turnon_lexp,turnon_hexp;
   double par1_exp1, par1_exp3, par3_exp3, par1_exp5, par3_exp5, par5_exp5;
@@ -510,13 +433,11 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
   
   RooRealVar *sigma = new RooRealVar(Form("%s_sigma_p%d",prefix.c_str(),order),Form("%s_sigma_p%d",prefix.c_str(),order),sigma_exp,sigma_lexp,sigma_hexp);
   RooRealVar *turnon = new RooRealVar(Form("%s_turnon_p%d",prefix.c_str(),order),Form("%s_turnon_p%d",prefix.c_str(),order),turnon_exp,turnon_lexp,turnon_hexp);
-  // 新增：平滑 turn-on 的寬度參數
   RooRealVar *width  = new RooRealVar(Form("%s_width_p%d",prefix.c_str(),order),Form("%s_width_p%d",prefix.c_str(),order),2.0,0.2,20.0);
   
     if (order==1) {
       RooRealVar *p1 = new RooRealVar(Form("%s_p1_exp1",prefix.c_str()),Form("%s_p1_exp1",prefix.c_str()),par1_exp1,par1_lexp1,par1_hexp1);
       RooRealVar *cp1 = new RooRealVar(Form("%s_cp1_exp1",prefix.c_str()),Form("%s_cp1_exp1",prefix.c_str()),coeff1_exp1,coeff1_lexp1,coeff1_hexp1);
-    	//RooGenericPdf *step = new RooGenericPdf(Form("%s_step_exp1",prefix.c_str()),Form("%s_step_exp1",prefix.c_str()), "1e-20+(@0 > @1)*(@3*TMath::Exp(@0*@2))", RooArgList(*obs_var,*turnon,*p1,*cp1));
       RooGenericPdf *soft_step = new RooGenericPdf(
         Form("%s_soft_exp1",prefix.c_str()),Form("%s_soft_exp1",prefix.c_str()),
         "1e-20+0.5*(1.0+TMath::Erf((@0-@1)/(@2*sqrt(2.))))*(@4*TMath::Exp(@0*@3))",
@@ -530,7 +451,6 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
       RooRealVar *cp1 = new RooRealVar(Form("%s_cp1_exp3",prefix.c_str()),Form("%s_cp1_exp3",prefix.c_str()),coeff1_exp3,coeff1_lexp3,coeff1_hexp3);
       RooRealVar *p3 = new RooRealVar(Form("%s_p3_exp3",prefix.c_str()),Form("%s_p3_exp3",prefix.c_str()),par3_exp3,par3_lexp3, par3_hexp3);
       RooRealVar *cp3 = new RooRealVar(Form("%s_cp3_exp3",prefix.c_str()),Form("%s_cp3_exp3",prefix.c_str()),coeff3_exp3,coeff3_lexp3,coeff3_hexp3);
-    	//RooGenericPdf *step = new RooGenericPdf(Form("%s_step_exp3",prefix.c_str()),Form("%s_step_exp3",prefix.c_str()), "1e-20+(@0 > @1)*(@3*TMath::Exp(@0*@2)+@5*TMath::Exp(@0*@4))", RooArgList(*obs_var,*turnon,*p1,*cp1,*p3,*cp3));
       RooGenericPdf *soft_step = new RooGenericPdf(
         Form("%s_soft_exp3",prefix.c_str()),Form("%s_soft_exp3",prefix.c_str()),
         "1e-20+0.5*(1.0+TMath::Erf((@0-@1)/(@2*sqrt(2.))))*(@4*TMath::Exp(@0*@3)+@6*TMath::Exp(@0*@5))",
@@ -546,7 +466,6 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
       RooRealVar *cp3 = new RooRealVar(Form("%s_cp3_exp5",prefix.c_str()),Form("%s_cp3_exp5",prefix.c_str()),coeff3_exp5,coeff3_lexp5,coeff3_hexp5);
       RooRealVar *p5 = new RooRealVar(Form("%s_p5_exp5",prefix.c_str()),Form("%s_p5_exp5",prefix.c_str()),par5_exp5,par5_lexp5, par5_hexp5);
       RooRealVar *cp5 = new RooRealVar(Form("%s_cp5_exp5",prefix.c_str()),Form("%s_cp5_exp5",prefix.c_str()),coeff5_exp5,coeff5_lexp5,coeff5_hexp5);
-    	//RooGenericPdf *step = new RooGenericPdf(Form("%s_step_exp5",prefix.c_str()),Form("%s_step_exp5",prefix.c_str()), "1e-20+(@0 > @1)*(@3*TMath::Exp(@0*@2)+@5*TMath::Exp(@0*@4)+@7*TMath::Exp(@0*@6))", RooArgList(*obs_var,*turnon,*p1,*cp1,*p3,*cp3,*p5,*cp5));
       RooGenericPdf *soft_step = new RooGenericPdf(
         Form("%s_soft_exp5",prefix.c_str()),Form("%s_soft_exp5",prefix.c_str()),
         "1e-20+0.5*(1.0+TMath::Erf((@0-@1)/(@2*sqrt(2.))))*(@4*TMath::Exp(@0*@3)+@6*TMath::Exp(@0*@5)+@8*TMath::Exp(@0*@7))",
@@ -576,40 +495,30 @@ RooAbsPdf* PdfModelBuilder::getPowerLawSingle(string prefix, int order){
     for (int i=1; i<=nfracs; i++){
       string name =  Form("%s_f%d",prefix.c_str(),i);
       params.insert(pair<string,RooRealVar*>(name, new RooRealVar(name.c_str(),name.c_str(),0.9-float(i-1)*1./nfracs,0.,1.)));
-      //params[name]->removeRange();
       fracs->add(*params[name]);
     }
     for (int i=1; i<=npows; i++){
       string name =  Form("%s_p%d",prefix.c_str(),i);
       string ename =  Form("%s_e%d",prefix.c_str(),i);
       params.insert(pair<string,RooRealVar*>(name, new RooRealVar(name.c_str(),name.c_str(),TMath::Max(-9.,-1.*(i+1)),-9.,1.)));
-      //params[name]->removeRange();
       utilities.insert(pair<string,RooAbsPdf*>(ename, new RooPower(ename.c_str(),ename.c_str(),*obs_var,*params[name])));
       pows->add(*utilities[ename]);
     }
-    //cout << "RooArgLists..." << endl;
-    //fracs->Print("v");
-    //pows->Print("v");
-    //cout << "Function..." << endl;
     RooAbsPdf *pow = new RooAddPdf(prefix.c_str(),prefix.c_str(),*pows,*fracs,true); 
-    //pow->Print("v");
     return pow;
 
     //bing
     RooRealVar *fgaus = new RooRealVar("fgaus", "gaus fraction",0.5,0.,1.) ;
     RooRealVar *mean = new RooRealVar("mean","mean",0,-10.0,10.0) ;
+    mean->setConstant(true);
     RooRealVar *sigma = new RooRealVar("sigma","sigma",1,0.,10.) ;
     RooGaussian *gaus = new RooGaussian("gaus","gaus",*obs_var,*mean,*sigma) ;
-    //RooAddPdf *pow_gaus = new RooAddPdf("pow_gaus","pow_gaus",RooArgList(*pow,*gaus),*fgaus) ;
 
     RooRealVar *step_value = new RooRealVar("step_value", "step value", 115., 110., 130.);
     RooGenericPdf *step_func = new RooGenericPdf("step_func", "step_func", "1e-20+( @0 > @1) * @2", RooArgSet(*obs_var, *step_value, *pow));
     obs_var->setRange(-400.0,500.0);
     RooFFTConvPdf *pow_gaus = new RooFFTConvPdf("pow_gaus", "pow_gaus", *obs_var, *gaus, *step_func);
     obs_var->setRange(110.0,180.0);
-    //return pow_gaus;
-
-    //bkgPdfs.insert(pair<string,RooAbsPdf*>(pow->GetName(),pow));
   }
 }
 
@@ -617,7 +526,6 @@ RooAbsPdf* PdfModelBuilder::getLaurentSeries(string prefix, int order){
  
   int nlower=int(ceil(order/2.));
   int nhigher=order-nlower;
-  // first do 0th order
   RooArgList *pows = new RooArgList();
   RooArgList *plist = new RooArgList();
   string pname =  Form("%s_pow0",prefix.c_str());
@@ -644,9 +552,7 @@ RooAbsPdf* PdfModelBuilder::getLaurentSeries(string prefix, int order){
   }
   RooAddPdf *pdf = new RooAddPdf(prefix.c_str(),prefix.c_str(),*pows,*plist,true);
   return pdf;
-  //bkgPdfs.insert(pair<string,RooAbsPdf*>(pdf->GetName(),pdf));
 
-   //bing
     RooRealVar *mean1 = new RooRealVar("mean1","mean1",0.0) ;
     RooRealVar *sigma1 = new RooRealVar("sigma1","sigma1",5,-10.,20.) ;
     RooGaussian *gaus1 = new RooGaussian("gaus1","gaus1",*obs_var,*mean1,*sigma1) ;
@@ -655,8 +561,6 @@ RooAbsPdf* PdfModelBuilder::getLaurentSeries(string prefix, int order){
     obs_var->setRange(-400.0,500.0);
     RooFFTConvPdf *pdf_gaus = new RooFFTConvPdf("pdf_gaus","pdf_gaus", *obs_var, *gaus1, *step_func1);
     obs_var->setRange(110.0,180.0);
-  //return pdf_gaus;
-
 }
 
 RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat, int mass_ALP){
@@ -664,6 +568,7 @@ RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat
   if(order>5) return NULL;
 
   RooRealVar *mean = new RooRealVar(Form("%s_mean",prefix.c_str()),Form("%s_mean",prefix.c_str()),0.);
+  mean->setConstant(true);
   double sigma_lau,sigma_llau,sigma_hlau;
   double turnon_lau,turnon_llau,turnon_hlau;
   double coeff1_lau1,   coeff1_lau2,  coeff2_lau2,    coeff1_lau3,  coeff2_lau3,  coeff3_lau3,    coeff1_lau4,  coeff2_lau4,  coeff3_lau4,  coeff4_lau4;
@@ -695,13 +600,10 @@ RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat
 
   RooRealVar *sigma = new RooRealVar(Form("%s_sigma_p%d",prefix.c_str(),order),Form("%s_sigma_p%d",prefix.c_str(),order),sigma_lau,sigma_llau,sigma_hlau);
   RooRealVar *turnon = new RooRealVar(Form("%s_turnon_p%d",prefix.c_str(),order),Form("%s_turnon_p%d",prefix.c_str(),order),turnon_lau,turnon_llau,turnon_hlau);
-  // 新增：平滑 turn-on 的寬度參數
   RooRealVar *width  = new RooRealVar(Form("%s_width_p%d",prefix.c_str(),order),Form("%s_width_p%d",prefix.c_str(),order),2.0,0.2,20.0);
-  //coeffList->add(RooConst(1.0)); // no need for cnstant in this interface
   
   if (order==1) {
       RooRealVar *cp1 = new RooRealVar(Form("%s_cp1_lau1",prefix.c_str()),Form("%s_cp1_lau1",prefix.c_str()),coeff1_lau1,coeff1_llau1,coeff1_hlau1);
-      //RooGenericPdf *step= new RooGenericPdf(Form("%s_step_lau1",prefix.c_str()),Form("%s_step_lau1",prefix.c_str()), "1e-20+(@0 > @1)*(@2*(@0)^(-4))", RooArgList(*obs_var,*turnon,*cp1));//step*(ax^b)
       RooGenericPdf *soft_step = new RooGenericPdf(
         Form("%s_soft_lau1",prefix.c_str()),Form("%s_soft_lau1",prefix.c_str()),
         "1e-20+0.5*(1.0+TMath::Erf((@0-@1)/(@2*sqrt(2.))))*(@3*(@0)^(-4))",
@@ -713,7 +615,6 @@ RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat
   } else if (order==2) {
       RooRealVar *cp1 = new RooRealVar(Form("%s_cp1_lau2",prefix.c_str()),Form("%s_cp1_lau2",prefix.c_str()),coeff1_lau2,coeff1_llau2,coeff1_hlau2);
       RooRealVar *cp2 = new RooRealVar(Form("%s_cp2_lau2",prefix.c_str()),Form("%s_cp2_lau2",prefix.c_str()),coeff2_lau2,coeff2_llau2,coeff2_hlau2);
-      //RooGenericPdf *step = new RooGenericPdf(Form("%s_step_lau2",prefix.c_str()), Form("%s_step_lau2",prefix.c_str()), "1e-20+(@0 > @1)*(@2*(@0)^(-4)+@3*(@0)^(-5))", RooArgList(*obs_var,*turnon,*cp1,*cp2));//step*(ax^b+cx^d+fx^g) 
       RooGenericPdf *soft_step = new RooGenericPdf(
         Form("%s_soft_lau2",prefix.c_str()),Form("%s_soft_lau2",prefix.c_str()),
         "1e-20+0.5*(1.0+TMath::Erf((@0-@1)/(@2*sqrt(2.))))*(@3*(@0)^(-4)+@4*(@0)^(-5))",
@@ -726,7 +627,6 @@ RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat
       RooRealVar *cp1 = new RooRealVar(Form("%s_cp1_lau3",prefix.c_str()),Form("%s_cp1_lau3",prefix.c_str()),coeff1_lau3,coeff1_llau3,coeff1_hlau3);
       RooRealVar *cp2 = new RooRealVar(Form("%s_cp2_lau3",prefix.c_str()),Form("%s_cp2_lau3",prefix.c_str()),coeff2_lau3,coeff2_llau3,coeff2_hlau3);
       RooRealVar *cp3 = new RooRealVar(Form("%s_cp3_lau3",prefix.c_str()),Form("%s_cp3_lau3",prefix.c_str()),coeff3_lau3,coeff3_llau3,coeff3_hlau3);
-      //RooGenericPdf *step = new RooGenericPdf(Form("%s_step_lau3",prefix.c_str()),Form("%s_step_lau3",prefix.c_str()), "1e-20+(@0 > @1)*(@2*(@0)^(-4)+@3*(@0)^(-5)+@4*(@0)^(-6))", RooArgList(*obs_var,*turnon,*cp1,*cp2,*cp3));//step*(ax^b+cx^d)
       RooGenericPdf *soft_step = new RooGenericPdf(
         Form("%s_soft_lau3",prefix.c_str()),Form("%s_soft_lau3",prefix.c_str()),
         "1e-20+0.5*(1.0+TMath::Erf((@0-@1)/(@2*sqrt(2.))))*(@3*(@0)^(-4)+@4*(@0)^(-5)+@5*(@0)^(-6))",
@@ -741,7 +641,6 @@ RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat
       RooRealVar *cp2 = new RooRealVar(Form("%s_cp2_lau4",prefix.c_str()),Form("%s_cp2_lau4",prefix.c_str()),coeff2_lau4,coeff2_llau4,coeff2_hlau4);
       RooRealVar *cp3 = new RooRealVar(Form("%s_cp3_lau4",prefix.c_str()),Form("%s_cp3_lau4",prefix.c_str()),coeff3_lau4,coeff3_llau4,coeff3_hlau4);
       RooRealVar *cp4 = new RooRealVar(Form("%s_cp4_lau4",prefix.c_str()),Form("%s_cp4_lau4",prefix.c_str()),coeff4_lau4,coeff4_llau4,coeff4_hlau4);
-      //RooGenericPdf *step = new RooGenericPdf(Form("%s_step_lau4",prefix.c_str()),Form("%s_step_lau4",prefix.c_str()), "1e-20+(@0 > @1)*(@2*(@0)^(-4)+@3*(@0)^(-5)+@4*(@0)^(-6)+@5*(@0)^(-7))", RooArgList(*obs_var,*turnon,*cp1,*cp2,*cp3,*cp4));//step*(ax^b+cx^d)
       RooGenericPdf *soft_step = new RooGenericPdf(
         Form("%s_soft_lau4",prefix.c_str()),Form("%s_soft_lau4",prefix.c_str()),
         "1e-20+0.5*(1.0+TMath::Erf((@0-@1)/(@2*sqrt(2.))))*(@3*(@0)^(-4)+@4*(@0)^(-5)+@5*(@0)^(-6)+@6*(@0)^(-7))",
@@ -818,32 +717,18 @@ RooAbsPdf* PdfModelBuilder::getExponentialSingle(string prefix, int order){
       utilities.insert(pair<string,RooAbsPdf*>(ename, new RooExponential(ename.c_str(),ename.c_str(),*obs_var,*params[name])));
       exps->add(*utilities[ename]);
     }
-    //fracs->Print("v");
-    //exps->Print("v");
     RooAbsPdf *exp = new RooAddPdf(prefix.c_str(),prefix.c_str(),*exps,*fracs,true);
 
-    //bing
     RooRealVar *mean = new RooRealVar("mean","mean",0.0) ;
-    RooRealVar *sigma = new RooRealVar("sigma","sigma",5,-10.,20.) ;
+    mean->setConstant(true);
+    RooRealVar *sigma = new RooRealVar("sigma","sigma",5,0.2,30.0) ;
     RooGaussian *gaus = new RooGaussian("gaus","gaus",*obs_var,*mean,*sigma) ;
     RooRealVar *step_value = new RooRealVar("step_value", "step value",115.,100.,130.) ;
-    // RooGenericPdf *step_func = new RooGenericPdf("step_func","step_func","(abs(step_value-obs_var)/(step_value-obs_var)+1.0)/2.0",RooArgSet(*obs_var,*step_value));
     RooGenericPdf *step_func = new RooGenericPdf("step_func","step_func","(1e-20+( @0 > @1)) * @2",RooArgSet(*obs_var,*step_value,*exp));
-    //RooAddPdf *exp_gaus = new RooAddPdf("exp_gaus","exp_gaus",RooArgList(*exp,*gaus),*fgaus) ;
     obs_var->setRange(-200.0,200.0);
-    //cout << "-----------[[test1]]---------------" << endl;
-    //obs_var->Print("v");
-    //cout << "-----------[[test3]]---------------" << endl;
     RooFFTConvPdf *exp_gaus = new RooFFTConvPdf("exp_gaus","exp_gaus", *obs_var, *gaus, *step_func);
     obs_var->setRange(110.0,180.0);
-    //cout << "-----------[[test2]]---------------" << endl;
-    //obs_var->Print("v");
-    //exp->Print("v");
-    cout << "--------------------------" << endl;
     return exp;
-    //bing
-    //return exp_gaus;
-    //bkgPdfs.insert(pair<string,RooAbsPdf*>(exp->GetName(),exp));
 
   }
 }
@@ -863,7 +748,7 @@ void PdfModelBuilder::addBkgPdf(string type, int nParams, string name, bool cach
     cerr << "Pdf of type " << type << " is not recognised!" << endl;
     exit(1);
   }
-  RooAbsPdf *pdf=0;// avoid uninitialised variable error in cmssw  
+  RooAbsPdf *pdf=0;
 
   if (type=="Bernstein") pdf = getBernstein(name,nParams);
   if (type=="Exponential") pdf = getExponentialSingle(name,nParams);
@@ -964,7 +849,6 @@ void PdfModelBuilder::plotPdfsToData(RooAbsData *data, int binning, string name,
   for (map<string,RooAbsPdf*>::iterator it=pdfSet.begin(); it!=pdfSet.end(); it++){
     if (specPdf && it->first!=specificPdfName && specificPdfName!="NONE") continue;
     RooPlot *plot = obs_var->frame();
-    // 改用 SumW2 誤差，避免 RooHistError::getPoissonInterval 崩潰
     data->plotOn(plot, Binning(binning), DataError(RooAbsData::SumW2));
     if (specificPdfName!="NONE") {
 	 it->second->plotOn(plot);
@@ -993,7 +877,6 @@ void PdfModelBuilder::fitToData(RooAbsData *data, bool bkgOnly, bool cache, bool
     }
     if (cache) {
       RooArgSet *fitargs = (RooArgSet*)it->second->getParameters(*obs_var);
-      // remove the signal strength since this will be set AFTER fitting the background 
       fitargs->remove(*signalModifier); 
       wsCache->defineSet(Form("%s_params",it->first.c_str()),*fitargs);
       wsCache->defineSet(Form("%s_observs",it->first.c_str()),*obs_var);
@@ -1029,10 +912,9 @@ RooDataSet* PdfModelBuilder::makeHybridDataset(vector<float> switchOverMasses, v
   obs_var->Print("v");
   assert(cut_strings.size()==dataForHybrid.size());
   
-	RooDataSet *data=0;// avoid uninitialised variable error in cmssw  
+	RooDataSet *data=0;
   for (unsigned int i=0; i<dataForHybrid.size(); i++){
     RooDataSet *cutData = (RooDataSet*)dataForHybrid[i]->reduce(Name("hybridToy"),Title("hybridToy"),CutRange(cut_strings[i].c_str()));
-    //RooDataSet *cutData = new RooDataSet("hybridToy","hybridToy",RooArgSet(*obs_var),Import(*dataForHybrid[i]),CutRange(cut_strings[i].c_str()));
     if (i==0) data=cutData;
     else data->append(*cutData);
   }
@@ -1044,7 +926,6 @@ void PdfModelBuilder::throwHybridToy(string postfix, int nEvents, vector<float> 
   assert(switchOverMasses.size()==functions.size()-1);
   toyHybridData.clear();
 
-  // have to throw unbinned for the hybrid
   throwToy(postfix,nEvents,bkgOnly,false,poisson,cache);
 
   vector<RooDataSet*> dataForHybrid;
@@ -1155,7 +1036,6 @@ void PdfModelBuilder::plotHybridToy(string prefix, int binning, vector<float> sw
         for (map<string,RooAbsData*>::iterator toyIt = toyData.begin(); toyIt != toyData.end(); toyIt++){
           if (toyIt->first.find(pdfIt->first)!=string::npos){
             RooAbsData *data = toyIt->second->reduce(CutRange(cut_strings[i].c_str()));
-            // 使用 SumW2 誤差
             data->plotOn(plot, Binning(binning), DataError(RooAbsData::SumW2), MarkerColor(tempColors[i]), LineColor(tempColors[i]), CutRange(cut_strings[i].c_str()));
             pdfIt->second->plotOn(plot,LineColor(tempColors[i]),Range(cut_strings[i].c_str()));
             i++;
@@ -1165,7 +1045,6 @@ void PdfModelBuilder::plotHybridToy(string prefix, int binning, vector<float> sw
     }
   }
   for (map<string,RooAbsData*>::iterator hybrid=toyHybridData.begin(); hybrid!=toyHybridData.end(); hybrid++){
-    // 使用 SumW2 誤差
     hybrid->second->plotOn(plot, Binning(binning), DataError(RooAbsData::SumW2), MarkerSize(0.8),MarkerStyle(kFullSquare));
     plot->SetMinimum(0.0001);
     plot->Draw();
@@ -1188,7 +1067,6 @@ void PdfModelBuilder::plotToysWithPdfs(string prefix, int binning, bool bkgOnly)
     for (map<string,RooAbsData*>::iterator toyIt = toyData.begin(); toyIt != toyData.end(); toyIt++){
       if (toyIt->first.find(pdfIt->first)!=string::npos){
         RooPlot *plot = obs_var->frame();
-        // 使用 SumW2 誤差
         toyIt->second->plotOn(plot, Binning(binning), DataError(RooAbsData::SumW2));
         pdfIt->second->plotOn(plot,LineColor(kRed));
         pdfIt->second->paramOn(plot,LineColor(kRed),RooFit::Layout(0.34,0.96,0.89),RooFit::Format("NEA",AutoPrecision(1)));

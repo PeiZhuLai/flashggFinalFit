@@ -129,8 +129,8 @@ def build_channel_systematics(channel, skip, scales, scalesCorr, scalesGlobal, s
 
   ele_scales  = ['ElectronScale']
   ele_smears  = ['ElectronSmear']
-  mu_scales   = ['MuonPtScale']
-  mu_smears   = ['MuonPtSmear']
+  mu_scales   = ['MuonScale']
+  mu_smears   = ['MuonSmear']
 
   ch = (channel or '').lower()
   if ch in ('ele', 'electron', 'e'):
@@ -239,9 +239,9 @@ if doSystematics:
     print(" [INFO] channel=ele -> 覆寫系統列表:", _forced)
   elif opt.channel == 'mu':
     _forced = {
-      'scales'     : ['PhotonScale','MuonPtScale'],
+      'scales'     : ['PhotonScale','MuonScale'],
       'scalesCorr' : ['FNUF','Material'],
-      'smears'     : ['PhotonSmear','MuonPtSmear'],
+      'smears'     : ['PhotonSmear','MuonSmear'],
     }
     print(" [INFO] channel=mu -> 覆寫系統列表:", _forced)
 

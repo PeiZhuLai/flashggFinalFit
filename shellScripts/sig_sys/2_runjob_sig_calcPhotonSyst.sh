@@ -18,14 +18,14 @@ export PYTHONPATH=$PYTHONPATH:/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_1
 # python3 $dir_sig/calcPhotonSyst.py --mass_ALP 5 --year 2022preEE --channel ele --inputWSDir $EosDir/ALP_M5/ws_Tree2WS
 
 # ------------- Open for Local Run -------------
-mAs=( 5 15 30)
+mAs=( 1 2 3 4 5 6 7 8 9 10 15 20 25 30 )
 channels=( ele mu )
-years=( 2022preEE )
+years=( 2022preEE 2022postEE 2023preBPix 2023postBPix 2024)
 
 for mA in "${mAs[@]}"; do
     for channel in "${channels[@]}"; do
         for year in "${years[@]}"; do
-            python3 $dir_sig/calcPhotonSyst.py --mass_ALP ${mA} --year ${year} --channel ${channel} --inputWSDir $EosDir/ALP_M${mA}/ws_Tree2WS
+            python3 $dir_sig/calcPhotonSyst.py --mass_ALP ${mA} --year ${year} --channel ${channel} --inputWSDir $EosDir/mA_M${mA}/ws_Tree2WS
         done
     done
 done

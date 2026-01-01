@@ -3,10 +3,8 @@
 #include <vector>
 #include <string>
 #include <map>
-
 #include "boost/program_options.hpp"
 #include "boost/lexical_cast.hpp"
-
 #include "TFile.h"
 #include "TMath.h"
 #include "TLegend.h"
@@ -30,10 +28,8 @@
 #include "TH1I.h"
 #include "TArrow.h"
 #include "TKey.h"
-
 #include "RooCategory.h"
 #include "HiggsAnalysis/CombinedLimit/interface/RooMultiPdf.h"
-
 #include "../interface/PdfModelBuilder.h"
 #include <Math/PdfFuncMathCore.h>
 #include <Math/ProbFunc.h>
@@ -42,17 +38,14 @@
 #include "boost/algorithm/string/split.hpp"
 #include "boost/algorithm/string/classification.hpp"
 #include "boost/algorithm/string/predicate.hpp"
-
 #include "../../tdrStyle/tdrstyle.C"
 #include "../../tdrStyle/CMS_lumi.C"
-// 新增：集中式樣式設定
 #include "../interface/PlotStyle.h"
-#include "TStyle.h" // 新增：使用 gStyle 設定軸樣式
-#include "TColor.h" // 新增：確保可設定 PS 顏色模型
-// 新增：判斷字元是否為數字與取字串長度
+#include "TStyle.h"
+#include "TColor.h"
 #include <cctype>
 #include <cstring>
-#include <cmath> // 新增：std::isfinite
+#include <cmath>
 
 using namespace std;
 using namespace RooFit;
@@ -60,22 +53,22 @@ using namespace boost;
 
 namespace po = program_options;
 
-// 新增：前置宣告，避免使用在定義之前
 static void transferMacros(TFile* in, TFile* out);
 static void ensureOrderSuffix(RooAbsPdf* pdf, int order);
 static int getBestFitFunction(RooMultiPdf *mpdf, RooAbsData *data, RooCategory *catIndex, bool silent);
+static bool checkPdfDataObservables(RooAbsPdf* pdf, RooAbsData* data, bool verboseDiag = true);
+static void syncMassRangeToData(RooRealVar* mass, RooAbsData* data, bool verboseDiag = true);
 
 bool BLIND = true;
 bool runFtestCheckWithToys=false;
-// 新增：只畫圖不做任何 fit 的快速模式
 bool PLOT_ONLY = false;
 
-float mgglow_ =110.;//FIXME
+float mgglow_ =100.;//FIXME
 float mgghigh_ =180;//FIXME
 float mggblindlow_ =115;//FIXME
 float mggblindhigh_ =135;//FIXME
 
-float mgg_low =110.;//FIXME
+float mgg_low =100.;//FIXME
 float mgg_high =180.;//FIXME
 float nBinsForMass = 1.*(mgg_high-mgg_low);
 float mgg_blind_low =115;//FIXME
@@ -119,6 +112,13 @@ void runFit(RooAbsPdf *pdf, RooAbsData *data, double *NLL, int *stat_t, int MaxT
     return;
   }
 
+  if (!checkPdfDataObservables(pdf, data, /*verboseDiag=*/true)) {
+    std::cerr << "[ERROR] Observable mismatch between pdf and data. Skip fit to avoid RooFit abort." << std::endl;
+    if (stat_t) *stat_t = 5;
+    if (NLL) *NLL = 1e12;
+    return;
+  }
+
   int tries = 0;
   int status = 1;
   double bestNll = 1e12;
@@ -141,8 +141,7 @@ void runFit(RooAbsPdf *pdf, RooAbsData *data, double *NLL, int *stat_t, int MaxT
     std::unique_ptr<RooAbsReal> nll(pdf->createNLL(
       *data,
       RooFit::Offset(true),
-      RooFit::Optimize(true),
-      RooFit::SumW2Error(kFALSE)
+      RooFit::Optimize(true)
     ));
     RooMinimizer minim(*nll);
     minim.setPrintLevel(-1);
@@ -188,14 +187,28 @@ double getProbabilityFtest(double chi2, int ndof,RooAbsPdf *pdfNull, RooAbsPdf *
     return prob_asym;
   }
 
+  syncMassRangeToData(mass, data, /*verboseDiag=*/true);
+
+  if (!checkPdfDataObservables(pdfNull, data, /*verboseDiag=*/true) ||
+      !checkPdfDataObservables(pdfTest, data, /*verboseDiag=*/true)) {
+    std::cerr << "[WARN] getProbabilityFtest: observable mismatch. Return asymptotic prob (no-toys)." << std::endl;
+    return prob_asym;
+  }
+
   if (!runFtestCheckWithToys) return prob_asym;
 
   int ndata = data->sumEntries();
 
-  RooFitResult *fitNullData = pdfNull->fitTo(*data,RooFit::Save(1),RooFit::Strategy(1)
-		,RooFit::Minimizer("Minuit2","minimize"),RooFit::SumW2Error(kFALSE),RooFit::Hesse(kFALSE),RooFit::PrintLevel(-1));
-  RooFitResult *fitTestData = pdfTest->fitTo(*data,RooFit::Save(1),RooFit::Strategy(1)
-		,RooFit::Minimizer("Minuit2","minimize"),RooFit::SumW2Error(kFALSE),RooFit::Hesse(kFALSE),RooFit::PrintLevel(-1));
+  double nllNullData = 1e12, nllTestData = 1e12;
+  int statNullData = 1, statTestData = 1;
+  runFit(pdfNull, data, &nllNullData, &statNullData, /*MaxTries=*/3);
+  runFit(pdfTest, data, &nllTestData, &statTestData, /*MaxTries=*/3);
+
+  if (statNullData != 0 || statTestData != 0) {
+    std::cerr << "[WARN] getProbabilityFtest: fit to data failed (null=" << statNullData
+              << ", test=" << statTestData << "). Return asymptotic prob." << std::endl;
+    return prob_asym;
+  }
 
   RooArgSet *params_null = pdfNull->getParameters((const RooArgSet*)(0));
   RooArgSet preParams_null;
@@ -230,43 +243,48 @@ double getProbabilityFtest(double chi2, int ndof,RooAbsPdf *pdfNull, RooAbsPdf *
 
         params_null->assignValueOnly(preParams_null);
         params_test->assignValueOnly(preParams_test);
-  	RooDataHist *binnedtoy = pdfNull->generateBinned(RooArgSet(*mass),ndata,0,1);
+	RooDataHist *binnedtoy = pdfNull->generateBinned(RooArgSet(*mass),ndata,0,1);
 
-	int stat_n=1;
-        int stat_t=1;
-	int ntries = 0;
-	double nllNull,nllTest;
-	int MaxTries = 2;
-	while (stat_n!=0){
-	  if (ntries>=MaxTries) break;
-	  RooFitResult *fitNull = pdfNull->fitTo(*binnedtoy,RooFit::Save(1),RooFit::Strategy(1),RooFit::SumW2Error(kFALSE)
-		,RooFit::Minimizer("Minuit2","minimize"),RooFit::Minos(0),RooFit::Hesse(0),RooFit::PrintLevel(-1));
+    if (binnedtoy && binnedtoy->get()) {
+      if (auto* xtoy = dynamic_cast<RooRealVar*>(binnedtoy->get()->find(mass->GetName()))) {
+        xtoy->setMin(mass->getMin());
+        xtoy->setMax(mass->getMax());
+        xtoy->setRange(mass->getMin(), mass->getMax());
+        xtoy->setBins(mass->getBins());
+      }
+    }
 
-	  nllNull = fitNull->minNll();
-          stat_n = fitNull->status();
-	  if (stat_n!=0) params_null->assignValueOnly(fitNullData->randomizePars());
-	  ntries++;
-	}
+    int stat_n=1;
+    int stat_t=1;
+    int ntries = 0;
+    double nllNull = 1e12, nllTest = 1e12;
+    int MaxTries = 2;
 
-	ntries = 0;
-	while (stat_t!=0){
-	  if (ntries>=MaxTries) break;
-	  RooFitResult *fitTest = pdfTest->fitTo(*binnedtoy,RooFit::Save(1),RooFit::Strategy(1),RooFit::SumW2Error(kFALSE)
-		,RooFit::Minimizer("Minuit2","minimize"),RooFit::Minos(0),RooFit::Hesse(0),RooFit::PrintLevel(-1));
-	  nllTest = fitTest->minNll();
-          stat_t = fitTest->status();
-	  if (stat_t!=0) params_test->assignValueOnly(fitTestData->randomizePars());
-	  ntries++;
-	}
+    while (stat_n!=0){
+      if (ntries>=MaxTries) break;
+      runFit(pdfNull, binnedtoy, &nllNull, &stat_n, /*MaxTries=*/1);
+      if (stat_n!=0) params_null->assignValueOnly(preParams_null);
+      ntries++;
+    }
 
-	toyhistStatN.Fill(stat_n);
-	toyhistStatT.Fill(stat_t);
+    ntries = 0;
+    while (stat_t!=0){
+      if (ntries>=MaxTries) break;
+      runFit(pdfTest, binnedtoy, &nllTest, &stat_t, /*MaxTries=*/1);
+      if (stat_t!=0) params_test->assignValueOnly(preParams_test);
+      ntries++;
+    }
 
-  if (stat_t !=0 || stat_n !=0) continue;
-	nsuccesst++;
-	double chi2_t = 2*(nllNull-nllTest);
-	if (chi2_t >= chi2) npass++;
-        toyhist.Fill(chi2_t);
+    toyhistStatN.Fill(stat_n);
+    toyhistStatT.Fill(stat_t);
+
+    if (stat_t !=0 || stat_n !=0) { delete binnedtoy; continue; }
+    nsuccesst++;
+    double chi2_t = 2*(nllNull-nllTest);
+    if (chi2_t >= chi2) npass++;
+    toyhist.Fill(chi2_t);
+
+    delete binnedtoy;
   }
 
   double prob=0;
@@ -315,6 +333,8 @@ double getGoodnessOfFit(RooRealVar *mass, RooAbsPdf *mpdf, RooAbsData *data, std
     return 0.;
   }
 
+  syncMassRangeToData(mass, data, /*verboseDiag=*/false);
+
   double prob;
   int ntoys = 500;
   name+="_gofTest.pdf";
@@ -323,8 +343,11 @@ double getGoodnessOfFit(RooRealVar *mass, RooAbsPdf *mpdf, RooAbsData *data, std
   RooExtendPdf *pdf = new RooExtendPdf("ext","ext",*mpdf,norm);
 
   RooPlot *plot_chi2 = mass->frame();
-  data->plotOn(plot_chi2,Binning(nBinsForMass),RooFit::DataError(RooAbsData::SumW2));
-  pdf->plotOn(plot_chi2,Name("pdf"));
+  data->plotOn(plot_chi2,
+              RooFit::Name("data"),
+              Binning(nBinsForMass),
+              RooFit::DataError(RooAbsData::SumW2));
+  pdf->plotOn(plot_chi2, RooFit::Name("pdf"));
   int np = pdf->getParameters(*data)->getSize();
 
   double chi2 = plot_chi2->chiSquare("pdf","data",np);
@@ -344,16 +367,29 @@ double getGoodnessOfFit(RooRealVar *mass, RooAbsPdf *mpdf, RooAbsData *data, std
       params->assignValueOnly(preParams);
       int nToyEvents = RandomGen->Poisson(ndata);
       RooDataHist *binnedtoy = pdf->generateBinned(RooArgSet(*mass),nToyEvents,0,1);
-      pdf->fitTo(*binnedtoy,RooFit::Minimizer("Minuit2","minimize"),RooFit::Minos(0),RooFit::Hesse(0),RooFit::PrintLevel(-1),RooFit::Strategy(0),RooFit::SumW2Error(kFALSE));
+
+      if (binnedtoy && binnedtoy->get()) {
+        if (auto* xtoy = dynamic_cast<RooRealVar*>(binnedtoy->get()->find(mass->GetName()))) {
+          xtoy->setMin(mass->getMin());
+          xtoy->setMax(mass->getMax());
+          xtoy->setRange(mass->getMin(), mass->getMax());
+          xtoy->setBins(mass->getBins());
+        }
+      }
+
+      double tmpNll = 1e12;
+      int tmpStat = 1;
+      runFit(pdf, binnedtoy, &tmpNll, &tmpStat, /*MaxTries=*/2);
 
       RooPlot *plot_t = mass->frame();
-      binnedtoy->plotOn(plot_t,RooFit::DataError(RooAbsData::SumW2));
-      pdf->plotOn(plot_t);
+      binnedtoy->plotOn(plot_t, RooFit::Name("data"), RooFit::DataError(RooAbsData::SumW2));
+      pdf->plotOn(plot_t, RooFit::Name("pdf"));
 
-      double chi2_t = plot_t->chiSquare(np);
+      double chi2_t = plot_t->chiSquare("pdf","data",np);
       if( chi2_t>=chi2) npass++;
       toy_chi2.push_back(chi2_t*(nBinsForMass-np));
       delete plot_t;
+      delete binnedtoy;
     }
     std::cout << "[INFO] complete" << std::endl;
     prob = (double)npass / ntoys;
@@ -394,7 +430,11 @@ void eachFunc_plot(RooRealVar *mass, RooAbsPdf *pdf, RooAbsData *data, string na
   }
 
   RooPlot *plot_chi2 = mass->frame();
-  data->plotOn(plot_chi2,Binning(nBinsForMass),RooFit::DataError(RooAbsData::SumW2));
+  data->plotOn(plot_chi2,
+    Binning(nBinsForMass),
+    RooFit::DataError(RooAbsData::SumW2),
+    RooFit::Name("data"));
+
   pdf->plotOn(plot_chi2);
 
   int np = pdf->getParameters(*data)->getSize()+1;
@@ -430,8 +470,8 @@ void eachFunc_plot(RooRealVar *mass, RooAbsPdf *pdf, RooAbsData *data, string na
   pdf->paramOn(plot,RooFit::Layout(0.14,0.96,0.89),RooFit::Format("NEA",AutoPrecision(1)));
   if (BLIND) plot->SetMinimum(0.0001);
   plot->SetTitle("");
-  plot->GetYaxis()->SetTitleOffset(leftMargion*10.);  // y 轴标题一般要更远一点，避免和数字重叠
-  plot->GetXaxis()->SetTitleOffset(bottomMargion*10.-0.05);  // 默认大约 1，可以稍微调大
+  plot->GetYaxis()->SetTitleOffset(leftMargion*10.);
+  plot->GetXaxis()->SetTitleOffset(bottomMargion*10.-0.05);
 
   plot->Draw();
   TLatex *lat = new TLatex();
@@ -462,10 +502,8 @@ void multipdf_plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, R
   gStyle->SetPadTickX(PlotStyleCfg::axisTickX);
   gStyle->SetPadTickY(PlotStyleCfg::axisTickY);
 
-  // 讓 PDF 向量輸出線更粗，避免消失
-  gStyle->SetLineScalePS(4.0);              // 調大：PDF 向量線寬縮放
-  gStyle->SetEndErrorSize(0);               // 移除端點過大影響
-  // 定義較清楚的虛線樣式（避免 PDF 端虛線太稀疏）
+  gStyle->SetLineScalePS(4.0);
+  gStyle->SetEndErrorSize(0);
   gStyle->SetLineStyleString(2,"[16 12] 0");
   gStyle->SetLineStyleString(3,"[8 12] 0");
   gStyle->SetLineStyleString(4,"[24 12] 0");
@@ -478,7 +516,7 @@ void multipdf_plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, R
   leg->SetFillColor(0);
   leg->SetBorderSize(0);
   leg->SetFillStyle(0);
-  leg->SetTextSize(0.035); // 縮小 legend 文字，避免 PNG 顯得過大
+  leg->SetTextSize(0.035);
   leg->SetTextFont(42);
 
   RooPlot *plot = mass->frame();
@@ -522,7 +560,6 @@ void multipdf_plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, R
 
   for (int icat=0;icat<catIndex->numTypes();icat++){
     int col = PlotStyleCfg::colorForIndex(icat);
-    // 避免過淡顏色在 PDF 幾乎不可見
     if (col==kWhite || col==kYellow) col = kOrange+7;
 
     if (icat>6) { col=kBlack; style++; }
@@ -531,21 +568,20 @@ void multipdf_plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, R
       pdfs->getCurrentPdf()->fitTo(*data,RooFit::Minos(0),RooFit::Minimizer("Minuit2","minimize"),RooFit::SumW2Error(kFALSE));
     }
 
-    // 唯一命名 + 加粗線寬，取消填色，避免 PDF 遮蓋/消失
     std::string curveName = Form("bkg_curve_%d",icat);
     pdfs->getCurrentPdf()->plotOn(
       plot,
       RooFit::Binning(nBinsForMass),
       LineColor(col),
       LineStyle(style),
-      LineWidth(4),                 // 調粗線寬
+      LineWidth(4),
       Name(curveName.c_str())
     );
 
     RooCurve *thisCurve = dynamic_cast<RooCurve*>(plot->findObject(curveName.c_str()));
     if (thisCurve) {
-      thisCurve->SetFillStyle(0);   // 取消任何填色
-      thisCurve->SetLineWidth(4);   // 再次確保線寬
+      thisCurve->SetFillStyle(0);
+      thisCurve->SetLineWidth(4);
       pdfCurves.push_back(thisCurve);
     }
 
@@ -576,22 +612,8 @@ void multipdf_plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, R
   plot->Draw();
   CMS_lumi(canv, 22, 0);
 
-  // 刪除 pad1 上多餘的 hbplottmp 疊圖，避免 PDF 遮蔽
-  // TH1D *hbplottmp = nullptr;
-  // if (canDoRatio) {
-  //   hbplottmp = (TH1D*) pdf->createHistogram("hbplottmp",*mass,Binning(mgg_high-mgg_low,mgg_low,mgg_high));
-  //   hbplottmp->SetDirectory(nullptr);
-  //   hbplottmp->Scale(plotdata->Integral());
-  //   hbplottmp->SetFillStyle(0);
-  //   hbplottmp->SetFillColor(0);
-  //   hbplottmp->SetLineColor(bestcol);
-  //   hbplottmp->SetLineWidth(1);
-  //   hbplottmp->Draw("HISTSAME");
-  // }
-
   leg->Draw("same");
 
-  // 確保所有背景曲線最後疊在最上層（避免被其他物件覆蓋）
   for (auto* c : pdfCurves) {
     if (!c) continue;
     c->SetFillStyle(0);
@@ -662,7 +684,6 @@ void multipdf_plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, R
     hdatasub->Draw("PESAME");
   }
 
-  // 在儲存前明確標記更新，避免 PDF 重繪遺漏物件
   pad1->Modified(); pad1->Update();
   pad2->Modified(); pad2->Update();
   canv->Modified(); canv->Update();
@@ -673,7 +694,6 @@ void multipdf_plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, R
   delete canv;
 }
 
-// Truth Plot (no ratio plot, single canvas)
 void truth_plot(RooRealVar *mass,
   std::map<std::string,RooAbsPdf*> pdfs,
   RooAbsData *data,std::string name,
@@ -685,7 +705,6 @@ void truth_plot(RooRealVar *mass,
     return;
   }
 
-  // ---- 画布与全局样式 ----
   TCanvas *canv = new TCanvas("","",800,800);
   canv->SetLeftMargin(PlotStyleCfg::canvasLeftMargin);
   canv->SetRightMargin(PlotStyleCfg::canvasRightMargin);
@@ -702,7 +721,6 @@ void truth_plot(RooRealVar *mass,
   gStyle->SetLineStyleString(4,"[24 12] 0");
   gStyle->SetLineStyleString(5,"[4 8] 0");
 
-  // ---- 图例（非粗体）----
   TLegend *leg = new TLegend(PlotStyleCfg::truthLegendX1,
                 PlotStyleCfg::truthLegendY1,
                 PlotStyleCfg::truthLegendX2,
@@ -711,12 +729,11 @@ void truth_plot(RooRealVar *mass,
   leg->SetBorderSize(0);
   leg->SetFillStyle(0);
   leg->SetTextSize(0.04);
-  leg->SetTextFont(42); // 非粗体
+  leg->SetTextFont(42);
 
   // ---- RooPlot ----
   RooPlot *plot = mass->frame();
 
-  // 盲区设置与数据绘制
   mass->setRange("unblindReg_1", mgg_low,        mgg_blind_low);
   mass->setRange("unblindReg_2", mgg_blind_high, mgg_high);
   if (BLIND) {
@@ -727,11 +744,9 @@ void truth_plot(RooRealVar *mass,
   data->plotOn(plot, Binning(mgg_high - mgg_low), RooFit::DataError(RooAbsData::SumW2));
   }
 
-  // 数据图例
   TObject *datLeg = plot->getObject(int(plot->numItems()-1));
   if (datLeg) leg->AddEntry(datLeg, "Data", "LEP");
 
-  // ---- 绘制各个 PDF ----
   int i = 0, style = 1;
   RooCurve* nomBkgCurve = nullptr;
   int bestcol = -1;
@@ -795,12 +810,12 @@ void truth_plot(RooRealVar *mass,
   plot->Draw();
   // CMS_lumi(canv, 22, 0);
   TLatex *lat = new TLatex();
-  lat->SetNDC();          // 使用 NDC 座標 (0–1)
-  lat->SetTextFont(42);   // 普通字體 (非粗體)
+  lat->SetNDC();
+  lat->SetTextFont(42);
   lat->SetTextSize(0.045);
   lat->DrawLatex(PlotStyleCfg::canvasLeftMargin, 0.94, "#bf{CMS} #it{Preliminary}");
   // 減越多，字越靠近左邊
-  lat->DrawLatex(1.-PlotStyleCfg::canvasRightMargin*10.-0.03, 0.94, "61.89 fb^{-1} (13.6 TeV)");
+  lat->DrawLatex(1.-PlotStyleCfg::canvasRightMargin*10.-0.03, 0.94, "170.84 fb^{-1} (13.6 TeV)");
 
   // 确保曲线在最上层
   for (auto* c : pdfCurves) {
@@ -897,7 +912,7 @@ int main(int argc, char* argv[]){
 
   if (!verbose) {
     RooMsgService::instance().setGlobalKillBelow(RooFit::ERROR);
-    RooMsgService::instance().setSilentMode(true);
+    RooMsgService::instance().setSilentMode(false);
     gErrorIgnoreLevel=kWarning;
   }
 	split(flashggCats_,flashggCatsStr_,boost::is_any_of(","));
@@ -933,7 +948,7 @@ int main(int argc, char* argv[]){
 		if (isData_){
 			inWS = (RooWorkspace*)inFile->Get("CMS_hza_workspace");
 		} else {
-			inWS = (RooWorkspace*)inFile->Get("cms_hgg_workspace");
+			inWS = (RooWorkspace*)inFile->Get("CMS_hza_workspace");
 		}
 	} else {
 		inWS = (RooWorkspace*)inFile->Get("CMS_hza_workspace");
@@ -964,11 +979,13 @@ int main(int argc, char* argv[]){
 		std::cout << "[INFO] got intL and sqrts " << intL << ", " << sqrts << std::endl;
 	}
 
+  // function switch
 	vector<string> functionClasses;
 	functionClasses.push_back("Bernstein");
 	functionClasses.push_back("Exponential");
 	functionClasses.push_back("PowerLaw");
 	functionClasses.push_back("Laurent");
+
 	map<string,string> namingMap;
 	namingMap.insert(pair<string,string>("Bernstein","pol"));
 	namingMap.insert(pair<string,string>("Exponential","exp"));
@@ -1053,6 +1070,8 @@ int main(int argc, char* argv[]){
       continue;
     }
 
+    syncMassRangeToData(mass, dataFull, verbose);
+
 		mass->setBins(nBinsForMass);
 		RooAbsData *data = dataFull;
 
@@ -1070,7 +1089,6 @@ int main(int argc, char* argv[]){
         int order = 1;
         RooAbsPdf *qpdf = getPdf(pdfsModel, funcType, order, Form("quick_pdf_cat%d_%s",cat,ext.c_str()), mass_ALP);
         if (qpdf) {
-          // 確保 legend 名稱包含 order 尾碼
           ensureOrderSuffix(qpdf, order);
           pdfs.insert(std::make_pair(Form("%s%d",funcType.c_str(),order), qpdf));
           if (saveMultiPdf) storedPdfs.add(*qpdf);
@@ -1190,7 +1208,6 @@ int main(int argc, char* argv[]){
 						order++;
 					}
 					else {
-						// 在任何擬合與加入 storedPdfs 之前，先修正名稱尾碼
             ensureOrderSuffix(bkgPdf, order);
 
 						int fitStatus=0;
@@ -1323,7 +1340,6 @@ int main(int argc, char* argv[]){
 
 		return 0;
 }
-// 新增：將輸入 ROOT 檔中的 TMacro 複製到輸出檔
 static void transferMacros(TFile* in, TFile* out) {
   if (!in || !out) return;
   out->cd();
@@ -1341,14 +1357,12 @@ static void transferMacros(TFile* in, TFile* out) {
     }
   }
 }
-// 新增：若 RooAbsPdf 名稱沒有以數字結尾，補上 order 尾碼
 static void ensureOrderSuffix(RooAbsPdf* pdf, int order) {
   if (!pdf) return;
   std::string name(pdf->GetName() ? pdf->GetName() : "");
   if (!name.empty() && std::isdigit(name.back())) return;
   pdf->SetName(Form("%s%d", name.c_str(), order));
 }
-// 新增：對 RooMultiPdf 逐一嘗試，選擇 2*NLL + #params 最小者為最佳
 static int getBestFitFunction(RooMultiPdf *mpdf, RooAbsData *data, RooCategory *catIndex, bool silent) {
   if (!mpdf || !data || !catIndex) return 0;
   if (PLOT_ONLY) return 0;
@@ -1378,4 +1392,79 @@ static int getBestFitFunction(RooMultiPdf *mpdf, RooAbsData *data, RooCategory *
   }
   catIndex->setIndex(current);
   return bestIndex;
+}
+static bool checkPdfDataObservables(RooAbsPdf* pdf, RooAbsData* data, bool verboseDiag) {
+  if (!pdf || !data) return false;
+
+  std::unique_ptr<RooArgSet> pdfObs(pdf->getObservables(*data));
+  const RooArgSet* dataVars = data->get(); // data 的當前 row vars（包含 observables）
+
+  if (!pdfObs || !dataVars) {
+    if (verboseDiag) {
+      std::cerr << "[ERROR] checkPdfDataObservables: null pdfObs or dataVars"
+                << " pdfObs=" << pdfObs.get() << " dataVars=" << dataVars << std::endl;
+    }
+    return false;
+  }
+
+  std::unique_ptr<TIterator> it(pdfObs->createIterator());
+  for (RooAbsArg* a = (RooAbsArg*)it->Next(); a; a = (RooAbsArg*)it->Next()) {
+    if (!a) continue;
+    const char* n = a->GetName();
+    if (!n || !(*n)) continue;
+
+    if (!dataVars->find(n)) {
+      if (verboseDiag) {
+        std::cerr << "[ERROR] Observable '" << n << "' required by pdf '" << pdf->GetName()
+                  << "' is missing in data '" << data->GetName() << "'" << std::endl;
+        std::cerr << "  pdf observables: "; pdfObs->Print("V");
+        std::cerr << "  data vars:       "; dataVars->Print("V");
+      }
+      return false;
+    }
+  }
+  return true;
+}
+static void syncMassRangeToData(RooRealVar* mass, RooAbsData* data, bool verboseDiag) {
+  if (!mass || !data) return;
+
+  double dmin = 0., dmax = 0.;
+  data->getRange(*mass, dmin, dmax);
+
+  if (!(dmax > dmin)) {
+    if (verboseDiag) {
+      std::cerr << "[WARN] syncMassRangeToData: invalid data range for " << mass->GetName()
+                << " from dataset " << data->GetName() << " (dmin=" << dmin << ", dmax=" << dmax << ")\n";
+    }
+    return;
+  }
+
+  const double newLow  = std::max<double>(mgg_low,  dmin);
+  const double newHigh = std::min<double>(mgg_high, dmax);
+
+  if (!(newHigh > newLow)) {
+    if (verboseDiag) {
+      std::cerr << "[FATAL] syncMassRangeToData: clamped range invalid: ["
+                << newLow << "," << newHigh << "], data=[" << dmin << "," << dmax
+                << "], requested=[" << mgg_low << "," << mgg_high << "]\n";
+    }
+    return;
+  }
+
+  if (verboseDiag) {
+    std::cout << "[INFO] syncMassRangeToData: data range [" << dmin << "," << dmax << "], "
+              << "requested [" << mgg_low << "," << mgg_high << "] -> using ["
+              << newLow << "," << newHigh << "]\n";
+  }
+
+  mgg_low  = newLow;
+  mgg_high = newHigh;
+  nBinsForMass = 1.0f * (mgg_high - mgg_low);
+
+  mgg_blind_low  = std::min(std::max(mgg_blind_low,  mgg_low),  mgg_high);
+  mgg_blind_high = std::min(std::max(mgg_blind_high, mgg_low),  mgg_high);
+  if (mgg_blind_high < mgg_blind_low) std::swap(mgg_blind_low, mgg_blind_high);
+
+  mass->setRange(mgg_low, mgg_high);
+  mass->setBins((int)nBinsForMass);
 }

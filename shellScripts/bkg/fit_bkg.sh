@@ -4,18 +4,20 @@ if [ -z "${BASH_VERSION:-}" ]; then
   echo "[ERROR] Please run with bash: bash $0"
   exit 2
 fi
-set -euo pipefail
+# set -euo pipefail
 
 cmsenv
 
 lable='run3'
 version='ReReco'
-Lumi_run3='62.5'
+Lumi_run3='170.84'
 
-Lumis=( 7.98 27.01 17.61 9.53 )
+Lumis=( 7.98 27.01 17.61 9.53 108.95)
 
-# massList=( 1 2 3 4 5 6 7 8 9 10 15 20 25 30 )
-massList=( 5 15 30 )
+# massList=( 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 )
+# massList=( 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 )
+# massList=( 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 )
+massList=( 8 14 19 21 )
 nMass=${#massList[@]}
 
 ###### background fit ######
@@ -26,7 +28,8 @@ BASE_DIR="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flash
 cd $BASE_DIR/Background/
 # 明確指定使用小寫 makefile
 # make -f makefile clean && make -f makefile -B
-make clean && make vars && make -j
+# make clean && make vars && make -j
+make
 
 # 檢查目標二進位是否存在
 if [[ ! -x ./bin/fTest_ALP_turnOn || ! -x ./bin/makeBkgPlots_ALP ]]; then
@@ -54,23 +57,43 @@ total_OutDir="$path_out_bkg/AllFitResults"
 
 # mkdir -p "$path_out_bkg/5"
 # path_bkg="$path_out_bkg/5"
-# ./bin/fTest_ALP_turnOn -i $dir_input/ALP_M5/ws/run3.root --saveMultiPdf $path_bkg/CMS-HGG_mva_13TeV_multipdf.root -D $path_bkg/HZAmassInde_fTest --mass_ALP 5 -c 1 --isFlashgg 0 --isData 0 -f data, --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 > $path_bkg/ftest.log
+# ./bin/fTest_ALP_turnOn -i $dir_input/mA_M5/ws/run3.root --saveMultiPdf $path_bkg/CMS-HGG_mva_13TeV_multipdf.root -D $path_bkg/HZAmassInde_fTest --mass_ALP 5 -c 1 --isFlashgg 0 --isData 0 -f data, --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 > $path_bkg/ftest.log
 # ./bin/makeBkgPlots_ALP -b $path_bkg/CMS-HGG_mva_13TeV_multipdf.root -d $path_bkg/BkgPlots --total_OutDir $total_OutDir -o $path_bkg/BkgPlots.root --sqrts 13p6TeV --isMultiPdf --useBinnedData --massStep 2.5 --mhVal 125.0 --maVal 30 --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 --intLumi $Lumi_run3 -c 0 --isFlashgg 0 --doBands
 # exit 
 
+failed_log="failed_mass_points.log"
+: > "$failed_log"   # 清空舊 log
 
 for ((iBin=0; iBin<$nMass; iBin++))
 # for ((iBin=0; iBin<1; iBin++))
     do
+    echo ">>> Processing mass point: ${massList[$iBin]}"
+
     mkdir -p "$path_out_bkg/${massList[$iBin]}"
     path_bkg="$path_out_bkg/${massList[$iBin]}"
 
     # Syst
-    # 1
-    ./bin/fTest_ALP_turnOn -i $dir_input/ALP_M${massList[$iBin]}/ws/run3.root --saveMultiPdf $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -D $path_bkg/HZAmassInde_fTest --mass_ALP ${massList[$iBin]} -c 1 --isFlashgg 0 --isData 0 -f data, --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 > $path_bkg/ftest.log
-    # 2
-    ./bin/makeBkgPlots_ALP -b $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -d $path_bkg/BkgPlots --total_OutDir $total_OutDir -o $path_bkg/BkgPlots.root --sqrts 13p6TeV --isMultiPdf --useBinnedData --massStep 2.5 --mhVal 125.0 --maVal ${massList[$iBin]} --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 --intLumi $Lumi_run3 -c 0 --isFlashgg 0 --doBands
+    ######################################
+    # 1. fTest
+    ######################################
+    ./bin/fTest_ALP_turnOn -i $dir_input/mA_M${massList[$iBin]}/ws/run3.root --saveMultiPdf $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -D $path_bkg/HZAmassInde_fTest --mass_ALP ${massList[$iBin]} -c 1 --isFlashgg 0 --isData 0 -f data, --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 > $path_bkg/ftest.log
+    
+    if [[ $? -ne 0 ]]; then
+        echo "[FAIL][fTest] mA=${massList[$iBin]}" | tee -a "$failed_log"
+        continue
+    fi
+    
+    ######################################
+    # 2. makeBkgPlots
+    ######################################
+    # ./bin/makeBkgPlots_ALP -b $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -d $path_bkg/BkgPlots --total_OutDir $total_OutDir -o $path_bkg/BkgPlots.root --sqrts 13p6TeV --isMultiPdf --useBinnedData --massStep 2.5 --mhVal 125.0 --maVal ${massList[$iBin]} --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 --intLumi $Lumi_run3 -c 0 --isFlashgg 0 --doBands
 
+    # if [[ $? -ne 0 ]]; then
+    #     echo "[FAIL][BkgPlots] mA=$ma" | tee -a "$failed_log"
+    #     continue
+    # fi
+
+    echo "[OK] mA=$ma"
     # Nominal
     # 1
     # ./bin/fTest_ALP_turnOn -i $dir_input/ALP_data_bkg_Am${massList[$iBin]}_workspace.root --saveMultiPdf $path_bkg/CMS-HGG_mva_13TeV_multipdf.root -D $path_bkg/HZAmassInde_fTest --mass_ALP ${massList[$iBin]} -c 1 --isFlashgg 0 --isData 0 -f data, --mhLow 95 --mhHigh 180  --mhLowBlind 115 --mhHighBlind 135 > $path_bkg/ftest.log

@@ -115,34 +115,22 @@ def _quadratic_curve(xs, ys, n=300):
 def draw_channel(channel, years, mAs, base_dir):
     ROOT.gStyle.SetOptStat(0)
 
-    # 新增：legend/header 需要的 channel label
-    if channel == "mu":
-        channel_label = "Muon"
-    elif channel == "ele":
-        channel_label = "Electron"
-    else:
-        channel_label = str(channel)
-
     # 蒐集各 year 的圖
     graphs = []
     global_ymin, global_ymax = None, None
 
-    palette_hex_mu = [
+    palette_hex_ele = [
         "#540D6E", "#EE4266", "#FFB640",
         "#3BCEAC", "#0EAD69",
     ]
 
-    palette_hex_ele = [
+    palette_hex_mu = [
         "#5C7AFF", "#242038", "#59D2FE",
-        "#44E5E7", "#417B5A",
+        "#44E5E7", "#73FBD3",
     ]
     
-    # 改用 channel 對應的 palette
-    palette_hex = palette_hex_ele if channel == "ele" else palette_hex_mu
-    colors = [ROOT.TColor.GetColor(h) for h in palette_hex]
-
-    marker_styles = [20,  21,  23,  33,  34,  47,   29]
-    marker_size   = [1.3, 1.2, 1.5, 1.8, 1.6, 1.5, 1.8]
+    colors = [ROOT.TColor.GetColor("#276FBF"), ROOT.TColor.GetColor("#183059"), ROOT.TColor.GetColor("#FC7A1E"), ROOT.TColor.GetColor("#33673B"), ROOT.TColor.GetColor("#34E4EA"), ROOT.TColor.GetColor("#F564A9")]
+    markers = [20, 21, 22, 23, 24, 25, 26]
 
     for yi, year in enumerate(years):
         xs, ys = [], []
@@ -170,19 +158,13 @@ def draw_channel(channel, years, mAs, base_dir):
         sx, sy = _quadratic_curve(xs, ys, n=300)
 
         from array import array as carray
-
-        # year 對應 marker 設定（超出就循環）
-        ms = marker_styles[yi % len(marker_styles)]
-        msz = marker_size[yi % len(marker_size)]
-
         # 平滑連線 graph
         gxl = carray('d', list(map(float, sx)))
         gyl = carray('d', list(map(float, sy)))
         gr_line = ROOT.TGraph(len(sx), gxl, gyl)
         gr_line.SetLineColor(colors[yi % len(colors)])
         gr_line.SetMarkerColor(colors[yi % len(colors)])
-        gr_line.SetMarkerStyle(ms)            # 供 legend 顯示
-        gr_line.SetMarkerSize(msz)            # 讓 legend marker 大小也跟著 year
+        gr_line.SetMarkerStyle(markers[yi % len(markers)])  # 供 legend 顯示
         gr_line.SetLineWidth(LINE_WIDTH)
 
         # 原始點 graph（只畫點）
@@ -191,8 +173,8 @@ def draw_channel(channel, years, mAs, base_dir):
         gr_pts = ROOT.TGraph(len(xs), gx, gy)
         gr_pts.SetLineColor(0)
         gr_pts.SetMarkerColor(colors[yi % len(colors)])
-        gr_pts.SetMarkerStyle(ms)
-        gr_pts.SetMarkerSize(MARKER_SIZE * msz)
+        gr_pts.SetMarkerStyle(markers[yi % len(markers)])
+        gr_pts.SetMarkerSize(MARKER_SIZE)
 
         # 更新全域 y 範圍
         ymin, ymax = min(ys), max(ys)
@@ -227,13 +209,13 @@ def draw_channel(channel, years, mAs, base_dir):
         axis.SetTitleSize(0.055)
         axis.SetLabelSize(0.05)
     ax.SetTitleOffset(1.15)
-    ay.SetTitleOffset(1.1 + 9.0*OFFSET)
+    ay.SetTitleOffset(1.1 + 10*OFFSET)
     ax.SetLabelOffset(0.009)
 
     # 固定座標範圍
-    first_line.GetXaxis().SetLimits(0.0, 32.0)  # x-axis [0, 33]
-    first_line.SetMinimum(0.6)                  # y-axis min = 0
-    first_line.SetMaximum(6.2)                  # y-axis max = 5.2
+    first_line.GetXaxis().SetLimits(0.0, 33.0)  # x-axis [0, 33]
+    first_line.SetMinimum(0.1)                  # y-axis min = 0
+    first_line.SetMaximum(4.2)                  # y-axis max = 5.2
 
     # 畫第一個年的原始點
     first_pts.Draw("P SAME")

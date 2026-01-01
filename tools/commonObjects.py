@@ -29,13 +29,16 @@ lumiMap = {
     '16APV':19.52, 
     '17':41.48, 
     '18':59.83, 
-    'combined':137.65, 
-    'merged':137.65,
-    '2022preEE':61.89,
+    # 'combined':137.65, 
+    # 'merged':137.65,
+    # '2022preEE':61.89,
     '2022preEE':7.98,
-    # '2022postEE':26.67,
+    '2022postEE':26.67,
     '2023preBPix':17.79,
-    '2023postBPix':9.45
+    '2023postBPix':9.45,
+    '2024':108.95,
+    'merged':170.84,
+    'combined':170.84, 
     # Set 2022preEE to 61.89 for lack of signal MC samples 
 }
 
@@ -57,12 +60,13 @@ decayMode = 'hgg'
 
 # List of years
 # years_to_process = ['2016','2017','2018','2022preEE','2022postEE', '2023preBPix', '2023postBPix']
-years_to_process = ['2022preEE']
+years_to_process = ['2022preEE','2022postEE', '2023preBPix', '2023postBPix', '2024']
 
 # flashgg input WS objects
 # inputWSName__ = "tagsDumper/cms_hza_13TeV"
 # inputWSName__ = "tagsDumper/CMS_hza_workspace"
-inputWSName__ = "CMS_hza_workspace/CMS_hza_workspace"
+# inputWSName__ = "CMS_hza_workspace/CMS_hza_workspace"
+inputWSName__ = "CMS_hza_workspace"
 inputNuisanceExtMap = {'scales':'','scalesCorr':'','smears':''}
 # Signal output WS objects
 outputWSName__ = "wsig"

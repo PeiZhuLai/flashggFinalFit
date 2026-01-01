@@ -181,9 +181,9 @@ if opt.channel == 'ele':
   print(" [INFO] channel=ele -> 覆寫系統列表:", sanitized_systs)
 elif opt.channel == 'mu':
   _forced = {
-    'scales'     : ['PhotonScale','MuonPtScale'],
+    'scales'     : ['PhotonScale','MuonScale'],
     'scalesCorr' : ['FNUF','Material'],
-    'smears'     : ['PhotonSmear','MuonPtSmear'],
+    'smears'     : ['PhotonSmear','MuonSmear'],
   }
   sanitized_systs = _forced
   print(" [INFO] channel=mu -> 覆寫系統列表:", sanitized_systs)

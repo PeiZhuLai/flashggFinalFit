@@ -651,7 +651,14 @@ def plotSplines(_finalModel,_outdir="./",_nominalMass='125',splinesToPlot=['xs',
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Function for plotting final signal model: neat
 def plotSignalModel(_hists,_opt,_outdir=".",offset=0.03,_Amass='1',_year='16', _channel='ele'):
-  colorMap = {'16':38,'16APV':31, '17':30,'18':46,'2022preEE':38,'2022postEE':30}
+  colorMap = {
+    '16':38,'16APV':31, '17':30,'18':46,
+    '2022preEE':38,'2022postEE':30,
+    # NEW: add Run-3 years used in your scripts
+    '2023preBPix':46, '2023postBPix':ROOT.kRed-4,
+    '2024':ROOT.kGreen+2,
+    'combined':4,
+  }
   canv = ROOT.TCanvas("c","c",650,600)
   canv.SetMargin(0.12+offset, 0.035, 0.14, 0.09) # //left//right//bottom//top
   canv.SetTickx()
@@ -703,8 +710,12 @@ def plotSignalModel(_hists,_opt,_outdir=".",offset=0.03,_Amass='1',_year='16', _
     leg1.SetTextSize(0.03)
     for year in _opt.years.split(","):
       key = f"pdf_{year}"
-      if key in _hists:
-        leg1.AddEntry(_hists[key], "%s: #scale[0.8]{#sigma_{eff} = %1.2f GeV}" % (year, getEffSigma(_hists[key])), "l")
+      h = _hists.get(key, None)
+      if (h is None) or (not hasattr(h, "GetXaxis")):
+          continue
+      if hasattr(h, "GetEntries") and h.GetEntries() <= 0 and hasattr(h, "Integral") and h.Integral() <= 0:
+          continue
+      leg1.AddEntry(h, "%s: #scale[0.8]{#sigma_{eff} = %1.2f GeV}" % (year, getEffSigma(h)), "l")
     leg1.Draw("Same")
 
     leg2 = ROOT.TLegend(0.15+offset,0.3,0.5+offset,0.45)
@@ -831,3 +842,4 @@ def plotSignalModel(_hists,_opt,_outdir=".",offset=0.03,_Amass='1',_year='16', _
 
   # Save canvas
   canv.SaveAs(f"{_outdir}/smodel_{_Amass}_{_year}_{_channel}.pdf")
+

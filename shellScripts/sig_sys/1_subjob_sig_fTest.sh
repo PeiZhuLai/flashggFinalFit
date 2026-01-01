@@ -2,9 +2,8 @@
 
 # Configuration variables
 ChannelList=( ele mu )
-# ALPmassList=( 1 2 3 4 5 6 7 8 9 10 15 20 25 30 )
-ALPmassList=( 5 15 30 )
-YearsList=( 2022preEE )
+ALPmassList=( 1 2 3 4 5 6 7 8 9 10 15 20 25 30 )
+YearsList=( 2022preEE 2022postEE 2023preBPix 2023postBPix 2024)
 HmassList=( 125 )
 BaseDir="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit"
 EosDir="/eos/home-p/pelai/HZa/root_MVAcut/sig"
@@ -34,7 +33,7 @@ for iChannel in "${!ChannelList[@]}"; do
         log_file="$LogDir/${ChannelList[iChannel]}/${ALPmassList[iALPmass]}_fTest_job_${YearsList[iYear]}_${ChannelList[iChannel]}_Hm${HmassList[iHmass]}.log"
         output_file="$LogDir/${ChannelList[iChannel]}/${ALPmassList[iALPmass]}_fTest_job_${YearsList[iYear]}_${ChannelList[iChannel]}_Hm${HmassList[iHmass]}.out"
         error_file="$LogDir/${ChannelList[iChannel]}/${ALPmassList[iALPmass]}_fTest_job_${YearsList[iYear]}_${ChannelList[iChannel]}_Hm${HmassList[iHmass]}.err"
-        arguments="${ALPmassList[iALPmass]} ${YearsList[iYear]} ${HmassList[iHmass]} ${ChannelList[iChannel]} $EosDir/ALP_M${ALPmassList[iALPmass]}/ws_Tree2WS"
+        arguments="${ALPmassList[iALPmass]} ${YearsList[iYear]} ${HmassList[iHmass]} ${ChannelList[iChannel]} $EosDir/mA_M${ALPmassList[iALPmass]}/ws_Tree2WS"
 
         echo "log = $log_file" >> $SubmitFile
         echo "output = $output_file" >> $SubmitFile
