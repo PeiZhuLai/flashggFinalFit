@@ -63,6 +63,9 @@ bool BLIND = true;
 bool runFtestCheckWithToys=false;
 bool PLOT_ONLY = false;
 
+int FTEST_NTOYS = 500; // was 5000; lower = much faster (override with --ftoys)
+int GOF_NTOYS   = 200; // was 500;  lower = faster (override with --gtoys)
+
 float mgglow_ =100.;//FIXME
 float mgghigh_ =180;//FIXME
 float mggblindlow_ =115;//FIXME
@@ -161,48 +164,11 @@ void runFit(RooAbsPdf *pdf, RooAbsData *data, double *NLL, int *stat_t, int MaxT
     }
   }
 
-
-// [ROOT-FIX] Clamp the observable range *locally* to the dataset's effective range for this fit.
-// This prevents RooFit aborts when the dataset (especially RooDataHist toys) has a narrower range
-// than the pdf observable (e.g. empty edge bins shrink the dataset range).
-RooRealVar* mData = dynamic_cast<RooRealVar*>(data && data->get() ? data->get()->find("CMS_hza_mass") : nullptr);
-std::unique_ptr<RooArgSet> _obsSet(pdf ? pdf->getObservables(*data) : nullptr);
-RooRealVar* mPdf = nullptr;
-if (_obsSet) mPdf = dynamic_cast<RooRealVar*>(_obsSet->find("CMS_hza_mass"));
-if (!mPdf && _obsSet && mData) mPdf = dynamic_cast<RooRealVar*>(_obsSet->find(mData->GetName()));
-if (!mData && data && data->get() && mPdf) mData = dynamic_cast<RooRealVar*>(data->get()->find(mPdf->GetName()));
-
-struct RangeGuard {
-  RooRealVar* v = nullptr;
-  double oldMin = 0.0;
-  double oldMax = 0.0;
-  bool active = false;
-  explicit RangeGuard(RooRealVar* vv) : v(vv) {}
-  void clamp(double lo, double hi) {
-    if (!v) return;
-    oldMin = v->getMin();
-    oldMax = v->getMax();
-    v->setRange(lo, hi);
-    active = true;
-  }
-  ~RangeGuard() {
-    if (active && v) v->setRange(oldMin, oldMax);
-  }
-} _rgPdf(mPdf), _rgData((mData && mData!=mPdf) ? mData : nullptr);
-
-if (mData && mPdf) {
-  double dmin = 0.0, dmax = 0.0;
-  data->getRange(*mData, dmin, dmax);
-  const double lo = std::max(mPdf->getMin(), dmin);
-  const double hi = std::min(mPdf->getMax(), dmax);
-  if (hi > lo) {
-    _rgPdf.clamp(lo, hi);
-    if (mData != mPdf) _rgData.clamp(lo, hi);
-  }
-}
   int tries = 0;
   int status = 1;
   double bestNll = 1e12;
+
+  const bool fastMode = (MaxTries<=1);
 
   {
     RooArgSet* params = pdf->getParameters(*data);
@@ -222,33 +188,41 @@ if (mData && mPdf) {
     std::unique_ptr<RooAbsReal> nll(pdf->createNLL(
       *data,
       RooFit::Offset(true),
-      RooFit::Optimize(true)
+      RooFit::Optimize(2)
     ));
     RooMinimizer minim(*nll);
     minim.setPrintLevel(-1);
-    minim.setStrategy(1);
+    minim.setStrategy(fastMode ? 0 : 1);
     minim.setOffsetting(true);
     minim.optimizeConst(1);
-    minim.setEps(1e-6);
+    minim.setEps(fastMode ? 1e-4 : 1e-6);
+    minim.setMaxFunctionCalls(fastMode ? 2000 : 20000);
+    minim.setMaxIterations(fastMode ? 2000 : 20000);
 
-    status = minim.minimize("Minuit2","minimize");
+    status = minim.minimize("Minuit2","migrad");
 
-    if (status!=0) {
+    // Light fallback for real-data fits: try higher strategy once.
+    if (!fastMode && status!=0) {
       minim.setStrategy(2);
-      status = minim.minimize("Minuit2","minimize");
+      status = minim.minimize("Minuit2","migrad");
     }
-    if (status!=0) {
-      status = minim.minimize("Minuit2","simplex");
-      if (status==0) {
-        status = minim.minimize("Minuit2","minimize");
-      }
-    }
+
+    // if (status!=0) {
+    //   minim.setStrategy(2);
+    //   status = minim.minimize("Minuit2","minimize");
+    // }
+    // if (status!=0) {
+    //   status = minim.minimize("Minuit2","simplex");
+    //   if (status==0) {
+    //     status = minim.minimize("Minuit2","migrad");
+    //   }
+    // }
 
     std::unique_ptr<RooFitResult> res(minim.save());
     double nllVal = nll->getVal();
     if (nllVal < bestNll) bestNll = nllVal;
 
-    if (status!=0 && res) {
+    if (!fastMode && status!=0 && res) {
       RooArgSet* pars = pdf->getParameters((const RooArgSet*)nullptr);
       pars->assignValueOnly(res->randomizePars());
     }
@@ -280,10 +254,22 @@ double getProbabilityFtest(double chi2, int ndof,RooAbsPdf *pdfNull, RooAbsPdf *
 
   int ndata = data->sumEntries();
 
+  // Speed/stability: for F-test (esp. with toys), fit a binned clone of the data.
+  mass->setBins(nBinsForMass);
+  // Some ROOT versions do NOT provide RooAbsData::binnedClone().
+  // Only RooDataSet has binnedClone(), so do it conditionally.
+  std::unique_ptr<RooAbsData> data_binned;
+  RooAbsData* data_for_fit = data;
+  if (auto* ds = dynamic_cast<RooDataSet*>(data)) {
+    data_binned.reset(ds->binnedClone());
+    if (data_binned) data_for_fit = data_binned.get();
+  }
+  RooAbsData* data_for_fit = data_binned ? data_binned.get() : data;
+
   double nllNullData = 1e12, nllTestData = 1e12;
   int statNullData = 1, statTestData = 1;
-  runFit(pdfNull, data, &nllNullData, &statNullData, /*MaxTries=*/3);
-  runFit(pdfTest, data, &nllTestData, &statTestData, /*MaxTries=*/3);
+  runFit(pdfNull, data_for_fit, &nllNullData, &statNullData, /*MaxTries=*/3);
+  runFit(pdfTest, data_for_fit, &nllTestData, &statTestData, /*MaxTries=*/3);
 
   if (statNullData != 0 || statTestData != 0) {
     std::cerr << "[WARN] getProbabilityFtest: fit to data failed (null=" << statNullData
@@ -298,7 +284,7 @@ double getProbabilityFtest(double chi2, int ndof,RooAbsPdf *pdfNull, RooAbsPdf *
   RooArgSet preParams_test;
   params_test->snapshot(preParams_test);
 
-  int ntoys =5000;
+  int ntoys = FTEST_NTOYS;
   TCanvas *can = new TCanvas();
   can->SetLogy();
   TH1F toyhist(Form("toys_fTest_%s.pdf",pdfNull->GetName()),";Chi2;",60,-2,10);
@@ -417,7 +403,7 @@ double getGoodnessOfFit(RooRealVar *mass, RooAbsPdf *mpdf, RooAbsData *data, std
   syncMassRangeToData(mass, data, /*verboseDiag=*/false);
 
   double prob;
-  int ntoys = 500;
+  int ntoys = GOF_NTOYS;
   name+="_gofTest.pdf";
   RooRealVar norm("norm","norm",data->sumEntries(),0,10E6);
 
@@ -896,7 +882,7 @@ void truth_plot(RooRealVar *mass,
   lat->SetTextSize(0.045);
   lat->DrawLatex(PlotStyleCfg::canvasLeftMargin, 0.94, "#bf{CMS} #it{Preliminary}");
   // 減越多，字越靠近左邊
-  lat->DrawLatex(1.-PlotStyleCfg::canvasRightMargin*10.-0.03, 0.94, "170.84 fb^{-1} (13.6 TeV)");
+  lat->DrawLatex(1.-PlotStyleCfg::canvasRightMargin*11.-0.03, 0.94, "170.84 fb^{-1} (13.6 TeV)");
 
   // 确保曲线在最上层
   for (auto* c : pdfCurves) {
@@ -955,6 +941,8 @@ int main(int argc, char* argv[]){
     ("outDir,D", po::value<string>(&outDir)->default_value("plots/fTest"),                      "Out directory for plots")
     ("saveMultiPdf", po::value<string>(&outfilename),         					"Save a MultiPdf model with the appropriate pdfs")
     ("runFtestCheckWithToys", 									"When running the F-test, use toys to calculate pvals (and make plots) ")
+    ("ftoys", po::value<int>(&FTEST_NTOYS)->default_value(500), "Number of toys for F-test p-values (default 500; was 5000)")
+    ("gtoys", po::value<int>(&GOF_NTOYS)->default_value(200), "Number of toys for Goodness-of-Fit (default 200; was 500)")
     ("is2011",                                                                                  "Run 2011 config")
     ("is2012",                                                                                  "Run 2012 config")
     ("unblind",  									                                                              "Dont blind plots")

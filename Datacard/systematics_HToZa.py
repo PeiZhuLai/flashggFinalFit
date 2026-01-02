@@ -49,8 +49,10 @@ experimental_systematics = [
                 # Pileup
                 {'name':'pu_reweight_sf','title':'CMS_hza_pileup','type':'factory','prior':'lnN','correlateAcrossYears':0},
 
+                # Photon
+                {'name':'photon_id_sf_SelectedPhoton','title':'CMS_hza_photon_id','type':'factory','prior':'lnN','correlateAcrossYears':0},
+
                 # Electrons
-                {'name':'electron_iso_sf_SelectedElectron','title':'CMS_hza_electron_iso','type':'factory','prior':'lnN','correlateAcrossYears':0},
                 {'name':'electron_reco_sf_SelectedElectron','title':'CMS_hza_electron_reco','type':'factory','prior':'lnN','correlateAcrossYears':0},
                 {'name':'electron_wplid_sf_SelectedElectron','title':'CMS_hza_electron_id','type':'factory','prior':'lnN','correlateAcrossYears':0},
                 {'name':'electron_wplid_sf_nomatch_SelectedGenNoRecoElectron','title':'CMS_hza_electron_id_nomatch','type':'factory','prior':'lnN','correlateAcrossYears':0},
@@ -59,7 +61,6 @@ experimental_systematics = [
                 {'name':'muon_reco_sf_SelectedMuon','title':'CMS_hza_muon_reco','type':'factory','prior':'lnN','correlateAcrossYears':0},
                 {'name':'muon_looseid_sf_SelectedMuon','title':'CMS_hza_muon_id','type':'factory','prior':'lnN','correlateAcrossYears':0},
                 {'name':'muon_looseid_sf_nomatch_SelectedGenNoRecoMuon','title':'CMS_hza_muon_id_nomatch','type':'factory','prior':'lnN','correlateAcrossYears':0},
-                {'name':'muon_iso_sf_SelectedMuon','title':'CMS_hza_muon_iso','type':'factory','prior':'lnN','correlateAcrossYears':0},
               ]
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -71,10 +72,10 @@ signal_shape_systematics = [
                 {'name':'FNUF','title':'FNUF','type':'signal_shape','mode':'scalesCorr','mean':'0.0','sigma':'1.0'},
                 {'name':'Material','title':'Material','type':'signal_shape','mode':'scalesCorr','mean':'0.0','sigma':'1.0'},
 
-                {'name':'ElectronScale','title':'CMS_ElectronScale','type':'signal_shape','mode':'scales','mean':'0.0','sigma':'1.0'},
-                {'name':'ElectronSmear','title':'CMS_ElectronSmear','type':'signal_shape','mode':'smears','mean':'0.0','sigma':'1.0'},
-                {'name':'MuonPtScale','title':'CMS_MuonPtScale','type':'signal_shape','mode':'scales','mean':'0.0','sigma':'1.0'},
-                {'name':'MuonPtSmear','title':'CMS_MuonPtSmear','type':'signal_shape','mode':'smears','mean':'0.0','sigma':'1.0'},
-                {'name':'PhotonScale','title':'CMS_PhotonScale','type':'signal_shape','mode':'scales','mean':'0.0','sigma':'1.0'},
-                {'name':'PhotonSmear','title':'CMS_PhotonSmear','type':'signal_shape','mode':'smears','mean':'0.0','sigma':'1.0'},
+                {'name':'ElectronScale','title':'ElectronScale','type':'signal_shape','mode':'scales','mean':'0.0','sigma':'1.0'},
+                {'name':'ElectronSmear','title':'ElectronSmear','type':'signal_shape','mode':'smears','mean':'0.0','sigma':'1.0'},
+                {'name':'MuonScale','title':'MuonScale','type':'signal_shape','mode':'scales','mean':'0.0','sigma':'1.0'},
+                {'name':'MuonSmear','title':'MuonSmear','type':'signal_shape','mode':'smears','mean':'0.0','sigma':'1.0'},
+                {'name':'PhotonScale','title':'PhotonScale','type':'signal_shape','mode':'scales','mean':'0.0','sigma':'1.0'},
+                {'name':'PhotonSmear','title':'PhotonSmear','type':'signal_shape','mode':'smears','mean':'0.0','sigma':'1.0'},
               ]

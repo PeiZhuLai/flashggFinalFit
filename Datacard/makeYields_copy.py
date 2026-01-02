@@ -18,10 +18,6 @@ from systematics_HToZa import theory_systematics, experimental_systematics, sign
 from commonObjects import *
 from commonTools import *
 
-#   * if systematics=True: also extract reweighted yields for each uncertainty source
-from tools.calcSystematics import factoryType, calcSystYields
-from tools.wsUtils import fetchWorkspace
-
 ma_list = [1,2,3,4,5,6,7,8,9,10,15,20,25,30]
 interploate_ma_list = [11,12,13,14,16,17,18,19,21,22,23,24,26,27,28,29]
 
@@ -162,114 +158,6 @@ def list_workspace_datasets(ws, tfile=None):
 
   return sorted(names)
 
-# 工具：從 ROOT 檔案中「穩健」取得 RooWorkspace
-# 你的檔案結構常見為：
-#   KEY: TDirectoryFile  CMS_hza_workspace;1
-#     KEY: RooWorkspace  CMS_hza_workspace;1
-# 因此不能只用 f.Get('CMS_hza_workspace') 並期待直接拿到 RooWorkspace。
-def get_rooworkspace_from_file(tfile, ws_name):
-  """Return (RooWorkspace or None, logs).
-
-  Handles cases where the workspace is stored:
-    1) at top-level as RooWorkspace (f.Get(ws_name))
-    2) inside a TDirectoryFile with the same name (f.Get(ws_name) is a TDirectory)
-    3) via the explicit path "<dir>/<ws>" (f.Get(f"{ws}/{ws}"))
-    4) anywhere in the file (recursive scan; last resort)
-  """
-  logs = []
-  if tfile is None:
-    return None, ["[FETCH] tfile is None"]
-
-  # 1) direct get
-  try:
-    obj = tfile.Get(ws_name)
-  except Exception as e:
-    obj = None
-    logs.append(f"[FETCH] 直接 Get('{ws_name}') 失敗: {e}")
-
-  if obj:
-    try:
-      cname = obj.ClassName()
-    except Exception:
-      cname = str(type(obj))
-
-    if obj.InheritsFrom("RooWorkspace"):
-      logs.append(f"[FETCH] 在檔案頂層找到 RooWorkspace='{ws_name}' (class={cname})")
-      return obj, logs
-
-    # 2) directory container
-    if obj.InheritsFrom("TDirectory"):
-      logs.append(f"[FETCH] 找到 TDirectory '{ws_name}' (class={cname})，嘗試在其中尋找 RooWorkspace")
-
-      # 2a) common: same name inside
-      try:
-        ws = obj.Get(ws_name)
-      except Exception:
-        ws = None
-      if ws and ws.InheritsFrom("RooWorkspace"):
-        logs.append(f"[FETCH] 在目錄 '{ws_name}' 內找到 RooWorkspace='{ws_name}'")
-        return ws, logs
-
-      # 2b) otherwise: first RooWorkspace in that directory
-      try:
-        for k in obj.GetListOfKeys():
-          nm = k.GetName()
-          sub = obj.Get(nm)
-          if sub and sub.InheritsFrom("RooWorkspace"):
-            logs.append(f"[FETCH] 在目錄 '{ws_name}' 內找到 RooWorkspace='{nm}' (改用此 workspace)")
-            return sub, logs
-      except Exception as e:
-        logs.append(f"[FETCH] 掃描目錄 '{ws_name}' 失敗: {e}")
-
-  # 3) explicit path "dir/ws"
-  path = f"{ws_name}/{ws_name}"
-  try:
-    ws = tfile.Get(path)
-  except Exception:
-    ws = None
-  if ws and ws.InheritsFrom("RooWorkspace"):
-    logs.append(f"[FETCH] 透過路徑 '{path}' 取得 RooWorkspace='{ws_name}'")
-    return ws, logs
-
-  # 4) recursive scan (last resort)
-  def _recurse(dir_obj):
-    try:
-      keys = dir_obj.GetListOfKeys()
-    except Exception:
-      return None
-    if not keys:
-      return None
-    for key in keys:
-      try:
-        o = key.ReadObj()
-      except Exception:
-        continue
-      try:
-        if o and o.InheritsFrom("RooWorkspace") and o.GetName() == ws_name:
-          return o
-      except Exception:
-        pass
-      try:
-        if o and o.InheritsFrom("TDirectory"):
-          found = _recurse(o)
-          if found:
-            return found
-      except Exception:
-        pass
-    return None
-
-  try:
-    found = _recurse(tfile)
-  except Exception as e:
-    found = None
-    logs.append(f"[FETCH] 遞迴掃描失敗: {e}")
-  if found:
-    logs.append(f"[FETCH] 透過遞迴掃描找到 RooWorkspace='{ws_name}'")
-    return found, logs
-
-  logs.append(f"[FETCH] 未找到 RooWorkspace='{ws_name}'")
-  return None, logs
-
 # 工具：模糊猜測 dataset 名稱
 def guess_closest_name(target, candidates):
   if not candidates: return None
@@ -392,14 +280,10 @@ for year in years:
       skipProc = False
       if opt.skipZeroes:
         f = ROOT.TFile(_inputWSFile)
-        w, _logs = get_rooworkspace_from_file(f, inputWSName__)
-        if w is None:
-          print(f" --> [WARNING] skipZeroes: 找不到 RooWorkspace '{inputWSName__}' 於檔案 {_inputWSFile}，略過 skipZeroes 檢查")
-        else:
-          sumw = w.data(_nominalDataName).sumEntries()
-          if sumw == 0.:
-            skipProc = True
-          w.Delete()
+        w = f.Get(inputWSName__)
+        sumw = w.data(_nominalDataName).sumEntries()
+        if sumw == 0.: skipProc = True
+        w.Delete()
         f.Close()
       if skipProc: continue
 
@@ -499,6 +383,9 @@ if (not opt.skipBkg) & (opt.cat != "NOTAG"):
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Yields: for each signal row in dataFrame extract the yield
 print(" ..........................................................................................")
+#   * if systematics=True: also extract reweighted yields for each uncertainty source
+from tools.calcSystematics import factoryType, calcSystYields
+from tools.wsUtils import fetchWorkspace
 
 # Create columns in dataFrame to store yields
 data['nominal_yield'] = '-'
@@ -556,26 +443,12 @@ for ir,r in data[data['type']=='sig'].iterrows():
   if (not f_in) or f_in.IsZombie():
     print(f"[ERROR] 無法開啟工作區檔案: {r.inputWSFile}")
     sys.exit(1)
-
-  if opt.debugNames:
-    try:
-      o = f_in.Get(inputWSName__)
-      if o:
-        print(f"[DEBUG] f_in.Get('{inputWSName__}') class={o.ClassName()}")
-      else:
-        print(f"[DEBUG] f_in.Get('{inputWSName__}') -> None")
-    except Exception as e:
-      print(f"[DEBUG] f_in.Get('{inputWSName__}') 例外: {e}")
-
-  # 這裡不要只依賴 tools.wsUtils.fetchWorkspace，因為你的檔案可能是
-  # TDirectoryFile(CMS_hza_workspace)/RooWorkspace(CMS_hza_workspace) 的結構。
-  ws, logs = get_rooworkspace_from_file(f_in, inputWSName__)
+  ws, logs = fetchWorkspace(f_in, inputWSName__)
   for lg in logs:
     print(f"[DEBUG][WS] {r.inputWSFile} {lg}")
   if ws is None:
     print(f"[ERROR] 找不到 RooWorkspace '{inputWSName__}' 於檔案: {r.inputWSFile}")
     sys.exit(1)
-
   inputWS = ws
 
   # ---------------- Robustly fetch nominal RooDataSet ----------------

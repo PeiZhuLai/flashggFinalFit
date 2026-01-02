@@ -156,7 +156,7 @@ def writeSystematic(f,d,s,options,stxsMergeScheme=None,scaleCorrScheme=None):
           # Remove final space from line and add to file
           f.write("%s\n"%lsyst[:-1])
   return True
-          
+
 
 def addSyst(l,v,s,p,c):
   #l-systematic line, v-value, s-systematic title, p-proc, c-cat
@@ -245,4 +245,80 @@ def writePdfIndex(f,d,options):
 def writeBreak(f):
   lbreak = '----------------------------------------------------------------------------------------------------------------------------------'
   f.write("%s\n"%lbreak)
+
+def writeInterpolateYields(f,d,s,options,stxsMergeScheme=None,scaleCorrScheme=None):
+  import json
+
+  # Anchor points (真正有產出 workspace/yields 的點)
+  ma_list = [1,2,3,4,5,6,7,8,9,10,15,20,25,30]
+  interploate_ma_list = [11,12,13,14,16,17,18,19,21,22,23,24,26,27,28,29]
+
+  def _nearest_anchor_mass(mass, anchors):
+    m = int(round(float(mass)))
+    return min(anchors, key=lambda a: abs(a - m))
+
+  def resolve_mass_for_io(mass_alp, anchors, interpolate_list):
+    m = int(round(float(mass_alp)))
+    if m in interpolate_list:
+      return _nearest_anchor_mass(m, anchors)
+    return m
+
+  def _load_eff_json(ch):
+    # ch: 'ele' or 'mu'
+    if ch == "ele":
+      path = "/afs/cern.ch/work/p/pelai/HZa/HiggsZaAna/Plot/output/sigEfficiencyVmA_ele_byYear_5years_quadratic_interp_ma_points.json"
+    elif ch == "mu":
+      path = "/afs/cern.ch/work/p/pelai/HZa/HiggsZaAna/Plot/output/sigEfficiencyVmA_muon_byYear_5years_quadratic_interp_ma_points.json"
+    else:
+      raise ValueError("Unknown channel: %s" % ch)
+    with open(path, "r") as jf:
+      return json.load(jf)
+
+  def _get_eff(payload, year, mass):
+    # json keys for mass are strings: "1","2",...
+    mkey = str(int(round(float(mass))))
+    try:
+      return float(payload["values"][year][mkey])
+    except Exception as e:
+      raise KeyError("Cannot find eff for year=%s mass=%s in json (%s)" % (year, mkey, str(e)))
+
+  # 只在需要插值的點寫 rateParam（call site 已經用 if opt.mass_ALP in interploate_ma_list 保護）
+  mass_target = int(round(float(options.mass_ALP)))
+  mass_for_io = resolve_mass_for_io(mass_target, ma_list, interploate_ma_list)
+
+  years = [y.strip() for y in options.years.split(",") if y.strip()]
+  # datacard relevant cats: 跟 pdfindex 一樣排除 NOTAG；rateParam 對每個 cat 寫一行
+  cats = [c for c in d.cat.unique() if ("NOTAG" not in c)]
+
+  # 讀入兩個 channel json
+  eff_json = {
+    "ele": _load_eff_json("ele"),
+    "mu": _load_eff_json("mu"),
+  }
+
+  # 確保有空行分隔（可選）
+  f.write("\n")
+
+  # rateParam lines: per (year,channel,cat)
+  for year in years:
+    for ch in ["ele", "mu"]:
+      eff_t = _get_eff(eff_json[ch], year, mass_target)
+      eff_a = _get_eff(eff_json[ch], year, mass_for_io)
+      ratio = (eff_t / eff_a) if eff_a != 0.0 else 1.0
+
+      nuis = "interpolate_yield_%s_%s" % (year, ch)
+      proc = "ggH_%s_%s" % (year, ch)
+
+      for cat in cats:
+        f.write("%-37s rateParam   %-6s %-22s %.16g\n" % (nuis, cat, proc, ratio))
+
+  f.write("\n")
+
+  # freeze lines: 每個 (year,channel) 一行
+  for year in years:
+    for ch in ["ele", "mu"]:
+      nuis = "interpolate_yield_%s_%s" % (year, ch)
+      f.write("nuisance edit freeze %s\n" % nuis)
+
+  return True
 

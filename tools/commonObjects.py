@@ -71,7 +71,7 @@ inputNuisanceExtMap = {'scales':'','scalesCorr':'','smears':''}
 # Signal output WS objects
 outputWSName__ = "wsig"
 outputWSObjectTitle__ = "hggpdfsmrel"
-outputWSNuisanceTitle__ = "CMS_hgg_nuisance"
+outputWSNuisanceTitle__ = "CMS_hza_nuisance"
 outputNuisanceExtMap = {'scales':'%sscale'%sqrts__,'scalesCorr':'%sscaleCorr'%sqrts__,'smears':'%ssmear'%sqrts__,'scalesGlobal':'%sscale'%sqrts__}
 # outputNuisanceExtMap = {'scales':'','scalesCorr':'','smears':'','scalesGlobal':''}
 # Bkg output WS objects

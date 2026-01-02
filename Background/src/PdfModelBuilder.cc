@@ -111,7 +111,7 @@ RooAbsPdf* PdfModelBuilder::getBernstein(string prefix, int order){
   RooRealVar *sigma = new RooRealVar(Form("%s_sigma",prefix.c_str()),Form("%s_sigma",prefix.c_str()),8,0.2,30.0) ;
   RooGaussian *gaus = new RooGaussian(Form("%s_gaus",prefix.c_str()),Form("%s_gaus",prefix.c_str()),*obs_var,*mean,*sigma) ;
   RooRealVar *step_value = new RooRealVar(Form("%s_step",prefix.c_str()), Form("%s_step",prefix.c_str()), 105., 100., 110.);
-  RooRealVar *step_width = new RooRealVar(Form("%s_stepWidth",prefix.c_str()), Form("%s_stepWidth",prefix.c_str()), 2.0, 0.2, 20.0);
+  RooRealVar *step_width = new RooRealVar(Form("%s_stepWidth",prefix.c_str()), Form("%s_stepWidth",prefix.c_str()), 2.0, 0.2, 10.0);
   if (order==1) {
 	 RooBernsteinFast<1> *bern = new RooBernsteinFast<1>(prefix.c_str(),prefix.c_str(),*obs_var,*coeffList);
     RooGenericPdf *soft_step = new RooGenericPdf(
@@ -188,11 +188,12 @@ RooAbsPdf* PdfModelBuilder::getBernsteinStepxGau(string prefix, int order, int m
   double sigma_bern  = 1.5,  sigma_lbern  = 1.0,  sigma_hbern  = 8.0;
 
   RooRealVar *g_mean  = new RooRealVar(Form("%s_gmean",prefix.c_str()),Form("%s_gmean",prefix.c_str()),0.);
+  g_mean->setConstant(true);
   RooRealVar *g_sigma = new RooRealVar(Form("%s_gsigma",prefix.c_str()),Form("%s_gsigma",prefix.c_str()), sigma_bern, sigma_lbern, sigma_hbern);
   RooGaussian *gaus   = new RooGaussian(Form("%s_gaus",prefix.c_str()),Form("%s_gaus",prefix.c_str()),*obs_var,*g_mean,*g_sigma);
 
   RooRealVar *step_value = new RooRealVar(Form("%s_step",prefix.c_str()), Form("%s_step",prefix.c_str()), turnon_bern, turnon_lbern, turnon_hbern);
-  RooRealVar *step_width = new RooRealVar(Form("%s_stepWidth",prefix.c_str()), Form("%s_stepWidth",prefix.c_str()), 2.0, 0.2, 20.0);
+  RooRealVar *step_width = new RooRealVar(Form("%s_stepWidth",prefix.c_str()), Form("%s_stepWidth",prefix.c_str()), 2.0, 0.2, 10.0);
 
   RooArgList coeffList;
   std::vector<RooRealVar*> rawPars;
@@ -222,12 +223,12 @@ RooAbsPdf* PdfModelBuilder::getBernsteinStepxGau(string prefix, int order, int m
     RooArgList(*obs_var, *step_value, *step_width, *bern)
   );
 
-  obs_var->setBins(8192, "fft");
+  obs_var->setBins(1024, "fft"); // speed: smaller FFT grid
   RooFFTConvPdf *conv = new RooFFTConvPdf(
     Form("%s",prefix.c_str()), Form("%s",prefix.c_str()),
     *obs_var, *soft_step_times_bern, *gaus
   );
-  conv->setBufferFraction(0.25);
+  conv->setBufferFraction(0.15);
 
   return conv;
 }

@@ -820,7 +820,7 @@ def plotSignalModel(_hists,_opt,_outdir=".",offset=0.03,_Amass='1',_year='16', _
   lat0.DrawLatex(0.12+offset,0.92,"#bf{CMS} #it{%s}"%_opt.label)
   lat0.DrawLatex(0.80,0.92,"%s TeV"%("13.6"))
   if channeltext == "Electron":
-    lat0.DrawLatex(0.16+offset,0.81,"H #rightarrow Za #rightarrow #e^{+}#e^{-} + 2#gamma")
+    lat0.DrawLatex(0.16+offset,0.81,"H #rightarrow Za #rightarrow e^{+}e^{-} + 2#gamma")
   else:
     lat0.DrawLatex(0.16+offset,0.81,"H #rightarrow Za #rightarrow #mu^{+}#mu^{-} + 2#gamma")
 

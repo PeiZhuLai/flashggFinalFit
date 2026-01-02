@@ -12,8 +12,6 @@ from collections import OrderedDict as od
 # from systematics import theory_systematics, experimental_systematics, signal_shape_systematics
 from systematics_HToZa import theory_systematics, experimental_systematics, signal_shape_systematics
 
-interploate_ma_list = [11,12,13,14,16,17,18,19,21,22,23,24,26,27,28,29]
-
 def get_options():
   parser = OptionParser()
 
@@ -171,7 +169,7 @@ if not os.path.isdir("./output_Datacard%s"%extStr): os.system("mkdir ./output_Da
 fdataName = "./output_Datacard%s/%s_pruned_datacard_%s.txt"%(extStr,opt.mass_ALP,opt.channel)
 print(" --> Writing to datacard file: %s"%fdataName)
 
-from tools.writeToDatacard import writePreamble, writeProcesses, writeSystematic, writeMCStatUncertainty, writePdfIndex, writeBreak, writeInterpolateYields
+from tools.writeToDatacard import writePreamble, writeProcesses, writeSystematic, writeMCStatUncertainty, writePdfIndex, writeBreak
 
 fdata = open(fdataName,"w")
 if not writePreamble(fdata,opt): 
@@ -193,10 +191,6 @@ if opt.doSystematics:
   writeBreak(fdata)
   for syst in signal_shape_systematics:
     if not writeSystematic(fdata,data,syst,opt):
-      print(" --> [ERROR] in writing systematic %s (signal shape). Leaving"%syst['name'])
-      leave()
-  if opt.mass_ALP in interploate_ma_list:
-    if not writeInterpolateYields(fdata,data,syst,opt):
       print(" --> [ERROR] in writing systematic %s (signal shape). Leaving"%syst['name'])
       leave()
 if opt.doMCStatUncertainty:
