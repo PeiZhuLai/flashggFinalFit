@@ -17,18 +17,22 @@ from ROOT import (
 )
 
 # 質量點
-massPoints = [5, 15, 30]  # 若需修改質量點，直接編輯此列表
+# massPoints = [5, 15, 30]  # 若需修改質量點，直接編輯此列表
+massPoints = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]  # 若需修改質量點，直接編輯此列表
 # 新增: 將原列表抽出為預設, 允許以 --masses 覆寫
 DEFAULT_MASS_POINTS = massPoints[:]
 
 # 常數
 # https://arxiv.org/pdf/2402.09955
 # ggf-xs 51960
-mh = 125.38  # H 質量 (GeV)
+# mh = 125.38  # H 質量 (GeV)
+mh = 125.18  # H 質量 (GeV) Zebing
 mz = 91.1876  # Z 質量 (GeV)
 #https://twiki.cern.ch/twiki/bin/view/LHCPhysics/CERNYellowReportPageBR#TotalWidthAnchor
-gamma_HToSM = 4.143e-3  # H 總寬度 (GeV)
+# gamma_HToSM = 4.143e-3  # H 總寬度 (GeV)
+gamma_HToSM = 3.2e-3  # H 總寬度 (GeV) Zebing
 decoupling_energy_scale = 1000.0  # GeV (1 TeV)
+ZToll_br = 0.06729
 
 def lamda_formula(x,y):
     return (1-x-y)**2 - 4*x*y
@@ -49,7 +53,9 @@ def calc_Wilson_coupling(br, ma):
     # br * gamma_HToSM / (1 - br) = gamma_HToZa
 
     gamma_HToZa = (br * gamma_HToSM) / (1. - br)
-    Wilson_Zh = ( gamma_HToZa / ((mh**3 / (16. * math.pi)) * lamda_formula((mz/mh)**2, (ma/mh)**2)**1.5) * decoupling_energy_scale**2 ) ** 0.5 
+    # Wilson_Zh = ( gamma_HToZa / ((mh**3 / (16. * math.pi)) * lamda_formula((mz/mh)**2, (ma/mh)**2)**1.5) * decoupling_energy_scale**2 ) ** 0.5 
+    ratio = mh**3 / (16. * math.pi)
+    Wilson_Zh = ( ( gamma_HToZa * decoupling_energy_scale**2 )  / ( ratio * lamda_formula((mz/mh)**2, (ma/mh)**2)**1.5) ) ** 0.5 
 
     return Wilson_Zh
 
@@ -185,7 +191,7 @@ def BrazilianPlots(sample: int = 0,
                    outdir: str = "output_plots",
                    assume_xs: float = 100.0,
                    ggF_xs: float = 52170.0,
-                   lumi_fb: float = 62.5,
+                   lumi_fb: float = 61.89,
                    formats: List[str] = None,
                    logy: bool = True,
                    save_root: bool = False,
@@ -241,11 +247,11 @@ def BrazilianPlots(sample: int = 0,
 
         # 修正: Wilson 誤差用「轉換後差值」而非直接把差值丟進公式
         if setLimitsOnWilsonCoefficient:
-            mid_br   = q50 * assume_xs / ggF_xs
-            up1_br   = q84 * assume_xs / ggF_xs
-            dn1_br   = q16 * assume_xs / ggF_xs
-            up2_br   = q975 * assume_xs / ggF_xs
-            dn2_br   = q025 * assume_xs / ggF_xs
+            mid_br   = q50 * assume_xs / ( ggF_xs * ZToll_br )
+            up1_br   = q84 * assume_xs / ( ggF_xs * ZToll_br )
+            dn1_br   = q16 * assume_xs / ( ggF_xs * ZToll_br )
+            up2_br   = q975 * assume_xs / ( ggF_xs * ZToll_br )
+            dn2_br   = q025 * assume_xs / ( ggF_xs * ZToll_br )
             mid_coup = calc_Wilson_coupling(mid_br, m)
             up1_coup = calc_Wilson_coupling(up1_br, m)
             dn1_coup = calc_Wilson_coupling(dn1_br, m)
@@ -298,13 +304,13 @@ def BrazilianPlots(sample: int = 0,
 
     if setLimitsOnWilsonCoefficient:
         ytitle = "|C^{eff}_{ZH}| [#frac{\Lambda}{1 TeV}]"
-        ymax = 100.
+        ymax = 10.
         ymin = 1e-3
     else:
         if not setLimitsOnBR:
             ytitle = "#sigma(pp #rightarrow H) #times B(#rightarrow Za #rightarrow 2l + 2#gamma) [fb]"
             ymax = 100
-            ymin = 8e-1
+            ymin = 8e-2
         else:
             ytitle = "Br(H #rightarrow Za #rightarrow 2l + 2#gamma)"
             ymax = 3e-2
@@ -452,7 +458,7 @@ def main():
     parser.add_argument("--outdir", default="output_plots", help="Output directory")
     parser.add_argument("--assume-xs", type=float, default=100.0, help="Assumed signal cross section (fb)")
     parser.add_argument("--ggf-xs", type=float, default=52170.0, help="ggF total cross section (fb)")
-    parser.add_argument("--lumi", type=float, default=62.5, help="Luminosity in fb^-1 for label")
+    parser.add_argument("--lumi", type=float, default=61.89, help="Luminosity in fb^-1 for label")
     parser.add_argument("--formats", default="png,pdf", help="Output formats, e.g. png,pdf,root")
     parser.add_argument("--linear-y", action="store_true", help="Use linear y-axis (default log)")
     parser.add_argument("--save-root", action="store_true", help="Also save TGraphs to ROOT file")

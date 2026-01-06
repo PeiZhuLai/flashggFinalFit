@@ -17,7 +17,8 @@ from ROOT import (
 )
 
 # 質量點
-massPoints = [5, 15, 30]  # 若需修改質量點，直接編輯此列表
+# massPoints = [5, 15, 30]  # 若需修改質量點，直接編輯此列表
+massPoints = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]  # 若需修改質量點，直接編輯此列表
 # 新增: 將原列表抽出為預設, 允許以 --masses 覆寫
 DEFAULT_MASS_POINTS = massPoints[:]
 
@@ -303,17 +304,17 @@ def BrazilianPlots(sample: int = 0,
 
     if setLimitsOnWilsonCoefficient:
         ytitle = "|C^{eff}_{ZH}| [#frac{\Lambda}{1 TeV}]"
-        ymax = 10.
-        ymin = 1e-2
+        ymax = 100.
+        ymin = 1e-4
     else:
         if not setLimitsOnBR:
             ytitle = "#sigma(pp #rightarrow H) #times B(#rightarrow Za #rightarrow 2l + 2#gamma) [fb]"
-            ymax = 100
-            ymin = 8e-1
+            ymax = 300
+            ymin = 8e-3
         else:
             ytitle = "Br(H #rightarrow Za #rightarrow 2l + 2#gamma)"
             ymax = 3e-2
-            ymin = 1e-6
+            ymin = 1e-7
 
     frame = TH1F("frame", f";m_{{a}} (GeV);{ytitle}", 100, xmin, xmax)
     frame.SetStats(0)
@@ -464,7 +465,7 @@ def main():
     parser.add_argument("--tag-suffix", default="", help="Extra tag suffix for output filenames")
     parser.add_argument("--masses", default="", help="逗號分隔質量點 (例: 5,15,30) 留空使用內建")
     parser.add_argument("--only", default="", help="只畫哪些: xs,br,wilson (逗號分隔), 留空=全部")
-    parser.add_argument("--indirect-min", type=float, default=5, help="Wilson 紅線最小 ma (預設=min(masses))")
+    parser.add_argument("--indirect-min", type=float, default=1, help="Wilson 紅線最小 ma (預設=min(masses))")
     parser.add_argument("--indirect-max", type=float, default=30, help="Wilson 紅線最大 ma (預設=max(masses))")
     parser.add_argument("--indirect-step", type=float, default=0.25, help="Wilson 紅線步長 (預設=0.25)")
     args = parser.parse_args()

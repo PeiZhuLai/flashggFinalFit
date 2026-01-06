@@ -25,32 +25,32 @@ def writeProcesses(f,d,options):
     # Loop over rows for respective category
     for ir,r in d[d['cat']==cat].iterrows():
       # Write to datacard
-      f.write("shapes      %-55s %-40s %s %s\n"%(r['proc'],r['cat'],r['modelWSFile'],r['model']))
+      f.write("shapes      %-26s %-7s %s %s\n"%(r['proc'],r['cat'],r['modelWSFile'],r['model']))
 
   # Bin, observation and rate lines
-  lbreak = '----------------------------------------------------------------------------------------------------------------------------------'
-  lbin_cat = '%-30s'%"bin"
-  lobs_cat = '%-30s'%"observation"
-  lbin_procXcat = '%-30s'%"bin"
-  lproc = '%-30s'%"process"
-  lprocid = '%-30s'%"process"
-  lrate = '%-30s'%"rate"        
+  lbreak = '-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------'
+  lbin_cat = '%-15s'%"bin"
+  lobs_cat = '%-15s'%"observation"
+  lbin_procXcat = '%-15s'%"bin"
+  lproc = '%-15s'%"process"
+  lprocid = '%-15s'%"process"
+  lrate = '%-15s'%"rate"        
   # Loop over categories
   for cat in d.cat.unique():
-    lbin_cat += "%-55s "%cat
-    lobs_cat += "%-55s "%"-1"
+    lbin_cat += "%-20s "%cat
+    lobs_cat += "%-20s "%"-1"
     sigID = 0
     # Loop over rows for respective category
     for ir,r in d[d['cat']==cat].iterrows():
       if r['proc'] == "data_obs": continue
-      lbin_procXcat += "%-55s "%cat
-      lproc += "%-55s "%r['proc']
-      if r['proc'] == "bkg_mass": lprocid += "%-55s "%"1"
+      lbin_procXcat += "%-20s "%cat
+      lproc += "%-20s "%r['proc']
+      if r['proc'] == "bkg_mass": lprocid += "%-20s "%"1"
       else:
-        lprocid += "%-55s "%sigID
+        lprocid += "%-20s "%sigID
         sigID -= 1
-      if r['rate'] == 1.0: lrate += "%-55.1f "%r['rate']
-      else: lrate += "%-55.7f "%r['rate']
+      if r['rate'] == 1.0: lrate += "%-20.1f "%r['rate']
+      else: lrate += "%-20.1f "%r['rate']
   #Remove final space from lines and add to file
   f.write("\n")
   for l in [lbreak,lbin_cat,lobs_cat,lbreak,lbin_procXcat,lproc,lprocid,lrate,lbreak]: 
@@ -239,11 +239,11 @@ def writePdfIndex(f,d,options):
   f.write("\n")
   for cat in d[~d['cat'].str.contains("NOTAG")].cat.unique(): 
     indexStr = "pdfindex_%s_13p6TeV"%cat
-    f.write("%-55s  discrete\n"%indexStr)
+    f.write("%-15s  discrete\n"%indexStr)
   return True
 
 def writeBreak(f):
-  lbreak = '----------------------------------------------------------------------------------------------------------------------------------'
+  lbreak = '-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------'
   f.write("%s\n"%lbreak)
 
 def writeInterpolateYields(f,d,s,options,stxsMergeScheme=None,scaleCorrScheme=None):

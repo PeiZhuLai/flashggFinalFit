@@ -81,6 +81,41 @@ RooRealVar *intLumi_ = new RooRealVar("IntLumi","hacked int lumi", 1000.);
 
 TRandom3 *RandomGen = new TRandom3();
 
+// --- Helpers to decouple *plot* range from *fit* range ---
+// We sometimes clamp the mass range to the dataset range for fit stability.
+// But for plotting, we still want to show the user-requested window (--mhLow/--mhHigh).
+static inline int binsForRange(double lo, double hi) {
+  const double w = hi - lo;
+  if (!(w > 0.0)) return 1;
+  int nb = (int)std::lround(w);
+  if (nb < 1) nb = 1;
+  return nb;
+}
+struct MassStateGuard {
+  RooRealVar* v = nullptr;
+  double oldMin = 0.0;
+  double oldMax = 0.0;
+  int oldBins = 0;
+  bool active = false;
+  explicit MassStateGuard(RooRealVar* vv) : v(vv) {
+    if (!v) return;
+    oldMin = v->getMin();
+    oldMax = v->getMax();
+    oldBins = v->getBins();
+    active = true;
+  }
+  ~MassStateGuard() {
+    if (!active || !v) return;
+    v->setRange(oldMin, oldMax);
+    v->setBins(oldBins);
+  }
+};
+static inline void setMassPlotState(RooRealVar* v) {
+  if (!v) return;
+  v->setRange((double)mgglow_, (double)mgghigh_);
+  v->setBins(binsForRange((double)mgglow_, (double)mgghigh_));
+}
+
 RooAbsPdf* getPdf(PdfModelBuilder &pdfsModel, string type, int order, const char* ext="", int mass_ALP=1)
 {
   if (type=="Bernstein") return pdfsModel.getBernsteinStepxGau("Bern",order, mass_ALP);//PZ
@@ -188,7 +223,9 @@ void runFit(RooAbsPdf *pdf, RooAbsData *data, double *NLL, int *stat_t, int MaxT
     std::unique_ptr<RooAbsReal> nll(pdf->createNLL(
       *data,
       RooFit::Offset(true),
-      RooFit::Optimize(2)
+      RooFit::Optimize(2),
+      RooFit::PrintEvalErrors(0)   // 只出摘要(每個component計數)，不逐條狂刷
+      // RooFit::PrintEvalErrors(-1) // 若你想完全不印
     ));
     RooMinimizer minim(*nll);
     minim.setPrintLevel(-1);
@@ -264,7 +301,9 @@ double getProbabilityFtest(double chi2, int ndof,RooAbsPdf *pdfNull, RooAbsPdf *
     data_binned.reset(ds->binnedClone());
     if (data_binned) data_for_fit = data_binned.get();
   }
-  RooAbsData* data_for_fit = data_binned ? data_binned.get() : data;
+
+  // Ensure we keep a single pointer used for the fits.
+  data_for_fit = data_binned ? data_binned.get() : data;
 
   double nllNullData = 1e12, nllTestData = 1e12;
   int statNullData = 1, statTestData = 1;
@@ -508,9 +547,16 @@ void eachFunc_plot(RooRealVar *mass, RooAbsPdf *pdf, RooAbsData *data, string na
   double chi2 = plot_chi2->chiSquare(np);
 
   *prob = getGoodnessOfFit(mass,pdf,data,name);
+
+  // For output plots, force x-axis to the user-requested window (--mhLow/--mhHigh).
+  // Keep the (possibly clamped) fit range for subsequent fits in the caller.
+  MassStateGuard _fitState(mass);
+  setMassPlotState(mass);
+  const int plotBins = binsForRange((double)mgglow_, (double)mgghigh_);
+
   RooPlot *plot = mass->frame();
-  mass->setRange("unblindReg_1",mgg_low,mgg_blind_low);
-  mass->setRange("unblindReg_2",mgg_blind_high,mgg_high);
+  mass->setRange("unblindReg_1", mgglow_,       mggblindlow_);
+  mass->setRange("unblindReg_2", mggblindhigh_, mgghigh_);
 
   plot->GetXaxis()->SetTitle("m_{ll#gamma#gamma} (GeV)");
   plot->GetXaxis()->SetTitleSize(0.05);
@@ -520,10 +566,10 @@ void eachFunc_plot(RooRealVar *mass, RooAbsPdf *pdf, RooAbsData *data, string na
   plot->GetYaxis()->SetLabelSize(0.04);
 
   if (BLIND) {
-    data->plotOn(plot,Binning(mgg_high-mgg_low),CutRange("unblindReg_1"),RooFit::DataError(RooAbsData::SumW2));
-    data->plotOn(plot,Binning(mgg_high-mgg_low),CutRange("unblindReg_2"),RooFit::DataError(RooAbsData::SumW2));
+    data->plotOn(plot,Binning(plotBins),CutRange("unblindReg_1"),RooFit::DataError(RooAbsData::SumW2));
+    data->plotOn(plot,Binning(plotBins),CutRange("unblindReg_2"),RooFit::DataError(RooAbsData::SumW2));
   }
-  else data->plotOn(plot,Binning(nBinsForMass),RooFit::DataError(RooAbsData::SumW2));
+  else data->plotOn(plot,Binning(plotBins),RooFit::DataError(RooAbsData::SumW2));
 
   float leftMargion = 0.14;
   float bottomMargion = 0.13;
@@ -560,6 +606,17 @@ void multipdf_plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, R
     return;
   }
 
+  // Save current (fit) mass state; we may have clamped it to the dataset range for stability.
+  MassStateGuard _fitState(mass);
+  const double fitMin  = mass->getMin();
+  const double fitMax  = mass->getMax();
+  const int    fitBins = mass->getBins();
+
+  // For plotting, still show the user-requested window (--mhLow/--mhHigh).
+  setMassPlotState(mass);
+  const int plotBins = binsForRange((double)mgglow_, (double)mgghigh_);
+
+
   TCanvas *canv = new TCanvas("","",800,800);
   canv->SetLeftMargin(PlotStyleCfg::canvasLeftMargin);
   canv->SetRightMargin(PlotStyleCfg::canvasRightMargin);
@@ -588,14 +645,14 @@ void multipdf_plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, R
 
   RooPlot *plot = mass->frame();
 
-  mass->setRange("unblindReg_1",mgg_low,mgg_blind_low);
-  mass->setRange("unblindReg_2",mgg_blind_high,mgg_high);
+  mass->setRange("unblindReg_1", mgglow_,       mggblindlow_);
+  mass->setRange("unblindReg_2", mggblindhigh_, mgghigh_);
   if (BLIND) {
-    data->plotOn(plot,Binning(mgg_high-mgg_low),CutRange("unblindReg_1"),RooFit::DataError(RooAbsData::SumW2));
-    data->plotOn(plot,Binning(mgg_high-mgg_low),CutRange("unblindReg_2"),RooFit::DataError(RooAbsData::SumW2));
-    data->plotOn(plot,Binning(mgg_high-mgg_low),Invisible());
+    data->plotOn(plot,Binning(plotBins),CutRange("unblindReg_1"),RooFit::DataError(RooAbsData::SumW2));
+    data->plotOn(plot,Binning(plotBins),CutRange("unblindReg_2"),RooFit::DataError(RooAbsData::SumW2));
+    data->plotOn(plot,Binning(plotBins),Invisible());
   }
-  else data->plotOn(plot,Binning(nBinsForMass),RooFit::DataError(RooAbsData::SumW2));
+  else data->plotOn(plot,Binning(plotBins),RooFit::DataError(RooAbsData::SumW2));
   RooHist *plotdata = (RooHist*)plot->getObject(plot->numItems()-1);
   bool doRatioPlot_= PlotStyleCfg::enableRatio;
   TPad *pad1 = new TPad("pad1","pad1",0,PlotStyleCfg::pad2Height,1,1);
@@ -632,13 +689,18 @@ void multipdf_plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, R
     if (icat>6) { col=kBlack; style++; }
     catIndex->setIndex(icat);
     if (!PLOT_ONLY) {
+      // Fit in the (possibly clamped) fit window to avoid RooFit range/data mismatches.
+      mass->setRange(fitMin, fitMax);
+      mass->setBins(fitBins);
       pdfs->getCurrentPdf()->fitTo(*data,RooFit::Minos(0),RooFit::Minimizer("Minuit2","minimize"),RooFit::SumW2Error(kFALSE));
     }
+    // Plot in the user-requested window.
+    setMassPlotState(mass);
 
     std::string curveName = Form("bkg_curve_%d",icat);
     pdfs->getCurrentPdf()->plotOn(
       plot,
-      RooFit::Binning(nBinsForMass),
+      RooFit::Binning(plotBins),
       LineColor(col),
       LineStyle(style),
       LineWidth(4),
@@ -703,7 +765,7 @@ void multipdf_plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, R
     continue;
   }
   if (BLIND) {
-   if ((xtmp > mgg_blind_low ) && ( xtmp < mgg_blind_high) ) continue;
+   if ((xtmp > mggblindlow_) && (xtmp < mggblindhigh_)) continue;
   }
  double errhi = plotdata->GetErrorYhigh(ipoint);
  double errlow = plotdata->GetErrorYlow(ipoint);
@@ -715,7 +777,7 @@ void multipdf_plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, R
  point++;
   }
   pad2->cd();
-  TH1 *hdummy = new TH1D("hdummyweight","",mgg_high-mgg_low,mgg_low,mgg_high);
+  TH1 *hdummy = new TH1D("hdummyweight","",plotBins,mgglow_,mgghigh_);
   hdummy->SetMaximum(hdatasub->GetHistogram()->GetMaximum()+1);
   hdummy->SetMinimum(hdatasub->GetHistogram()->GetMinimum()-1);
 
@@ -744,7 +806,7 @@ void multipdf_plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, R
   hdummy->Draw("HIST");
 
   if (canDoRatio) {
-    TLine *line3 = new TLine(mgg_low,0.,mgg_high,0.);
+    TLine *line3 = new TLine(mgglow_,0.,mgghigh_,0.);
     line3->SetLineColor(bestcol);
     line3->SetLineWidth(PlotStyleCfg::zeroLineWidth);
     line3->Draw();
@@ -771,6 +833,12 @@ void truth_plot(RooRealVar *mass,
     std::cerr << "[WARN] truth_plot(map) called with null data. Skip plotting." << std::endl;
     return;
   }
+
+  // Force plotting window to the user-requested range (--mhLow/--mhHigh).
+  MassStateGuard _fitState(mass);
+  setMassPlotState(mass);
+  const int plotBins = binsForRange((double)mgglow_, (double)mgghigh_);
+
 
   TCanvas *canv = new TCanvas("","",800,800);
   canv->SetLeftMargin(PlotStyleCfg::canvasLeftMargin);
@@ -832,7 +900,7 @@ void truth_plot(RooRealVar *mass,
 
   std::string curveName = Form("bkg_curve_%d", i);
   p->plotOn(plot,
-  RooFit::Binning(nBinsForMass),
+  RooFit::Binning(plotBins),
   LineColor(col),
   LineStyle(style),
   LineWidth(4),

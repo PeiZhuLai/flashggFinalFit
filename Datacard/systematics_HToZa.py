@@ -39,28 +39,32 @@ theory_systematics = [
 
 experimental_systematics = [
                 # Updated luminosity partial-correlation scheme: 13/5/21 (recommended simplified nuisances)
-                {'name':'lumi_13p6TeV_Uncorrelated','title':'lumi_13p6TeV_Uncorrelated','type':'constant','prior':'lnN','correlateAcrossYears':0,'value':{'2022preEE':'1.013','2022postEE':'1.013','2023preBPix':'1.014','2023postBPix':'1.014'}},
+                # Ref: https://twiki.cern.ch/twiki/bin/viewauth/CMS/LumiRecommendationsRun3#2024
+                {'name':'lumi_13p6TeV_Uncorrelated','title':'lumi_13p6TeV_Uncorrelated','type':'constant','prior':'lnN','correlateAcrossYears':0,'value':{'2022preEE':'1.014','2022postEE':'1.014','2023preBPix':'1.013','2023postBPix':'1.013','2024':'1.016'}},
+                {'name':'lumi_13p6TeV_Correlated_2223','title':'lumi_13p6TeV_Correlated_2223','type':'constant','prior':'lnN','correlateAcrossYears':1,'value':{'2022preEE':'1.0101','2022postEE':'1.0101','2023preBPix':'1.0101','2023postBPix':'1.0101'}},
+                {'name':'lumi_13p6TeV_Correlated_2324','title':'lumi_13p6TeV_Correlated_2324','type':'constant','prior':'lnN','correlateAcrossYears':1,'value':{'2023preBPix':'1.0141','2023postBPix':'1.0141','2024':'1.0141'}},
+                {'name':'lumi_13p6TeV_Correlated_222324','title':'lumi_13p6TeV_Correlated_222324','type':'constant','prior':'lnN','correlateAcrossYears':1,'value':{'2022preEE':'1.0120','2022postEE':'1.0120','2023preBPix':'1.0120','2023postBPix':'1.0120','2024':'1.0120'}},
 
                 # Trigger
                 # 命名規則: workspace 變數為 weight_<name>_{central,Up,Down} → 此處只需填 <name>
                 # 對應: weight_hlt_sf_central / weight_hlt_sf_Up / weight_hlt_sf_Down
-                {'name':'hlt_sf','title':'CMS_hza_trigger','type':'factory','prior':'lnN','correlateAcrossYears':0},
+                {'name':'hlt_sf','title':'CMS_hza_trigger','type':'factory','prior':'lnN','correlateAcrossYears':1},
 
                 # Pileup
-                {'name':'pu_reweight_sf','title':'CMS_hza_pileup','type':'factory','prior':'lnN','correlateAcrossYears':0},
+                {'name':'pu_reweight_sf','title':'CMS_hza_pileup','type':'factory','prior':'lnN','correlateAcrossYears':1},
 
                 # Photon
-                {'name':'photon_id_sf_SelectedPhoton','title':'CMS_hza_photon_id','type':'factory','prior':'lnN','correlateAcrossYears':0},
+                {'name':'photon_id_sf_SelectedPhoton','title':'CMS_hza_photon_id','type':'factory','prior':'lnN','correlateAcrossYears':1},
 
                 # Electrons
-                {'name':'electron_reco_sf_SelectedElectron','title':'CMS_hza_electron_reco','type':'factory','prior':'lnN','correlateAcrossYears':0},
-                {'name':'electron_wplid_sf_SelectedElectron','title':'CMS_hza_electron_id','type':'factory','prior':'lnN','correlateAcrossYears':0},
-                {'name':'electron_wplid_sf_nomatch_SelectedGenNoRecoElectron','title':'CMS_hza_electron_id_nomatch','type':'factory','prior':'lnN','correlateAcrossYears':0},
+                {'name':'electron_reco_sf_SelectedElectron','title':'CMS_hza_electron_reco','type':'factory','prior':'lnN','correlateAcrossYears':1},
+                {'name':'electron_wplid_sf_SelectedElectron','title':'CMS_hza_electron_id','type':'factory','prior':'lnN','correlateAcrossYears':1},
+                {'name':'electron_wplid_sf_nomatch_SelectedGenNoRecoElectron','title':'CMS_hza_electron_id_nomatch','type':'factory','prior':'lnN','correlateAcrossYears':1},
 
                 # Muons
-                {'name':'muon_reco_sf_SelectedMuon','title':'CMS_hza_muon_reco','type':'factory','prior':'lnN','correlateAcrossYears':0},
-                {'name':'muon_looseid_sf_SelectedMuon','title':'CMS_hza_muon_id','type':'factory','prior':'lnN','correlateAcrossYears':0},
-                {'name':'muon_looseid_sf_nomatch_SelectedGenNoRecoMuon','title':'CMS_hza_muon_id_nomatch','type':'factory','prior':'lnN','correlateAcrossYears':0},
+                {'name':'muon_reco_sf_SelectedMuon','title':'CMS_hza_muon_reco','type':'factory','prior':'lnN','correlateAcrossYears':1},
+                {'name':'muon_looseid_sf_SelectedMuon','title':'CMS_hza_muon_id','type':'factory','prior':'lnN','correlateAcrossYears':1},
+                {'name':'muon_looseid_sf_nomatch_SelectedGenNoRecoMuon','title':'CMS_hza_muon_id_nomatch','type':'factory','prior':'lnN','correlateAcrossYears':1},
               ]
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -51,3 +51,5 @@ Datacard/yields_*
 Combine/t2w_jobs_*
 Combine/Checks/Bias_nominal/BiasJson/*_gaussfit.json
 Background/obj/RootDict.cxx_tmp_585741
+Combine/t2w_jobs/*_t2w.sh
+Combine/output_impacts/*_impacts.json

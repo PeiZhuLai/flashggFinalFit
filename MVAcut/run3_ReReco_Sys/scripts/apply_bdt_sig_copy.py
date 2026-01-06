@@ -143,19 +143,6 @@ def list_root_files(base: str, sample: str, years: List[str]) -> List[str]:
                 files.append(full)
     return sorted(list(dict.fromkeys(files)))
 
-# 新增：由 sample 名稱取得對應的 MVA 分支（era 檔內同時有多個 mA 分支時使用）
-def get_mva_branch_for_sample(keys: List[str], sample: str, fallback_syst: str = "nominal") -> Optional[str]:
-    """
-    e.g. sample='mA_M4' -> branch='MVA_Score_mA_M4'（優先）
-    若不存在，回退到既有 get_mva_col(keys, syst)（相容舊格式）
-    """
-    target = f"MVA_Score_{sample}"
-    kset = set(map(str, keys))
-    if target in kset:
-        return target
-    # fallback: 舊檔可能只有 MVA_Score，或 syst 命名不同
-    return get_mva_col(list(kset), fallback_syst)
-
 # 新增：建立通過 MVA cut 的 event 鍵集合（用複合鍵）
 def build_pass_event_map(samples: List[str], years: List[str], input_base: str, mva_cuts: Dict[int, float]) -> Tuple[Dict[tuple, set], Tuple[str, ...]]:
     pass_map: Dict[tuple, set] = {}
@@ -174,20 +161,16 @@ def build_pass_event_map(samples: List[str], years: List[str], input_base: str, 
                         continue
                     t = f[INPUT_BASE_TREE_NAME]
                     keys = list(map(str, t.keys()))
-
-                    # 改：用 sample 對應的 MVA branch（例如 MVA_Score_mA_M4）
-                    mva_branch = get_mva_branch_for_sample(keys, s, fallback_syst="nominal")
-                    if mva_branch is None or "event" not in keys:
+                    if "MVA_Score" not in keys or "event" not in keys:
                         continue
-
                     # 在第一個有效檔案決定 id_cols
                     if not id_cols:
                         id_cols = choose_id_columns(keys)
                         logging.info(f"Using ID columns: {id_cols}")
+                    # 若本檔少了必要鍵，跳過
                     if any(col not in keys for col in id_cols):
                         logging.warning(f"Skip {fpath}: missing ID columns {id_cols}")
                         continue
-
                     # 判斷年份
                     y_match = None
                     for y in years:
@@ -199,11 +182,10 @@ def build_pass_event_map(samples: List[str], years: List[str], input_base: str, 
                             y_match = years[0]
                         else:
                             continue
-
-                    # 迭代讀取：改成讀 mva_branch
-                    cols = [mva_branch] + list(id_cols)
+                    # 迭代讀取
+                    cols = ["MVA_Score"] + list(id_cols)
                     for arrs in t.iterate(cols, library="ak", step_size=UPROOT_STEP):
-                        mask = arrs[mva_branch] > cut
+                        mask = arrs["MVA_Score"] > cut
                         if len(id_cols) == 1:
                             evs = ak.to_numpy(arrs[id_cols[0]][mask]).astype(np.int64, copy=False)
                             year_sets[y_match].update(int(x) for x in evs.tolist())
@@ -217,6 +199,7 @@ def build_pass_event_map(samples: List[str], years: List[str], input_base: str, 
         for y in years:
             pass_map[(s, y)] = year_sets[y]
             logging.info(f"MVA pass events for {s}, {y}: {len(pass_map[(s,y)])}")
+    # 若整體都沒找到任何檔案，至少回傳使用 event 作為鍵
     if not id_cols:
         id_cols = ("event",)
     return pass_map, id_cols
@@ -310,18 +293,13 @@ def process_files(output_folder, input_folder, pass_map: Dict[tuple, set], id_co
                                     pass_df = pd.DataFrame(list(pass_set), columns=list(id_cols))
                                     all_data = all_data.merge(pass_df, on=list(id_cols), how='inner')
 
-                        # 改：優先使用對應 sample 的 MVA 分支（MVA_Score_mA_Mx）
+                        # 針對當前 syst 尋找正確的 MVA 分支，若找不到則不做二次保險過濾
                         ma_val = parse_ma_from_name(mA)
-                        sample_mva_col = f"MVA_Score_{mA}"
-                        mva_col = sample_mva_col if sample_mva_col in all_data.columns else get_mva_col(all_data.columns.tolist(), syst)
-
-                        if ma_val is not None and ma_val in mva_cuts and mva_col is not None and mva_col in all_data.columns:
+                        mva_col = get_mva_col(all_data.columns.tolist(), syst)
+                        if ma_val is not None and ma_val in mva_cuts and mva_col is not None:
                             all_data = all_data[all_data[mva_col] > mva_cuts[ma_val]]
                         elif syst != 'nominal':
-                            logging.warning(
-                                f"No suitable MVA column for {mA} {year} {syst} "
-                                f"(tried '{sample_mva_col}'), skip second-stage MVA filter."
-                            )
+                            logging.warning(f"No suitable MVA column for {mA} {year} {syst}, skip second-stage MVA filter.")
 
                         logging.info(f"Filtered {mA} {year} {syst}: {before} -> {len(all_data)} rows")
 

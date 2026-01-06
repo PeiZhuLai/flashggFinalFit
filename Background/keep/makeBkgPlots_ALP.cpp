@@ -815,7 +815,7 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 	float rightMargin=0.05;
 	float topMargin=0.08;
 	canv->SetMargin(0.111, rightMargin, 0.145, topMargin);//left//right//bottom//top
-	plot->SetMaximum(int(plot->GetMaximum())*1.4);//
+	plot->SetMaximum(int(plot->GetMaximum())*1.3);//
 	plot->GetXaxis()->CenterTitle(true);
 	plot->GetYaxis()->CenterTitle(true);
 
@@ -1297,7 +1297,7 @@ string catname;
 	pad2->SetLeftMargin(0.114);
 	pad2->SetRightMargin(rightMargin);
 	pad2->SetBottomMargin(0.40);
-	pad2->SetTopMargin(0.045); // y-axis top label is covered if it's too small
+	pad2->SetTopMargin(0.005); // 關鍵：縮小兩圖間距請調這裡
 	pad2->SetTicks(1,1);
 
 	// 再畫 pad，避免 Draw 後再改 margin 不明顯
@@ -1433,11 +1433,11 @@ string catname;
 	latex->SetTextFont(42);
 	latex->SetNDC();
 	latex->SetTextAlign(11);
-	latex->DrawLatex(0.111, 1. - topMargin + 0.02, "#bf{CMS} #it{Preliminary}");
+	latex->DrawLatex(0.111, 1. - topMargin + 0.01, "#bf{CMS} #it{Preliminary}");
 	latex->DrawLatex(0.15, 1. - topMargin - 0.10,("m_{a} = "+to_string(int(mavalue_))+" GeV").c_str());
 
 	latex->SetTextAlign(31);
-	latex->DrawLatex(1. - rightMargin, 1. - topMargin + 0.02, ("170.84 fb^{-1} (13.6 TeV)"));
+	latex->DrawLatex(1. - rightMargin, 1. - topMargin + 0.01, ("170.84 fb^{-1} (13.6 TeV)"));
 
 	TLatex *cmslatex = new TLatex();
 	cmslatex->SetTextSize(0.03);
@@ -1505,21 +1505,11 @@ string catname;
   	//Second Plot
 	pad2->cd();
 	//TH1 *hdummy = new TH1D("hdummyweight","",80,100,180);
-	// TH1 *hdummy = new TH1D("hdummyweight","",85,mhLow,mhHigh);//bing
+	TH1 *hdummy = new TH1D("hdummyweight","",85,mhLow,mhHigh);//bing
+
 	// hdummy->SetMaximum(hdatasub->GetHistogram()->GetMaximum()+1);
 	// hdummy->SetMinimum(hdatasub->GetHistogram()->GetMinimum()-1);
 	//hdummy->GetYaxis()->SetTitle("data - best fit PDF");
-	pad2->cd();
-
-	// 讓下半部 X 軸跟上半部 RooPlot 完全一致（上半部可能已被 data/observable clamp）
-	const double xMinPlot  = plot->GetXaxis()->GetXmin();
-	const double xMaxPlot  = plot->GetXaxis()->GetXmax();
-	const int    nBinsPlot = plotdata->GetN();  // 上半部 data->plotOn(...Binning(nbin)) 的點數
-	
-	TH1 *hdummy = new TH1D("hdummyweight","", nBinsPlot, xMinPlot, xMaxPlot);
-
-	
-
 	hdummy->GetYaxis()->SetTitle("Data - Bkg"); //PZ
 	hdummy->GetYaxis()->SetTitleSize(0.127);
 	hdummy->GetYaxis()->SetTitleOffset(0.39);
@@ -1548,8 +1538,7 @@ string catname;
   	hdummy->GetYaxis()->SetNdivisions(505);
 
 	//TLine *line3 = new TLine(100,0.,180,0.);
-	TLine *line3 = new TLine(xMinPlot, 0., xMaxPlot, 0.);
-	// TLine *line3 = new TLine(mhLow,0.,mhHigh,0.);//PZ
+	TLine *line3 = new TLine(mhLow,0.,mhHigh,0.);//PZ
 	line3->SetLineColor(kBlue);
 	//line3->SetLineStyle(kDashed);
 	line3->SetLineWidth(3.0);
