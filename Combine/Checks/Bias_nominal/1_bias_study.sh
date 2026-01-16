@@ -2,13 +2,17 @@
 
 cmsenv
 
-mAs=( 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 )
+# mAs=( 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 )
 # mAs=( 5 15 30 )
-# mAs=( 5 )
+mAs=( 14 )
 
 root_datacard_path="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/root_t2w"
 
 for mA in "${mAs[@]}"; do
+
+    echo "=============================="
+    echo "Processing BiasStudy for mA = ${mA}"
+    echo "=============================="
 
     rm -rf BiasFits BiasToys 2>/dev/null
     

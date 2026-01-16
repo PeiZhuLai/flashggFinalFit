@@ -32,7 +32,8 @@
 #include "TKey.h"
 
 #include "RooCategory.h"
-#include "HiggsAnalysis/CombinedLimit/interface/RooMultiPdf.h"
+#include "HiggsAnalysis/CombinedLimit/interface/RooMultiPdfCombine.h"
+// #include "HiggsAnalysis/CombinedLimit/interface/RooMultiPdf.h"
 
 #include "../interface/PdfModelBuilder.h"
 #include <Math/PdfFuncMathCore.h>

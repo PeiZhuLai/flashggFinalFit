@@ -33,7 +33,8 @@
 #include "../interface/RooPowerLawSum.h"
 #include "RooGenericPdf.h"
 #include "../interface/PdfModelBuilder.h"
-#include "HiggsAnalysis/CombinedLimit/interface/RooMultiPdf.h"
+// #include "HiggsAnalysis/CombinedLimit/interface/RooMultiPdf.h"
+#include "HiggsAnalysis/CombinedLimit/interface/RooMultiPdfCombine.h"
 
 using namespace std;
 using namespace RooFit;

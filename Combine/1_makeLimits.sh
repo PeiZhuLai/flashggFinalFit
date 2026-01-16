@@ -9,6 +9,7 @@ nChannel=${#ChannelList[@]}
 # ALPmassList=( 1 2 3 4 5 6 7 8 9 10 15 20 25 30 )
 # ALPmassList=( 5 15 30 )
 ALPmassList=( 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 )
+# ALPmassList=( 1 2 3 9 )
 nALPmass=${#ALPmassList[@]}
 
 rm -fr output_combine_results
@@ -16,6 +17,8 @@ mkdir -p output_combine_results
 
 for iALPmass in "${!ALPmassList[@]}"; do
     
+    mA=${ALPmassList[iALPmass]}
+    echo "Processing for mA = ${mA}"
     # ---------- Asymptotic Limit ---------- 
     path_datacard="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Datacard/output_Datacard_leptons/${ALPmassList[iALPmass]}_pruned_datacard_leptons.txt"
     combine -M AsymptoticLimits $path_datacard --cminDefaultMinimizerStrategy 0 -m 125.38 --run blind --setParameterRanges MH=115,135 -n ${ALPmassList[iALPmass]}

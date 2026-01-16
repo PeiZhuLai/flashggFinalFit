@@ -304,17 +304,17 @@ def BrazilianPlots(sample: int = 0,
 
     if setLimitsOnWilsonCoefficient:
         ytitle = "|C^{eff}_{ZH}| [#frac{\Lambda}{1 TeV}]"
-        ymax = 100.
-        ymin = 1e-4
+        ymax = 10.
+        ymin = 1e-2
     else:
         if not setLimitsOnBR:
             ytitle = "#sigma(pp #rightarrow H) #times B(#rightarrow Za #rightarrow 2l + 2#gamma) [fb]"
-            ymax = 300
-            ymin = 8e-3
+            ymax = 100
+            ymin = 4e-1
         else:
             ytitle = "Br(H #rightarrow Za #rightarrow 2l + 2#gamma)"
-            ymax = 3e-2
-            ymin = 1e-7
+            ymax = 2e-2
+            ymin = 1e-6
 
     frame = TH1F("frame", f";m_{{a}} (GeV);{ytitle}", 100, xmin, xmax)
     frame.SetStats(0)

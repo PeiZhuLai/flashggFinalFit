@@ -129,7 +129,7 @@ def draw_channel(channel, years, mAs, base_dir):
 
     palette_hex_mu = [
         "#540D6E", "#EE4266", "#FFB640",
-        "#3BCEAC", "#0EAD69",
+        "#3BCEAC", "#086788",
     ]
 
     palette_hex_ele = [

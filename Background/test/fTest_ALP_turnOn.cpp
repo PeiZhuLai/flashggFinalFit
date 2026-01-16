@@ -29,7 +29,7 @@
 #include "TArrow.h"
 #include "TKey.h"
 #include "RooCategory.h"
-#include "HiggsAnalysis/CombinedLimit/interface/RooMultiPdf.h"
+#include "HiggsAnalysis/CombinedLimit/interface/RooMultiPdfCombine.h"
 #include "../interface/PdfModelBuilder.h"
 #include <Math/PdfFuncMathCore.h>
 #include <Math/ProbFunc.h>
@@ -58,6 +58,8 @@ static void ensureOrderSuffix(RooAbsPdf* pdf, int order);
 static int getBestFitFunction(RooMultiPdf *mpdf, RooAbsData *data, RooCategory *catIndex, bool silent);
 static bool checkPdfDataObservables(RooAbsPdf* pdf, RooAbsData* data, bool verboseDiag = true);
 static void syncMassRangeToData(RooRealVar* mass, RooAbsData* data, bool verboseDiag = true);
+static void sanitizePdfParams(RooAbsPdf* pdf, RooAbsData* data, bool verboseDiag = false);
+static void randomizePdfParamsUniform(RooAbsPdf* pdf, RooAbsData* data);
 
 bool BLIND = true;
 bool runFtestCheckWithToys=false;
@@ -66,12 +68,12 @@ bool PLOT_ONLY = false;
 int FTEST_NTOYS = 500; // was 5000; lower = much faster (override with --ftoys)
 int GOF_NTOYS   = 200; // was 500;  lower = faster (override with --gtoys)
 
-float mgglow_ =100.;//FIXME
+float mgglow_ =95.;//FIXME
 float mgghigh_ =180;//FIXME
 float mggblindlow_ =115;//FIXME
 float mggblindhigh_ =135;//FIXME
 
-float mgg_low =100.;//FIXME
+float mgg_low =95.;//FIXME
 float mgg_high =180.;//FIXME
 float nBinsForMass = 1.*(mgg_high-mgg_low);
 float mgg_blind_low =115;//FIXME
@@ -205,26 +207,14 @@ void runFit(RooAbsPdf *pdf, RooAbsData *data, double *NLL, int *stat_t, int MaxT
 
   const bool fastMode = (MaxTries<=1);
 
-  {
-    RooArgSet* params = pdf->getParameters(*data);
-    std::unique_ptr<TIterator> it(params->createIterator());
-    for (RooRealVar* v = (RooRealVar*)it->Next(); v; v = (RooRealVar*)it->Next()) {
-      if (v->isConstant()) continue;
-      if (v->getError()<=0) {
-        double step = (v->hasMax() && v->hasMin()) ? 0.1*fabs(v->getMax()-v->getMin()) : std::max(1e-2, 0.1*fabs(v->getVal()));
-        v->setError(step);
-      }
-      if (v->hasMin() && fabs(v->getVal()-v->getMin())<1e-6) v->setVal(v->getMin()+1e-3*(v->hasMax()? (v->getMax()-v->getMin()) : 1.0));
-      if (v->hasMax() && fabs(v->getVal()-v->getMax())<1e-6) v->setVal(v->getMax()-1e-3*(v->hasMin()? (v->getMax()-v->getMin()) : 1.0));
-    }
-  }
+  sanitizePdfParams(pdf, data, /*verboseDiag=*/false);
 
   while (status!=0 && tries<MaxTries) {
     std::unique_ptr<RooAbsReal> nll(pdf->createNLL(
       *data,
       RooFit::Offset(true),
-      RooFit::Optimize(2),
-      RooFit::PrintEvalErrors(0)   // 只出摘要(每個component計數)，不逐條狂刷
+      RooFit::Optimize(2)
+      // RooFit::PrintEvalErrors(0)   // 只出摘要(每個component計數)，不逐條狂刷
       // RooFit::PrintEvalErrors(-1) // 若你想完全不印
     ));
     RooMinimizer minim(*nll);
@@ -259,9 +249,11 @@ void runFit(RooAbsPdf *pdf, RooAbsData *data, double *NLL, int *stat_t, int MaxT
     double nllVal = nll->getVal();
     if (nllVal < bestNll) bestNll = nllVal;
 
-    if (!fastMode && status!=0 && res) {
-      RooArgSet* pars = pdf->getParameters((const RooArgSet*)nullptr);
-      pars->assignValueOnly(res->randomizePars());
+    if (!fastMode && status!=0) {
+      // If the fit failed, restart from a *sane* random point inside allowed parameter ranges.
+      // (RooFitResult::randomizePars() relies on a valid covariance and may yield NaNs when the fit is unstable.)
+      randomizePdfParamsUniform(pdf, data);
+      sanitizePdfParams(pdf, data, /*verboseDiag=*/false);
     }
     tries++;
   }
@@ -444,7 +436,10 @@ double getGoodnessOfFit(RooRealVar *mass, RooAbsPdf *mpdf, RooAbsData *data, std
   double prob;
   int ntoys = GOF_NTOYS;
   name+="_gofTest.pdf";
-  RooRealVar norm("norm","norm",data->sumEntries(),0,10E6);
+  const double nData = data->sumEntries();
+  const double nInit = (nData > 0.) ? nData : 1.0;
+  const double nMax  = (nData > 0.) ? 10E6 : 10.0;
+  RooRealVar norm("norm","norm", nInit, 1e-6, nMax);
 
   RooExtendPdf *pdf = new RooExtendPdf("ext","ext",*mpdf,norm);
 
@@ -546,8 +541,18 @@ void eachFunc_plot(RooRealVar *mass, RooAbsPdf *pdf, RooAbsData *data, string na
   int np = pdf->getParameters(*data)->getSize()+1;
   double chi2 = plot_chi2->chiSquare(np);
 
-  *prob = getGoodnessOfFit(mass,pdf,data,name);
-
+  // *prob = getGoodnessOfFit(mass,pdf,data,name);
+  std::string probLabel = "N/A";
+  if (prob) *prob = -1.;
+  if (status == 0) {
+    const double p = getGoodnessOfFit(mass, pdf, data, name);
+    if (prob) *prob = p;
+    probLabel = Form("%.2f", p);
+  } else {
+    std::cout << "[INFO] Skip GOF because fitStatus=" << status
+              << " for pdf " << pdf->GetName() << std::endl;
+  }
+  
   // For output plots, force x-axis to the user-requested window (--mhLow/--mhHigh).
   // Keep the (possibly clamped) fit range for subsequent fits in the caller.
   MassStateGuard _fitState(mass);
@@ -692,7 +697,8 @@ void multipdf_plot(RooRealVar *mass, RooMultiPdf *pdfs, RooCategory *catIndex, R
       // Fit in the (possibly clamped) fit window to avoid RooFit range/data mismatches.
       mass->setRange(fitMin, fitMax);
       mass->setBins(fitBins);
-      pdfs->getCurrentPdf()->fitTo(*data,RooFit::Minos(0),RooFit::Minimizer("Minuit2","minimize"),RooFit::SumW2Error(kFALSE));
+      // [PZ-FIX] Use our lightweight RooMinimizer-based fit (no Hessian) to avoid Minuit2 warnings.
+      runFit(pdfs->getCurrentPdf(), data, nullptr, nullptr, /*MaxTries=*/2);
     }
     // Plot in the user-requested window.
     setMassPlotState(mass);
@@ -1196,6 +1202,8 @@ int main(int argc, char* argv[]){
       }
     }
 
+    std::cout << "[INFO] Processing for mA = " << mass_ALP << std::endl;
+
     if (!dataFull) {
       std::cerr << "[ERROR] Could not retrieve dataset for category " << catname << ". Tried names:" << std::endl;
       for (auto const& n : triedNames) std::cerr << "  - " << n << std::endl;
@@ -1211,6 +1219,11 @@ int main(int argc, char* argv[]){
 
 		mass->setBins(nBinsForMass);
 		RooAbsData *data = dataFull;
+		// Guard against empty datasets: extended fits with n=0 lead to NaN NLL.
+		if (!data || data->sumEntries() <= 0.) {
+		  std::cerr << "[WARN] Category " << catname << " has zero entries in the fit range. Skip this category." << std::endl;
+		  continue;
+		}
 
 		RooArgList storedPdfs("store");
 
@@ -1246,7 +1259,10 @@ int main(int argc, char* argv[]){
         }
         RooCategory catIndex(catindexname.c_str(),"c");
         RooMultiPdf *pdf = new RooMultiPdf(Form("CMS_hgg_%s_%s_bkgshape",catname.c_str(),ext.c_str()),"all pdfs",catIndex,storedPdfs);
-        RooRealVar nBackground(Form("CMS_hgg_%s_%s_bkgshape_norm",catname.c_str(),ext.c_str()),"nbkg",data->sumEntries(),0,3*data->sumEntries());
+        const double nData = data->sumEntries();
+        const double nInit = (nData > 0.) ? nData : 1.0;
+        const double nMax  = (nData > 0.) ? 3.0*nData : 10.0;
+        RooRealVar nBackground(Form("CMS_hgg_%s_%s_bkgshape_norm",catname.c_str(),ext.c_str()),"nbkg", nInit, 1e-6, nMax);
         mass->setBins(nBinsForMass);
         RooDataHist dataBinned(Form("roohist_data_mass_%s",catname.c_str()),"data",*mass,*dataFull);
 
@@ -1424,7 +1440,10 @@ int main(int argc, char* argv[]){
 
 			RooCategory catIndex(catindexname.c_str(),"c");
 			RooMultiPdf *pdf = new RooMultiPdf(Form("CMS_hgg_%s_%s_bkgshape",catname.c_str(),ext.c_str()),"all pdfs",catIndex,storedPdfs);
-			RooRealVar nBackground(Form("CMS_hgg_%s_%s_bkgshape_norm",catname.c_str(),ext.c_str()),"nbkg",data->sumEntries(),0,3*data->sumEntries());
+			const double nData = data->sumEntries();
+			const double nInit = (nData > 0.) ? nData : 1.0;
+			const double nMax  = (nData > 0.) ? 3.0*nData : 10.0;
+			RooRealVar nBackground(Form("CMS_hgg_%s_%s_bkgshape_norm",catname.c_str(),ext.c_str()),"nbkg", nInit, 1e-6, nMax);
 			int bestFitPdfIndex = getBestFitFunction(pdf,data,&catIndex,!verbose);
 			catIndex.setIndex(bestFitPdfIndex);
 			std::cout << "// ------------------------------------------------------------------------- //" <<std::endl;
@@ -1500,6 +1519,98 @@ static void ensureOrderSuffix(RooAbsPdf* pdf, int order) {
   if (!name.empty() && std::isdigit(name.back())) return;
   pdf->SetName(Form("%s%d", name.c_str(), order));
 }
+
+static void sanitizePdfParams(RooAbsPdf* pdf, RooAbsData* data, bool verboseDiag) {
+  if (!pdf || !data) return;
+  std::unique_ptr<RooArgSet> params(pdf->getParameters(*data));
+  if (!params) return;
+
+  std::unique_ptr<TIterator> it(params->createIterator());
+  for (RooAbsArg* a = (RooAbsArg*)it->Next(); a; a = (RooAbsArg*)it->Next()) {
+    RooRealVar* v = dynamic_cast<RooRealVar*>(a);
+    if (!v) continue;
+    if (v->isConstant()) continue;
+
+    // Reset NaN/Inf values to something sane.
+    const double val = v->getVal();
+    if (!std::isfinite(val)) {
+      double newv = 0.0;
+      if (v->hasMin() && v->hasMax() && std::isfinite(v->getMin()) && std::isfinite(v->getMax()) && v->getMax() > v->getMin()) {
+        newv = 0.5*(v->getMin() + v->getMax());
+      } else if (v->hasMin() && std::isfinite(v->getMin())) {
+        newv = v->getMin() + 1.0;
+      } else if (v->hasMax() && std::isfinite(v->getMax())) {
+        newv = v->getMax() - 1.0;
+      }
+      v->setVal(newv);
+      if (verboseDiag) {
+        std::cerr << "[WARN] sanitizePdfParams: reset non-finite " << v->GetName()
+                  << " to " << newv << std::endl;
+      }
+    }
+
+    // Nudge away from hard boundaries (helps Minuit).
+    if (v->hasMin() && std::isfinite(v->getMin()) && v->getVal() <= v->getMin()) {
+      const double span = (v->hasMax() && std::isfinite(v->getMax())) ? (v->getMax() - v->getMin()) : 1.0;
+      v->setVal(v->getMin() + 1e-3*span);
+    }
+    if (v->hasMax() && std::isfinite(v->getMax()) && v->getVal() >= v->getMax()) {
+      const double span = (v->hasMin() && std::isfinite(v->getMin())) ? (v->getMax() - v->getMin()) : 1.0;
+      v->setVal(v->getMax() - 1e-3*span);
+    }
+
+    // Ensure step size is finite and non-zero.
+    const double err = v->getError();
+    if (!std::isfinite(err) || err <= 0.0) {
+      double step = 1e-2;
+      if (v->hasMin() && v->hasMax() && std::isfinite(v->getMin()) && std::isfinite(v->getMax()) && v->getMax() > v->getMin()) {
+        step = 0.1*std::fabs(v->getMax() - v->getMin());
+      } else {
+        const double aval = std::fabs(v->getVal());
+        step = std::max(1e-2, 0.1*aval);
+      }
+      if (!std::isfinite(step) || step <= 0.0) step = 1e-2;
+      v->setError(step);
+    }
+  }
+}
+
+static void randomizePdfParamsUniform(RooAbsPdf* pdf, RooAbsData* data) {
+  if (!pdf || !data || !RandomGen) return;
+
+  std::unique_ptr<RooArgSet> params(pdf->getParameters(*data));
+  if (!params) return;
+
+  std::unique_ptr<TIterator> it(params->createIterator());
+  for (RooAbsArg* a = (RooAbsArg*)it->Next(); a; a = (RooAbsArg*)it->Next()) {
+    RooRealVar* v = dynamic_cast<RooRealVar*>(a);
+    if (!v) continue;
+    if (v->isConstant()) continue;
+
+    double newv = v->getVal();
+
+    if (v->hasMin() && v->hasMax() && std::isfinite(v->getMin()) && std::isfinite(v->getMax()) && v->getMax() > v->getMin()) {
+      newv = RandomGen->Uniform(v->getMin(), v->getMax());
+    } else {
+      double step = v->getError();
+      if (!std::isfinite(step) || step <= 0.0) {
+        const double aval = std::fabs(v->getVal());
+        step = std::max(1e-2, 0.1*aval);
+      }
+      newv = v->getVal() + RandomGen->Gaus(0.0, step);
+    }
+
+    if (!std::isfinite(newv)) {
+      if (v->hasMin() && v->hasMax() && std::isfinite(v->getMin()) && std::isfinite(v->getMax()) && v->getMax() > v->getMin()) {
+        newv = 0.5*(v->getMin() + v->getMax());
+      } else {
+        newv = 0.0;
+      }
+    }
+    v->setVal(newv);
+  }
+}
+
 static int getBestFitFunction(RooMultiPdf *mpdf, RooAbsData *data, RooCategory *catIndex, bool silent) {
   if (!mpdf || !data || !catIndex) return 0;
   if (PLOT_ONLY) return 0;

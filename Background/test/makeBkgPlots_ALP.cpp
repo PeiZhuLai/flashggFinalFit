@@ -49,10 +49,14 @@
 #include "boost/algorithm/string/predicate.hpp"
 #include "../interface/ProfileMultiplePdfs.h"
 
-#include "HiggsAnalysis/CombinedLimit/interface/RooMultiPdf.h"
+// #include "HiggsAnalysis/CombinedLimit/interface/RooMultiPdf.h"
+#include "HiggsAnalysis/CombinedLimit/interface/RooMultiPdfCombine.h"
 #include "HiggsAnalysis/CombinedLimit/interface/RooBernsteinFast.h"
 
 #include <iostream>
+#include <cmath>
+#include <memory>
+#include <algorithm>
 
 #include "../../tdrStyle/tdrstyle.C"
 #include "../../tdrStyle/CMS_lumi.C"
@@ -67,6 +71,49 @@ namespace po = boost::program_options;
 
 bool verbose_=false;
 
+// +++ helper: smooth TGraphAsymmErrors y-errors by converting to TH1 and calling TH1::Smooth
+static void smoothGraphYErrors(TGraphAsymmErrors* gr, int iters, const char* tag){
+	if (!gr || iters <= 0) return;
+
+	// Use graph x-range, uniform bins (graph is filled on a regular grid in this code)
+	const int n = gr->GetN();
+	if (n < 3) return;
+
+	std::vector<double> xs(n), ys(n);
+	for (int i=0;i<n;++i) gr->GetPoint(i, xs[i], ys[i]);
+
+	// Estimate binning from x spacing (fallback to axis range)
+	double xmin = *std::min_element(xs.begin(), xs.end());
+	double xmax = *std::max_element(xs.begin(), xs.end());
+	double dx = (n > 1) ? (xs[1] - xs[0]) : (xmax - xmin);
+	if (!(dx > 0)) dx = (xmax - xmin) / std::max(1, n-1);
+
+	// Extend edges by half bin so TH1 bins line up with points
+	const double hxmin = xmin - 0.5*dx;
+	const double hxmax = xmax + 0.5*dx;
+
+	std::unique_ptr<TH1D> h_p(new TH1D(Form("h_%s_p", tag), "", n, hxmin, hxmax)); // +err (EYhigh)
+	std::unique_ptr<TH1D> h_m(new TH1D(Form("h_%s_m", tag), "", n, hxmin, hxmax)); // -err (EYlow)
+	h_p->SetDirectory(nullptr);
+	h_m->SetDirectory(nullptr);
+
+	for (int i=0;i<n;++i){
+		h_p->SetBinContent(i+1, gr->GetErrorYhigh(i));
+		h_m->SetBinContent(i+1, gr->GetErrorYlow(i));
+	}
+
+	for (int k=0;k<iters;++k){
+		h_p->Smooth(1);
+		h_m->Smooth(1);
+	}
+
+	for (int i=0;i<n;++i){
+		const double ehi = std::max(0.0, h_p->GetBinContent(i+1));
+		const double elo = std::max(0.0, h_m->GetBinContent(i+1));
+		gr->SetPointError(i, gr->GetErrorXlow(i), gr->GetErrorXhigh(i), elo, ehi);
+	}
+}
+
 float mgg_low =95;//FIXME
 float mgg_high =180;//FIXME
 float mgg_blind_low =115;//FIXME
@@ -79,66 +126,93 @@ RooRealVar *intLumi_ = new RooRealVar("IntLumi","hacked int lumi", 1000.);
 
 int getBestFitFunction(RooMultiPdf *bkg, RooAbsData *data, RooCategory *cat, bool silent=false){
 
-	double global_minNll = 1E10;
-	int best_index = 0;
-	int number_of_indeces = cat->numTypes();
+    double global_minNll = 1E300;
+    int best_index = 0;
+    int number_of_indeces = cat ? cat->numTypes() : 0;
 
-	RooArgSet snap,clean;
-	RooArgSet *params = bkg->getParameters(*data);
-	params->snapshot(snap);
-	params->snapshot(clean);
-	if (!silent) {
-		std::cout << "[INFO] BEFORE FITTING" << std::endl;
-		params->Print("V");
-		std::cout << "-----------------------" << std::endl;
-	}
+    if (!bkg || !data || !cat || number_of_indeces<=0) {
+        if (!silent) std::cout << "[WARN] getBestFitFunction called with null inputs, return 0" << std::endl;
+        if (cat) cat->setIndex(0);
+        return 0;
+    }
 
-	//bkg->setDirtyInhibit(1);
-	RooAbsReal *nllm = bkg->createNLL(*data);
-	RooMinimizer minim(*nllm);
-	minim.setStrategy(2);
+    RooArgSet snap, clean;
+    RooArgSet *params = bkg->getParameters(*data);
+    if (!params) {
+        if (!silent) std::cout << "[WARN] getBestFitFunction: cannot getParameters, return 0" << std::endl;
+        cat->setIndex(0);
+        return 0;
+    }
+    params->snapshot(snap);
+    params->snapshot(clean);
 
-	for (int id=0;id<number_of_indeces;id++){
-		params->assignValueOnly(clean);
-		cat->setIndex(id);
+    if (!silent) {
+        std::cout << "[INFO] BEFORE FITTING" << std::endl;
+        params->Print("V");
+        std::cout << "-----------------------" << std::endl;
+    }
 
-		//RooAbsReal *nllm = bkg->getCurrentPdf()->createNLL(*data);
+    // Loop over PDFs in the multipdf. Build an NLL for the *current* pdf each time.
+    // This is more robust than building an NLL from RooMultiPdf directly when PDFs have FFT/cache internals.
+    for (int id=0; id<number_of_indeces; ++id) {
+        params->assignValueOnly(clean);
+        cat->setIndex(id);
 
-		if (!silent) {
-			// 原本誤用 std.println 會導致編譯錯誤
-			std::cout << "[INFO] BEFORE FITTING" << std::endl;
-			params->Print("V");
-			std::cout << "-----------------------" << std::endl;
-		}
+        RooAbsPdf* pdf = bkg->getCurrentPdf();
+        if (!pdf) continue;
 
-		minim.minimize("Minuit2","simplex");
-		double minNll = nllm->getVal()+bkg->getCorrection();
-		if (!silent) {
-			std::cout << "[INFO] After Minimization ------------------  " <<std::endl;
-			std::cout << "[INFO] "<<bkg->getCurrentPdf()->GetName() << " " << minNll <<std::endl;
-			bkg->Print("v");
-			bkg->getCurrentPdf()->getParameters(*data)->Print("V");
-			std::cout << " ------------------------------------  " << std::endl;
+        std::unique_ptr<RooAbsReal> nllm(pdf->createNLL(*data));
+        if (!nllm) continue;
 
-			std::cout << "[INFO] AFTER FITTING" << std::endl;
-			params->Print("V");
-			std::cout << "-----------------------" << std::endl;
-		}
+        RooMinimizer minim(*nllm);
+        minim.setStrategy(2);
+        minim.setPrintLevel(-1);
 
-		if (minNll < global_minNll){
-        		global_minNll = minNll;
-			snap.assignValueOnly(*params);
-        		best_index=id;
-		}
-	}
-	params->assignValueOnly(snap);
-    	cat->setIndex(best_index);
+        // Try migrad then simplex as fallback (simplex is slower but more stable).
+        minim.minimize("Minuit2","migrad");
+        minim.minimize("Minuit2","simplex");
 
-	if (!silent) {
-		std::cout << "[INFO] Best fit Function -- " << bkg->getCurrentPdf()->GetName() << " " << cat->getIndex() <<std::endl;
-		bkg->getCurrentPdf()->getParameters(*data)->Print("v");
-	}
-	return best_index;
+        const double rawNll = nllm->getVal();
+        if (!std::isfinite(rawNll)) {
+            if (!silent) {
+                std::cout << "[WARN] NLL is not finite for " << pdf->GetName()
+                          << " (index " << id << "). Skip." << std::endl;
+            }
+            continue;
+        }
+
+        const double minNll = rawNll + bkg->getCorrection();
+
+        if (!silent) {
+            std::cout << "[INFO] After Minimization ------------------" << std::endl;
+            std::cout << "[INFO] " << pdf->GetName() << " " << minNll << std::endl;
+            bkg->Print("v");
+            pdf->getParameters(*data)->Print("V");
+            std::cout << "----------------------------------------" << std::endl;
+
+            std::cout << "[INFO] AFTER FITTING" << std::endl;
+            params->Print("V");
+            std::cout << "-----------------------" << std::endl;
+        }
+
+        if (minNll < global_minNll) {
+            global_minNll = minNll;
+            snap.assignValueOnly(*params);
+            best_index = id;
+        }
+    }
+
+    // Reset to best fit
+    params->assignValueOnly(snap);
+    cat->setIndex(best_index);
+
+    if (!silent) {
+        std::cout << "[INFO] Best fit Function -- "
+                  << (bkg->getCurrentPdf() ? bkg->getCurrentPdf()->GetName() : "null")
+                  << " " << cat->getIndex() << std::endl;
+        if (bkg->getCurrentPdf()) bkg->getCurrentPdf()->getParameters(*data)->Print("v");
+    }
+    return best_index;
 }
 
 RooMultiPdf* getExtendedMultiPdfs(RooMultiPdf* mpdf, RooCategory* mcat){
@@ -146,7 +220,9 @@ RooMultiPdf* getExtendedMultiPdfs(RooMultiPdf* mpdf, RooCategory* mcat){
 	RooArgList *newmPdfs = new RooArgList();
 	for (int pInd=0; pInd<mpdf->getNumPdfs(); pInd++){
 		mcat->setIndex(pInd);
-		RooRealVar *normVar = new RooRealVar(Form("%snorm",mpdf->getCurrentPdf()->GetName()),"",0.,1.e6);
+		// IMPORTANT: For extended PDFs, the yield parameter must be strictly > 0.
+		// If it can be 0, the extended NLL becomes undefined (log(0) -> NaN).
+		RooRealVar *normVar = new RooRealVar(Form("%snorm",mpdf->getCurrentPdf()->GetName()),"",1.0,1.e-6,1.e6);
 		RooExtendPdf *extPdf = new RooExtendPdf(Form("%sext",mpdf->getCurrentPdf()->GetName()),"",*(mpdf->getCurrentPdf()),*normVar);
 		newmPdfs->add(*extPdf);
 	}
@@ -161,7 +237,10 @@ pair<double,double> getNormTermNllAndRes(RooRealVar *mgg, RooAbsData *data, RooM
 
 	for (int pInd=0; pInd<mpdf->getNumPdfs(); pInd++){
 		mcat->setIndex(pInd);
-		RooRealVar *normVar = new RooRealVar(Form("%snorm",mpdf->getCurrentPdf()->GetName()),"",0.,1.e6);
+		// IMPORTANT: For extended PDFs, the yield parameter must be strictly > 0.
+		const double eps = 1.e-6;
+		double nInit = std::max(1.0, data ? data->sumEntries() : 1.0);
+		RooRealVar *normVar = new RooRealVar(Form("%snorm",mpdf->getCurrentPdf()->GetName()),"",nInit,eps,1.e6);
 		RooExtendPdf *extPdf;
 		RooAbsReal *nll;
 		if (massRangeLow>-1. && massRangeHigh>-1.){
@@ -609,7 +688,10 @@ void profileExtendTerm(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, Roo
 	for (int pInd=0; pInd<mpdf->getNumPdfs(); pInd++){
 		mcat->setIndex(pInd);
 		if (TString(mpdf->getCurrentPdf()->GetName()).Contains("bern")) mpdf->getCurrentPdf()->forceNumInt();
-		RooRealVar *normVar = new RooRealVar(Form("%snorm",mpdf->getCurrentPdf()->GetName()),"",0.,1.e6);
+		// IMPORTANT: For extended PDFs, the yield parameter must be strictly > 0.
+		const double eps = 1.e-6;
+		double nInit = std::max(1.0, data ? data->sumEntries() : 1.0);
+		RooRealVar *normVar = new RooRealVar(Form("%snorm",mpdf->getCurrentPdf()->GetName()),"",nInit,eps,1.e6);
 		RooExtendPdf *extPdf;
 		RooAbsReal *nll;
 		if (massRangeLow>-1. && massRangeHigh>-1.){
@@ -724,7 +806,7 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 
 	// Black, Red, Blue, Green, Pink, Teal,  
 	// 4 Bernstein, 2 Exponential, 1 Power Law, 3 Laurent
-	string color[12] = {"#031927","#FE0000","#0000FE","#00FF00", "#FE00FF","#00FFFF",  "#00FFFF", "#FFCC00",  "#EBB9DF","#7F7EFF","#8CBA80", "#9D8189"};
+	string color[13] = {"#031927","#FE0000","#0000FE","#00FF00", "#FE00FF","#00FFFF",  "#00FFFF", "#FFCC00",  "#EBB9DF","#7F7EFF","#8CBA80", "#632B30", "#D64045"};
 
 	// 小工具：轉小寫、擷取尾端數字作為階數、產生序數字尾
 	auto toLower = [](std::string s){
@@ -924,6 +1006,10 @@ int main(int argc, char* argv[]){
 	float mggblindlow_ =115;//bing
 	float mggblindhigh_ =135;//bing
 
+
+	bool smoothBands=true;
+	int smoothIters=1;
+
 	po::options_description desc("Allowed options");
 	desc.add_options()
 		("help,h", 																								"Show help")
@@ -953,7 +1039,9 @@ int main(int argc, char* argv[]){
 		("sqrts,S", po::value<string>(&sqrts)->default_value("13p6TeV"),                                           "Which centre of mass is this data from?")
 		("isFlashgg",  po::value<int>(&isFlashgg_)->default_value(1),  								    	    "Use Flashgg output ")
 		("flashggCats,f", po::value<string>(&flashggCatsStr_)->default_value("UntaggedTag_0,UntaggedTag_1,UntaggedTag_2,UntaggedTag_3,VBFTag_0,VBFTag_1,VBFTag_2,TTHHadronicTag,TTHLeptonicTag,VHHadronicTag,VHTightTag,VHLooseTag,VHEtTag"),       "Flashgg category names to consider")
-		("verbose,v", 																							"Verbose");
+		("verbose,v", 																							"Verbose")
+		("smoothBands",                                                                                        "Smooth ratio error bands (TH1::Smooth on +/- errors)")
+		("smoothIters",  po::value<int>(&smoothIters)->default_value(1),                                       "Number of smoothing iterations (>=0)")
 	;
 	po::variables_map vm;
 	po::store(po::parse_command_line(argc,argv,desc),vm);
@@ -966,6 +1054,8 @@ int main(int argc, char* argv[]){
 	if (vm.count("useBinnedData")) useBinnedData=true;
 	if (vm.count("sigFileName")) doSignal=true;
 	if (vm.count("verbose")) verbose_=true;
+	if (vm.count("smoothBands")) smoothBands=true;
+	if (smoothIters < 0) smoothIters = 0;
 
 	//bing
 	mgg_low =mhLow;//FIXME
@@ -991,6 +1081,11 @@ int main(int argc, char* argv[]){
 		exit(0);
 	}
 	RooRealVar *mgg = (RooRealVar*)inWS->var("CMS_hza_mass");//FIXED
+    // Numerical stability for FFT-convolved PDFs (Step x Gaussian):
+    // use a fine binning for RooFFTConvPdf sampling/caches (independent of histogram binning).
+    const int _fftBins = 4096; // power-of-two is FFT-friendly
+    mgg->setBins(_fftBins, "cache");
+    mgg->setBins(_fftBins, "fft");
 	mgg->setBins(nbin); //PZ 
 string catname;
 	if (isFlashgg_){
@@ -1144,6 +1239,7 @@ string catname;
 	twoSigmaBand_r->SetName(Form("twosigma_%s_r",catname.c_str()));
 
 	cout<< "[INFO] " << "Plot has " << plot->GetXaxis()->GetNbins() << " bins" << endl;
+	std::cout << "[INFO] Processing for mA = " << mavalue_ << std::endl;
 	if (doBands) {
 		int p=0;
 		for (double mass=double(mhLow); mass<double(mhHigh)+massStep; mass+=massStep) {
@@ -1274,6 +1370,12 @@ string catname;
 		outWS->import(*mcat);
 		outWS->import(*mpdf);
 		outWS->import(*data);
+
+	// +++ smooth ratio bands after they are fully built (only affects *_r graphs used in the ratio pad)
+	if (doBands && smoothBands && smoothIters > 0) {
+		smoothGraphYErrors(oneSigmaBand_r, smoothIters, "oneSigmaBand_r");
+		smoothGraphYErrors(twoSigmaBand_r, smoothIters, "twoSigmaBand_r");
+	}
 
 	TCanvas *canv = new TCanvas("c_ratio", "c_ratio", 800, 600); // PZ
 	///start extra bit for ratio plot///

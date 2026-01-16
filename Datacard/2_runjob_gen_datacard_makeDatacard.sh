@@ -1,6 +1,7 @@
 #!/bin/bash
 # /bin/hostname
 # gcc -v
+
 pwd
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 cmsenv

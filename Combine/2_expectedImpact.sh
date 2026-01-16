@@ -4,7 +4,7 @@ cmsenv
 
 mAs=( 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 )
 # mAs=( 5 15 30)
-# mAs=( 5 )
+# mAs=( 1 )
 
 mkdir -p output_impacts
 
@@ -15,9 +15,12 @@ mkdir -p output_impacts
 
 
 for mA in "${mAs[@]}"; do
+    echo "=============================="
+    echo "Processing BiasStudy for mA = ${mA}"
+    echo "=============================="
     # ---------- Expected Impacts ---------- 
     # 1. 生成workspace文件
-    # python3 RunText2Workspace.py --batch local --queue workday --mA ${mA}
+    python3 RunText2Workspace.py --batch local --queue workday --mA ${mA}
     
     CARD=root_t2w/${mA}_Datacard_leptons.root
     MH=125.38
@@ -45,7 +48,7 @@ for mA in "${mAs[@]}"; do
     --cminFallbackAlgo Minuit2,0:0.1 \
     -v 1
     
-    # 3. 运行所有systematic的fit
+    # # 3. 运行所有systematic的fit
     combineTool.py -M Impacts -d $CARD -m $MH \
     --doFits --parallel 4 \
     --redefineSignalPOIs r --rMin -5 --rMax 5 \
@@ -60,13 +63,14 @@ for mA in "${mAs[@]}"; do
     --cminFallbackAlgo Minuit2,0:0.1 \
     -v 1
 
-    # 4. 生成json文件
+    # # 4. 生成json文件
     combineTool.py -M Impacts -d $CARD -m 125.38 \
     --redefineSignalPOIs r \
     -o output_impacts/${mA}_impacts.json
 
-    # 5. 画图
-    plotImpacts.py -i output_impacts/${mA}_impacts.json -o output_impacts/${mA}_Expected_Impacts --impact-xrange -0.13 0.13
+    # # 5. 画图
+    # plotImpacts.py -i output_impacts/${mA}_impacts.json -o output_impacts/${mA}_Expected_Impacts --impact-xrange -0.13 0.13
+    plotImpacts.py -i output_impacts/${mA}_impacts.json -o output_impacts/${mA}_Expected_Impacts
 
     # ---------- Expected Impacts ----------
     # combineTool.py -M Impacts -d root_t2w/${mA}_Datacard_leptons.root -n mA${mA} -m 125.38 --doInitialFit --robustFit 1 -t -1 --expectSignal 1

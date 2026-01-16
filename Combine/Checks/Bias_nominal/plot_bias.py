@@ -235,7 +235,7 @@ def draw_cms_lumi(canvas, lumi_fb):
 def parse_args():
     p = argparse.ArgumentParser(description="Plot pull overlay")
     p.add_argument("--mA", type=str, default=None, help="Prefix for output plots")
-    p.add_argument("--lumi", type=float, default=61.89, help="Luminosity in fb^-1 for label")
+    p.add_argument("--lumi", type=float, default=170.84, help="Luminosity in fb^-1 for label")
     return p.parse_args()
 
 def main():
@@ -338,7 +338,9 @@ def main():
             g = keep(ROOT.TGraphErrors(1), c2)
             g.SetPoint(0, xmu, yr)
             g.SetPointError(0, xerr, 0.0)  # x 向誤差棒；y 無誤差
-            g.SetMarkerColor(col); g.SetMarkerStyle(20 + (j+1 % 10)); g.SetMarkerSize(2.0)
+            g.SetMarkerColor(col)
+            g.SetMarkerStyle(20 + ((j + 1) % 10))
+            g.SetMarkerSize(2.0)
             g.SetLineColor(col); g.SetLineWidth(3)
             mg.Add(g, "P")
             graphs.append(g)
@@ -352,7 +354,7 @@ def main():
         if json_means:
             y_center = json_exp if json_exp is not None else parse_mu_from_token(args.mA, R_TRUE)
         else:
-            y_vals = [yr for _, yr, _, _ in points]
+            y_vals = [yr for _, _, yr, _, _ in points]
             y_center = (sum(y_vals) / len(y_vals)) if y_vals else R_TRUE
 
         y_pad = 1.2 * (abs(y_center) if abs(y_center) > 1e-9 else 1.0)
@@ -400,7 +402,7 @@ def main():
         lat.SetTextAlign(13)
         lat.SetNDC()
         lat.SetTextSize(0.050)
-        lat.DrawLatex(0.18, 0.86, f"m_{{a}} = {args.mA} GeV")
+        lat.DrawLatex(0.165, 0.86, f"m_{{a}} = {args.mA} GeV")
 
         outtag = f"{args.mA}_{OUTTAG_MEAN}" if args.mA else OUTTAG_MEAN
         c2.SaveAs(f"plots_bias/{outtag}.png")

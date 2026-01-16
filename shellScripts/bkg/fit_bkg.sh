@@ -8,17 +8,19 @@ fi
 
 cmsenv
 
+source /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/setup.sh
+
 lable='run3'
 version='ReReco'
 Lumi_run3='170.84'
 
 Lumis=( 7.98 27.01 17.61 9.53 108.95)
 
-massList=( 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 )
-# massList=( 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 )
+# massList=( 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 )
+# massList=( 20 21 22 23 24 25 26 27 28 29 30 )
 # massList=( 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 )
-# massList=( 8 14 19 21 )
-# massList=( 19 )
+# massList=( 16 17 18 19 )
+massList=( 14 )
 nMass=${#massList[@]}
 
 ###### background fit ######
@@ -78,11 +80,12 @@ for ((iBin=0; iBin<$nMass; iBin++))
     # 1. fTest
     ######################################
     # ./bin/fTest_ALP_turnOn -i $dir_input/mA_M${massList[$iBin]}/ws/run3.root --saveMultiPdf $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -D $path_bkg/HZAmassInde_fTest --mass_ALP ${massList[$iBin]} -c 1 --isFlashgg 0 --isData 0 -f data, --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 > $path_bkg/ftest.log
+    ./bin/fTest_ALP_turnOn -i $dir_input/mA_M${massList[$iBin]}/ws/run3.root --saveMultiPdf $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -D $path_bkg/HZAmassInde_fTest --mass_ALP ${massList[$iBin]} -c 1 --isFlashgg 0 --isData 0 -f data, --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135
     
-    # if [[ $? -ne 0 ]]; then
-    #     echo "[FAIL][fTest] mA=${massList[$iBin]}" | tee -a "$failed_log"
-    #     continue
-    # fi
+    if [[ $? -ne 0 ]]; then
+        echo "[FAIL][fTest] mA=${massList[$iBin]}" | tee -a "$failed_log"
+        continue
+    fi
     
     ######################################
     # 2. makeBkgPlots

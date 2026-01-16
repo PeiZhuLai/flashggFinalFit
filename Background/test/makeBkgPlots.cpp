@@ -48,7 +48,8 @@
 #include "boost/algorithm/string/predicate.hpp"
 #include "../interface/ProfileMultiplePdfs.h"
 
-#include "HiggsAnalysis/CombinedLimit/interface/RooMultiPdf.h"
+// #include "HiggsAnalysis/CombinedLimit/interface/RooMultiPdf.h"
+#include "HiggsAnalysis/CombinedLimit/interface/RooMultiPdfCombine.h"
 #include "HiggsAnalysis/CombinedLimit/interface/RooBernsteinFast.h"
 
 #include <iostream>
