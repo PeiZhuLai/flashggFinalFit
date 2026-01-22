@@ -10,18 +10,28 @@
 # VBF xs for 14 TeV from https://arxiv.org/pdf/2402.09955
 # ggF = 51960 fb for 125.38 GeV
 # VBF = 4067 fb for 125.38 GeV
-# ggF + VBF = 56027 fb for 125.38 GeV
+# WH = 1442 fb for 125.38 GeV
+# ZH = 936.1 fb for 125.38 GeV
+# ttH = 563.4 fb t-chan for 125.38 GeV
+# ttH = 3.044 fb s-chan for 125.38 GeV
+# ttH = 17.20 fb tWH-chan for 125.38 GeV
+# tH = 83.17 fb for 125.38 GeV
+# bbH = 632 fb for 125.40 GeV
+# 13.6 Tot = 59703.914 fb for 125.38 GeV
+
+# Run2
+# pp to H 56000 Zebing
 
   # --masses 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30 \
 
 python3 makeLimitsPlot.py \
-  --outdir limitPlots \
+  --outdir plot_limits \
   --assume-xs 100 \
-  --ggf-xs 56027 \
+  --ggf-xs 59703.914 \
   --lumi 170.84 \
-  --formats png,pdf \
+  --formats pdf \
   --masses 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30 \
-  --only xs,br,wilson
+  --only xs,br,wilson,compare
 
 # python3 makeLimitsPlot.py \
 #   --outdir limitPlots \

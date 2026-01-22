@@ -1,7 +1,8 @@
 #!/bin/bash
 
+mAs=( 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 )
 # mAs=( 1 2 3 4 5 6 7 8 9 10 15 20 25 30 )
-mAs=( 5 15 30 )
+# mAs=( 5 15 30 )
 BaseDir="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/Checks/Bias_nominal"
 Executable="$BaseDir/1_run_bias_study.sh"
 LogDir="$BaseDir/logs"

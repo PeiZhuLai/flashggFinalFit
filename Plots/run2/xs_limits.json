@@ -1,0 +1,1274 @@
+{
+    "associated_files": [
+      {
+        "alt_location": "/opt/hepdata/var/data/4e/145073/1698743117/submission/xsLimits.txt",
+        "description": "Original data file",
+        "id": 3451410,
+        "type": "Text"
+      },
+      {
+        "alt_location": "/opt/hepdata/var/data/4e/145073/1698743117/submission/Figure_007.png",
+        "description": "Image file",
+        "id": 3451411,
+        "preview_location": "/record/resource/3451412?view=true",
+        "type": "png"
+      }
+    ],
+    "description": "Exclusion limits on the product of the production cross section and the branching fraction, as a function of the pseudoscalar mass hypothesis.",
+    "doi": "10.17182/hepdata.145073.v1/t1",
+    "headers": [
+      {
+        "colspan": 1,
+        "name": "pseudoscalar mass [GeV]"
+      },
+      {
+        "colspan": 2,
+        "name": "Cross section upper limit at 95% CL [fb]"
+      }
+    ],
+    "keywords": {
+  
+    },
+    "location": "Data from Figure7",
+    "name": "Cross-section limits",
+    "qualifier_order": [
+      "Limit",
+      "SQRT(S)",
+      "LUMINOSITY"
+    ],
+    "qualifiers": {
+      "LUMINOSITY": [
+        {
+          "colspan": 2,
+          "group": 0,
+          "type": "LUMINOSITY",
+          "value": "138 fb$^{-1}$"
+        }
+      ],
+      "Limit": [
+        {
+          "colspan": 1,
+          "group": 0,
+          "type": "Limit",
+          "value": "Observed"
+        },
+        {
+          "colspan": 1,
+          "group": 1,
+          "type": "Limit",
+          "value": "Expected"
+        }
+      ],
+      "SQRT(S)": [
+        {
+          "colspan": 2,
+          "group": 0,
+          "type": "SQRT(S)",
+          "value": "13 TeV"
+        }
+      ]
+    },
+    "related_tables": [],
+    "related_to_this": [],
+    "resources": [
+      {
+        "description": "Original data file",
+        "type": "Text",
+        "url": "https://www.hepdata.net/record/resource/3451410?landing_page=true"
+      },
+      {
+        "description": "Image file",
+        "type": "png",
+        "url": "https://www.hepdata.net/record/resource/3451411?landing_page=true"
+      },
+      {
+        "description": "Thumbnail image file",
+        "type": "png",
+        "url": "https://www.hepdata.net/record/resource/3451412?landing_page=true"
+      }
+    ],
+    "review": {
+      "messages": false,
+      "review_flag": "passed"
+    },
+    "size": 7149,
+    "size_check": true,
+    "table_license": {
+      "description": "CC0 enables reusers to distribute, remix, adapt, and build upon the material in any medium or format, with no conditions.",
+      "name": "CC0",
+      "url": "https://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    "values": [
+      {
+        "x": [
+          {
+            "value": "1.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "17.889"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "9.733",
+                  "plus": "-5.395"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "21.908",
+                  "plus": "-8.632"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "17.822"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "2.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "7.948"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "2.379",
+                  "plus": "-1.517"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "5.596",
+                  "plus": "-2.368"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "4.736"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "3.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "7.064"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "1.465",
+                  "plus": "-0.942"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "3.572",
+                  "plus": "-1.435"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "2.783"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "4.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "3.88"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "1.413",
+                  "plus": "-0.909"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "3.478",
+                  "plus": "-1.385"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "2.686"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "5.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "2.879"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "1.258",
+                  "plus": "-0.859"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "3.155",
+                  "plus": "-1.309"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "2.393"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "6.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "1.136"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "1.281",
+                  "plus": "-0.648"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "3.108",
+                  "plus": "-0.988"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "1.709"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "7.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "3.997"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "1.516",
+                  "plus": "-0.975"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "3.595",
+                  "plus": "-1.486"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "2.881"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "8.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "5.003"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "1.584",
+                  "plus": "-0.909"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "3.684",
+                  "plus": "-1.385"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "2.686"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "9.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "2.044"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "1.469",
+                  "plus": "-0.851"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "3.53",
+                  "plus": "-1.362"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "2.49"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "10.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "2.212"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "1.8",
+                  "plus": "-1.07"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "4.277",
+                  "plus": "-1.712"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "3.271"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "11.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "2.581"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "1.961",
+                  "plus": "-1.166"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "4.66",
+                  "plus": "-1.865"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "3.564"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "12.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "2.151"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "1.774",
+                  "plus": "-1.113"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "4.34",
+                  "plus": "-1.737"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "3.271"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "13.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "3.748"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "1.962",
+                  "plus": "-1.134"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "4.718",
+                  "plus": "-1.815"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "3.467"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "14.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "3.137"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "1.956",
+                  "plus": "-1.246"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "4.758",
+                  "plus": "-1.945"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "3.662"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "15.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "2.858"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "2.122",
+                  "plus": "-1.262"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "5.042",
+                  "plus": "-2.019"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "3.857"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "16.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "5.702"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "2.283",
+                  "plus": "-1.35"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "5.329",
+                  "plus": "-2.107"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "4.15"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "17.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "5.486"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "2.21",
+                  "plus": "-1.387"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "5.34",
+                  "plus": "-2.165"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "4.199"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "18.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "4.183"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "2.283",
+                  "plus": "-1.371"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "5.474",
+                  "plus": "-2.14"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "4.15"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "19.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "5.569"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "2.555",
+                  "plus": "-1.629"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "6.104",
+                  "plus": "-2.543"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "4.932"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "20.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "4.625"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "2.269",
+                  "plus": "-1.403"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "5.469",
+                  "plus": "-2.19"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "4.248"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "21.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "4.226"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "2.403",
+                  "plus": "-1.509"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "5.742",
+                  "plus": "-2.356"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "4.639"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "22.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "5.445"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "2.477",
+                  "plus": "-1.495"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "5.781",
+                  "plus": "-2.392"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "4.639"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "23.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "5.457"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "2.968",
+                  "plus": "-1.875"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "6.909",
+                  "plus": "-3.0"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "5.908"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "24.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "3.956"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "2.968",
+                  "plus": "-1.908"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "7.008",
+                  "plus": "-3.052"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "6.104"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "25.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "4.144"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "2.62",
+                  "plus": "-1.459"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "6.188",
+                  "plus": "-2.277"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "6.201"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "26.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "5.355"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "2.446",
+                  "plus": "-1.611"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "5.775",
+                  "plus": "-2.514"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "5.029"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "27.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "4.55"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "2.33",
+                  "plus": "-1.488"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "5.539",
+                  "plus": "-2.323"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "5.127"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "28.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "9.954"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "2.411",
+                  "plus": "-1.552"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "5.651",
+                  "plus": "-2.483"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "5.127"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "29.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "6.717"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "2.411",
+                  "plus": "-1.538"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "5.903",
+                  "plus": "-2.523"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "5.127"
+          }
+        ]
+      },
+      {
+        "x": [
+          {
+            "value": "30.0"
+          }
+        ],
+        "y": [
+          {
+            "errors": [
+              {
+                "hide": true,
+                "symerror": 0
+              }
+            ],
+            "group": 0,
+            "value": "6.875"
+          },
+          {
+            "errors": [
+              {
+                "asymerror": {
+                  "minus": "2.228",
+                  "plus": "-1.398"
+                },
+                "label": "1 s.d."
+              },
+              {
+                "asymerror": {
+                  "minus": "5.395",
+                  "plus": "-2.294"
+                },
+                "label": "2 s.d."
+              }
+            ],
+            "group": 1,
+            "value": "4.736"
+          }
+        ]
+      }
+    ],
+    "x_count": 1
+  }

@@ -25,12 +25,12 @@ DEFAULT_MASS_POINTS = massPoints[:]
 # 常數
 # https://arxiv.org/pdf/2402.09955
 # ggf-xs 51960
-# mh = 125.38  # H 質量 (GeV)
-mh = 125.18  # H 質量 (GeV) Zebing
+mh = 125.38  # H 質量 (GeV)
+# mh = 125.18  # H 質量 (GeV) Zebing
 mz = 91.1876  # Z 質量 (GeV)
 #https://twiki.cern.ch/twiki/bin/view/LHCPhysics/CERNYellowReportPageBR#TotalWidthAnchor
-# gamma_HToSM = 4.143e-3  # H 總寬度 (GeV)
-gamma_HToSM = 3.2e-3  # H 總寬度 (GeV) Zebing
+gamma_HToSM = 4.143e-3  # H 總寬度 (GeV)
+# gamma_HToSM = 3.2e-3  # H 總寬度 (GeV) Zebing
 decoupling_energy_scale = 1000.0  # GeV (1 TeV)
 ZToll_br = 0.06729
 
@@ -190,7 +190,7 @@ def BrazilianPlots(sample: int = 0,
                    masses: List[int] = None,
                    outdir: str = "output_plots",
                    assume_xs: float = 100.0,
-                   ggF_xs: float = 52170.0,
+                   ggF_xs: float = 56027.0,
                    lumi_fb: float = 61.89,
                    formats: List[str] = None,
                    logy: bool = True,
@@ -305,15 +305,15 @@ def BrazilianPlots(sample: int = 0,
     if setLimitsOnWilsonCoefficient:
         ytitle = "|C^{eff}_{ZH}| [#frac{\Lambda}{1 TeV}]"
         ymax = 10.
-        ymin = 1e-3
+        ymin = 1e-2
     else:
         if not setLimitsOnBR:
             ytitle = "#sigma(pp #rightarrow H) #times B(#rightarrow Za #rightarrow 2l + 2#gamma) [fb]"
             ymax = 100
-            ymin = 8e-2
+            ymin = 4e-1
         else:
             ytitle = "Br(H #rightarrow Za #rightarrow 2l + 2#gamma)"
-            ymax = 3e-2
+            ymax = 2e-2
             ymin = 1e-6
 
     frame = TH1F("frame", f";m_{{a}} (GeV);{ytitle}", 100, xmin, xmax)
@@ -465,7 +465,7 @@ def main():
     parser.add_argument("--tag-suffix", default="", help="Extra tag suffix for output filenames")
     parser.add_argument("--masses", default="", help="逗號分隔質量點 (例: 5,15,30) 留空使用內建")
     parser.add_argument("--only", default="", help="只畫哪些: xs,br,wilson (逗號分隔), 留空=全部")
-    parser.add_argument("--indirect-min", type=float, default=5, help="Wilson 紅線最小 ma (預設=min(masses))")
+    parser.add_argument("--indirect-min", type=float, default=1, help="Wilson 紅線最小 ma (預設=min(masses))")
     parser.add_argument("--indirect-max", type=float, default=30, help="Wilson 紅線最大 ma (預設=max(masses))")
     parser.add_argument("--indirect-step", type=float, default=0.25, help="Wilson 紅線步長 (預設=0.25)")
     args = parser.parse_args()
