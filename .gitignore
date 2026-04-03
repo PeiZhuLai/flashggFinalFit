@@ -54,3 +54,5 @@ Background/obj/RootDict.cxx_tmp_585741
 Combine/t2w_jobs/*_t2w.sh
 Combine/output_impacts/*_impacts.json
 !Datacard/output_Datacard_leptons/*_pruned_datacard_leptons.txt
+!Combine/output_combine_results
+!Combine/output_combine_results/higgsCombine*.AsymptoticLimits.mH125.38.root
