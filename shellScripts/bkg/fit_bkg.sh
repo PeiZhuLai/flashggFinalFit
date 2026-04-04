@@ -67,6 +67,9 @@ total_OutDir="$path_out_bkg/AllFitResults"
 failed_log="failed_mass_points.log"
 : > "$failed_log"   # 清空舊 log
 
+summary_log="$path_out_bkg/background_fit_summary.csv"
+echo "mass,ftest_status,best_fit_pdf,n_pdfs,ftest_results,envelope_results,ftest_stdout,bkgplots_status,bkgplots_stdout" > "$summary_log"
+
 for ((iBin=0; iBin<$nMass; iBin++))
 # for ((iBin=0; iBin<1; iBin++))
     do
@@ -74,28 +77,54 @@ for ((iBin=0; iBin<$nMass; iBin++))
 
     mkdir -p "$path_out_bkg/${massList[$iBin]}"
     path_bkg="$path_out_bkg/${massList[$iBin]}"
+    ftest_outdir="$path_bkg/HZAmassInde_fTest"
+    ftest_stdout="$path_bkg/ftest.stdout.log"
+    bkgplots_stdout="$path_bkg/makeBkgPlots.stdout.log"
+    ftest_results="$ftest_outdir/fTestResults.txt"
+    envelope_results="$ftest_outdir/EnvelopeResults.txt"
+    best_fit_pdf="NA"
+    n_pdfs="NA"
+    ftest_status="OK"
+    bkgplots_status="OK"
 
     # Syst
     ######################################
     # 1. fTest
     ######################################
     # ./bin/fTest_ALP_turnOn -i $dir_input/mA_M${massList[$iBin]}/ws/run3.root --saveMultiPdf $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -D $path_bkg/HZAmassInde_fTest --mass_ALP ${massList[$iBin]} -c 1 --isFlashgg 0 --isData 0 -f data, --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 > $path_bkg/ftest.log
-    ./bin/fTest_ALP_turnOn -i $dir_input/mA_M${massList[$iBin]}/ws/run3.root --saveMultiPdf $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -D $path_bkg/HZAmassInde_fTest --mass_ALP ${massList[$iBin]} -c 1 --isFlashgg 0 --isData 0 -f data, --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135
+    ./bin/fTest_ALP_turnOn -i $dir_input/mA_M${massList[$iBin]}/ws/run3.root --saveMultiPdf $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -D $ftest_outdir --mass_ALP ${massList[$iBin]} -c 1 --isFlashgg 0 --isData 0 -f data, --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 > "$ftest_stdout" 2>&1
     
     if [[ $? -ne 0 ]]; then
+        ftest_status="FAIL"
         echo "[FAIL][fTest] mA=${massList[$iBin]}" | tee -a "$failed_log"
+        printf "%s,%s,%s,%s,%s,%s,%s,%s,%s\n" \
+          "${massList[$iBin]}" "$ftest_status" "$best_fit_pdf" "$n_pdfs" "$ftest_results" "$envelope_results" "$ftest_stdout" "$bkgplots_status" "$bkgplots_stdout" >> "$summary_log"
         continue
+    fi
+
+    if [[ -f "$ftest_stdout" ]]; then
+        best_fit_pdf=$(grep -E "Best Fit Pdf =" "$ftest_stdout" | tail -1 | sed 's/.*Best Fit Pdf = //' | sed 's/, /:/' || true)
+        n_pdfs=$(grep -E "with a total of [0-9]+ pdfs" "$ftest_stdout" | tail -1 | sed -E 's/.*with a total of ([0-9]+) pdfs.*/\1/' || true)
+        [[ -n "$best_fit_pdf" ]] || best_fit_pdf="NA"
+        [[ -n "$n_pdfs" ]] || n_pdfs="NA"
     fi
     
     ######################################
     # 2. makeBkgPlots
     ######################################
-    ./bin/makeBkgPlots_ALP -b $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -d $path_bkg/BkgPlots --total_OutDir $total_OutDir -o $path_bkg/BkgPlots.root --sqrts 13p6TeV --isMultiPdf --useBinnedData --massStep 2.5 --mhVal 125.0 --maVal ${massList[$iBin]} --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 --intLumi $Lumi_run3 -c 0 --isFlashgg 0 --doBands
+    # makeBkgPlots 只負責產圖與 band，可用來診斷；datacard 真正讀的是上面的 CMS-HGG_mva_13p6TeV_multipdf.root
+    ./bin/makeBkgPlots_ALP -b $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -d $path_bkg/BkgPlots --total_OutDir $total_OutDir -o $path_bkg/BkgPlots.root --sqrts 13p6TeV --isMultiPdf --useBinnedData --massStep 2.5 --mhVal 125.0 --maVal ${massList[$iBin]} --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 --intLumi $Lumi_run3 -c 0 --isFlashgg 0 --doBands > "$bkgplots_stdout" 2>&1
 
     if [[ $? -ne 0 ]]; then
-        echo "[FAIL][BkgPlots] mA=$ma" | tee -a "$failed_log"
+        bkgplots_status="FAIL"
+        echo "[FAIL][BkgPlots] mA=${massList[$iBin]}" | tee -a "$failed_log"
+        printf "%s,%s,%s,%s,%s,%s,%s,%s,%s\n" \
+          "${massList[$iBin]}" "$ftest_status" "$best_fit_pdf" "$n_pdfs" "$ftest_results" "$envelope_results" "$ftest_stdout" "$bkgplots_status" "$bkgplots_stdout" >> "$summary_log"
         continue
     fi
+
+    printf "%s,%s,%s,%s,%s,%s,%s,%s,%s\n" \
+      "${massList[$iBin]}" "$ftest_status" "$best_fit_pdf" "$n_pdfs" "$ftest_results" "$envelope_results" "$ftest_stdout" "$bkgplots_status" "$bkgplots_stdout" >> "$summary_log"
 
     echo "[OK] mA=${massList[$iBin]}"
     # Nominal
