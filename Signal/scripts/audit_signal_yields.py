@@ -118,24 +118,53 @@ def sum_workspace_dataset(path: str, dataset_name: str) -> float:
             "PyROOT is required for workspace checks. Run this script inside your CMSSW/ROOT environment."
         ) from exc
 
+    def find_workspace(node, hint: Optional[str] = None):
+        if not node:
+            return None
+
+        obj = node.Get(hint) if hint and hasattr(node, "Get") else None
+
+        def _find_ws(obj_inner):
+            if not obj_inner:
+                return None
+            if obj_inner.InheritsFrom("RooWorkspace"):
+                return obj_inner
+            if obj_inner.InheritsFrom("TDirectory"):
+                keys = obj_inner.GetListOfKeys()
+                if keys:
+                    for key in keys:
+                        child = key.ReadObj()
+                        ws = _find_ws(child)
+                        if ws:
+                            return ws
+            return None
+
+        ws = _find_ws(obj)
+        if ws:
+            return ws
+
+        for candidate in [hint, "CMS_hza_workspace", "cms_hgg_13TeV", "workspace", "w", "CMS_hgg_workspace"]:
+            if not candidate:
+                continue
+            child = node.Get(candidate) if hasattr(node, "Get") else None
+            ws = _find_ws(child)
+            if ws:
+                return ws
+
+        return _find_ws(node)
+
     root_file = ROOT.TFile.Open(path, "READ")
     if not root_file or root_file.IsZombie():
         raise OSError(f"Failed to open workspace file: {path}")
 
     try:
-        ws = root_file.Get("CMS_hza_workspace")
-        if ws is None:
-            for key in root_file.GetListOfKeys():
-                obj = key.ReadObj()
-                if obj and obj.InheritsFrom("RooWorkspace"):
-                    ws = obj
-                    break
+        ws = find_workspace(root_file, "CMS_hza_workspace")
         if ws is None:
             raise KeyError(f"RooWorkspace not found in {path}")
 
         dataset = ws.data(dataset_name)
         if dataset is None:
-            raise KeyError(f"Dataset '{dataset_name}' not found in {path}")
+            raise KeyError(f"Dataset '{dataset_name}' not found in workspace '{ws.GetName()}' from {path}")
         return float(dataset.sumEntries())
     finally:
         root_file.Close()
