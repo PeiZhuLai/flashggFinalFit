@@ -20,4 +20,4 @@ python3 $dir_sig/scripts/audit_signal_yields.py \
   --masses 20 \
   --years 2024 \
   --channels ele \
-  --csv audit_m20_2024_ele.csv
+  --csv $dir_sig/scripts/audit_m20_2024_ele.csv

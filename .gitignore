@@ -57,3 +57,4 @@ Combine/output_impacts/*_impacts.json
 !Combine/output_combine_results
 !Combine/output_combine_results/higgsCombine*.AsymptoticLimits.mH125.38.root
 .DS_Store
+!Signal/scripts/audit_m20_2024_ele.csv
