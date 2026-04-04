@@ -190,11 +190,16 @@ def collect_row(
         "test_sumw": None,
         "test_x2_sumw": None,
         "mvacut_sumw": None,
+        "mvacut_x2_sumw": None,
         "ws_sumEntries": None,
+        "ws_x2_sumEntries": None,
         "inclusive_over_parquet": None,
         "testx2_over_inclusive": None,
+        "mvacut_over_test": None,
         "mvacut_over_testx2": None,
+        "mvacutx2_over_inclusive": None,
         "ws_over_mvacut": None,
+        "wsx2_over_inclusive": None,
     }
 
     parquet_file = resolve_parquet_file(parquet_base, mass, year) if parquet_base else None
@@ -219,15 +224,22 @@ def collect_row(
     nominal_tree = f"DiphotonTree/{production_mode}_125_Za_{channel}_13p6TeV_cat0"
     if mvacut_file:
         row["mvacut_sumw"] = sum_root_tree_weight(mvacut_file, nominal_tree, "weight")
+        if row["mvacut_sumw"] is not None:
+            row["mvacut_x2_sumw"] = 2.0 * row["mvacut_sumw"]
 
     dataset_name = f"{production_mode}_125_Za_{channel}_13p6TeV_cat0"
     if ws_file and not skip_workspace:
         row["ws_sumEntries"] = sum_workspace_dataset(ws_file, dataset_name)
+        if row["ws_sumEntries"] is not None:
+            row["ws_x2_sumEntries"] = 2.0 * row["ws_sumEntries"]
 
     row["inclusive_over_parquet"] = safe_ratio(row["inclusive_sumw"], row["parquet_sumw"])
     row["testx2_over_inclusive"] = safe_ratio(row["test_x2_sumw"], row["inclusive_sumw"])
+    row["mvacut_over_test"] = safe_ratio(row["mvacut_sumw"], row["test_sumw"])
     row["mvacut_over_testx2"] = safe_ratio(row["mvacut_sumw"], row["test_x2_sumw"])
+    row["mvacutx2_over_inclusive"] = safe_ratio(row["mvacut_x2_sumw"], row["inclusive_sumw"])
     row["ws_over_mvacut"] = safe_ratio(row["ws_sumEntries"], row["mvacut_sumw"])
+    row["wsx2_over_inclusive"] = safe_ratio(row["ws_x2_sumEntries"], row["inclusive_sumw"])
     return row
 
 
@@ -298,11 +310,16 @@ def write_rows(rows: Sequence[Dict[str, Optional[float]]], output_path: str = ""
         "test_sumw",
         "test_x2_sumw",
         "mvacut_sumw",
+        "mvacut_x2_sumw",
         "ws_sumEntries",
+        "ws_x2_sumEntries",
         "inclusive_over_parquet",
         "testx2_over_inclusive",
+        "mvacut_over_test",
         "mvacut_over_testx2",
+        "mvacutx2_over_inclusive",
         "ws_over_mvacut",
+        "wsx2_over_inclusive",
         "parquet_file",
         "p2root_file",
         "mvacut_file",
