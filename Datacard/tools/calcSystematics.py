@@ -12,6 +12,13 @@ def addConstantSyst(sd,_syst,options):
   # -------------- 新增：偵錯旗標 --------------
   debug = _syst.get('debug_constant', False)
 
+  def _constant_value_for_year(value, year, syst_name):
+    if isinstance(value, dict):
+      if year not in value:
+        return '-'
+      return value[year]
+    return value
+
   fromJson = False
   if "json" in str(_syst['value']):
     fromJson = True
@@ -52,8 +59,16 @@ def addConstantSyst(sd,_syst,options):
           print(f"[addConstantSyst][DEBUG] {_syst['name']} first unmatched proc examples: {unmatched_samples}")
           print(f"[addConstantSyst][DEBUG] Available JSON keys: {list(uval.keys())[:8]}{' ...' if len(uval)>8 else ''}")
     else:
-      mask_sig = (sd['type']=='sig') & (~sd['cat'].str.contains("NOTAG"))
-      sd.loc[mask_sig, _syst['name']] = _syst['value']
+      if isinstance(_syst['value'], dict):
+        missing_years = sorted(set(sd.loc[mask_sig, 'year'].unique()) - set(_syst['value'].keys()))
+        if missing_years:
+          print(f"[addConstantSyst][WARNING] {_syst['name']} missing values for years {missing_years}")
+        sd.loc[mask_sig, _syst['name']] = sd.loc[mask_sig].apply(
+          lambda row: _constant_value_for_year(_syst['value'], row['year'], _syst['name']),
+          axis=1
+        )
+      else:
+        sd.loc[mask_sig, _syst['name']] = _syst['value']
     if debug:
       filled = sd.loc[mask_sig, _syst['name']].ne('-').sum()
       print(f"[addConstantSyst] {_syst['name']} correlate=1 filled rows={filled}")
