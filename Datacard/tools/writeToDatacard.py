@@ -1,4 +1,5 @@
 # Hold defs of writing functions for datacard
+import math
 import os, sys, re
 from numbers import Real
 from commonTools import *
@@ -161,15 +162,24 @@ def writeSystematic(f,d,s,options,stxsMergeScheme=None,scaleCorrScheme=None):
 
 def addSyst(l,v,s,p,c):
   #l-systematic line, v-value, s-systematic title, p-proc, c-cat
+  def _append_dash(line):
+    line += "%-15s " % "-"
+    return line
+
   if isinstance(v, str): 
     l += "%-15s "%v
     return l
+  if v is None:
+    return _append_dash(l)
   if hasattr(v, "tolist") and not isinstance(v, (str, bytes)):
     v = v.tolist()
   if isinstance(v, tuple):
     v = list(v)
   if isinstance(v, Real):
-    v = [float(v)]
+    vf = float(v)
+    if not math.isfinite(vf):
+      return _append_dash(l)
+    v = [vf]
   elif isinstance(v, list):
     pass
   else:
@@ -177,6 +187,16 @@ def addSyst(l,v,s,p,c):
     sys.exit(1)
 
   if isinstance(v, list): 
+    if len(v) == 0:
+      return _append_dash(l)
+    try:
+      vals = [float(x) for x in v]
+    except Exception:
+      print(" --> [ERROR] systematic %s: list contains non-numeric values for (%s,%s), value=%r. Leaving..."%(s,p,c,v))
+      sys.exit(1)
+    if any(not math.isfinite(x) for x in vals):
+      return _append_dash(l)
+    v = vals
     # Symmetric:
     if len(v) == 1: 
       # Check 1: variation is non-negligible. If not then skip
@@ -188,7 +208,7 @@ def addSyst(l,v,s,p,c):
         print(" --> [WARNING] systematic %s: negative variation for (%s,%s)"%(s,p,c))
         #vstr = "%s"%v[0]
         vstr = "-"
-        l += "%-15s "%v[0]
+        l += "%-15s "%vstr
       else:
         l += "%-15.3f "%v[0]
     # Anti-symmetirc
