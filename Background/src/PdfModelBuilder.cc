@@ -36,6 +36,25 @@ using namespace std;
 using namespace RooFit;
 using namespace boost;
 
+namespace {
+constexpr int kBkgFftBins = 1024;
+constexpr int kBkgCacheBins = 1024;
+constexpr double kBkgBufferFraction = 0.25;
+
+inline void setFftObsBinning(RooRealVar* obs) {
+  if (!obs) return;
+  obs->setBins(kBkgFftBins, "fft");
+  obs->setBins(kBkgCacheBins, "cache");
+  obs->setBins(kBkgCacheBins);
+}
+
+inline void setCacheObsBinning(RooRealVar* obs) {
+  if (!obs) return;
+  obs->setBins(kBkgCacheBins, "cache");
+  obs->setBins(kBkgCacheBins);
+}
+}
+
 PdfModelBuilder::PdfModelBuilder():
   obs_var_set(false),
   signal_modifier_set(false),
@@ -120,10 +139,10 @@ RooAbsPdf* PdfModelBuilder::getBernstein(string prefix, int order){
       RooArgList(*obs_var, *step_value, *step_width, *bern)
     );
     obs_var->setRange(-200, 500);
+    setFftObsBinning(obs_var);
     RooFFTConvPdf *bern_gaus = new RooFFTConvPdf(Form("%s_berngaus",prefix.c_str()), Form("%s_berngaus",prefix.c_str()), *obs_var, *gaus, *soft_step);
-    obs_var->setBins(4000, "cache");
-    obs_var->setBins(4000);
-    bern_gaus->setBufferFraction(0.25);
+    setCacheObsBinning(obs_var);
+    bern_gaus->setBufferFraction(kBkgBufferFraction);
     obs_var->setRange(95, 180);
     return bern_gaus;
   } else if (order==2) {
@@ -134,10 +153,10 @@ RooAbsPdf* PdfModelBuilder::getBernstein(string prefix, int order){
       RooArgList(*obs_var, *step_value, *step_width, *bern)
     );
     obs_var->setRange(-200, 500);
+    setFftObsBinning(obs_var);
     RooFFTConvPdf *bern_gaus = new RooFFTConvPdf(Form("%s_berngaus",prefix.c_str()), Form("%s_berngaus",prefix.c_str()), *obs_var, *gaus, *soft_step);
-    obs_var->setBins(4000, "cache");
-    obs_var->setBins(4000);
-    bern_gaus->setBufferFraction(0.25);
+    setCacheObsBinning(obs_var);
+    bern_gaus->setBufferFraction(kBkgBufferFraction);
     obs_var->setRange(95, 180);
     return bern_gaus;
   } else if (order==3) {
@@ -148,10 +167,10 @@ RooAbsPdf* PdfModelBuilder::getBernstein(string prefix, int order){
       RooArgList(*obs_var, *step_value, *step_width, *bern)
     );
     obs_var->setRange(-200, 500);
+    setFftObsBinning(obs_var);
     RooFFTConvPdf *bern_gaus = new RooFFTConvPdf(Form("%s_berngaus",prefix.c_str()), Form("%s_berngaus",prefix.c_str()), *obs_var, *gaus, *soft_step);
-    obs_var->setBins(4000, "cache");
-    obs_var->setBins(4000);
-    bern_gaus->setBufferFraction(0.25);
+    setCacheObsBinning(obs_var);
+    bern_gaus->setBufferFraction(kBkgBufferFraction);
     obs_var->setRange(95, 180);
     return bern_gaus;
   } else if (order==4) {
@@ -162,10 +181,10 @@ RooAbsPdf* PdfModelBuilder::getBernstein(string prefix, int order){
       RooArgList(*obs_var, *step_value, *step_width, *bern)
     );
     obs_var->setRange(-200, 500);
+    setFftObsBinning(obs_var);
     RooFFTConvPdf *bern_gaus = new RooFFTConvPdf(Form("%s_berngaus",prefix.c_str()), Form("%s_berngaus",prefix.c_str()), *obs_var, *gaus, *soft_step);
-    obs_var->setBins(4000, "cache");
-    obs_var->setBins(4000);
-    bern_gaus->setBufferFraction(0.25);
+    setCacheObsBinning(obs_var);
+    bern_gaus->setBufferFraction(kBkgBufferFraction);
     obs_var->setRange(95, 180);
     return bern_gaus;
   } else if (order==5) {
@@ -176,10 +195,10 @@ RooAbsPdf* PdfModelBuilder::getBernstein(string prefix, int order){
       RooArgList(*obs_var, *step_value, *step_width, *bern)
     );
     obs_var->setRange(-200, 500);
+    setFftObsBinning(obs_var);
     RooFFTConvPdf *bern_gaus = new RooFFTConvPdf(Form("%s_berngaus",prefix.c_str()), Form("%s_berngaus",prefix.c_str()), *obs_var, *gaus, *soft_step);
-    obs_var->setBins(4000, "cache");
-    obs_var->setBins(4000);
-    bern_gaus->setBufferFraction(0.25);
+    setCacheObsBinning(obs_var);
+    bern_gaus->setBufferFraction(kBkgBufferFraction);
     obs_var->setRange(95, 180);
     return bern_gaus;
   } else if (order==6) {
@@ -190,10 +209,10 @@ RooAbsPdf* PdfModelBuilder::getBernstein(string prefix, int order){
       RooArgList(*obs_var, *step_value, *step_width, *bern)
     );
     obs_var->setRange(-200, 500);
+    setFftObsBinning(obs_var);
     RooFFTConvPdf *bern_gaus = new RooFFTConvPdf(Form("%s_berngaus",prefix.c_str()), Form("%s_berngaus",prefix.c_str()), *obs_var, *gaus, *soft_step);
-    obs_var->setBins(4000, "cache");
-    obs_var->setBins(4000);
-    bern_gaus->setBufferFraction(0.25);
+    setCacheObsBinning(obs_var);
+    bern_gaus->setBufferFraction(kBkgBufferFraction);
     obs_var->setRange(95, 180);
     return bern_gaus;
   } else {
@@ -242,14 +261,13 @@ RooAbsPdf* PdfModelBuilder::getBernsteinStepxGau(string prefix, int order, int m
     RooArgList(*obs_var, *step_value, *step_width, *bern)
   );
 
-  obs_var->setBins(1024, "fft"); // speed: smaller FFT grid
+  setFftObsBinning(obs_var);
   RooFFTConvPdf *conv = new RooFFTConvPdf(
     Form("%s",prefix.c_str()), Form("%s",prefix.c_str()),
     *obs_var, *soft_step_times_bern, *gaus
   );
-  obs_var->setBins(4000, "cache");
-  obs_var->setBins(4000);
-  conv->setBufferFraction(0.25);
+  setCacheObsBinning(obs_var);
+  conv->setBufferFraction(kBkgBufferFraction);
   conv->setBufferFraction(0.15);
 
   return conv;
@@ -307,10 +325,10 @@ RooAbsPdf* PdfModelBuilder::getPowerLawStepxGau(string prefix, int order, int ca
         RooArgList(*obs_var,*turnon,*width,*p1,*cp1)
       );
       RooGaussModel *gau      = new RooGaussModel(Form("%s_gau_pow1",prefix.c_str()),Form("%s_gau_pow1",prefix.c_str()),*obs_var,*mean,*sigma);
+      setFftObsBinning(obs_var);
       RooFFTConvPdf *gauxpow  = new RooFFTConvPdf(Form("%s1",prefix.c_str()),Form("%s_gauxpow1",prefix.c_str()),*obs_var,*soft_step,*gau);
-      obs_var->setBins(4000, "cache");
-      obs_var->setBins(4000);
-      gauxpow->setBufferFraction(0.25);
+      setCacheObsBinning(obs_var);
+      gauxpow->setBufferFraction(kBkgBufferFraction);
       return gauxpow;
   } else if (order==3) {
       RooRealVar *p1          = new RooRealVar(Form("%s_p1_pow3",prefix.c_str()),Form("%s_p1_pow3",prefix.c_str()),par1_pow3,par1_lpow3,par1_hpow3);
@@ -323,10 +341,10 @@ RooAbsPdf* PdfModelBuilder::getPowerLawStepxGau(string prefix, int order, int ca
         RooArgList(*obs_var,*turnon,*width,*p1,*cp1,*p3,*cp3)
       );
       RooGaussModel *gau      = new RooGaussModel(Form("%s_gau_pow3",prefix.c_str()),Form("%s_gau_pow3",prefix.c_str()),*obs_var,*mean,*sigma);
+      setFftObsBinning(obs_var);
       RooFFTConvPdf *gauxpow  = new RooFFTConvPdf(Form("%s3",prefix.c_str()),Form("%s_gauxpow3",prefix.c_str()),*obs_var,*soft_step,*gau);
-      obs_var->setBins(4000, "cache");
-      obs_var->setBins(4000);
-      gauxpow->setBufferFraction(0.25);
+      setCacheObsBinning(obs_var);
+      gauxpow->setBufferFraction(kBkgBufferFraction);
       return gauxpow;
   } else if (order==5) {
       RooRealVar *p1          = new RooRealVar(Form("%s_p1_pow5",prefix.c_str()),Form("%s_p1_pow5",prefix.c_str()),par1_pow5,par1_lpow5,par1_hpow5);
@@ -342,10 +360,10 @@ RooAbsPdf* PdfModelBuilder::getPowerLawStepxGau(string prefix, int order, int ca
         RooArgList(*obs_var,*turnon,*width,*p1,*cp1,*p3,*cp3,*p5,*cp5)
       );
       RooGaussModel *gau      = new RooGaussModel(Form("%s_gau_pow5",prefix.c_str()),Form("%s_gau_pow5",prefix.c_str()),*obs_var,*mean,*sigma);
+      setFftObsBinning(obs_var);
       RooFFTConvPdf *gauxpow  = new RooFFTConvPdf(Form("%s5",prefix.c_str()),Form("%s_gauxpow5",prefix.c_str()),*obs_var,*soft_step,*gau);
-      obs_var->setBins(4000, "cache");
-      obs_var->setBins(4000);
-      gauxpow->setBufferFraction(0.25);
+      setCacheObsBinning(obs_var);
+      gauxpow->setBufferFraction(kBkgBufferFraction);
       return gauxpow;
   } 
    else {
@@ -484,10 +502,10 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
         RooArgList(*obs_var,*turnon,*width,*p1,*cp1)
       );
       RooGaussModel *gau = new RooGaussModel(Form("%s_gau_exp1",prefix.c_str()),Form("%s_gau_exp1",prefix.c_str()),*obs_var,*mean,*sigma);
+      setFftObsBinning(obs_var);
       RooFFTConvPdf *gauxexp = new RooFFTConvPdf(Form("%s1",prefix.c_str()),Form("%s_gauxexp1",prefix.c_str()),*obs_var,*soft_step,*gau);
-      obs_var->setBins(4000, "cache");
-      obs_var->setBins(4000);
-      gauxexp->setBufferFraction(0.25);
+      setCacheObsBinning(obs_var);
+      gauxexp->setBufferFraction(kBkgBufferFraction);
       return gauxexp;
   } else if (order==3) {
       RooRealVar *p1 = new RooRealVar(Form("%s_p1_exp3",prefix.c_str()),Form("%s_p1_exp3",prefix.c_str()),par1_exp3,par1_lexp3, par1_hexp3);
@@ -500,10 +518,10 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
         RooArgList(*obs_var,*turnon,*width,*p1,*cp1,*p3,*cp3)
       );
       RooGaussModel *gau = new RooGaussModel(Form("%s_gau_exp3",prefix.c_str()),Form("%s_gau_exp3",prefix.c_str()),*obs_var,*mean,*sigma);
+      setFftObsBinning(obs_var);
       RooFFTConvPdf *gauxexp = new RooFFTConvPdf(Form("%s3",prefix.c_str()),Form("%s_gauxexp3",prefix.c_str()),*obs_var,*soft_step,*gau);
-      obs_var->setBins(4000, "cache");
-      obs_var->setBins(4000);
-      gauxexp->setBufferFraction(0.25);
+      setCacheObsBinning(obs_var);
+      gauxexp->setBufferFraction(kBkgBufferFraction);
       return gauxexp;
   } else if (order==5) {
       RooRealVar *p1 = new RooRealVar(Form("%s_p1_exp5",prefix.c_str()),Form("%s_p1_exp5",prefix.c_str()),par1_exp5,par1_lexp5, par1_hexp5);
@@ -518,10 +536,10 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
         RooArgList(*obs_var,*turnon,*width,*p1,*cp1,*p3,*cp3,*p5,*cp5)
       );
       RooGaussModel *gau = new RooGaussModel(Form("%s_gau_exp5",prefix.c_str()),Form("%s_gau_exp5",prefix.c_str()),*obs_var,*mean,*sigma);
+      setFftObsBinning(obs_var);
       RooFFTConvPdf *gauxexp = new RooFFTConvPdf(Form("%s5",prefix.c_str()),Form("%s_gauxexp5",prefix.c_str()),*obs_var,*soft_step,*gau);
-      obs_var->setBins(4000, "cache");
-      obs_var->setBins(4000);
-      gauxexp->setBufferFraction(0.25);
+      setCacheObsBinning(obs_var);
+      gauxexp->setBufferFraction(kBkgBufferFraction);
       return gauxexp;
   } 
    else {
@@ -566,10 +584,10 @@ RooAbsPdf* PdfModelBuilder::getPowerLawSingle(string prefix, int order){
     RooRealVar *step_value = new RooRealVar("step_value", "step value", 115., 110., 130.);
     RooGenericPdf *step_func = new RooGenericPdf("step_func", "step_func", "1e-20+( @0 > @1) * @2", RooArgSet(*obs_var, *step_value, *pow));
     obs_var->setRange(-400.0,500.0);
+    setFftObsBinning(obs_var);
     RooFFTConvPdf *pow_gaus = new RooFFTConvPdf("pow_gaus", "pow_gaus", *obs_var, *gaus, *step_func);
-    obs_var->setBins(4000, "cache");
-    obs_var->setBins(4000);
-    pow_gaus->setBufferFraction(0.25);
+    setCacheObsBinning(obs_var);
+    pow_gaus->setBufferFraction(kBkgBufferFraction);
     obs_var->setRange(110.0,180.0);
   }
 }
@@ -611,10 +629,10 @@ RooAbsPdf* PdfModelBuilder::getLaurentSeries(string prefix, int order){
     RooRealVar *step_value1 = new RooRealVar("step_value1", "step_value1",115.,110.,130.) ;
     RooGenericPdf *step_func1 = new RooGenericPdf("step_func1","step_func1","(1e-20+( @0 > @1)) * @2",RooArgSet(*obs_var,*step_value1,*pdf));
     obs_var->setRange(-400.0,500.0);
+    setFftObsBinning(obs_var);
     RooFFTConvPdf *pdf_gaus = new RooFFTConvPdf("pdf_gaus","pdf_gaus", *obs_var, *gaus1, *step_func1);
-    obs_var->setBins(4000, "cache");
-    obs_var->setBins(4000);
-    pdf_gaus->setBufferFraction(0.25);
+    setCacheObsBinning(obs_var);
+    pdf_gaus->setBufferFraction(kBkgBufferFraction);
     obs_var->setRange(110.0,180.0);
 }
 
@@ -669,10 +687,10 @@ RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat
         RooArgList(*obs_var,*turnon,*width,*cp1)
       );
       RooGaussModel *gau = new RooGaussModel(Form("%s_gau_lau1",prefix.c_str()),Form("%s_gau_lau1",prefix.c_str()),*obs_var,*mean,*sigma);
+      setFftObsBinning(obs_var);
       RooFFTConvPdf *gauxlau = new RooFFTConvPdf(Form("%s1",prefix.c_str()),Form("%s_gauxlau1",prefix.c_str()),*obs_var,*soft_step,*gau);
-      obs_var->setBins(4000, "cache");
-      obs_var->setBins(4000);
-      gauxlau->setBufferFraction(0.25);
+      setCacheObsBinning(obs_var);
+      gauxlau->setBufferFraction(kBkgBufferFraction);
       return gauxlau;
   } else if (order==2) {
       RooRealVar *cp1 = new RooRealVar(Form("%s_cp1_lau2",prefix.c_str()),Form("%s_cp1_lau2",prefix.c_str()),coeff1_lau2,coeff1_llau2,coeff1_hlau2);
@@ -683,10 +701,10 @@ RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat
         RooArgList(*obs_var,*turnon,*width,*cp1,*cp2)
       );
       RooGaussModel *gau = new RooGaussModel(Form("%s_gau_lau2",prefix.c_str()),Form("%s_gau_lau2",prefix.c_str()),*obs_var,*mean,*sigma);
+      setFftObsBinning(obs_var);
       RooFFTConvPdf *gauxlau = new RooFFTConvPdf(Form("%s2",prefix.c_str()),Form("%s_gauxlau2",prefix.c_str()),*obs_var,*soft_step,*gau);
-      obs_var->setBins(4000, "cache");
-      obs_var->setBins(4000);
-      gauxlau->setBufferFraction(0.25);
+      setCacheObsBinning(obs_var);
+      gauxlau->setBufferFraction(kBkgBufferFraction);
       return gauxlau;
   } else if (order==3) {
       RooRealVar *cp1 = new RooRealVar(Form("%s_cp1_lau3",prefix.c_str()),Form("%s_cp1_lau3",prefix.c_str()),coeff1_lau3,coeff1_llau3,coeff1_hlau3);
@@ -698,10 +716,10 @@ RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat
         RooArgList(*obs_var,*turnon,*width,*cp1,*cp2,*cp3)
       );
       RooGaussModel *gau = new RooGaussModel(Form("%s_gau_lau3",prefix.c_str()),Form("%s_gau_lau3",prefix.c_str()),*obs_var,*mean,*sigma);
+      setFftObsBinning(obs_var);
       RooFFTConvPdf *gauxlau = new RooFFTConvPdf(Form("%s3",prefix.c_str()),Form("%s_gauxlau3",prefix.c_str()),*obs_var,*soft_step,*gau);
-      obs_var->setBins(4000, "cache");
-      obs_var->setBins(4000);
-      gauxlau->setBufferFraction(0.25);
+      setCacheObsBinning(obs_var);
+      gauxlau->setBufferFraction(kBkgBufferFraction);
       return gauxlau;
   } 
   else if (order==4) {
@@ -715,10 +733,10 @@ RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat
         RooArgList(*obs_var,*turnon,*width,*cp1,*cp2,*cp3,*cp4)
       );
       RooGaussModel *gau = new RooGaussModel(Form("%s_gau_lau4",prefix.c_str()),Form("%s_gau_lau4",prefix.c_str()),*obs_var,*mean,*sigma);
+      setFftObsBinning(obs_var);
       RooFFTConvPdf *gauxlau = new RooFFTConvPdf(Form("%s4",prefix.c_str()),Form("%s_gauxlau4",prefix.c_str()),*obs_var,*soft_step,*gau);
-      obs_var->setBins(4000, "cache");
-      obs_var->setBins(4000);
-      gauxlau->setBufferFraction(0.25);
+      setCacheObsBinning(obs_var);
+      gauxlau->setBufferFraction(kBkgBufferFraction);
       return gauxlau;
   } 
    else {
@@ -797,10 +815,10 @@ RooAbsPdf* PdfModelBuilder::getExponentialSingle(string prefix, int order){
     RooRealVar *step_value = new RooRealVar("step_value", "step value",115.,100.,130.) ;
     RooGenericPdf *step_func = new RooGenericPdf("step_func","step_func","(1e-20+( @0 > @1)) * @2",RooArgSet(*obs_var,*step_value,*exp));
     obs_var->setRange(-200.0,200.0);
+    setFftObsBinning(obs_var);
     RooFFTConvPdf *exp_gaus = new RooFFTConvPdf("exp_gaus","exp_gaus", *obs_var, *gaus, *step_func);
-    obs_var->setBins(4000, "cache");
-    obs_var->setBins(4000);
-    exp_gaus->setBufferFraction(0.25);
+    setCacheObsBinning(obs_var);
+    exp_gaus->setBufferFraction(kBkgBufferFraction);
     obs_var->setRange(110.0,180.0);
     return exp;
 
