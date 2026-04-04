@@ -63,6 +63,29 @@ for f_pkl_name in pkl_files:
     df = pickle.load(f_pkl)
     data = pd.concat([data,df], ignore_index=True, axis=0, sort=False)
 
+def has_left_right_signal_mixture(df, target_mass):
+  sig = df[df['type']=='sig'] if 'type' in df.columns else pd.DataFrame()
+  if sig.empty:
+    return False
+
+  target = int(round(float(target_mass)))
+
+  if 'yield_scale' in sig.columns:
+    ys = pd.to_numeric(sig['yield_scale'], errors='coerce').dropna()
+    if not ys.empty and ((ys - 1.0).abs() > 1e-12).any():
+      return True
+
+  if 'anchor_mass' in sig.columns:
+    anchors = pd.to_numeric(sig['anchor_mass'], errors='coerce').dropna()
+    if not anchors.empty and (anchors.astype(int) != target).any():
+      return True
+
+  if 'proc' in sig.columns:
+    if sig['proc'].astype(str).str.contains(r'_a\d+$', regex=True).any():
+      return True
+
+  return False
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Systematics: use factory function to calculate yield variations
 if opt.doSystematics:
@@ -196,9 +219,12 @@ if opt.doSystematics:
       print(" --> [ERROR] in writing systematic %s (signal shape). Leaving"%syst['name'])
       leave()
   if opt.mass_ALP in interploate_ma_list:
-    if not writeInterpolateYields(fdata,data,syst,opt):
-      print(" --> [ERROR] in writing systematic %s (signal shape). Leaving"%syst['name'])
-      leave()
+    if has_left_right_signal_mixture(data, opt.mass_ALP):
+      print(" --> [INFO] 偵測到 left/right anchor mixture signal rows，跳過舊的 writeInterpolateYields() 以避免重複修正")
+    else:
+      if not writeInterpolateYields(fdata,data,syst,opt):
+        print(" --> [ERROR] in writing systematic %s (signal shape). Leaving"%syst['name'])
+        leave()
 if opt.doMCStatUncertainty:
   writeBreak(fdata)
   if not writeMCStatUncertainty(fdata,data,opt):

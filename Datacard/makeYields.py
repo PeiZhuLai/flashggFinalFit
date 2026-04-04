@@ -4,6 +4,7 @@
 #  * Output to be used for creating datacard
 
 import os, sys
+import json
 import re
 from optparse import OptionParser
 import ROOT
@@ -24,6 +25,11 @@ from tools.wsUtils import fetchWorkspace
 
 ma_list = [1,2,3,4,5,6,7,8,9,10,15,20,25,30]
 interploate_ma_list = [11,12,13,14,16,17,18,19,21,22,23,24,26,27,28,29]
+EFF_JSON_PATHS = {
+  "ele": "/afs/cern.ch/work/p/pelai/HZa/HiggsZaAna/Plot/output/sigEfficiencyVmA_ele_byYear_5years_quadratic_interp_ma_points.json",
+  "mu": "/afs/cern.ch/work/p/pelai/HZa/HiggsZaAna/Plot/output/sigEfficiencyVmA_muon_byYear_5years_quadratic_interp_ma_points.json",
+}
+_eff_json_cache = {}
 
 def _nearest_anchor_mass(mass, anchors):
   """給定 mass(int/float)，回傳 anchors 中距離最近者。"""
@@ -39,6 +45,77 @@ def resolve_mass_for_io(mass_alp, anchors, interpolate_list):
   if m in interpolate_list:
     return _nearest_anchor_mass(m, anchors)
   return m
+
+def _find_bracketing_anchors(mass, anchors):
+  anchors = sorted(int(a) for a in anchors)
+  m = int(round(float(mass)))
+  if m <= anchors[0]:
+    return anchors[0], anchors[0]
+  if m >= anchors[-1]:
+    return anchors[-1], anchors[-1]
+  for ml, mr in zip(anchors[:-1], anchors[1:]):
+    if ml <= m <= mr:
+      return ml, mr
+  raise ValueError(f"Cannot find bracketing anchors for mA={m} within {anchors}")
+
+def resolve_signal_components(mass_alp, anchors, interpolate_list):
+  """
+  對 anchor mass：回傳單一 component。
+  對 interpolated mass：回傳左右 anchor 兩個 component，用於 shape mixture。
+  """
+  m = int(round(float(mass_alp)))
+  if m not in interpolate_list:
+    return [{"anchor_mass": m, "shape_weight": 1.0, "label": ""}]
+
+  ml, mr = _find_bracketing_anchors(m, anchors)
+  if ml == mr:
+    return [{"anchor_mass": ml, "shape_weight": 1.0, "label": ""}]
+
+  wl = float(mr - m) / float(mr - ml)
+  wr = float(m - ml) / float(mr - ml)
+  return [
+    {"anchor_mass": ml, "shape_weight": wl, "label": f"a{ml}"},
+    {"anchor_mass": mr, "shape_weight": wr, "label": f"a{mr}"},
+  ]
+
+def _normalise_eff_channel(channel):
+  ch = str(channel).lower()
+  if ch in ("mu", "muon"):
+    return "mu"
+  if ch in ("ele", "electron"):
+    return "ele"
+  raise ValueError(f"Unsupported channel for efficiency JSON: {channel}")
+
+def _load_eff_json(channel):
+  ch = _normalise_eff_channel(channel)
+  if ch not in _eff_json_cache:
+    path = EFF_JSON_PATHS[ch]
+    with open(path, "r") as jf:
+      _eff_json_cache[ch] = json.load(jf)
+  return _eff_json_cache[ch]
+
+def _get_eff(payload, year, mass):
+  mkey = str(int(round(float(mass))))
+  return float(payload["values"][year][mkey])
+
+def compute_signal_yield_scale(target_mass, anchor_mass, shape_weight, year, channel):
+  """
+  mixture row 的總縮放：
+    k_i = w_i * eff(target) / eff(anchor_i)
+  """
+  w = float(shape_weight)
+  if abs(w) < 1e-12:
+    return 0.0
+  if (int(round(float(target_mass))) == int(round(float(anchor_mass)))) and (abs(w - 1.0) < 1e-12):
+    return 1.0
+
+  payload = _load_eff_json(channel)
+  eff_target = _get_eff(payload, year, target_mass)
+  eff_anchor = _get_eff(payload, year, anchor_mass)
+  if eff_anchor == 0.0:
+    print(f" --> [WARNING] efficiency(anchor={anchor_mass}, year={year}, channel={channel})=0, 將 scale 設為 0")
+    return 0.0
+  return w * (eff_target / eff_anchor)
 
 # 讓 od() 可用（有些環境沒在 commonTools 定義）
 od = OrderedDict
@@ -83,9 +160,13 @@ def get_options():
 (opt,args) = get_options()
 
 # 決定「實際用來讀檔/取模型」的 mass
-mass_for_io = resolve_mass_for_io(opt.mass_ALP, ma_list, interploate_ma_list)
-if mass_for_io != int(opt.mass_ALP):
-  print(f" --> [INFO] mass_ALP={opt.mass_ALP} 不在 anchor 清單，改用最近鄰 mA={mass_for_io} 的檔案進行計算")
+signal_components = resolve_signal_components(opt.mass_ALP, ma_list, interploate_ma_list)
+if len(signal_components) > 1:
+  comp_desc = ", ".join([f"{c['anchor_mass']}(w={c['shape_weight']:.3f})" for c in signal_components])
+  print(f" --> [INFO] mass_ALP={opt.mass_ALP} 使用左右 anchor mixture: {comp_desc}")
+bkg_mass_for_io = resolve_mass_for_io(opt.mass_ALP, ma_list, interploate_ma_list)
+if bkg_mass_for_io != int(opt.mass_ALP):
+  print(f" --> [INFO] background/data 仍使用最近鄰 anchor mA={bkg_mass_for_io}")
 
 # Extract years and inputWSDir
 inputWSDirMap = od()
@@ -117,7 +198,7 @@ else:
 procs.sort()
 
 # Initiate pandas dataframe
-columns_data = ['year','type','procOriginal','proc','proc_s0','cat','inputWSFile','nominalDataName','modelWSFile','model','rate']
+columns_data = ['year','type','procOriginal','proc','proc_s0','cat','inputWSFile','nominalDataName','modelWSFile','model','rate','anchor_mass','shape_weight','yield_scale','mix_group']
 data = pd.DataFrame( columns=columns_data )
 
 # 工具：列出 workspace / 檔案中的 dataset 名稱（無 ws.dir() 依賴）
@@ -353,88 +434,100 @@ for year in years:
 
   for proc in procs:
     for lep_channel in leps:
+      for comp in signal_components:
+        anchor_mass = int(comp['anchor_mass'])
+        shape_weight = float(comp['shape_weight'])
+        mix_label = comp.get('label', '')
+        mix_group = "%s_%s_%s"%(procToDatacardName(proc),year,lep_channel)
+        yield_scale = compute_signal_yield_scale(opt.mass_ALP, anchor_mass, shape_weight, year, lep_channel)
 
-      # Identifier
-      _id = "%s_%s_%s_%s_%s"%(proc,year,lep_channel,opt.cat,sqrts__)
-      origin_id = "%s_%s_%s_%s"%(proc,year,opt.cat,sqrts__)
-      
-      # Mapping to STXS definition here
-      _procOriginal = proc
-      _proc = "%s_%s_%s"%(procToDatacardName(proc),year,lep_channel)
-      _proc_s0 = procToData(proc.split("_")[0])
+        # Identifier
+        _id = "%s_%s_%s_%s_%s"%(proc,year,lep_channel,opt.cat,sqrts__)
+        if mix_label != '':
+          _id = "%s_%s"%(_id, mix_label)
+        origin_id = "%s_%s_%s_%s"%(proc,year,opt.cat,sqrts__)
+        
+        # Mapping to STXS definition here
+        _procOriginal = proc
+        _proc_base = "%s_%s_%s"%(procToDatacardName(proc),year,lep_channel)
+        _proc = _proc_base if mix_label == '' else "%s_%s"%(_proc_base,mix_label)
+        _proc_s0 = procToData(proc.split("_")[0])
 
-      # Define category: add year tag if not merging
-      if opt.mergeYears: _cat = opt.cat
-      else: _cat = "%s_%s"%(opt.cat,year)
+        # Define category: add year tag if not merging
+        if opt.mergeYears: _cat = opt.cat
+        else: _cat = "%s_%s"%(opt.cat,year)
 
-      # Input Signal flashgg ws 
-      _inputWS_pattern = f"{inputWSDirMap[year]}/sig/mA_M{mass_for_io}/ws_Tree2WS/ws_{lep_channel}_{year}.root"
-      _inputWSFile_list = glob.glob(_inputWS_pattern)
-      if len(_inputWSFile_list) == 0:
-        print(f" --> [WARNING] 找不到工作區檔案: pattern={_inputWS_pattern} (skip)")
-        continue
-      if len(_inputWSFile_list) > 1:
-        print(f" --> [WARNING] 匹配到多個檔案(取第一個): {_inputWSFile_list}")
-      _inputWSFile = _inputWSFile_list[0]
+        # Input Signal flashgg ws 
+        _inputWS_pattern = f"{inputWSDirMap[year]}/sig/mA_M{anchor_mass}/ws_Tree2WS/ws_{lep_channel}_{year}.root"
+        _inputWSFile_list = glob.glob(_inputWS_pattern)
+        if len(_inputWSFile_list) == 0:
+          print(f" --> [WARNING] 找不到工作區檔案: pattern={_inputWS_pattern} (skip)")
+          continue
+        if len(_inputWSFile_list) > 1:
+          print(f" --> [WARNING] 匹配到多個檔案(取第一個): {_inputWSFile_list}")
+        _inputWSFile = _inputWSFile_list[0]
 
-      if opt.debugNames:
-        if not os.path.isfile(_inputWSFile):
-          print(f"[DEBUG][ERROR] 檔案不存在: {_inputWSFile}")
+        if opt.debugNames:
+          if not os.path.isfile(_inputWSFile):
+            print(f"[DEBUG][ERROR] 檔案不存在: {_inputWSFile}")
+          else:
+            rchk = ROOT.TFile.Open(_inputWSFile)
+            obj = rchk.Get(inputWSName__)
+            print(f"[DEBUG] 檢查 workspace  '{inputWSName__}' in {_inputWSFile} -> type={type(obj)}")
+            rchk.Close()
+
+        _nominalDataName = "%s_%s_Za_%s_%s_%s"%(_proc_s0,opt.mass,lep_channel,sqrts__,opt.cat)
+
+        # If opt.skipZeroes check nominal yield if 0 then do not add
+        skipProc = False
+        if opt.skipZeroes:
+          f = ROOT.TFile(_inputWSFile)
+          w, _logs = get_rooworkspace_from_file(f, inputWSName__)
+          if w is None:
+            print(f" --> [WARNING] skipZeroes: 找不到 RooWorkspace '{inputWSName__}' 於檔案 {_inputWSFile}，略過 skipZeroes 檢查")
+          else:
+            sumw = w.data(_nominalDataName).sumEntries()
+            if sumw == 0.:
+              skipProc = True
+            w.Delete()
+          f.Close()
+        if skipProc: continue
+
+        # Input Signal model ws 
+        if opt.cat == "NOTAG": 
+          _modelWSFile, _model = '-', '-'
         else:
-          rchk = ROOT.TFile.Open(_inputWSFile)
-          obj = rchk.Get(inputWSName__)
-          print(f"[DEBUG] 檢查 workspace  '{inputWSName__}' in {_inputWSFile} -> type={type(obj)}")
-          rchk.Close()
+          _modelWSFile = f"{opt.sigModelWSDir}/outdir_{lep_channel}/signalFit/output/{anchor_mass}_CMS-HGG_sigfit_{year}_{lep_channel}_Hm125.root"
+          _model = "%s_%s:%s_%s"%(outputWSName__,sqrts__,outputWSObjectTitle__,origin_id)
 
-      _nominalDataName = "%s_%s_Za_%s_%s_%s"%(_proc_s0,opt.mass,lep_channel,sqrts__,opt.cat)
+        # Extract rate from lumi and mixture scaling
+        _rate = float(lumiMap[year])*1000*yield_scale
 
-      # If opt.skipZeroes check nominal yield if 0 then do not add
-      skipProc = False
-      if opt.skipZeroes:
-        f = ROOT.TFile(_inputWSFile)
-        w, _logs = get_rooworkspace_from_file(f, inputWSName__)
-        if w is None:
-          print(f" --> [WARNING] skipZeroes: 找不到 RooWorkspace '{inputWSName__}' 於檔案 {_inputWSFile}，略過 skipZeroes 檢查")
-        else:
-          sumw = w.data(_nominalDataName).sumEntries()
-          if sumw == 0.:
-            skipProc = True
-          w.Delete()
-        f.Close()
-      if skipProc: continue
+        if opt.debugNames:
+          _print_block("Signal 名稱組合",
+            {
+              "_id (唯一識別: proc_year_lep_cat_sqrts)" : _id,
+              "origin_id (原始信號組合 key)" : origin_id,
+              "_procOriginal (輸入工作區原始流程名)" : _procOriginal,
+              "_proc (轉成 datacard 使用之流程+年份+lepton+anchor)" : _proc,
+              "_proc_s0 (基礎歸一化流程別)" : _proc_s0,
+              "_cat (類別, 可能含年分或合併)" : _cat,
+              "anchor_mass (shape 來源 anchor)" : anchor_mass,
+              "shape_weight (左右 anchor mixture 權重)" : shape_weight,
+              "yield_scale = shape_weight * eff(target)/eff(anchor)" : yield_scale,
+              "_inputWSFile_pattern (glob 模式)" : _inputWS_pattern,
+              "_inputWSFile_list (實際匹配列表)" : _inputWSFile_list,
+              "_inputWSFile (存入 DataFrame 的字串)" : _inputWSFile,
+              "_nominalDataName (RooDataSet 名稱)" : _nominalDataName,
+              "_modelWSFile (信號模型工作區路徑)" : _modelWSFile if opt.cat != "NOTAG" else "(NOTAG 無模型)",
+              "_model (模型對象 full spec)" : _model if opt.cat != "NOTAG" else "(NOTAG 無模型)",
+              "_rate (由 lumiMap[year]*1000*yield_scale)" : _rate
+            }
+          )
 
-      # Input Signal model ws 
-      if opt.cat == "NOTAG": 
-        _modelWSFile, _model = '-', '-'
-      else:
-        _modelWSFile = f"{opt.sigModelWSDir}/outdir_{lep_channel}/signalFit/output/{mass_for_io}_CMS-HGG_sigfit_{year}_{lep_channel}_Hm125.root"
-        _model = "%s_%s:%s_%s"%(outputWSName__,sqrts__,outputWSObjectTitle__,origin_id)
-
-      # Extract rate from lumi
-      _rate = float(lumiMap[year])*1000
-
-      if opt.debugNames:
-        _print_block("Signal 名稱組合",
-          {
-            "_id (唯一識別: proc_year_lep_cat_sqrts)" : _id,
-            "origin_id (原始信號組合 key)" : origin_id,
-            "_procOriginal (輸入工作區原始流程名)" : _procOriginal,
-            "_proc (轉成 datacard 使用之流程+年份+lepton)" : _proc,
-            "_proc_s0 (基礎歸一化流程別)" : _proc_s0,
-            "_cat (類別, 可能含年分或合併)" : _cat,
-            "_inputWSFile_pattern (glob 模式)" : _inputWS_pattern,
-            "_inputWSFile_list (實際匹配列表)" : _inputWSFile_list,
-            "_inputWSFile (存入 DataFrame 的字串)" : _inputWSFile,
-            "_nominalDataName (RooDataSet 名稱)" : _nominalDataName,
-            "_modelWSFile (信號模型工作區路徑)" : _modelWSFile if opt.cat != "NOTAG" else "(NOTAG 無模型)",
-            "_model (模型對象 full spec)" : _model if opt.cat != "NOTAG" else "(NOTAG 無模型)",
-            "_rate (由 lumiMap[year]*1000)" : _rate
-          }
-        )
-
-      # Add signal process to dataFrame:
-      print(" --> Adding to dataFrame: (proc,cat) = (%s,%s)"%(_proc,_cat))
-      data.loc[len(data)] = [year,'sig',_procOriginal,_proc,_proc_s0,_cat,_inputWSFile,_nominalDataName,_modelWSFile,_model,_rate]
+        # Add signal process to dataFrame:
+        print(" --> Adding to dataFrame: (proc,cat) = (%s,%s)"%(_proc,_cat))
+        data.loc[len(data)] = [year,'sig',_procOriginal,_proc,_proc_s0,_cat,_inputWSFile,_nominalDataName,_modelWSFile,_model,_rate,anchor_mass,shape_weight,yield_scale,mix_group]
 
 # Background and data processes
 if (not opt.skipBkg) & (opt.cat != "NOTAG"):
@@ -442,13 +535,13 @@ if (not opt.skipBkg) & (opt.cat != "NOTAG"):
   _proc_data = "data_obs"
   if opt.mergeYears:
     _cat = opt.cat
-    _modelWSFile = "%s/%s/CMS-HGG_mva_13p6TeV_multipdf.root"%(opt.bkgModelWSDir, mass_for_io)
+    _modelWSFile = "%s/%s/CMS-HGG_mva_13p6TeV_multipdf.root"%(opt.bkgModelWSDir, bkg_mass_for_io)
     _model_bkg = "%s:CMS_%s_%s_%s_bkgshape"%(bkgWSName__,decayMode,_cat,sqrts__)
     _model_data = "%s:roohist_data_mass_%s"%(bkgWSName__,_cat)
     _proc_s0 = 'ggH' # not needed for data/bkg
     # 原碼 year 未定義；用第一個 year 避免 NameError（僅選來源，不改邏輯）
     year_for_data = years[0]
-    _inputWSFile = "%s/data/mA_M%s/ws/run3.root"%(inputWSDirMap[year_for_data], mass_for_io)
+    _inputWSFile = "%s/data/mA_M%s/ws/run3.root"%(inputWSDirMap[year_for_data], bkg_mass_for_io)
     _nominalDataName = "Data_13p6TeV" # Pei-Zhu
     if opt.debugNames:
       _print_block("Background/Data (合併年分)",
@@ -465,17 +558,17 @@ if (not opt.skipBkg) & (opt.cat != "NOTAG"):
       )
     print(" --> Adding to dataFrame: (proc,cat) = (%s,%s)"%(_proc_bkg,_cat))
     print(" --> Adding to dataFrame: (proc,cat) = (%s,%s)"%(_proc_data,_cat))
-    data.loc[len(data)] = ["merged",'bkg',_proc_bkg,_proc_bkg,'-',_cat,_inputWSFile,_nominalDataName,_modelWSFile,_model_bkg,opt.bkgScaler]
-    data.loc[len(data)] = ["merged",'data',_proc_data,_proc_data,'-',_cat,_inputWSFile,_nominalDataName,_modelWSFile,_model_data,-1]
+    data.loc[len(data)] = ["merged",'bkg',_proc_bkg,_proc_bkg,'-',_cat,_inputWSFile,_nominalDataName,_modelWSFile,_model_bkg,opt.bkgScaler,bkg_mass_for_io,1.0,1.0,'']
+    data.loc[len(data)] = ["merged",'data',_proc_data,_proc_data,'-',_cat,_inputWSFile,_nominalDataName,_modelWSFile,_model_data,-1,bkg_mass_for_io,1.0,1.0,'']
 
   else:
     for year in years:
       _cat = "%s_%s"%(opt.cat,year)
-      _modelWSFile = "%s/%s/CMS-HGG_mva_13TeV_multipdf.root"%(opt.bkgModelWSDir, mass_for_io)
+      _modelWSFile = "%s/%s/CMS-HGG_mva_13TeV_multipdf.root"%(opt.bkgModelWSDir, bkg_mass_for_io)
       _model_bkg = "%s:CMS_%s_%s_%s_bkgshape"%(bkgWSName__,decayMode,_cat,sqrts__)
       _model_data = "%s:roohist_data_mass_%s"%(bkgWSName__,_cat) # Pei-Zhu 
       _proc_s0 = 'ggH' # not needed for data/bkg
-      _inputWSFile = "%s/data/ALP_data_bkg_Am%s_workspace.root"%(inputWSDirMap[year], mass_for_io) # Pei-Zhu 
+      _inputWSFile = "%s/data/ALP_data_bkg_Am%s_workspace.root"%(inputWSDirMap[year], bkg_mass_for_io) # Pei-Zhu 
       _nominalDataName = 'ggh_125_13TeV_cat0' # Pei-Zhu
       if opt.debugNames:
         _print_block("Background/Data (逐年)",
@@ -493,8 +586,8 @@ if (not opt.skipBkg) & (opt.cat != "NOTAG"):
         )
       print(" --> Adding to dataFrame: (proc,cat) = (%s,%s)"%(_proc_bkg,_cat))
       print(" --> Adding to dataFrame: (proc,cat) = (%s,%s)"%(_proc_data,_cat))
-      data.loc[len(data)] = ["year",'bkg',_proc_bkg,_proc_bkg,'-',_cat,_inputWSFile,_nominalDataName,_modelWSFile,_model_bkg,opt.bkgScaler]
-      data.loc[len(data)] = ["year",'data',_proc_data,_proc_data,'-',_cat,_inputWSFile,_nominalDataName,_modelWSFile,_model_data,-1]
+      data.loc[len(data)] = ["year",'bkg',_proc_bkg,_proc_bkg,'-',_cat,_inputWSFile,_nominalDataName,_modelWSFile,_model_bkg,opt.bkgScaler,bkg_mass_for_io,1.0,1.0,'']
+      data.loc[len(data)] = ["year",'data',_proc_data,_proc_data,'-',_cat,_inputWSFile,_nominalDataName,_modelWSFile,_model_data,-1,bkg_mass_for_io,1.0,1.0,'']
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Yields: for each signal row in dataFrame extract the yield
@@ -632,6 +725,10 @@ for ir,r in data[data['type']=='sig'].iterrows():
   contents = ""
   y, y_COWCorr = 0.0, 0.0
   sumw2 = 0.0
+  try:
+    row_yield_scale = float(r['yield_scale']) if 'yield_scale' in r.index else 1.0
+  except Exception:
+    row_yield_scale = 1.0
 
   n_entries = _safe_num_entries(rdata_nominal)
   if n_entries < 0:
@@ -659,16 +756,16 @@ for ir,r in data[data['type']=='sig'].iterrows():
 
   # Need to times 2 on sumw b/c only use half of the dataset
   # Times 4 on sumw2
-  data.at[ir,'nominal_yield'] = 2.0*y
-  data.at[ir,'sumw2'] = 4.0*sumw2
+  data.at[ir,'nominal_yield'] = 2.0*y*row_yield_scale
+  data.at[ir,'sumw2'] = 4.0*sumw2*(row_yield_scale**2)
   if not opt.skipCOWCorr:
     # 也需乘 2.0，與 nominal_yield 一致（只用半個 dataset）
-    data.at[ir,'nominal_yield_COWCorr'] = 2.0*y_COWCorr
+    data.at[ir,'nominal_yield_COWCorr'] = 2.0*y_COWCorr*row_yield_scale
 
   if opt.debugNames:
-    print("[DEBUG] Nominal yield 結果: proc=%s cat=%s yield=%.6f sumw2=%.6f%s" %
-          (r['proc'], r['cat'], y, sumw2,
-           ("" if opt.skipCOWCorr else " yield_COWCorr=%.6f"%y_COWCorr)))
+    print("[DEBUG] Nominal yield 結果: proc=%s cat=%s anchor_mass=%s scale=%.6f raw_yield=%.6f scaled_yield=%.6f sumw2=%.6f%s" %
+          (r['proc'], r['cat'], r.get('anchor_mass', '-'), row_yield_scale, y, data.at[ir,'nominal_yield'], data.at[ir,'sumw2'],
+           ("" if opt.skipCOWCorr else " yield_COWCorr=%.6f"%data.at[ir,'nominal_yield_COWCorr'])))
 
   # 在進入系統誤差計算前，動態修正 factoryType：若原判 a_h 但其實只有權重
   if opt.doSystematics and (not opt.disableAutoWeightFix):
@@ -744,11 +841,11 @@ for ir,r in data[data['type']=='sig'].iterrows():
         val = data.at[ir, col]
         if val != '-' and val is not None:
           try:
-            data.at[ir, col] = 2.0 * float(val)
+            data.at[ir, col] = 2.0 * float(val) * row_yield_scale
           except Exception:
             pass
     if opt.debugNames:
-      print(f"[DEBUG] 系統誤差 yield 已統一乘 2.0: proc={r['proc']} cat={r['cat']}")
+      print(f"[DEBUG] 系統誤差 yield 已統一乘 2.0*scale={2.0*row_yield_scale:.6f}: proc={r['proc']} cat={r['cat']}")
 
   if opt.doSystematics and opt.debugNames:
     print("[DEBUG] 已填入系統誤差變動: proc=%s cat=%s" % (r['proc'], r['cat']))
