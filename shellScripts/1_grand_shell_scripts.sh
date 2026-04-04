@@ -1,0 +1,28 @@
+
+baseDir=/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit
+
+### ----------- Background 
+# sh $baseDir/shellScripts/bkg/fit_bkg.sh
+
+### ----------- Signal
+# sh $baseDir/shellScripts/sig_sys/1_runjob_sig_fTest.sh
+# sh $baseDir/shellScripts/sig_sys/2_runjob_sig_calcPhotonSyst.sh
+# sh $baseDir/shellScripts/sig_sys/3_runjob_sig_signalFit.sh
+# sh $baseDir/shellScripts/sig_sys/4_runjob_sig_RunPlotter.sh
+# sh $baseDir/shellScripts/sig_sys/5_runjob_sig_plotEffSigma.sh
+
+### ----------- Datacard
+# cd $baseDir/Datacard
+# sh 1_runjob_gen_datacard_makeYields.sh
+# sh 2_runjob_gen_datacard_makeDatacard.sh
+# sh 3_rysn_datacard.sh
+
+### ----------- Combine Limits
+# cd $baseDir/Combine
+# sh 1_makeLimits.sh
+
+### ----------- Plot Limts
+cd $baseDir/Plots
+sh 1_runLimitsPlot.sh
+
+cd $baseDir/shellScripts
