@@ -58,6 +58,8 @@ def resolve_parquet_file(base: str, mass: int, year: str) -> Optional[str]:
     patterns = [
         os.path.join(base, mass_tag, "merged_nominal.parquet"),
         os.path.join(base, "Sig_MC", mass_tag, "merged_nominal.parquet"),
+        os.path.join(base, "parquet_DNA", "Sig_MC", mass_tag, "merged_nominal.parquet"),
+        os.path.join(base, "parquet_cutflow_DNA", "Sig_MC", mass_tag, "merged_nominal.parquet"),
         os.path.join(base, "**", mass_tag, "merged_nominal.parquet"),
     ]
     return find_first_existing(patterns)
@@ -249,7 +251,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--parquet-base",
-        default="/eos/home-p/pelai/HZa/parquet_cutflow_DNA/Sig_MC",
+        default="/eos/home-p/pelai/HZa",
         help="Base directory containing HiggsDNA merged signal parquet outputs.",
     )
     parser.add_argument(
