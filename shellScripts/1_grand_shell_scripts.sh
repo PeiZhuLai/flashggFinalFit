@@ -2,7 +2,7 @@
 baseDir=/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit
 
 ### ----------- Background 
-# sh $baseDir/shellScripts/bkg/fit_bkg.sh
+sh $baseDir/shellScripts/bkg/fit_bkg.sh
 
 ### ----------- Signal
 # sh $baseDir/shellScripts/sig_sys/1_runjob_sig_fTest.sh
