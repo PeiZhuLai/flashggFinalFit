@@ -1,5 +1,6 @@
 # Hold defs of writing functions for datacard
 import os, sys, re
+from numbers import Real
 from commonTools import *
 from commonObjects import *
 
@@ -160,10 +161,22 @@ def writeSystematic(f,d,s,options,stxsMergeScheme=None,scaleCorrScheme=None):
 
 def addSyst(l,v,s,p,c):
   #l-systematic line, v-value, s-systematic title, p-proc, c-cat
-  if type(v) is str: 
+  if isinstance(v, str): 
     l += "%-15s "%v
     return l
-  elif type(v) is list: 
+  if hasattr(v, "tolist") and not isinstance(v, (str, bytes)):
+    v = v.tolist()
+  if isinstance(v, tuple):
+    v = list(v)
+  if isinstance(v, Real):
+    v = [float(v)]
+  elif isinstance(v, list):
+    pass
+  else:
+    print(" --> [ERROR] systematic %s: unsupported value type %s for (%s,%s), value=%r. Leaving..."%(s,type(v).__name__,p,c,v))
+    sys.exit(1)
+
+  if isinstance(v, list): 
     # Symmetric:
     if len(v) == 1: 
       # Check 1: variation is non-negligible. If not then skip
@@ -196,9 +209,6 @@ def addSyst(l,v,s,p,c):
         vstr = "%.3f/%.3f"%(v[0],v[1])
         l += "%-15s "%vstr
     return l
-  else:
-    print(" --> [ERROR] systematic %s: value does not have type string or list for (%s,%s). Leaving..."%(s['title'],p,c))
-    sys.exit(1)
 
 def writeMCStatUncertainty(f,d,options):
  
@@ -321,4 +331,3 @@ def writeInterpolateYields(f,d,s,options,stxsMergeScheme=None,scaleCorrScheme=No
       f.write("nuisance edit freeze %s\n" % nuis)
 
   return True
-
