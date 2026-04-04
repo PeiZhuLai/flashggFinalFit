@@ -56,3 +56,4 @@ Combine/output_impacts/*_impacts.json
 !Datacard/output_Datacard_leptons/*_pruned_datacard_leptons.txt
 !Combine/output_combine_results
 !Combine/output_combine_results/higgsCombine*.AsymptoticLimits.mH125.38.root
+.DS_Store
