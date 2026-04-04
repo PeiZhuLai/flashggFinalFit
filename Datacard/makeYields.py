@@ -164,9 +164,8 @@ signal_components = resolve_signal_components(opt.mass_ALP, ma_list, interploate
 if len(signal_components) > 1:
   comp_desc = ", ".join([f"{c['anchor_mass']}(w={c['shape_weight']:.3f})" for c in signal_components])
   print(f" --> [INFO] mass_ALP={opt.mass_ALP} 使用左右 anchor mixture: {comp_desc}")
-bkg_mass_for_io = resolve_mass_for_io(opt.mass_ALP, ma_list, interploate_ma_list)
-if bkg_mass_for_io != int(opt.mass_ALP):
-  print(f" --> [INFO] background/data 仍使用最近鄰 anchor mA={bkg_mass_for_io}")
+bkg_mass_for_io = int(round(float(opt.mass_ALP)))
+print(f" --> [INFO] background/data 使用目標 mass 自身路徑 mA={bkg_mass_for_io}")
 
 # Extract years and inputWSDir
 inputWSDirMap = od()
