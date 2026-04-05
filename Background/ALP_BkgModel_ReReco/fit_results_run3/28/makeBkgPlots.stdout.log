@@ -192,38 +192,1111 @@ Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_a
 
 [WSTFileWrapper] successfully opened this file: ./ALP_BkgModel_ReReco/fit_results_run3/28/CMS-HGG_mva_13p6TeV_multipdf.root
 [WSTFileWrapper] on file ./ALP_BkgModel_ReReco/fit_results_run3/28/CMS-HGG_mva_13p6TeV_multipdf.root opened workspace named: multipdf
+[INFO] sqrts=13p6TeV -> extStr=13p6TeV
+[WSTFileWrapper] Got non-zero RooAbsData from ./ALP_BkgModel_ReReco/fit_results_run3/28/CMS-HGG_mva_13p6TeV_multipdf.root with name roohist_data_mass_cat0
+[WSTFileWrapper] Got non-zero RooAbsPdf from ./ALP_BkgModel_ReReco/fit_results_run3/28/CMS-HGG_mva_13p6TeV_multipdf.root with name CMS_hgg_cat0_13p6TeV_bkgshape
+[WSTFileWrapper] Got non-zero RooCategory from ./ALP_BkgModel_ReReco/fit_results_run3/28/CMS-HGG_mva_13p6TeV_multipdf.root with name pdfindex_cat0_13p6TeV
+[INFO] Current PDF and data:
+[INFO] 	RooFFTConvPdf::Bern1[ Bern_softstepxbern(CMS_hza_mass) (*) Bern_gaus(CMS_hza_mass) ] = 97556.5
+[INFO] 	RooDataHist::roohist_data_mass_cat0[CMS_hza_mass] = 71 bins (621 weights)
+unblind: 0
+Into the blind
+Number of PDFs: 1
+Info in <TCanvas::Print>: pdf file ./ALP_BkgModel_ReReco/fit_results_run3/28/BkgPlots/allPdfs_cat0.pdf has been created
+unblind: 0
+Into the blind
+Number of PDFs: 1
+Info in <TCanvas::Print>: pdf file ./ALP_BkgModel_ReReco/fit_results_run3/AllFitResults/allPdfs_28.pdf has been created
+[INFO] Best fit PDF and data:
+[INFO] 	RooFFTConvPdf::Bern1[ Bern_softstepxbern(CMS_hza_mass) (*) Bern_gaus(CMS_hza_mass) ] = 332896
+[INFO] 	RooDataHist::roohist_data_mass_cat0[CMS_hza_mass] = 71 bins (621 weights)
+Error in <TLegend::AddEntry>: need to create a canvas first
+[INFO] Plotting data and nominal curve
+[INFO] Plot has 85 bins
+[INFO] Processing for mA = 28
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[FOR TABLE] ,UntaggedTag_0,95,0, assuming resolution of 1
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[INFO] mgg: 95 nomBkg: 0 +/- 1 (2) sig -- +0(0) - 0(0)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[FOR TABLE] ,UntaggedTag_0,97.5,0, assuming resolution of 1
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[INFO] mgg: 97.5 nomBkg: 0 +/- 1 (2) sig -- +0(0) - 0(0)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[FOR TABLE] ,UntaggedTag_0,100,0, assuming resolution of 1
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[INFO] mgg: 100 nomBkg: 0 +/- 1 (2) sig -- +0(0) - 0(0)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[FOR TABLE] ,UntaggedTag_0,102.5,0, assuming resolution of 1
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[INFO] mgg: 102.5 nomBkg: 0 +/- 1 (2) sig -- +0(0) - 0(0)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[FOR TABLE] ,UntaggedTag_0,105,0, assuming resolution of 1
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -1.40952e-06 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 4.5223 +/- 2.94509,Bern_step = 106.809 +/- 3.92237,Bern_stepWidth = 3.16894 +/- 3.78952)
+[INFO] mgg: 105 nomBkg: 0 +/- 1 (2) sig -- +0(0) - 0(0)
+[FOR TABLE] ,UntaggedTag_0,107.5,6.47325, assuming resolution of 1
+[INFO] mgg: 107.5 nomBkg: 7.83167 +/- 1 (2) sig -- +0.00922361(0.0348448) - 7.78613(7.78641)
+[FOR TABLE] ,UntaggedTag_0,110,9.71895, assuming resolution of 1
+[INFO] mgg: 110 nomBkg: 9.7354 +/- 1 (2) sig -- +9.36048(9.36048) - 0.0319938(0.127975)
+[FOR TABLE] ,UntaggedTag_0,112.5,11.2059, assuming resolution of 1
+[INFO] mgg: 112.5 nomBkg: 11.2277 +/- 1 (2) sig -- +5.3992(5.89004) - 0.215968(0.746072)
+[FOR TABLE] ,UntaggedTag_0,115,11.9502, assuming resolution of 1
+[INFO] mgg: 115 nomBkg: 11.9646 +/- 1 (2) sig -- +6.98721(7.17468) - 1.99128(2.14835)
+[FOR TABLE] ,UntaggedTag_0,117.5,12.1046, assuming resolution of 1
+[INFO] mgg: 117.5 nomBkg: 12.113 +/- 1 (2) sig -- +5.6386(5.87312) - 0.0611783(0.224321)
+[FOR TABLE] ,UntaggedTag_0,120,11.8988, assuming resolution of 1
+[INFO] mgg: 120 nomBkg: 11.9026 +/- 1 (2) sig -- +5.01329(5.25587) - 0.161719(0.343653)
+[FOR TABLE] ,UntaggedTag_0,122.5,11.5219, assuming resolution of 1
+[INFO] mgg: 122.5 nomBkg: 11.5232 +/- 1 (2) sig -- +4.79353(5.03221) - 0.0696155(0.258572)
+[FOR TABLE] ,UntaggedTag_0,125,11.0803, assuming resolution of 1
+[INFO] mgg: 125 nomBkg: 11.0807 +/- 1 (2) sig -- +4.62257(4.85662) - 0.0633896(0.234054)
+[FOR TABLE] ,UntaggedTag_0,127.5,10.6191, assuming resolution of 1
+[INFO] mgg: 127.5 nomBkg: 10.6192 +/- 1 (2) sig -- +4.44414(4.65895) - 0.00238676(0.229129)
+[FOR TABLE] ,UntaggedTag_0,130,10.1532, assuming resolution of 1
+[INFO] mgg: 130 nomBkg: 10.1532 +/- 1 (2) sig -- +4.25684(4.48089) - 0.0606787(0.224044)
+[FOR TABLE] ,UntaggedTag_0,135,9.21921, assuming resolution of 1
+[INFO] mgg: 135 nomBkg: 9.21921 +/- 1 (2) sig -- +3.86952(4.05633) - 0.0533727(0.213491)
+[FOR TABLE] ,UntaggedTag_0,140,8.28503, assuming resolution of 1
+[INFO] mgg: 140 nomBkg: 8.28503 +/- 1 (2) sig -- +3.47429(3.65981) - 0.0485451(0.177999)
+[FOR TABLE] ,UntaggedTag_0,145,7.35085, assuming resolution of 1
+[INFO] mgg: 145 nomBkg: 7.35085 +/- 1 (2) sig -- +3.08192(3.24078) - 0.0430714(0.157928)
+[FOR TABLE] ,UntaggedTag_0,150,6.41667, assuming resolution of 1
+[INFO] mgg: 150 nomBkg: 6.41667 +/- 1 (2) sig -- +2.69391(2.83491) - 0.0375977(0.137858)
+[FOR TABLE] ,UntaggedTag_0,155,5.48249, assuming resolution of 1
+[INFO] mgg: 155 nomBkg: 5.48249 +/- 1 (2) sig -- +2.29803(2.41464) - 0.0321239(0.117788)
+[FOR TABLE] ,UntaggedTag_0,160,4.5483, assuming resolution of 1
+[INFO] mgg: 160 nomBkg: 4.5483 +/- 1 (2) sig -- +1.90879(2.01188) - 0.0266502(0.0977175)
+[FOR TABLE] ,UntaggedTag_0,165,3.61415, assuming resolution of 1
+[INFO] mgg: 165 nomBkg: 3.61415 +/- 1 (2) sig -- +1.51493(1.60405) - 0.0211767(0.0776477)
+[FOR TABLE] ,UntaggedTag_0,170,2.68233, assuming resolution of 1
+[INFO] mgg: 170 nomBkg: 2.68213 +/- 1 (2) sig -- +1.24988(1.34344) - 0.0314312(0.0733396)
+[FOR TABLE] ,UntaggedTag_0,175,1.8168, assuming resolution of 1
+[INFO] mgg: 175 nomBkg: 1.81349 +/- 1 (2) sig -- +1.55444(1.76749) - 0.0141679(0.0495876)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[FOR TABLE] ,UntaggedTag_0,180,0.640678, assuming resolution of 1
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[#0] ERROR:Eval -- RooAbsReal::logEvalError(nll_Bern1ext_roohist_data_mass_cat0) evaluation error, 
+ origin       : RooNLLVar::nll_Bern1ext_roohist_data_mass_cat0[ parameters=(Bern1norm,Bern_b00,Bern_gmean,Bern_gsigma,Bern_step,Bern_stepWidth) ]
+ message      : function value is NAN
+ server values: parameters=(Bern1norm = 1e-06,Bern_b00 = -0.000189604 +/- 2.52441,Bern_gmean = 0,Bern_gsigma = 7.52937 +/- 1.47507,Bern_step = 103.603 +/- 4.03992,Bern_stepWidth = 1.54071 +/- 2.83383)
+[INFO] mgg: 180 nomBkg: 0 +/- 1 (2) sig -- +0(0) - 0(0)
 
- *** Break *** segmentation violation
-
-
-
-===========================================================
-There was a crash.
-This is the entire stack trace of all threads:
-===========================================================
-#0  0x00007f93b56d9fba in wait4 () from /lib64/libc.so.6
-#1  0x00007f93b564f483 in do_system () from /lib64/libc.so.6
-#2  0x00007f93b836743d in TUnixSystem::StackTrace() () from /cvmfs/cms.cern.ch/el9_amd64_gcc12/cms/cmssw/CMSSW_14_1_0_pre4/external/el9_amd64_gcc12/bin/../../../../../../../el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libCore.so
-#3  0x00007f93b8366df4 in TUnixSystem::DispatchSignals(ESignals) () from /cvmfs/cms.cern.ch/el9_amd64_gcc12/cms/cmssw/CMSSW_14_1_0_pre4/external/el9_amd64_gcc12/bin/../../../../../../../el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libCore.so
-#4  <signal handler called>
-#5  0x00007f93b9170a26 in RooRealVar::setBins(int, char const*) () from /cvmfs/cms.cern.ch/el9_amd64_gcc12/cms/cmssw/CMSSW_14_1_0_pre4/external/el9_amd64_gcc12/bin/../../../../../../../el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libRooFitCore.so
-#6  0x000000000044c614 in main (argc=34, argv=0x7ffcdef71ec8) at /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/test/makeBkgPlots_ALP.cpp:1087
-===========================================================
-
-
-The lines below might hint at the cause of the crash. If you see question
-marks as part of the stack trace, try to recompile with debugging information
-enabled and export CLING_DEBUG=1 environment variable before running.
-You may get help by asking at the ROOT forum https://root.cern/forum
-preferably using the command (.forum bug) in the ROOT prompt.
-Only if you are really convinced it is a bug in ROOT then please submit a
-report at https://root.cern/bugs or (preferably) using the command (.gh bug) in
-the ROOT prompt. Please post the ENTIRE stack trace
-from above as an attachment in addition to anything else
-that might help us fixing this issue.
-===========================================================
-#5  0x00007f93b9170a26 in RooRealVar::setBins(int, char const*) () from /cvmfs/cms.cern.ch/el9_amd64_gcc12/cms/cmssw/CMSSW_14_1_0_pre4/external/el9_amd64_gcc12/bin/../../../../../../../el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libRooFitCore.so
-#6  0x000000000044c614 in main (argc=34, argv=0x7ffcdef71ec8) at /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/test/makeBkgPlots_ALP.cpp:1087
-===========================================================
-
-
+[INFO] intLumi 170.84
+Info in <TCanvas::Print>: pdf file ./ALP_BkgModel_ReReco/fit_results_run3/AllFitResults/bkgplot_28.pdf has been created
+Info in <TCanvas::Print>: pdf file ./ALP_BkgModel_ReReco/fit_results_run3/28/BkgPlots/bkgplot_cat0.pdf has been created
