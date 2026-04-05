@@ -1154,6 +1154,7 @@ int main(int argc, char* argv[]){
   mass->setBins((int)nBinsForMass);
 	pdfsModel.setObsVar(mass);
 	double upperEnvThreshold = 0.1;
+	const double minEnvelopeGof = 0.01;
 
 	fprintf(resFile,"Truth Model & d.o.f & $\\Delta NLL_{N+1}$ & $p(\\chi^{2}>\\chi^{2}_{(N\\rightarrow N+1)})$ \\\\\n");
 	fprintf(resFile,"\\hline\n");
@@ -1383,11 +1384,11 @@ int main(int argc, char* argv[]){
 						  eachFunc_plot(mass,bkgPdf,data,Form("%s/%s%d_cat%d.pdf",outDir.c_str(),funcType->c_str(),order,cat),flashggCats_,fitStatus,&gofProb);
             }
             
-						if ((prob < upperEnvThreshold) ) {
+							if ((prob < upperEnvThreshold) ) {
 
-							if (gofProb > 0.01 || order == truthOrder ) {
-								std::cout << "[INFO] Adding to Envelope " << bkgPdf->GetName() << " "<< gofProb
-									<< " 2xNLL + c is " << myNll + bkgPdf->getVariables()->getSize() <<  std::endl;
+								if (gofProb > minEnvelopeGof) {
+									std::cout << "[INFO] Adding to Envelope " << bkgPdf->GetName() << " "<< gofProb
+										<< " 2xNLL + c is " << myNll + bkgPdf->getVariables()->getSize() <<  std::endl;
 
                 if (logFile) {
                   int isTruth = (order==truthOrder) ? 1 : 0;
@@ -1396,12 +1397,16 @@ int main(int argc, char* argv[]){
 
 								storedPdfs.add(*bkgPdf);
 								pdforders.push_back(order);
-								if ((myNll + bkgPdf->getVariables()->getSize()) < MinimimNLLSoFar) {
-									simplebestFitPdfIndex = storedPdfs.getSize()-1;
-									MinimimNLLSoFar = myNll + bkgPdf->getVariables()->getSize();
+									if ((myNll + bkgPdf->getVariables()->getSize()) < MinimimNLLSoFar) {
+										simplebestFitPdfIndex = storedPdfs.getSize()-1;
+										MinimimNLLSoFar = myNll + bkgPdf->getVariables()->getSize();
+									}
+								} else {
+									std::cout << "[INFO] Rejecting from Envelope " << bkgPdf->GetName()
+									          << " because gof=" << gofProb
+									          << " <= " << minEnvelopeGof << std::endl;
 								}
 							}
-						}
 
 						prev_order=order;
 						prev_pdf=bkgPdf;
