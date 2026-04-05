@@ -1226,10 +1226,14 @@ int main(int argc, char* argv[]){
 		  continue;
 		}
 
-		RooArgList storedPdfs("store");
+			RooArgList storedPdfs("store");
+			RooAbsPdf *globalFallbackPdf = nullptr;
+			double globalFallbackScore = 1e300;
+			double globalFallbackGof = -1.0;
+			bool globalFallbackHasValidGof = false;
 
-		fprintf(resFile,"\\multicolumn{4}{|c|}{\\textbf{Category %d}} \\\\\n",cat);
-		fprintf(resFile,"\\hline\n");
+			fprintf(resFile,"\\multicolumn{4}{|c|}{\\textbf{Category %d}} \\\\\n",cat);
+			fprintf(resFile,"\\hline\n");
 
 		double MinimimNLLSoFar=1e10;
 		int simplebestFitPdfIndex = 0;
@@ -1377,14 +1381,30 @@ int main(int argc, char* argv[]){
 						cache_order=prev_order;
 						cache_pdf=prev_pdf;
 
-						double gofProb =0;
+							double gofProb =0;
 
-            if(fitStatus != 5)
-            {
-						  eachFunc_plot(mass,bkgPdf,data,Form("%s/%s%d_cat%d.pdf",outDir.c_str(),funcType->c_str(),order,cat),flashggCats_,fitStatus,&gofProb);
-            }
-            
-							if ((prob < upperEnvThreshold) ) {
+	            if(fitStatus != 5)
+	            {
+							  eachFunc_plot(mass,bkgPdf,data,Form("%s/%s%d_cat%d.pdf",outDir.c_str(),funcType->c_str(),order,cat),flashggCats_,fitStatus,&gofProb);
+	            }
+
+							const int nvars = bkgPdf->getVariables() ? bkgPdf->getVariables()->getSize() : 0;
+							const double candidateScore = myNll + nvars;
+							const bool candidateHasValidGof = (gofProb >= 0.0);
+							if (fitStatus != 5 && std::isfinite(candidateScore)) {
+								const bool takeFallback =
+									(!globalFallbackPdf) ||
+									(candidateHasValidGof && !globalFallbackHasValidGof) ||
+									(candidateHasValidGof == globalFallbackHasValidGof && candidateScore < globalFallbackScore);
+								if (takeFallback) {
+									globalFallbackPdf = bkgPdf;
+									globalFallbackScore = candidateScore;
+									globalFallbackGof = gofProb;
+									globalFallbackHasValidGof = candidateHasValidGof;
+								}
+							}
+	            
+								if ((prob < upperEnvThreshold) ) {
 
 								if (gofProb > minEnvelopeGof) {
 									std::cout << "[INFO] Adding to Envelope " << bkgPdf->GetName() << " "<< gofProb
@@ -1428,10 +1448,25 @@ int main(int argc, char* argv[]){
 
 		if (saveMultiPdf){
 
-      if (storedPdfs.getSize() == 0) {
-        std::cerr << "[WARN] storedPdfs is empty for " << catname << ". Skip MultiPdf for this category." << std::endl;
-        continue;
-      }
+	      if (storedPdfs.getSize() == 0) {
+	        if (globalFallbackPdf) {
+	          std::cerr << "[WARN] storedPdfs is empty for " << catname
+	                    << ". Forcing fallback pdf " << globalFallbackPdf->GetName()
+	                    << " with score=" << globalFallbackScore
+	                    << " and gof=" << globalFallbackGof << std::endl;
+	          storedPdfs.add(*globalFallbackPdf);
+	          simplebestFitPdfIndex = 0;
+	          MinimimNLLSoFar = globalFallbackScore;
+	          if (logFile) {
+	            fprintf(logFile,
+	                    "category : %d , pdf : %s , gof : %f, isTruth : %d [fallback-empty-envelope]\n ",
+	                    cat, globalFallbackPdf->GetName(), globalFallbackGof, 0);
+	          }
+	        } else {
+	          std::cerr << "[WARN] storedPdfs is empty for " << catname << ". Skip MultiPdf for this category." << std::endl;
+	          continue;
+	        }
+	      }
 
 			string catindexname;
 			string catname;

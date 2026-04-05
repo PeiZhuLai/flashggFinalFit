@@ -1079,11 +1079,15 @@ int main(int argc, char* argv[]){
 	if (!inWS) {
 		cout << "[ERROR] "<< "Cant find the workspace" << endl;
 		exit(0);
-	}
-	RooRealVar *mgg = (RooRealVar*)inWS->var("CMS_hza_mass");//FIXED
-    // Numerical stability for FFT-convolved PDFs (Step x Gaussian):
-    // use a fine binning for RooFFTConvPdf sampling/caches (independent of histogram binning).
-    const int _fftBins = 4096; // power-of-two is FFT-friendly
+		}
+		RooRealVar *mgg = (RooRealVar*)inWS->var("CMS_hza_mass");//FIXED
+		if (!mgg) {
+			cout << "[ERROR] " << "Can't find observable CMS_hza_mass in workspace" << endl;
+			exit(1);
+		}
+	    // Numerical stability for FFT-convolved PDFs (Step x Gaussian):
+	    // use a fine binning for RooFFTConvPdf sampling/caches (independent of histogram binning).
+	    const int _fftBins = 4096; // power-of-two is FFT-friendly
     mgg->setBins(_fftBins, "cache");
     mgg->setBins(_fftBins, "fft");
 	mgg->setBins(nbin); //PZ 
