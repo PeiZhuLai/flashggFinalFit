@@ -43,6 +43,7 @@
 #include "../interface/PlotStyle.h"
 #include "TStyle.h"
 #include "TColor.h"
+#include <algorithm>
 #include <cctype>
 #include <cstring>
 #include <cmath>
@@ -67,6 +68,7 @@ bool PLOT_ONLY = false;
 
 int FTEST_NTOYS = 500; // was 5000; lower = much faster (override with --ftoys)
 int GOF_NTOYS   = 200; // was 500;  lower = faster (override with --gtoys)
+int MAX_ENVELOPE_PDFS = 3;
 
 float mgglow_ =95.;//FIXME
 float mgghigh_ =180;//FIXME
@@ -118,6 +120,37 @@ static inline void setMassPlotState(RooRealVar* v) {
   v->setBins(binsForRange((double)mgglow_, (double)mgghigh_));
 }
 
+struct EnvelopeCandidate {
+  RooAbsPdf* pdf = nullptr;
+  std::string family;
+  std::string name;
+  int order = -1;
+  double gof = -1.0;
+  double score = 1e300;
+  bool isTruth = false;
+  bool fromFallback = false;
+};
+
+static bool betterEnvelopeCandidate(const EnvelopeCandidate& lhs, const EnvelopeCandidate& rhs) {
+  const bool lhsHasValidGof = std::isfinite(lhs.gof) && lhs.gof >= 0.0;
+  const bool rhsHasValidGof = std::isfinite(rhs.gof) && rhs.gof >= 0.0;
+  if (lhsHasValidGof != rhsHasValidGof) return lhsHasValidGof;
+  if (lhsHasValidGof && rhsHasValidGof && std::fabs(lhs.gof - rhs.gof) > 1e-12) return lhs.gof > rhs.gof;
+  if (std::fabs(lhs.score - rhs.score) > 1e-12) return lhs.score < rhs.score;
+  if (lhs.family != rhs.family) return lhs.family < rhs.family;
+  return lhs.order < rhs.order;
+}
+
+static bool lowerScoreEnvelopeCandidate(const EnvelopeCandidate& lhs, const EnvelopeCandidate& rhs) {
+  if (std::fabs(lhs.score - rhs.score) > 1e-12) return lhs.score < rhs.score;
+  const bool lhsHasValidGof = std::isfinite(lhs.gof) && lhs.gof >= 0.0;
+  const bool rhsHasValidGof = std::isfinite(rhs.gof) && rhs.gof >= 0.0;
+  if (lhsHasValidGof != rhsHasValidGof) return lhsHasValidGof;
+  if (lhsHasValidGof && rhsHasValidGof && std::fabs(lhs.gof - rhs.gof) > 1e-12) return lhs.gof > rhs.gof;
+  if (lhs.family != rhs.family) return lhs.family < rhs.family;
+  return lhs.order < rhs.order;
+}
+
 RooAbsPdf* getPdf(PdfModelBuilder &pdfsModel, string type, int order, const char* ext="", int mass_ALP=1)
 {
   if (type=="Bernstein") return pdfsModel.getBernsteinStepxGau("Bern",order, mass_ALP);//PZ
@@ -160,11 +193,9 @@ void runFit(RooAbsPdf *pdf, RooAbsData *data, double *NLL, int *stat_t, int MaxT
   }
 
 
-  // [ROOT-FIX] Clamp the pdf observable range to the *actual* data range for this fit only.
-  // RooFit may abort when the pdf observable min/max extend beyond the dataset's effective range
-  // (especially for RooDataHist toys where edge bins can be empty).
-  // We clamp *both* the data's observable and the pdf's observable (they can be different clones),
-  // then restore afterwards.
+  // Keep a fixed fit window across all mass points. Do not shrink to the populated
+  // data range, otherwise the effective lower edge becomes mass-dependent.
+  // We only align the pdf/data observables to the user-requested window.
   RooRealVar* mData = dynamic_cast<RooRealVar*>(data && data->get() ? data->get()->find("CMS_hza_mass") : nullptr);
   std::unique_ptr<RooArgSet> _obsSet(pdf ? pdf->getObservables(*data) : nullptr);
   RooRealVar* mPdf = nullptr;
@@ -191,10 +222,8 @@ void runFit(RooAbsPdf *pdf, RooAbsData *data, double *NLL, int *stat_t, int MaxT
   } _rgPdf(mPdf), _rgData((mData && mData!=mPdf) ? mData : nullptr);
 
   if (mData && mPdf) {
-    double dmin = 0.0, dmax = 0.0;
-    data->getRange(*mData, dmin, dmax);
-    const double lo = std::max(mPdf->getMin(), dmin);
-    const double hi = std::min(mPdf->getMax(), dmax);
+    const double lo = std::max<double>((double)mgglow_, std::max(mPdf->getMin(), mData->getMin()));
+    const double hi = std::min<double>((double)mgghigh_, std::min(mPdf->getMax(), mData->getMax()));
     if (hi > lo) {
       _rgPdf.clamp(lo, hi);
       if (mData!=mPdf) _rgData.clamp(lo, hi);
@@ -1226,11 +1255,9 @@ int main(int argc, char* argv[]){
 		  continue;
 		}
 
-			RooArgList storedPdfs("store");
-			RooAbsPdf *globalFallbackPdf = nullptr;
-			double globalFallbackScore = 1e300;
-			double globalFallbackGof = -1.0;
-			bool globalFallbackHasValidGof = false;
+				RooArgList storedPdfs("store");
+				EnvelopeCandidate globalFallback;
+				std::vector<EnvelopeCandidate> acceptedEnvelopeCandidates;
 
 			fprintf(resFile,"\\multicolumn{4}{|c|}{\\textbf{Category %d}} \\\\\n",cat);
 			fprintf(resFile,"\\hline\n");
@@ -1296,10 +1323,8 @@ int main(int argc, char* argv[]){
 
 			RooAbsPdf *prev_pdf=NULL;
 			RooAbsPdf *cache_pdf=NULL;
-			std::vector<int> pdforders;
-
-			int counter =0;
-			while (prob<0.05 && order < 7){
+				int counter =0;
+				while (prob<0.05 && order < 7){
 				
         RooAbsPdf *bkgPdf = getPdf(pdfsModel,*funcType,order,"", mass_ALP);
 				if (!bkgPdf){
@@ -1381,49 +1406,50 @@ int main(int argc, char* argv[]){
 						cache_order=prev_order;
 						cache_pdf=prev_pdf;
 
-							double gofProb =0;
+								double gofProb =0;
 
 	            if(fitStatus != 5)
 	            {
 							  eachFunc_plot(mass,bkgPdf,data,Form("%s/%s%d_cat%d.pdf",outDir.c_str(),funcType->c_str(),order,cat),flashggCats_,fitStatus,&gofProb);
 	            }
 
-							const int nvars = bkgPdf->getVariables() ? bkgPdf->getVariables()->getSize() : 0;
-							const double candidateScore = myNll + nvars;
-							const bool candidateHasValidGof = (gofProb >= 0.0);
-							if (fitStatus != 5 && std::isfinite(candidateScore)) {
-								const bool takeFallback =
-									(!globalFallbackPdf) ||
-									(candidateHasValidGof && !globalFallbackHasValidGof) ||
-									(candidateHasValidGof == globalFallbackHasValidGof && candidateScore < globalFallbackScore);
-								if (takeFallback) {
-									globalFallbackPdf = bkgPdf;
-									globalFallbackScore = candidateScore;
-									globalFallbackGof = gofProb;
-									globalFallbackHasValidGof = candidateHasValidGof;
-								}
-							}
-	            
-								if ((prob < upperEnvThreshold) ) {
-
-								if (gofProb > minEnvelopeGof) {
-									std::cout << "[INFO] Adding to Envelope " << bkgPdf->GetName() << " "<< gofProb
-										<< " 2xNLL + c is " << myNll + bkgPdf->getVariables()->getSize() <<  std::endl;
-
-                if (logFile) {
-                  int isTruth = (order==truthOrder) ? 1 : 0;
-                  fprintf(logFile,"category : %d , pdf : %s , gof : %f, isTruth : %d \n ",cat, bkgPdf->GetName(), gofProb, isTruth);
-                }
-
-								storedPdfs.add(*bkgPdf);
-								pdforders.push_back(order);
-									if ((myNll + bkgPdf->getVariables()->getSize()) < MinimimNLLSoFar) {
-										simplebestFitPdfIndex = storedPdfs.getSize()-1;
-										MinimimNLLSoFar = myNll + bkgPdf->getVariables()->getSize();
+								const int nvars = bkgPdf->getVariables() ? bkgPdf->getVariables()->getSize() : 0;
+								const double candidateScore = myNll + nvars;
+								const bool candidateHasValidGof = (gofProb >= 0.0);
+								if (fitStatus != 5 && std::isfinite(candidateScore)) {
+									EnvelopeCandidate fallbackCandidate;
+									fallbackCandidate.pdf = bkgPdf;
+									fallbackCandidate.family = *funcType;
+									fallbackCandidate.name = bkgPdf->GetName();
+									fallbackCandidate.order = order;
+									fallbackCandidate.gof = gofProb;
+									fallbackCandidate.score = candidateScore;
+									fallbackCandidate.isTruth = (order == truthOrder);
+									const bool takeFallback =
+										(!globalFallback.pdf) ||
+										betterEnvelopeCandidate(fallbackCandidate, globalFallback);
+									if (takeFallback) {
+										globalFallback = fallbackCandidate;
 									}
-								} else {
-									std::cout << "[INFO] Rejecting from Envelope " << bkgPdf->GetName()
-									          << " because gof=" << gofProb
+								}
+		            
+									if ((prob < upperEnvThreshold) ) {
+
+									if (gofProb > minEnvelopeGof) {
+										std::cout << "[INFO] Adding to Envelope " << bkgPdf->GetName() << " "<< gofProb
+											<< " 2xNLL + c is " << myNll + bkgPdf->getVariables()->getSize() <<  std::endl;
+										EnvelopeCandidate acceptedCandidate;
+										acceptedCandidate.pdf = bkgPdf;
+										acceptedCandidate.family = *funcType;
+										acceptedCandidate.name = bkgPdf->GetName();
+										acceptedCandidate.order = order;
+										acceptedCandidate.gof = gofProb;
+										acceptedCandidate.score = myNll + bkgPdf->getVariables()->getSize();
+										acceptedCandidate.isTruth = (order == truthOrder);
+										acceptedEnvelopeCandidates.push_back(acceptedCandidate);
+									} else {
+										std::cout << "[INFO] Rejecting from Envelope " << bkgPdf->GetName()
+										          << " because gof=" << gofProb
 									          << " <= " << minEnvelopeGof << std::endl;
 								}
 							}
@@ -1434,10 +1460,9 @@ int main(int argc, char* argv[]){
 					}
 				}
 
-				fprintf(resFile,"%15s & %d & %5.2f & %5.2f \\\\\n",funcType->c_str(),cache_order+1,chi2,prob);
-				choices_envelope.insert(pair<string,std::vector<int> >(*funcType,pdforders));
+					fprintf(resFile,"%15s & %d & %5.2f & %5.2f \\\\\n",funcType->c_str(),cache_order+1,chi2,prob);
+				}
 			}
-		}
 
 		fprintf(resFile,"\\hline\n");
 		choices_vec.push_back(choices);
@@ -1448,28 +1473,50 @@ int main(int argc, char* argv[]){
 
 		if (saveMultiPdf){
 
-	      if (storedPdfs.getSize() == 0) {
-	        if (globalFallbackPdf) {
+	      if (acceptedEnvelopeCandidates.empty()) {
+	        if (globalFallback.pdf) {
 	          std::cerr << "[WARN] storedPdfs is empty for " << catname
-	                    << ". Forcing fallback pdf " << globalFallbackPdf->GetName()
-	                    << " with score=" << globalFallbackScore
-	                    << " and gof=" << globalFallbackGof << std::endl;
-	          storedPdfs.add(*globalFallbackPdf);
-	          simplebestFitPdfIndex = 0;
-	          MinimimNLLSoFar = globalFallbackScore;
-	          if (logFile) {
-	            fprintf(logFile,
-	                    "category : %d , pdf : %s , gof : %f, isTruth : %d [fallback-empty-envelope]\n ",
-	                    cat, globalFallbackPdf->GetName(), globalFallbackGof, 0);
-	          }
+	                    << ". Forcing fallback pdf " << globalFallback.name
+	                    << " with score=" << globalFallback.score
+	                    << " and gof=" << globalFallback.gof << std::endl;
+	          globalFallback.fromFallback = true;
+	          acceptedEnvelopeCandidates.push_back(globalFallback);
 	        } else {
 	          std::cerr << "[WARN] storedPdfs is empty for " << catname << ". Skip MultiPdf for this category." << std::endl;
 	          continue;
 	        }
 	      }
 
-			string catindexname;
-			string catname;
+	      std::stable_sort(acceptedEnvelopeCandidates.begin(), acceptedEnvelopeCandidates.end(), lowerScoreEnvelopeCandidate);
+	      if ((int)acceptedEnvelopeCandidates.size() > MAX_ENVELOPE_PDFS) {
+	        std::cout << "[INFO] Pruning envelope in " << catname << " from "
+	                  << acceptedEnvelopeCandidates.size() << " to top "
+	                  << MAX_ENVELOPE_PDFS << " pdfs by (2*NLL + npar)" << std::endl;
+	        acceptedEnvelopeCandidates.resize(MAX_ENVELOPE_PDFS);
+	      }
+
+	      for (size_t iCand = 0; iCand < acceptedEnvelopeCandidates.size(); ++iCand) {
+	        const EnvelopeCandidate& cand = acceptedEnvelopeCandidates[iCand];
+	        if (!cand.pdf) continue;
+	        storedPdfs.add(*cand.pdf);
+	        choices_envelope[cand.family].push_back(cand.order);
+	        if (cand.score < MinimimNLLSoFar) {
+	          simplebestFitPdfIndex = storedPdfs.getSize()-1;
+	          MinimimNLLSoFar = cand.score;
+	        }
+	        if (logFile) {
+	          fprintf(logFile,
+	                  "category : %d , pdf : %s , gof : %f, isTruth : %d%s\n ",
+	                  cat,
+	                  cand.name.c_str(),
+	                  cand.gof,
+	                  cand.isTruth ? 1 : 0,
+	                  cand.fromFallback ? " [fallback-empty-envelope]" : "");
+	        }
+	      }
+
+				string catindexname;
+				string catname;
 			if (isFlashgg_){
         catindexname = Form("pdfindex_%s_%s",flashggCats_[cat].c_str(),ext.c_str());
 				catname = Form("%s",flashggCats_[cat].c_str());
@@ -1714,44 +1761,23 @@ static bool checkPdfDataObservables(RooAbsPdf* pdf, RooAbsData* data, bool verbo
   return true;
 }
 static void syncMassRangeToData(RooRealVar* mass, RooAbsData* data, bool verboseDiag) {
-  if (!mass || !data) return;
+  if (!mass) return;
 
   double dmin = 0., dmax = 0.;
-  data->getRange(*mass, dmin, dmax);
+  if (data) data->getRange(*mass, dmin, dmax);
 
-  if (!(dmax > dmin)) {
-    if (verboseDiag) {
-      std::cerr << "[WARN] syncMassRangeToData: invalid data range for " << mass->GetName()
-                << " from dataset " << data->GetName() << " (dmin=" << dmin << ", dmax=" << dmax << ")\n";
-    }
-    return;
-  }
-
-  const double newLow  = std::max<double>(mgg_low,  dmin);
-  const double newHigh = std::min<double>(mgg_high, dmax);
-
-  if (!(newHigh > newLow)) {
-    if (verboseDiag) {
-      std::cerr << "[FATAL] syncMassRangeToData: clamped range invalid: ["
-                << newLow << "," << newHigh << "], data=[" << dmin << "," << dmax
-                << "], requested=[" << mgg_low << "," << mgg_high << "]\n";
-    }
-    return;
-  }
-
-  if (verboseDiag) {
-    std::cout << "[INFO] syncMassRangeToData: data range [" << dmin << "," << dmax << "], "
-              << "requested [" << mgg_low << "," << mgg_high << "] -> using ["
-              << newLow << "," << newHigh << "]\n";
-  }
-
-  mgg_low  = newLow;
-  mgg_high = newHigh;
+  mgg_low  = mgglow_;
+  mgg_high = mgghigh_;
   nBinsForMass = 1.0f * (mgg_high - mgg_low);
 
   mgg_blind_low  = std::min(std::max(mgg_blind_low,  mgg_low),  mgg_high);
   mgg_blind_high = std::min(std::max(mgg_blind_high, mgg_low),  mgg_high);
   if (mgg_blind_high < mgg_blind_low) std::swap(mgg_blind_low, mgg_blind_high);
+
+  if (verboseDiag) {
+    std::cout << "[INFO] syncMassRangeToData: data range [" << dmin << "," << dmax << "], "
+              << "forcing fixed window [" << mgg_low << "," << mgg_high << "]\n";
+  }
 
   mass->setRange(mgg_low, mgg_high);
   mass->setBins((int)nBinsForMass);

@@ -1028,10 +1028,10 @@ int main(int argc, char* argv[]){
 		("makeCrossCheckProfPlots",																				"Make some cross check plots -- very slow!")
 		("massStep,m", po::value<double>(&massStep)->default_value(0.5),						   				"Mass step for calculating bands. Use a large number like 5 for quick running")
 		("nllTolerance,n", po::value<double>(&nllTolerance)->default_value(0.05),			 					"Tolerance for nll calc in %")
-		("mhLow,L", po::value<int>(&mhLow)->default_value(100),													"Starting point for scan")
+		("mhLow,L", po::value<int>(&mhLow)->default_value(95),													"Starting point for scan")
 		("mhHigh,H", po::value<int>(&mhHigh)->default_value(180),												"End point for scan")
-		("mhLowBlind,LB", po::value<float>(&mggblindlow_)->default_value(12),                               	"Low ALP blind mass point")//bing
-    	("mhHighBlind,HB", po::value<float>(&mggblindhigh_)->default_value(17),                                	"High ALP blind mass point")//bing
+		("mhLowBlind,LB", po::value<float>(&mggblindlow_)->default_value(115),                               	"Low ALP blind mass point")//bing
+	    	("mhHighBlind,HB", po::value<float>(&mggblindhigh_)->default_value(135),                                	"High ALP blind mass point")//bing
 		("mhVal", po::value<double>(&mhvalue_)->default_value(125.),											"Choose the MH for the plots")
 		("maVal", po::value<double>(&mavalue_)->default_value(1),												"Choose the Ma for the plots")
 		("higgsResolution", po::value<double>(&higgsResolution_)->default_value(1.),							"Starting point for scan")
