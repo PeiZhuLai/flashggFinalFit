@@ -1,2 +1,2 @@
-category : 0 , pdf : Exp1 , gof : 0.000154, isTruth : 0 [fallback-empty-envelope]
+category : 0 , pdf : Exp1 , gof : 0.000152, isTruth : 0 [fallback-empty-envelope]
  
