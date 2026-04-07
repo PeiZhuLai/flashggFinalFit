@@ -41,6 +41,47 @@ constexpr int kBkgFftBins = 1024;
 constexpr int kBkgCacheBins = 1024;
 constexpr double kBkgBufferFraction = 0.25;
 
+struct StepGausWindow {
+  double turnon;
+  double turnonLo;
+  double turnonHi;
+  double sigma;
+  double sigmaLo;
+  double sigmaHi;
+  double width;
+  double widthLo;
+  double widthHi;
+};
+
+inline double clampDouble(double v, double lo, double hi) {
+  return std::max(lo, std::min(v, hi));
+}
+
+inline StepGausWindow makeStableStepGausWindow(int massALP, double turnonShift, double sigmaScale, double widthScale) {
+  const double m = clampDouble((double)massALP, 1.0, 30.0);
+  const double baseTurnon = clampDouble(104.5 + 0.32*m + turnonShift, 103.0, 117.0);
+  const double baseSigma = clampDouble((2.2 + 0.14*m)*sigmaScale, 1.2, 8.5);
+  const double baseWidth = clampDouble((0.9 + 0.08*m)*widthScale, 0.8, 5.0);
+
+  StepGausWindow cfg;
+  cfg.turnon = baseTurnon;
+  cfg.turnonLo = std::max(100.0, baseTurnon - 3.5);
+  cfg.turnonHi = std::min(125.0, baseTurnon + 3.5);
+  if (cfg.turnonHi <= cfg.turnonLo) cfg.turnonHi = cfg.turnonLo + 1.0;
+
+  cfg.sigma = baseSigma;
+  cfg.sigmaLo = std::max(0.8, 0.45*baseSigma);
+  cfg.sigmaHi = std::min(15.0, std::max(baseSigma + 2.0, 1.9*baseSigma));
+  if (cfg.sigmaHi <= cfg.sigmaLo) cfg.sigmaHi = cfg.sigmaLo + 1.0;
+
+  cfg.width = baseWidth;
+  cfg.widthLo = std::max(0.5, 0.45*baseWidth);
+  cfg.widthHi = std::min(20.0, std::max(baseWidth + 1.5, 2.6*baseWidth));
+  if (cfg.widthHi <= cfg.widthLo) cfg.widthHi = cfg.widthLo + 1.0;
+
+  return cfg;
+}
+
 inline void setFftObsBinning(RooRealVar* obs) {
   if (!obs) return;
   obs->setBins(kBkgFftBins, "fft");
@@ -222,9 +263,10 @@ RooAbsPdf* PdfModelBuilder::getBernstein(string prefix, int order){
 
 RooAbsPdf* PdfModelBuilder::getBernsteinStepxGau(string prefix, int order, int mass_ALP){
   
-  double turnon_bern = 105., turnon_lbern = 100., turnon_hbern = 110.;
-  double sigma_bern  = 1.5,  sigma_lbern  = 1.0,  sigma_hbern  = 8.0;
-  double width_bern  = 2.0,  width_lbern  = 0.2,  width_hbern  = 10.0;
+  auto stableBern = makeStableStepGausWindow(mass_ALP, -1.0, 0.85, 0.75);
+  double turnon_bern = stableBern.turnon, turnon_lbern = stableBern.turnonLo, turnon_hbern = stableBern.turnonHi;
+  double sigma_bern  = stableBern.sigma,  sigma_lbern  = stableBern.sigmaLo,  sigma_hbern  = stableBern.sigmaHi;
+  double width_bern  = stableBern.width,  width_lbern  = stableBern.widthLo,  width_hbern  = stableBern.widthHi;
 
   // Recent fits for these masses converged in narrow regions or pinned to bounds.
   // Use mass-specific seeds/ranges to stabilize the minimizer.
@@ -309,26 +351,27 @@ RooAbsPdf* PdfModelBuilder::getPowerLawStepxGau(string prefix, int order, int ca
   double coeff1_lpow1, coeff1_lpow3, coeff3_lpow3, coeff1_lpow5, coeff3_lpow5, coeff5_lpow5;
 
   coeff1_pow1 = 0.3;        coeff1_lpow1 = 0.;    coeff1_hpow1 = 1.;
-  par1_pow1 = -6.26;        par1_lpow1 = -15.;    par1_hpow1 = -5.;
-  sigma_pow = 5;            sigma_lpow = 1.;      sigma_hpow = 15.;
-  turnon_pow = 111.;        turnon_lpow = 100.;   turnon_hpow = 125.;
-  width_pow = 2.0;          width_lpow = 0.2;     width_hpow = 20.0;
+  auto stablePow = makeStableStepGausWindow(mass_ALP, 0.6, 1.00, 1.00);
+  par1_pow1 = -7.00;        par1_lpow1 = -12.;    par1_hpow1 = -5.;
+  sigma_pow = stablePow.sigma;            sigma_lpow = stablePow.sigmaLo;      sigma_hpow = stablePow.sigmaHi;
+  turnon_pow = stablePow.turnon;          turnon_lpow = stablePow.turnonLo;    turnon_hpow = stablePow.turnonHi;
+  width_pow = stablePow.width;            width_lpow = stablePow.widthLo;      width_hpow = stablePow.widthHi;
 
   coeff1_pow3 = 0.3;      coeff1_lpow3 = 0.;    coeff1_hpow3 = 1.;
   coeff3_pow3 = 0.0;      coeff3_lpow3 = 0.;    coeff3_hpow3 = 1.;
-  par1_pow3 = -7.0;       par1_lpow3 = -10.;    par1_hpow3 = -5.;
-  par3_pow3 = -5.0;       par3_lpow3 = -10.;    par3_hpow3 = -2;
-  sigma_pow = 5;          sigma_lpow = 1.;      sigma_hpow = 15.;
-  turnon_pow = 111.;      turnon_lpow = 100.;   turnon_hpow = 125.;
+  par1_pow3 = -6.80;      par1_lpow3 = -11.;    par1_hpow3 = -5.;
+  par3_pow3 = -4.80;      par3_lpow3 = -8.;     par3_hpow3 = -2;
+  sigma_pow = stablePow.sigma;          sigma_lpow = stablePow.sigmaLo;      sigma_hpow = stablePow.sigmaHi;
+  turnon_pow = stablePow.turnon;        turnon_lpow = stablePow.turnonLo;    turnon_hpow = stablePow.turnonHi;
 
   coeff1_pow5 = 0.3;      coeff1_lpow5 = 0.;    coeff1_hpow5 = 1.;
   coeff3_pow5 = 0.0;      coeff3_lpow5 = 0.;    coeff3_hpow5 = 1.;
   coeff5_pow5 = 0.0;      coeff5_lpow5 = 0.;    coeff5_hpow5 = 1.;
-  par1_pow5 = -7.0;       par1_lpow5 = -15.;    par1_hpow5 = -5.;
-  par3_pow5 = -5.0;       par3_lpow5 = -10.;    par3_hpow5 = -2.;
-  par5_pow5 = -6.0;       par5_lpow5 = -10;     par5_hpow5 = -1.;
-  sigma_pow = 5;          sigma_lpow = 1.;      sigma_hpow = 15.;
-  turnon_pow = 111.;      turnon_lpow = 100.;   turnon_hpow = 125.;
+  par1_pow5 = -6.80;      par1_lpow5 = -11.;    par1_hpow5 = -5.;
+  par3_pow5 = -4.80;      par3_lpow5 = -8.;     par3_hpow5 = -2.;
+  par5_pow5 = -5.80;      par5_lpow5 = -8.5;    par5_hpow5 = -1.5;
+  sigma_pow = stablePow.sigma;          sigma_lpow = stablePow.sigmaLo;      sigma_hpow = stablePow.sigmaHi;
+  turnon_pow = stablePow.turnon;        turnon_lpow = stablePow.turnonLo;    turnon_hpow = stablePow.turnonHi;
 
   if (mass_ALP == 14) {
     par1_pow1 = -8.8;      par1_lpow1 = -12.0;   par1_hpow1 = -6.0;
@@ -534,22 +577,23 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
   double coeff1_lexp1, coeff1_lexp3, coeff3_lexp3, coeff1_lexp5, coeff3_lexp5, coeff5_lexp5;
   
   coeff1_exp1 = 0.4;      coeff1_lexp1 = 0.1;     coeff1_hexp1 = 0.9;
-  par1_exp1 = -0.06;      par1_lexp1 = -0.09;     par1_hexp1 = -0.02;
-  sigma_exp = 8;          sigma_lexp = 1;         sigma_hexp = 10.;
-  turnon_exp = 114.;      turnon_lexp = 110.;     turnon_hexp = 116.;
-  width_exp = 2.0;        width_lexp = 0.2;       width_hexp = 20.0;
+  auto stableExp = makeStableStepGausWindow(mass_ALP, 0.4, 0.90, 1.15);
+  par1_exp1 = -0.055;     par1_lexp1 = -0.10;     par1_hexp1 = -0.02;
+  sigma_exp = stableExp.sigma;        sigma_lexp = stableExp.sigmaLo;         sigma_hexp = stableExp.sigmaHi;
+  turnon_exp = stableExp.turnon;      turnon_lexp = stableExp.turnonLo;       turnon_hexp = stableExp.turnonHi;
+  width_exp = stableExp.width;        width_lexp = stableExp.widthLo;         width_hexp = stableExp.widthHi;
 
   coeff1_exp3 = 0.7;        coeff1_lexp3 = 0.;    coeff1_hexp3 = 1.;
   coeff3_exp3 = 0.8;        coeff3_lexp3 = 0.;    coeff3_hexp3 = 1.;
-  par1_exp3 = -0.05;        par1_lexp3 = -0.2;    par1_hexp3 = -0.02;
-  par3_exp3 = -0.05;        par3_lexp3 = -0.2;    par3_hexp3 = -0.02;
+  par1_exp3 = -0.055;       par1_lexp3 = -0.12;   par1_hexp3 = -0.02;
+  par3_exp3 = -0.040;       par3_lexp3 = -0.10;   par3_hexp3 = -0.015;
 
   coeff1_exp5 = 0.05;       coeff1_lexp5 = 0.;    coeff1_hexp5 = 1.;
   coeff3_exp5 = 0.002;      coeff3_lexp5 = 0.;    coeff3_hexp5 = 1.;
   coeff5_exp5 =0.002;       coeff5_lexp5 = 0.;    coeff5_hexp5 = 1.;
-  par1_exp5 = -0.07;        par1_lexp5 = -0.2;    par1_hexp5 = -0.01;
-  par3_exp5 = -0.04;        par3_lexp5 = -0.2;    par3_hexp5 = -0.01;
-  par5_exp5 = -0.02;        par5_lexp5 = -0.2;    par5_hexp5 = -0.01;
+  par1_exp5 = -0.055;       par1_lexp5 = -0.12;   par1_hexp5 = -0.015;
+  par3_exp5 = -0.038;       par3_lexp5 = -0.10;   par3_hexp5 = -0.015;
+  par5_exp5 = -0.018;       par5_lexp5 = -0.06;   par5_hexp5 = -0.008;
 
   if (mass_ALP == 14) {
     par1_exp1 = -0.0566;    par1_lexp1 = -0.09;   par1_hexp1 = -0.03;
@@ -759,27 +803,28 @@ RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat
   double coeff1_llau1,  coeff1_llau2, coeff2_llau2,   coeff1_llau3, coeff2_llau3, coeff3_llau3,   coeff1_llau4, coeff2_llau4, coeff3_llau4, coeff4_llau4;
  
   coeff1_lau1 = 0.0;        coeff1_llau1 = 0.;      coeff1_hlau1 = 0.2;
-  sigma_lau = 6.5;          sigma_llau = 1.0;       sigma_hlau = 10.;
-  turnon_lau = 109.;        turnon_llau = 100.;     turnon_hlau = 115.;
-  width_lau = 2.0;          width_llau = 0.2;       width_hlau = 20.0;
+  auto stableLau = makeStableStepGausWindow(mass_ALP, 0.2, 1.00, 0.95);
+  sigma_lau = stableLau.sigma;          sigma_llau = stableLau.sigmaLo;       sigma_hlau = stableLau.sigmaHi;
+  turnon_lau = stableLau.turnon;        turnon_llau = stableLau.turnonLo;     turnon_hlau = stableLau.turnonHi;
+  width_lau = stableLau.width;          width_llau = stableLau.widthLo;       width_hlau = stableLau.widthHi;
 
   coeff1_lau2 = 0.0;        coeff1_llau2 = 0.;    coeff1_hlau2 = 0.5;
   coeff2_lau2 = 0.0;        coeff2_llau2 = 0.;    coeff2_hlau2 = 0.5;
-  sigma_lau = 6.6;          sigma_llau = 1.;      sigma_hlau = 10.;
-  turnon_lau = 109.;        turnon_llau = 100.;    turnon_hlau = 115.;
+  sigma_lau = stableLau.sigma;          sigma_llau = stableLau.sigmaLo;      sigma_hlau = stableLau.sigmaHi;
+  turnon_lau = stableLau.turnon;        turnon_llau = stableLau.turnonLo;    turnon_hlau = stableLau.turnonHi;
  
   coeff1_lau3 = 0.0;        coeff1_llau3 = 0.;    coeff1_hlau3 = 0.5;
   coeff2_lau3 = 0.0;        coeff2_llau3 = 0.;    coeff2_hlau3 = 0.5;
   coeff3_lau3 = 0.0;        coeff3_llau3 = 0.;    coeff3_hlau3 = 2.0;
-  sigma_lau = 7.6;           sigma_llau = 1.;      sigma_hlau = 10.;
-  turnon_lau = 112;         turnon_llau = 100.;   turnon_hlau = 115.;
+  sigma_lau = stableLau.sigma;         sigma_llau = stableLau.sigmaLo;      sigma_hlau = stableLau.sigmaHi;
+  turnon_lau = stableLau.turnon;       turnon_llau = stableLau.turnonLo;   turnon_hlau = stableLau.turnonHi;
 
   coeff1_lau4 = 0.0;        coeff1_llau4 = 0.;    coeff1_hlau4 = 0.5;
   coeff2_lau4 = 0.0;        coeff2_llau4 = 0.;    coeff2_hlau4 = 0.5;
   coeff3_lau4 = 0.0;        coeff3_llau4 = 0.;    coeff3_hlau4 = 2.0;
   coeff4_lau4 = 0.0;        coeff4_llau4 = 0.;    coeff4_hlau4 = 2.0;
-  sigma_lau = 8.;           sigma_llau = 1.;      sigma_hlau = 10.;
-  turnon_lau = 112;         turnon_llau = 100;     turnon_hlau = 120.;
+  sigma_lau = stableLau.sigma;         sigma_llau = stableLau.sigmaLo;      sigma_hlau = stableLau.sigmaHi;
+  turnon_lau = stableLau.turnon;       turnon_llau = stableLau.turnonLo;     turnon_hlau = stableLau.turnonHi;
 
   if (mass_ALP == 14) {
     sigma_lau  = 4.8;       sigma_llau  = 1.5;     sigma_hlau  = 8.0;

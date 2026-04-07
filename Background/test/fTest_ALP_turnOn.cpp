@@ -68,7 +68,7 @@ bool PLOT_ONLY = false;
 
 int FTEST_NTOYS = 500; // was 5000; lower = much faster (override with --ftoys)
 int GOF_NTOYS   = 200; // was 500;  lower = faster (override with --gtoys)
-int MAX_ENVELOPE_PDFS = 3;
+int MAX_ENVELOPE_PDFS = 4;
 
 float mgglow_ =95.;//FIXME
 float mgghigh_ =180;//FIXME
@@ -129,6 +129,7 @@ struct EnvelopeCandidate {
   double score = 1e300;
   bool isTruth = false;
   bool fromFallback = false;
+  bool fromFamilyFallback = false;
 };
 
 static bool betterEnvelopeCandidate(const EnvelopeCandidate& lhs, const EnvelopeCandidate& rhs) {
@@ -149,6 +150,10 @@ static bool lowerScoreEnvelopeCandidate(const EnvelopeCandidate& lhs, const Enve
   if (lhsHasValidGof && rhsHasValidGof && std::fabs(lhs.gof - rhs.gof) > 1e-12) return lhs.gof > rhs.gof;
   if (lhs.family != rhs.family) return lhs.family < rhs.family;
   return lhs.order < rhs.order;
+}
+
+static std::string envelopeCandidateKey(const EnvelopeCandidate& cand) {
+  return cand.family + "::" + std::to_string(cand.order) + "::" + cand.name;
 }
 
 RooAbsPdf* getPdf(PdfModelBuilder &pdfsModel, string type, int order, const char* ext="", int mass_ALP=1)
@@ -1258,6 +1263,8 @@ int main(int argc, char* argv[]){
 				RooArgList storedPdfs("store");
 				EnvelopeCandidate globalFallback;
 				std::vector<EnvelopeCandidate> acceptedEnvelopeCandidates;
+				std::map<std::string, EnvelopeCandidate> bestAcceptedByFamily;
+				std::map<std::string, EnvelopeCandidate> bestSeenByFamily;
 
 			fprintf(resFile,"\\multicolumn{4}{|c|}{\\textbf{Category %d}} \\\\\n",cat);
 			fprintf(resFile,"\\hline\n");
@@ -1416,8 +1423,8 @@ int main(int argc, char* argv[]){
 								const int nvars = bkgPdf->getVariables() ? bkgPdf->getVariables()->getSize() : 0;
 								const double candidateScore = myNll + nvars;
 								const bool candidateHasValidGof = (gofProb >= 0.0);
-								if (fitStatus != 5 && std::isfinite(candidateScore)) {
-									EnvelopeCandidate fallbackCandidate;
+									if (fitStatus != 5 && std::isfinite(candidateScore)) {
+										EnvelopeCandidate fallbackCandidate;
 									fallbackCandidate.pdf = bkgPdf;
 									fallbackCandidate.family = *funcType;
 									fallbackCandidate.name = bkgPdf->GetName();
@@ -1428,10 +1435,14 @@ int main(int argc, char* argv[]){
 									const bool takeFallback =
 										(!globalFallback.pdf) ||
 										betterEnvelopeCandidate(fallbackCandidate, globalFallback);
-									if (takeFallback) {
-										globalFallback = fallbackCandidate;
+										if (takeFallback) {
+											globalFallback = fallbackCandidate;
+										}
+										auto seenIt = bestSeenByFamily.find(*funcType);
+										if (seenIt == bestSeenByFamily.end() || betterEnvelopeCandidate(fallbackCandidate, seenIt->second)) {
+											bestSeenByFamily[*funcType] = fallbackCandidate;
+										}
 									}
-								}
 		            
 									if ((prob < upperEnvThreshold) ) {
 
@@ -1444,10 +1455,14 @@ int main(int argc, char* argv[]){
 										acceptedCandidate.name = bkgPdf->GetName();
 										acceptedCandidate.order = order;
 										acceptedCandidate.gof = gofProb;
-										acceptedCandidate.score = myNll + bkgPdf->getVariables()->getSize();
-										acceptedCandidate.isTruth = (order == truthOrder);
-										acceptedEnvelopeCandidates.push_back(acceptedCandidate);
-									} else {
+											acceptedCandidate.score = myNll + bkgPdf->getVariables()->getSize();
+											acceptedCandidate.isTruth = (order == truthOrder);
+											acceptedEnvelopeCandidates.push_back(acceptedCandidate);
+											auto bestAccIt = bestAcceptedByFamily.find(*funcType);
+											if (bestAccIt == bestAcceptedByFamily.end() || lowerScoreEnvelopeCandidate(acceptedCandidate, bestAccIt->second)) {
+												bestAcceptedByFamily[*funcType] = acceptedCandidate;
+											}
+										} else {
 										std::cout << "[INFO] Rejecting from Envelope " << bkgPdf->GetName()
 										          << " because gof=" << gofProb
 									          << " <= " << minEnvelopeGof << std::endl;
@@ -1464,56 +1479,90 @@ int main(int argc, char* argv[]){
 				}
 			}
 
-		fprintf(resFile,"\\hline\n");
-		choices_vec.push_back(choices);
-		choices_envelope_vec.push_back(choices_envelope);
-		pdfs_vec.push_back(pdfs);
+			fprintf(resFile,"\\hline\n");
+			choices_vec.push_back(choices);
+			choices_envelope_vec.push_back(choices_envelope);
+			pdfs_vec.push_back(pdfs);
 
 		truth_plot(mass,pdfs,data,Form("%s/truths_cat%d",outDir.c_str(),cat),flashggCats_,cat);
 
 		if (saveMultiPdf){
 
-	      if (acceptedEnvelopeCandidates.empty()) {
-	        if (globalFallback.pdf) {
-	          std::cerr << "[WARN] storedPdfs is empty for " << catname
-	                    << ". Forcing fallback pdf " << globalFallback.name
-	                    << " with score=" << globalFallback.score
-	                    << " and gof=" << globalFallback.gof << std::endl;
-	          globalFallback.fromFallback = true;
-	          acceptedEnvelopeCandidates.push_back(globalFallback);
-	        } else {
-	          std::cerr << "[WARN] storedPdfs is empty for " << catname << ". Skip MultiPdf for this category." << std::endl;
-	          continue;
-	        }
-	      }
+		      std::vector<EnvelopeCandidate> finalEnvelopeCandidates;
+		      std::map<std::string, bool> seenEnvelopeKeys;
+		      auto addUniqueEnvelopeCandidate = [&](const EnvelopeCandidate& cand) {
+		        if (!cand.pdf) return;
+		        const std::string key = envelopeCandidateKey(cand);
+		        if (seenEnvelopeKeys[key]) return;
+		        seenEnvelopeKeys[key] = true;
+		        finalEnvelopeCandidates.push_back(cand);
+		      };
 
-	      std::stable_sort(acceptedEnvelopeCandidates.begin(), acceptedEnvelopeCandidates.end(), lowerScoreEnvelopeCandidate);
-	      if ((int)acceptedEnvelopeCandidates.size() > MAX_ENVELOPE_PDFS) {
-	        std::cout << "[INFO] Pruning envelope in " << catname << " from "
-	                  << acceptedEnvelopeCandidates.size() << " to top "
-	                  << MAX_ENVELOPE_PDFS << " pdfs by (2*NLL + npar)" << std::endl;
-	        acceptedEnvelopeCandidates.resize(MAX_ENVELOPE_PDFS);
-	      }
+		      for (const auto& family : functionClasses) {
+		        auto bestAcceptedIt = bestAcceptedByFamily.find(family);
+		        if (bestAcceptedIt != bestAcceptedByFamily.end()) {
+		          addUniqueEnvelopeCandidate(bestAcceptedIt->second);
+		          continue;
+		        }
+		        auto bestSeenIt = bestSeenByFamily.find(family);
+		        if (bestSeenIt != bestSeenByFamily.end()) {
+		          EnvelopeCandidate familyRep = bestSeenIt->second;
+		          familyRep.fromFallback = true;
+		          familyRep.fromFamilyFallback = true;
+		          addUniqueEnvelopeCandidate(familyRep);
+		        }
+		      }
 
-	      for (size_t iCand = 0; iCand < acceptedEnvelopeCandidates.size(); ++iCand) {
-	        const EnvelopeCandidate& cand = acceptedEnvelopeCandidates[iCand];
-	        if (!cand.pdf) continue;
-	        storedPdfs.add(*cand.pdf);
-	        choices_envelope[cand.family].push_back(cand.order);
-	        if (cand.score < MinimimNLLSoFar) {
-	          simplebestFitPdfIndex = storedPdfs.getSize()-1;
-	          MinimimNLLSoFar = cand.score;
-	        }
-	        if (logFile) {
-	          fprintf(logFile,
-	                  "category : %d , pdf : %s , gof : %f, isTruth : %d%s\n ",
-	                  cat,
-	                  cand.name.c_str(),
-	                  cand.gof,
-	                  cand.isTruth ? 1 : 0,
-	                  cand.fromFallback ? " [fallback-empty-envelope]" : "");
-	        }
-	      }
+		      std::stable_sort(acceptedEnvelopeCandidates.begin(), acceptedEnvelopeCandidates.end(), lowerScoreEnvelopeCandidate);
+		      const int targetEnvelopeSize = std::max(MAX_ENVELOPE_PDFS, (int)finalEnvelopeCandidates.size());
+		      for (const auto& cand : acceptedEnvelopeCandidates) {
+		        addUniqueEnvelopeCandidate(cand);
+		        if ((int)finalEnvelopeCandidates.size() >= targetEnvelopeSize) break;
+		      }
+
+		      if (finalEnvelopeCandidates.empty()) {
+		        if (globalFallback.pdf) {
+		          std::cerr << "[WARN] storedPdfs is empty for " << catname
+		                    << ". Forcing fallback pdf " << globalFallback.name
+		                    << " with score=" << globalFallback.score
+		                    << " and gof=" << globalFallback.gof << std::endl;
+		          globalFallback.fromFallback = true;
+		          addUniqueEnvelopeCandidate(globalFallback);
+		        } else {
+		          std::cerr << "[WARN] storedPdfs is empty for " << catname << ". Skip MultiPdf for this category." << std::endl;
+		          continue;
+		        }
+		      }
+
+		      if ((int)acceptedEnvelopeCandidates.size() > targetEnvelopeSize) {
+		        std::cout << "[INFO] Pruning envelope in " << catname << " from "
+		                  << acceptedEnvelopeCandidates.size() << " to protected size "
+		                  << finalEnvelopeCandidates.size() << " (target " << targetEnvelopeSize
+		                  << ", with at least one representative per family)" << std::endl;
+		      }
+
+		      std::stable_sort(finalEnvelopeCandidates.begin(), finalEnvelopeCandidates.end(), lowerScoreEnvelopeCandidate);
+		      for (const auto& cand : finalEnvelopeCandidates) {
+		        if (!cand.pdf) continue;
+		        storedPdfs.add(*cand.pdf);
+		        choices_envelope[cand.family].push_back(cand.order);
+		        if (cand.score < MinimimNLLSoFar) {
+		          simplebestFitPdfIndex = storedPdfs.getSize()-1;
+		          MinimimNLLSoFar = cand.score;
+		        }
+		        if (logFile) {
+		          fprintf(logFile,
+		                  "category : %d , pdf : %s , gof : %f, isTruth : %d%s%s\n ",
+		                  cat,
+		                  cand.name.c_str(),
+		                  cand.gof,
+		                  cand.isTruth ? 1 : 0,
+		                  cand.fromFallback ? " [fallback-empty-envelope]" : "",
+		                  cand.fromFamilyFallback ? " [family-fallback]" : "");
+		        }
+		      }
+
+		      choices_envelope_vec.back() = choices_envelope;
 
 				string catindexname;
 				string catname;
@@ -1636,15 +1685,34 @@ static void sanitizePdfParams(RooAbsPdf* pdf, RooAbsData* data, bool verboseDiag
       }
     }
 
-    // Nudge away from hard boundaries (helps Minuit).
-    if (v->hasMin() && std::isfinite(v->getMin()) && v->getVal() <= v->getMin()) {
-      const double span = (v->hasMax() && std::isfinite(v->getMax())) ? (v->getMax() - v->getMin()) : 1.0;
-      v->setVal(v->getMin() + 1e-3*span);
+	    // Nudge away from hard boundaries (helps Minuit).
+	    if (v->hasMin() && std::isfinite(v->getMin()) && v->getVal() <= v->getMin()) {
+	      const double span = (v->hasMax() && std::isfinite(v->getMax())) ? (v->getMax() - v->getMin()) : 1.0;
+	      v->setVal(v->getMin() + 1e-3*span);
     }
-    if (v->hasMax() && std::isfinite(v->getMax()) && v->getVal() >= v->getMax()) {
-      const double span = (v->hasMin() && std::isfinite(v->getMin())) ? (v->getMax() - v->getMin()) : 1.0;
-      v->setVal(v->getMax() - 1e-3*span);
-    }
+	    if (v->hasMax() && std::isfinite(v->getMax()) && v->getVal() >= v->getMax()) {
+	      const double span = (v->hasMin() && std::isfinite(v->getMin())) ? (v->getMax() - v->getMin()) : 1.0;
+	      v->setVal(v->getMax() - 1e-3*span);
+	    }
+
+	    if (v->hasMin() && v->hasMax() && std::isfinite(v->getMin()) && std::isfinite(v->getMax()) && v->getMax() > v->getMin()) {
+	      const double span = v->getMax() - v->getMin();
+	      std::string vname = v->GetName() ? v->GetName() : "";
+	      double guardFrac = 1e-3;
+	      if (vname.find("stepWidth") != std::string::npos || vname.find("_width_") != std::string::npos) {
+	        guardFrac = 0.15;
+	      } else if (vname.find("gsigma") != std::string::npos || vname.find("_sigma_") != std::string::npos) {
+	        guardFrac = 0.12;
+	      } else if (vname.find("turnon") != std::string::npos || vname.find("_step") != std::string::npos) {
+	        guardFrac = 0.10;
+	      }
+	      const double guardedLow = v->getMin() + guardFrac*span;
+	      const double guardedHigh = v->getMax() - guardFrac*span;
+	      if (guardedHigh > guardedLow) {
+	        if (v->getVal() < guardedLow) v->setVal(guardedLow);
+	        if (v->getVal() > guardedHigh) v->setVal(guardedHigh);
+	      }
+	    }
 
     // Ensure step size is finite and non-zero.
     const double err = v->getError();
