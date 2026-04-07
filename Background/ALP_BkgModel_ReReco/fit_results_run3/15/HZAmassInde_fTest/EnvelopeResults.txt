@@ -1,2 +1,4 @@
-category : 0 , pdf : Bern1 , gof : -1.000000, isTruth : 0 [fallback-empty-envelope]
+category : 0 , pdf : Bern3 , gof : 0.870000, isTruth : 1
+ category : 0 , pdf : Pow1 , gof : 0.930000, isTruth : 1
+ category : 0 , pdf : Exp1 , gof : 0.925000, isTruth : 1
  
