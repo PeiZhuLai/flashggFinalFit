@@ -14,6 +14,16 @@ lable='run3'
 version='ReReco'
 Lumi_run3='170.84'
 
+format_duration() {
+  local total_seconds="${1:-0}"
+  local hours=$(( total_seconds / 3600 ))
+  local minutes=$(( (total_seconds % 3600) / 60 ))
+  local seconds=$(( total_seconds % 60 ))
+  printf "%02dh:%02dm:%02ds" "$hours" "$minutes" "$seconds"
+}
+
+script_start_time=$(date +%s)
+
 Lumis=( 7.98 27.01 17.61 9.53 108.95)
 
 massList=( 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 )
@@ -29,10 +39,13 @@ nMass=${#massList[@]}
 BASE_DIR="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit"
 
 cd $BASE_DIR/Background/
+build_start_time=$(date +%s)
 # 明確指定使用小寫 makefile
 make -f makefile clean && make -f makefile -B
 # make clean && make vars && make -j
 # make
+build_end_time=$(date +%s)
+echo "[Timer] Background build finished in $(format_duration $((build_end_time - build_start_time)))"
 
 # 檢查目標二進位是否存在
 if [[ ! -x ./bin/fTest_ALP_turnOn || ! -x ./bin/makeBkgPlots_ALP ]]; then
@@ -73,6 +86,7 @@ echo "mass,ftest_status,best_fit_pdf,n_pdfs,ftest_results,envelope_results,ftest
 for ((iBin=0; iBin<$nMass; iBin++))
 # for ((iBin=0; iBin<1; iBin++))
     do
+    mass_start_time=$(date +%s)
     echo ">>> Processing mass point: ${massList[$iBin]}"
 
     mkdir -p "$path_out_bkg/${massList[$iBin]}"
@@ -93,6 +107,7 @@ for ((iBin=0; iBin<$nMass; iBin++))
         ftest_status="MISSING_TREE"
         bkgplots_status="SKIP"
         echo "[FAIL][InputTreeMissing] mA=${massList[$iBin]} missing ${tree_input}" | tee -a "$failed_log"
+        echo "[Timer] mA=${massList[$iBin]} finished in $(format_duration $(( $(date +%s) - mass_start_time )))" | tee -a "$failed_log"
         printf "%s,%s,%s,%s,%s,%s,%s,%s,%s\n" \
           "${massList[$iBin]}" "$ftest_status" "$best_fit_pdf" "$n_pdfs" "$ftest_results" "$envelope_results" "$ftest_stdout" "$bkgplots_status" "$bkgplots_stdout" >> "$summary_log"
         continue
@@ -103,6 +118,7 @@ for ((iBin=0; iBin<$nMass; iBin++))
         bkgplots_status="SKIP"
         echo "[FAIL][WorkspaceMissing] mA=${massList[$iBin]} missing ${ws_input}" | tee -a "$failed_log"
         echo "  Regenerate workspaces first, e.g. run /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Trees2WS/run_tree2ws.sh" | tee -a "$failed_log"
+        echo "[Timer] mA=${massList[$iBin]} finished in $(format_duration $(( $(date +%s) - mass_start_time )))" | tee -a "$failed_log"
         printf "%s,%s,%s,%s,%s,%s,%s,%s,%s\n" \
           "${massList[$iBin]}" "$ftest_status" "$best_fit_pdf" "$n_pdfs" "$ftest_results" "$envelope_results" "$ftest_stdout" "$bkgplots_status" "$bkgplots_stdout" >> "$summary_log"
         continue
@@ -115,6 +131,7 @@ for ((iBin=0; iBin<$nMass; iBin++))
         echo "  tree: ${tree_input}" | tee -a "$failed_log"
         echo "  ws  : ${ws_input}" | tee -a "$failed_log"
         echo "  Regenerate workspaces first, e.g. run /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Trees2WS/run_tree2ws.sh" | tee -a "$failed_log"
+        echo "[Timer] mA=${massList[$iBin]} finished in $(format_duration $(( $(date +%s) - mass_start_time )))" | tee -a "$failed_log"
         printf "%s,%s,%s,%s,%s,%s,%s,%s,%s\n" \
           "${massList[$iBin]}" "$ftest_status" "$best_fit_pdf" "$n_pdfs" "$ftest_results" "$envelope_results" "$ftest_stdout" "$bkgplots_status" "$bkgplots_stdout" >> "$summary_log"
         continue
@@ -125,11 +142,16 @@ for ((iBin=0; iBin<$nMass; iBin++))
     # 1. fTest
     ######################################
     # ./bin/fTest_ALP_turnOn -i $dir_input/mA_M${massList[$iBin]}/ws/run3.root --saveMultiPdf $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -D $path_bkg/HZAmassInde_fTest --mass_ALP ${massList[$iBin]} -c 1 --isFlashgg 0 --isData 0 -f data, --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 > $path_bkg/ftest.log
+    ftest_start_time=$(date +%s)
     ./bin/fTest_ALP_turnOn -i $dir_input/mA_M${massList[$iBin]}/ws/run3.root --saveMultiPdf $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -D $ftest_outdir --mass_ALP ${massList[$iBin]} -c 1 --isFlashgg 0 --isData 0 -f data, --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 > "$ftest_stdout" 2>&1
+    ftest_cmd_status=$?
+    ftest_end_time=$(date +%s)
+    echo "[Timer] mA=${massList[$iBin]} fTest finished in $(format_duration $((ftest_end_time - ftest_start_time)))"
     
-    if [[ $? -ne 0 ]]; then
+    if [[ $ftest_cmd_status -ne 0 ]]; then
         ftest_status="FAIL"
         echo "[FAIL][fTest] mA=${massList[$iBin]}" | tee -a "$failed_log"
+        echo "[Timer] mA=${massList[$iBin]} finished in $(format_duration $(( $(date +%s) - mass_start_time )))" | tee -a "$failed_log"
         printf "%s,%s,%s,%s,%s,%s,%s,%s,%s\n" \
           "${massList[$iBin]}" "$ftest_status" "$best_fit_pdf" "$n_pdfs" "$ftest_results" "$envelope_results" "$ftest_stdout" "$bkgplots_status" "$bkgplots_stdout" >> "$summary_log"
         continue
@@ -146,11 +168,16 @@ for ((iBin=0; iBin<$nMass; iBin++))
     # 2. makeBkgPlots
     ######################################
     # makeBkgPlots 只負責產圖與 band，可用來診斷；datacard 真正讀的是上面的 CMS-HGG_mva_13p6TeV_multipdf.root
+    bkgplots_start_time=$(date +%s)
     ./bin/makeBkgPlots_ALP -b $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -d $path_bkg/BkgPlots --total_OutDir $total_OutDir -o $path_bkg/BkgPlots.root --sqrts 13p6TeV --isMultiPdf --useBinnedData --massStep 2.5 --mhVal 125.0 --maVal ${massList[$iBin]} --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 --intLumi $Lumi_run3 -c 0 --isFlashgg 0 --doBands > "$bkgplots_stdout" 2>&1
+    bkgplots_cmd_status=$?
+    bkgplots_end_time=$(date +%s)
+    echo "[Timer] mA=${massList[$iBin]} makeBkgPlots finished in $(format_duration $((bkgplots_end_time - bkgplots_start_time)))"
 
-    if [[ $? -ne 0 ]]; then
+    if [[ $bkgplots_cmd_status -ne 0 ]]; then
         bkgplots_status="FAIL"
         echo "[FAIL][BkgPlots] mA=${massList[$iBin]}" | tee -a "$failed_log"
+        echo "[Timer] mA=${massList[$iBin]} finished in $(format_duration $(( $(date +%s) - mass_start_time )))" | tee -a "$failed_log"
         printf "%s,%s,%s,%s,%s,%s,%s,%s,%s\n" \
           "${massList[$iBin]}" "$ftest_status" "$best_fit_pdf" "$n_pdfs" "$ftest_results" "$envelope_results" "$ftest_stdout" "$bkgplots_status" "$bkgplots_stdout" >> "$summary_log"
         continue
@@ -160,6 +187,7 @@ for ((iBin=0; iBin<$nMass; iBin++))
       "${massList[$iBin]}" "$ftest_status" "$best_fit_pdf" "$n_pdfs" "$ftest_results" "$envelope_results" "$ftest_stdout" "$bkgplots_status" "$bkgplots_stdout" >> "$summary_log"
 
     echo "[OK] mA=${massList[$iBin]}"
+    echo "[Timer] mA=${massList[$iBin]} finished in $(format_duration $(( $(date +%s) - mass_start_time )))"
     # Nominal
     # 1
     # ./bin/fTest_ALP_turnOn -i $dir_input/ALP_data_bkg_Am${massList[$iBin]}_workspace.root --saveMultiPdf $path_bkg/CMS-HGG_mva_13TeV_multipdf.root -D $path_bkg/HZAmassInde_fTest --mass_ALP ${massList[$iBin]} -c 1 --isFlashgg 0 --isData 0 -f data, --mhLow 95 --mhHigh 180  --mhLowBlind 115 --mhHighBlind 135 > $path_bkg/ftest.log
@@ -171,3 +199,6 @@ for ((iBin=0; iBin<$nMass; iBin++))
     # ./bin/makeBkgPlots_ALP -b $path_bkg/CMS-HGG_mva_13TeV_multipdf.root -d $path_bkg/BkgPlots --total_OutDir $total_OutDir -o $path_bkg/BkgPlots.root -S 13 --isMultiPdf --useBinnedData --unblind --massStep 2.5 --mhVal 125.0 --maVal ${massList[$iBin]} --mhLow 95 --mhHigh 180 --intLumi $Lumi_run3 -c 0 --isFlashgg 0
 
     done
+
+script_end_time=$(date +%s)
+echo "[Timer] Total fit_bkg.sh runtime: $(format_duration $((script_end_time - script_start_time)))"
