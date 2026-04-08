@@ -86,6 +86,39 @@ for ((iBin=0; iBin<$nMass; iBin++))
     n_pdfs="NA"
     ftest_status="OK"
     bkgplots_status="OK"
+    tree_input="$dir_input/mA_M${massList[$iBin]}/run3.root"
+    ws_input="$dir_input/mA_M${massList[$iBin]}/ws/run3.root"
+
+    if [[ ! -f "$tree_input" ]]; then
+        ftest_status="MISSING_TREE"
+        bkgplots_status="SKIP"
+        echo "[FAIL][InputTreeMissing] mA=${massList[$iBin]} missing ${tree_input}" | tee -a "$failed_log"
+        printf "%s,%s,%s,%s,%s,%s,%s,%s,%s\n" \
+          "${massList[$iBin]}" "$ftest_status" "$best_fit_pdf" "$n_pdfs" "$ftest_results" "$envelope_results" "$ftest_stdout" "$bkgplots_status" "$bkgplots_stdout" >> "$summary_log"
+        continue
+    fi
+
+    if [[ ! -f "$ws_input" ]]; then
+        ftest_status="MISSING_WS"
+        bkgplots_status="SKIP"
+        echo "[FAIL][WorkspaceMissing] mA=${massList[$iBin]} missing ${ws_input}" | tee -a "$failed_log"
+        echo "  Regenerate workspaces first, e.g. run /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Trees2WS/run_tree2ws.sh" | tee -a "$failed_log"
+        printf "%s,%s,%s,%s,%s,%s,%s,%s,%s\n" \
+          "${massList[$iBin]}" "$ftest_status" "$best_fit_pdf" "$n_pdfs" "$ftest_results" "$envelope_results" "$ftest_stdout" "$bkgplots_status" "$bkgplots_stdout" >> "$summary_log"
+        continue
+    fi
+
+    if [[ "$ws_input" -ot "$tree_input" ]]; then
+        ftest_status="STALE_WS"
+        bkgplots_status="SKIP"
+        echo "[FAIL][WorkspaceStale] mA=${massList[$iBin]} workspace is older than input tree" | tee -a "$failed_log"
+        echo "  tree: ${tree_input}" | tee -a "$failed_log"
+        echo "  ws  : ${ws_input}" | tee -a "$failed_log"
+        echo "  Regenerate workspaces first, e.g. run /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Trees2WS/run_tree2ws.sh" | tee -a "$failed_log"
+        printf "%s,%s,%s,%s,%s,%s,%s,%s,%s\n" \
+          "${massList[$iBin]}" "$ftest_status" "$best_fit_pdf" "$n_pdfs" "$ftest_results" "$envelope_results" "$ftest_stdout" "$bkgplots_status" "$bkgplots_stdout" >> "$summary_log"
+        continue
+    fi
 
     # Syst
     ######################################
