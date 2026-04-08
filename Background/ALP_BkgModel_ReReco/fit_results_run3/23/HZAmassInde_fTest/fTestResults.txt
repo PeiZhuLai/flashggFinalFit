@@ -6,8 +6,8 @@ Truth Model & d.o.f & $\Delta NLL_{N+1}$ & $p(\chi^{2}>\chi^{2}_{(N\rightarrow N
       Bernstein & 4 &  0.53 &  0.46 \\
     Exponential & 2 &  0.00 &  1.00 \\
     Exponential & 2 &  0.00 &  1.00 \\
-       PowerLaw & 2 &  0.02 &  0.99 \\
-       PowerLaw & 2 &  0.02 &  0.99 \\
+       PowerLaw & 2 &  0.00 &  1.00 \\
+       PowerLaw & 2 &  0.00 &  1.00 \\
         Laurent & 4 &  6.49 &  0.01 \\
         Laurent & 4 &  6.49 &  0.01 \\
 \hline
