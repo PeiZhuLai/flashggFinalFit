@@ -38,7 +38,7 @@ using namespace boost;
 
 namespace {
 constexpr int kBkgFftBins = 1024;
-constexpr int kBkgCacheBins = 1024;
+constexpr int kBkgCacheBins = 512;
 constexpr double kBkgBufferFraction = 0.25;
 
 struct StepGausWindow {
