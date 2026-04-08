@@ -233,7 +233,12 @@ def resolve_output_mass_branch(tree) -> str:
 
 def get_plot_bin_edges(mass_value: float) -> Tuple[int, float, float]:
     width = (H_M_XMAX - H_M_XMIN) / H_M_NBINS
-    clipped = min(max(mass_value, H_M_XMIN), math.nextafter(H_M_XMAX, H_M_XMIN))
+    if hasattr(math, "nextafter"):
+        upper_edge = math.nextafter(H_M_XMAX, H_M_XMIN)
+    else:
+        # Fallback for older Python versions without math.nextafter.
+        upper_edge = H_M_XMAX - max(1e-12 * abs(H_M_XMAX), 1e-12)
+    clipped = min(max(mass_value, H_M_XMIN), upper_edge)
     index = int((clipped - H_M_XMIN) / width)
     low = H_M_XMIN + index * width
     high = H_M_XMAX if index == H_M_NBINS - 1 else low + width
