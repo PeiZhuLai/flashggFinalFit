@@ -160,10 +160,11 @@ def get_options():
 (opt,args) = get_options()
 
 # 決定「實際用來讀檔/取模型」的 mass
-signal_components = resolve_signal_components(opt.mass_ALP, ma_list, interploate_ma_list)
-if len(signal_components) > 1:
-  comp_desc = ", ".join([f"{c['anchor_mass']}(w={c['shape_weight']:.3f})" for c in signal_components])
-  print(f" --> [INFO] mass_ALP={opt.mass_ALP} 使用左右 anchor mixture: {comp_desc}")
+signal_mass_for_io = resolve_mass_for_io(opt.mass_ALP, ma_list, interploate_ma_list)
+signal_components = [{"anchor_mass": signal_mass_for_io, "shape_weight": 1.0, "label": ""}]
+if int(round(float(opt.mass_ALP))) in interploate_ma_list:
+  print(f" --> [INFO] signal shape 改回最近 anchor: mA={opt.mass_ALP} -> anchor={signal_mass_for_io}")
+  print(" --> [INFO] signal normalization 將在 datacard 階段由 writeInterpolateYields() 使用 quadratic efficiency 做修正")
 bkg_mass_for_io = int(round(float(opt.mass_ALP)))
 print(f" --> [INFO] background/data 使用目標 mass 自身路徑 mA={bkg_mass_for_io}")
 
@@ -438,7 +439,9 @@ for year in years:
         shape_weight = float(comp['shape_weight'])
         mix_label = comp.get('label', '')
         mix_group = "%s_%s_%s"%(procToDatacardName(proc),year,lep_channel)
-        yield_scale = compute_signal_yield_scale(opt.mass_ALP, anchor_mass, shape_weight, year, lep_channel)
+        # signal shape 只使用最近 anchor；interpolated mass 的 normalization
+        # 改由 datacard 階段的 writeInterpolateYields() 處理，避免 shape mixture。
+        yield_scale = 1.0
 
         # Identifier
         _id = "%s_%s_%s_%s_%s"%(proc,year,lep_channel,opt.cat,sqrts__)
@@ -512,8 +515,8 @@ for year in years:
               "_proc_s0 (基礎歸一化流程別)" : _proc_s0,
               "_cat (類別, 可能含年分或合併)" : _cat,
               "anchor_mass (shape 來源 anchor)" : anchor_mass,
-              "shape_weight (左右 anchor mixture 權重)" : shape_weight,
-              "yield_scale = shape_weight * eff(target)/eff(anchor)" : yield_scale,
+              "shape_weight (固定單一 anchor, 無 mixture)" : shape_weight,
+              "yield_scale (固定 1.0; quadratic efficiency correction 於 datacard 階段處理)" : yield_scale,
               "_inputWSFile_pattern (glob 模式)" : _inputWS_pattern,
               "_inputWSFile_list (實際匹配列表)" : _inputWSFile_list,
               "_inputWSFile (存入 DataFrame 的字串)" : _inputWSFile,

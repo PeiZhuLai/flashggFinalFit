@@ -219,12 +219,9 @@ if opt.doSystematics:
       print(" --> [ERROR] in writing systematic %s (signal shape). Leaving"%syst['name'])
       leave()
   if opt.mass_ALP in interploate_ma_list:
-    if has_left_right_signal_mixture(data, opt.mass_ALP):
-      print(" --> [INFO] 偵測到 left/right anchor mixture signal rows，跳過舊的 writeInterpolateYields() 以避免重複修正")
-    else:
-      if not writeInterpolateYields(fdata,data,syst,opt):
-        print(" --> [ERROR] in writing systematic %s (signal shape). Leaving"%syst['name'])
-        leave()
+    if not writeInterpolateYields(fdata,data,syst,opt):
+      print(" --> [ERROR] in writing systematic %s (signal shape). Leaving"%syst['name'])
+      leave()
 if opt.doMCStatUncertainty:
   writeBreak(fdata)
   if not writeMCStatUncertainty(fdata,data,opt):
