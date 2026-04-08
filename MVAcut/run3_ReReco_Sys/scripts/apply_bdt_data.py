@@ -30,7 +30,7 @@ def setup_logging(level_str: str = "INFO") -> None:
 
 def get_args():
     parser = ArgumentParser(description='Apply BDT data MVA cut and write ROOT files')
-    parser.add_argument('-i', '--inputFolder', default='/eos/home-p/pelai/HZa/root_P2Root/run3_BDT/Data', help='Path to the input folder')
+    parser.add_argument('-i', '--inputFolder', default=INPUT_BASE, help='Path to the input folder')
     parser.add_argument('-o', '--outputFolder', default='/eos/home-p/pelai/HZa/root_MVAcut/data', help='Path to the output folder')
     parser.add_argument('--log-level', default='INFO', choices=['DEBUG','INFO','WARNING','ERROR','CRITICAL'], help='Logging level')
     return parser.parse_args()
@@ -159,7 +159,7 @@ def build_pass_event_map(samples: List[str], years_list: List[str], input_base: 
 
                     cols = [mva_branch] + list(id_cols)
                     for arrs in t.iterate(cols, library="ak", step_size=UPROOT_STEP):
-                        mask = arrs[mva_branch] > cut
+                        mask = arrs[mva_branch] >= cut
                         if len(id_cols) == 1:
                             evs = ak.to_numpy(arrs[id_cols[0]][mask]).astype(np.int64, copy=False)
                             pass_set.update(int(x) for x in evs.tolist())
@@ -253,7 +253,7 @@ def process_files(output_folder: str, input_folder: str, pass_map: Dict[tuple, s
                     if thr is not None and mva_col is not None:
                         if nearest_ma != ma_val:
                             logging.info(f"Use nearest mA for filtering {s} {year}: target mA={ma_val}, nearest mA={nearest_ma}, cut={thr}")
-                        df = df[df[mva_col] > thr]
+                        df = df[df[mva_col] >= thr]
                     else:
                         if mva_col is None:
                             logging.warning(f"Missing MVA branch for {s} in {input_path}: expected '{get_mva_branch_for_sample(s)}'")
@@ -295,6 +295,8 @@ def hadd_outputs(output_folder: str, samples: List[str], years_list: List[str]) 
 if __name__ == "__main__":
     args = get_args()
     setup_logging(args.log_level)
+    logging.info(f"Input folder: {args.inputFolder}")
+    logging.info("Selection note: apply_bdt_data.py only applies the MVA cut. It does not apply the 95-180 GeV mass window or the 115-135 GeV data blinding used by plot_bkgmcScupltingCheck.py.")
 
     mva_cuts = parse_mva_cuts(optimized_BDT_Cut)
     samples = [f"mA_M{m}" for m in mAs]
