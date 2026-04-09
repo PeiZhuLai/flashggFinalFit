@@ -25,22 +25,13 @@ for mA in "${mAs[@]}"; do
     CARD=root_t2w/${mA}_Datacard_leptons.root
     MH=125.38
 
-    # if [ $mA -lt 5 ]; then
-    #     PDFIDX=2
-    # elif [ $mA -lt 15 ]; then
-    #     PDFIDX=3
-    # elif [ $mA -lt 30 ]; then
-    #     PDFIDX=2
-    # fi
-
     # 2. 运行initial fit
     combineTool.py -M Impacts -d $CARD -m $MH \
     --doInitialFit \
     --redefineSignalPOIs r --rMin -5 --rMax 5 \
     -t -1 --expectSignal 1 \
     --robustFit 1 --cminPreScan \
-    --setParameters pdfindex_cat0_13p6TeV=$PDFIDX \
-    --freezeParameters=pdfindex_cat0_13p6TeV,MH \
+    --freezeParameters=MH \
     --setParameterRanges 'Exp_turnon_p1=95,125:Exp_width_p1=0.1,50:Exp_sigma_p1=0.05,20:Pow_turnon_p1=95,125:Pow_width_p1=0.1,50:Pow_sigma_p1=0.05,20:Lau_turnon_p1=95,125:Lau_width_p1=0.1,50:Lau_sigma_p1=0.05,20:Bern_gsigma=0.05,20:Bern_step=90,130:Bern_stepWidth=0.1,50:lumi_13p6TeV_Uncorrelated_2022preEE=-5,5' \
     --cminDefaultMinimizerType Minuit2 \
     --cminDefaultMinimizerStrategy 0 \
@@ -54,8 +45,7 @@ for mA in "${mAs[@]}"; do
     --redefineSignalPOIs r --rMin -5 --rMax 5 \
     -t -1 --expectSignal 1 \
     --robustFit 1 --cminPreScan \
-    --setParameters pdfindex_cat0_13p6TeV=$PDFIDX \
-    --freezeParameters=pdfindex_cat0_13p6TeV,MH \
+    --freezeParameters=MH \
     --setParameterRanges 'Exp_turnon_p1=95,125:Exp_width_p1=0.1,50:Exp_sigma_p1=0.05,20:Pow_turnon_p1=95,125:Pow_width_p1=0.1,50:Pow_sigma_p1=0.05,20:Lau_turnon_p1=95,125:Lau_width_p1=0.1,50:Lau_sigma_p1=0.05,20:Bern_gsigma=0.05,20:Bern_step=90,130:Bern_stepWidth=0.1,50:lumi_13p6TeV_Uncorrelated_2022preEE=-5,5' \
     --cminDefaultMinimizerType Minuit2 \
     --cminDefaultMinimizerStrategy 0 \
