@@ -32,7 +32,7 @@ latex.SetTextFont(42)
 # mh = 125.38
 mh = 125.18  # H 質量 (GeV) Zebing
 mz = 91.1876
-# gamma_HToSM = 4.143e-3
+# gamma_HToSM = 4.1e-3 # SM
 gamma_HToSM = 3.2e-3  # H 總寬度 (GeV) Zebing
 
 decoupling_energy_scale = 1000.0
@@ -412,8 +412,8 @@ def make_comparison_plot(
     pad2.cd()
     frame2 = TH1F("frame2", f";m_{{a}} (GeV);{ratio_title}", 100, xmin, xmax)
     frame2.SetStats(0)
-    frame2.SetMinimum(-0.51)
-    frame2.SetMaximum(+0.51)
+    frame2.SetMinimum(-0.71)
+    frame2.SetMaximum(+0.71)
     frame2.GetXaxis().SetTitleSize(0.132)
     frame2.GetXaxis().SetTitleOffset(1.05)
     frame2.GetXaxis().SetLabelSize(0.122)

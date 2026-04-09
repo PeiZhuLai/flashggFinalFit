@@ -1,5 +1,5 @@
-category : 0 , pdf : Bern2 , gof : 0.000000, isTruth : 1 [fallback-empty-envelope] [family-fallback]
- category : 0 , pdf : Exp1 , gof : 0.000000, isTruth : 1 [fallback-empty-envelope] [family-fallback]
- category : 0 , pdf : Pow1 , gof : 0.000000, isTruth : 1 [fallback-empty-envelope] [family-fallback]
- category : 0 , pdf : Lau3 , gof : 0.000000, isTruth : 1 [fallback-empty-envelope] [family-fallback]
+category : 0 , pdf : Pow1 , gof : 0.595000, isTruth : 1
+ category : 0 , pdf : Exp1 , gof : 0.515000, isTruth : 1
+ category : 0 , pdf : Bern3 , gof : 0.785000, isTruth : 1
+ category : 0 , pdf : Lau4 , gof : 0.810000, isTruth : 0
  

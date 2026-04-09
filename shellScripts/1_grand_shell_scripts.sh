@@ -1,10 +1,20 @@
 
 baseDir=/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit
 
+### ----------- MVA Cut 
+# python $baseDir/MVAcut/run3_ReReco_Sys/scripts/apply_bdt_data.py
+# python $baseDir/MVAcut/run3_ReReco_Sys/scripts/apply_bdt_sig.py
+
+### ----------- Tree2WS
+# cd $baseDir/Trees2WS
+# sh $baseDir/Trees2WS/run_tree2ws.sh
+
 ### ----------- Background 
-sh $baseDir/shellScripts/bkg/fit_bkg.sh
+# cd $baseDir/shellScripts
+# sh $baseDir/shellScripts/bkg/fit_bkg.sh
 
 ### ----------- Signal
+# cd $baseDir/shellScripts
 # sh $baseDir/shellScripts/sig_sys/1_runjob_sig_fTest.sh
 # sh $baseDir/shellScripts/sig_sys/2_runjob_sig_calcPhotonSyst.sh
 # sh $baseDir/shellScripts/sig_sys/3_runjob_sig_signalFit.sh
@@ -12,17 +22,25 @@ sh $baseDir/shellScripts/bkg/fit_bkg.sh
 # sh $baseDir/shellScripts/sig_sys/5_runjob_sig_plotEffSigma.sh
 
 ### ----------- Datacard
-cd $baseDir/Datacard
-sh 1_runjob_gen_datacard_makeYields.sh
-sh 2_runjob_gen_datacard_makeDatacard.sh
+# cd $baseDir/Datacard
+# sh 1_runjob_gen_datacard_makeYields.sh
+# sh 2_runjob_gen_datacard_makeDatacard.sh
 # sh 3_rysn_datacard.sh
 
 ### ----------- Combine Limits
-cd $baseDir/Combine
-sh 1_makeLimits.sh
+# cd $baseDir/Combine
+# sh 1_makeLimits.sh
 
 ### ----------- Plot Limts
-cd $baseDir/Plots
-sh 1_runLimitsPlot.sh
+# cd $baseDir/Plots
+# sh 1_runLimitsPlot.sh
+
+### ----------- Impact Plot
+cd $baseDir/Combine
+sh 2_expectedImpact.sh
+
+### ----------- Bias Study
+cd $baseDir/Combine/Checks/Bias_nominal
+sh 1_bias_study.sh
 
 cd $baseDir/shellScripts
