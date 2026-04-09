@@ -741,6 +741,7 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 	}
 	RooPlot *plot = mgg->frame();
 	plot->SetTitle(Form("Background functions profiled for category %s",catname.c_str()));
+	const double dataMarkerSizeAllPdfs = 1.8;
 	//plot->GetXaxis()->SetTitle("m_{a} (GeV)");//FIXED
 	// plot->GetXaxis()->SetTitle("\\mathrm{m}_{\\ell\\ell\\gamma\\gamma} \\ \\mathrm{(GeV)}");//bing
 
@@ -751,20 +752,20 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 		// mgg->setRange("unblind_down",100,115);
 		mgg->setRange("unblind_up",mgg_blind_high,mgg_high);//bing
 		mgg->setRange("unblind_down",mgg_low,mgg_blind_low);//bing
-		data->plotOn(plot,
-			RooFit::Binning(nbin),
-			RooFit::CutRange("unblind_down,unblind_up"),
-			RooFit::MarkerStyle(20),
-			RooFit::MarkerSize(1.3)
-		);
-	}
-	else {
-		data->plotOn(plot,
-			RooFit::Binning(nbin),
-			RooFit::MarkerStyle(20),
-			RooFit::MarkerSize(1.3)
-		);
-	}
+			data->plotOn(plot,
+				RooFit::Binning(nbin),
+				RooFit::CutRange("unblind_down,unblind_up"),
+				RooFit::MarkerStyle(20),
+				RooFit::MarkerSize(dataMarkerSizeAllPdfs)
+			);
+		}
+		else {
+			data->plotOn(plot,
+				RooFit::Binning(nbin),
+				RooFit::MarkerStyle(20),
+				RooFit::MarkerSize(dataMarkerSizeAllPdfs)
+			);
+		}
 
 	// Number of Leg 8, 7, 6,   5, 4, 
 	TLegend *leg = new TLegend(0.61,0.45,1.,0.89);
@@ -783,26 +784,26 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 	leg_s->SetTextFont(52);
 	leg_s->SetTextSize(0.045);
 
-	TObject *dataLeg = (TObject*)plot->getObject(plot->numItems()-1);//bing
-	if (auto rh = dynamic_cast<RooHist*>(dataLeg)) {
-		rh->SetMarkerStyle(20);
-		rh->SetMarkerSize(1.3);
-	} else if (auto gae = dynamic_cast<TGraphAsymmErrors*>(dataLeg)) {
-		gae->SetMarkerStyle(20);
-		gae->SetMarkerSize(1.3);
-	}
+		TObject *dataLeg = (TObject*)plot->getObject(plot->numItems()-1);//bing
+		if (auto rh = dynamic_cast<RooHist*>(dataLeg)) {
+			rh->SetMarkerStyle(20);
+			rh->SetMarkerSize(dataMarkerSizeAllPdfs);
+		} else if (auto gae = dynamic_cast<TGraphAsymmErrors*>(dataLeg)) {
+			gae->SetMarkerStyle(20);
+			gae->SetMarkerSize(dataMarkerSizeAllPdfs);
+		}
 	// 原先直接 AddEntry 可能無法控制 legend 樣式，改用 TLegendEntry
-	if (mpdf->getNumPdfs() > 6) {
-		if (auto e = leg->AddEntry(dataLeg,"Data","LEP")) {
-			e->SetMarkerStyle(20);
-			e->SetMarkerSize(1.3);
+		if (mpdf->getNumPdfs() > 6) {
+			if (auto e = leg->AddEntry(dataLeg,"Data","LEP")) {
+				e->SetMarkerStyle(20);
+				e->SetMarkerSize(dataMarkerSizeAllPdfs);
+			}
+		} else {
+			if (auto e = leg_s->AddEntry(dataLeg,"Data","LEP")) {
+				e->SetMarkerStyle(20);
+				e->SetMarkerSize(dataMarkerSizeAllPdfs);
+			}
 		}
-	} else {
-		if (auto e = leg_s->AddEntry(dataLeg,"Data","LEP")) {
-			e->SetMarkerStyle(20);
-			e->SetMarkerSize(1.3);
-		}
-	}
 
 	// Black, Red, Blue, Green, Pink, Teal,  
 	// 4 Bernstein, 2 Exponential, 1 Power Law, 3 Laurent
