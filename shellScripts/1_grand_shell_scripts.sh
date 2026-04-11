@@ -10,8 +10,8 @@ baseDir=/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashgg
 # sh $baseDir/Trees2WS/run_tree2ws.sh
 
 ### ----------- Background 
-# cd $baseDir/shellScripts
-# sh $baseDir/shellScripts/bkg/fit_bkg.sh
+cd $baseDir/shellScripts
+sh $baseDir/shellScripts/bkg/fit_bkg.sh
 
 ### ----------- Signal
 # cd $baseDir/shellScripts
@@ -22,18 +22,18 @@ baseDir=/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashgg
 # sh $baseDir/shellScripts/sig_sys/5_runjob_sig_plotEffSigma.sh
 
 ### ----------- Datacard
-# cd $baseDir/Datacard
-# sh 1_runjob_gen_datacard_makeYields.sh
-# sh 2_runjob_gen_datacard_makeDatacard.sh
-# sh 3_rysn_datacard.sh
+cd $baseDir/Datacard
+sh 1_runjob_gen_datacard_makeYields.sh
+sh 2_runjob_gen_datacard_makeDatacard.sh
+sh 3_rysn_datacard.sh
 
 ### ----------- Combine Limits
-# cd $baseDir/Combine
-# sh 1_makeLimits.sh
+cd $baseDir/Combine
+sh 1_makeLimits.sh
 
 ### ----------- Plot Limts
-# cd $baseDir/Plots
-# sh 1_runLimitsPlot.sh
+cd $baseDir/Plots
+sh 1_runLimitsPlot.sh
 
 ### ----------- Impact Plot
 cd $baseDir/Combine

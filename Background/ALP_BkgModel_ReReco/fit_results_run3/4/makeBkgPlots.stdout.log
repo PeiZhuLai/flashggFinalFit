@@ -215,15 +215,15 @@ Error in <TLegend::AddEntry>: need to create a canvas first
 [INFO] Plot has 85 bins
 [INFO] Processing for mA = 4
 [FOR TABLE] ,UntaggedTag_0,95,0.344789, assuming resolution of 1
-[INFO] mgg: 95 nomBkg: 0.316749 +/- 1 (2) sig -- +0.0148396(0.0527629) - 0.237562(0.289528)
+[INFO] mgg: 95 nomBkg: 0.316749 +/- 1 (2) sig -- +8.05099e-07(0.0131907) - 0.257358(0.277155)
 [FOR TABLE] ,UntaggedTag_0,97.5,0.656973, assuming resolution of 1
-[INFO] mgg: 97.5 nomBkg: 0.652727 +/- 1 (2) sig -- +0.208291(0.435517) - 0.0968891(0.26517)
+[INFO] mgg: 97.5 nomBkg: 0.652727 +/- 1 (2) sig -- +0.208291(0.435517) - 0.0917897(0.26517)
 [FOR TABLE] ,UntaggedTag_0,100,1.11728, assuming resolution of 1
 [INFO] mgg: 100 nomBkg: 1.11604 +/- 1 (2) sig -- +0.247601(0.594242) - 0.130786(0.313887)
 [FOR TABLE] ,UntaggedTag_0,102.5,1.604, assuming resolution of 1
 [INFO] mgg: 102.5 nomBkg: 1.60568 +/- 1 (2) sig -- +0.296989(0.742473) - 0.169349(0.376331)
 [FOR TABLE] ,UntaggedTag_0,105,1.99432, assuming resolution of 1
-[INFO] mgg: 105 nomBkg: 1.99985 +/- 1 (2) sig -- +0.331444(0.861754) - 0.210922(0.406219)
+[INFO] mgg: 105 nomBkg: 1.99985 +/- 1 (2) sig -- +0.331444(0.861754) - 0.218734(0.406219)
 [FOR TABLE] ,UntaggedTag_0,107.5,2.20944, assuming resolution of 1
 [INFO] mgg: 107.5 nomBkg: 2.21466 +/- 1 (2) sig -- +0.38367(0.976615) - 0.233578(0.449854)
 [FOR TABLE] ,UntaggedTag_0,110,2.2554, assuming resolution of 1
@@ -247,15 +247,15 @@ Error in <TLegend::AddEntry>: need to create a canvas first
 [FOR TABLE] ,UntaggedTag_0,135,1.08299, assuming resolution of 1
 [INFO] mgg: 135 nomBkg: 1.08279 +/- 1 (2) sig -- +0.121942(0.256078) - 0.114201(0.414506)
 [FOR TABLE] ,UntaggedTag_0,140,0.883934, assuming resolution of 1
-[INFO] mgg: 140 nomBkg: 0.88373 +/- 1 (2) sig -- +0.0991479(0.209312) - 0.234741(0.386632)
+[INFO] mgg: 140 nomBkg: 0.88373 +/- 1 (2) sig -- +0.0984594(0.209312) - 0.234741(0.386632)
 [FOR TABLE] ,UntaggedTag_0,145,0.705243, assuming resolution of 1
-[INFO] mgg: 145 nomBkg: 0.70504 +/- 1 (2) sig -- +0.0787187(0.177117) - 0.198292(0.335995)
+[INFO] mgg: 145 nomBkg: 0.70504 +/- 1 (2) sig -- +0.0784112(0.167277) - 0.198292(0.335995)
 [FOR TABLE] ,UntaggedTag_0,150,0.546923, assuming resolution of 1
-[INFO] mgg: 150 nomBkg: 0.54672 +/- 1 (2) sig -- +0.0628205(0.138637) - 0.153765(0.27336)
+[INFO] mgg: 150 nomBkg: 0.54672 +/- 1 (2) sig -- +0.0693192(0.155968) - 0.179392(0.277631)
 [FOR TABLE] ,UntaggedTag_0,155,0.408974, assuming resolution of 1
-[INFO] mgg: 155 nomBkg: 0.40877 +/- 1 (2) sig -- +0.112386(0.194802) - 0.188417(0.23632)
+[INFO] mgg: 155 nomBkg: 0.40877 +/- 1 (2) sig -- +0.0524468(0.142356) - 0.114967(0.210772)
 [FOR TABLE] ,UntaggedTag_0,160,0.291394, assuming resolution of 1
-[INFO] mgg: 160 nomBkg: 0.291191 +/- 1 (2) sig -- +0.0442658(0.126474) - 0.0545983(0.145595)
+[INFO] mgg: 160 nomBkg: 0.291191 +/- 1 (2) sig -- +0.079046(0.158092) - 0.111471(0.159245)
 [FOR TABLE] ,UntaggedTag_0,165,0.194185, assuming resolution of 1
 [INFO] mgg: 165 nomBkg: 0.193982 +/- 1 (2) sig -- +0.0361293(0.134195) - 0.020459(0.084867)
 [FOR TABLE] ,UntaggedTag_0,170,0.117347, assuming resolution of 1

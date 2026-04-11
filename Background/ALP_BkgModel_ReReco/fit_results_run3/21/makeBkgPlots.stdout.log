@@ -197,7 +197,7 @@ Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_a
 [WSTFileWrapper] Got non-zero RooAbsPdf from ./ALP_BkgModel_ReReco/fit_results_run3/21/CMS-HGG_mva_13p6TeV_multipdf.root with name CMS_hgg_cat0_13p6TeV_bkgshape
 [WSTFileWrapper] Got non-zero RooCategory from ./ALP_BkgModel_ReReco/fit_results_run3/21/CMS-HGG_mva_13p6TeV_multipdf.root with name pdfindex_cat0_13p6TeV
 [INFO] Current PDF and data:
-[INFO] 	RooFFTConvPdf::Pow1[ Pow_soft_pow1(CMS_hza_mass) (*) Pow_gau_pow1(CMS_hza_mass) ] = 291506
+[INFO] 	RooFFTConvPdf::Pow1[ Pow_soft_pow1(CMS_hza_mass) (*) Pow_gau_pow1(CMS_hza_mass) ] = 291489
 [INFO] 	RooDataHist::roohist_data_mass_cat0[CMS_hza_mass] = 85 bins (259 weights)
 unblind: 0
 Into the blind
@@ -215,7 +215,7 @@ Error in <TLegend::AddEntry>: need to create a canvas first
 [INFO] Plot has 85 bins
 [INFO] Processing for mA = 21
 [FOR TABLE] ,UntaggedTag_0,95,2.81608, assuming resolution of 1
-[INFO] mgg: 95 nomBkg: 2.71097 +/- 1 (2) sig -- +0.0482373(0.192949) - 2.35952(2.37739)
+[INFO] mgg: 95 nomBkg: 2.71097 +/- 1 (2) sig -- +0.0530611(0.192949) - 2.24502(2.30856)
 [FOR TABLE] ,UntaggedTag_0,97.5,3.82347, assuming resolution of 1
 [INFO] mgg: 97.5 nomBkg: 3.82123 +/- 1 (2) sig -- +0.251986(1.4661) - 0.537361(1.13443)
 [FOR TABLE] ,UntaggedTag_0,100,5.03776, assuming resolution of 1
@@ -239,17 +239,17 @@ Error in <TLegend::AddEntry>: need to create a canvas first
 [FOR TABLE] ,UntaggedTag_0,122.5,5.07068, assuming resolution of 1
 [INFO] mgg: 122.5 nomBkg: 5.06945 +/- 1 (2) sig -- +0.369394(0.791558) - 0.336643(1.14855)
 [FOR TABLE] ,UntaggedTag_0,125,4.34752, assuming resolution of 1
-[INFO] mgg: 125 nomBkg: 4.34401 +/- 1 (2) sig -- +0.317519(0.683888) - 0.288469(1.086)
+[INFO] mgg: 125 nomBkg: 4.34401 +/- 1 (2) sig -- +0.317519(0.683888) - 0.288469(1.05206)
 [FOR TABLE] ,UntaggedTag_0,127.5,3.70985, assuming resolution of 1
-[INFO] mgg: 127.5 nomBkg: 3.70801 +/- 1 (2) sig -- +0.259507(0.631844) - 0.246235(0.955971)
+[INFO] mgg: 127.5 nomBkg: 3.70801 +/- 1 (2) sig -- +0.259507(0.631844) - 0.246235(0.927)
 [FOR TABLE] ,UntaggedTag_0,130,3.16356, assuming resolution of 1
-[INFO] mgg: 130 nomBkg: 3.16012 +/- 1 (2) sig -- +0.229153(0.541635) - 0.197508(0.790029)
+[INFO] mgg: 130 nomBkg: 3.16012 +/- 1 (2) sig -- +0.229153(0.541635) - 0.197508(0.839407)
 [FOR TABLE] ,UntaggedTag_0,135,2.31698, assuming resolution of 1
-[INFO] mgg: 135 nomBkg: 2.31445 +/- 1 (2) sig -- +0.160453(0.410047) - 0.144653(0.578613)
+[INFO] mgg: 135 nomBkg: 2.31445 +/- 1 (2) sig -- +0.160453(0.410047) - 0.144653(0.596695)
 [FOR TABLE] ,UntaggedTag_0,140,1.72449, assuming resolution of 1
-[INFO] mgg: 140 nomBkg: 1.72275 +/- 1 (2) sig -- +0.111514(0.307626) - 0.104307(0.430688)
+[INFO] mgg: 140 nomBkg: 1.72275 +/- 1 (2) sig -- +0.111514(0.307626) - 0.104307(0.40377)
 [FOR TABLE] ,UntaggedTag_0,145,1.3077, assuming resolution of 1
-[INFO] mgg: 145 nomBkg: 1.30651 +/- 1 (2) sig -- +0.100461(0.267897) - 0.0867605(0.285799)
+[INFO] mgg: 145 nomBkg: 1.30651 +/- 1 (2) sig -- +0.100461(0.267897) - 0.0867605(0.265385)
 [FOR TABLE] ,UntaggedTag_0,150,1.01126, assuming resolution of 1
 [INFO] mgg: 150 nomBkg: 1.01044 +/- 1 (2) sig -- +0.106018(0.282715) - 0.0749938(0.157882)
 [FOR TABLE] ,UntaggedTag_0,155,0.798039, assuming resolution of 1
@@ -263,7 +263,7 @@ Error in <TLegend::AddEntry>: need to create a canvas first
 [FOR TABLE] ,UntaggedTag_0,175,0.381724, assuming resolution of 1
 [INFO] mgg: 175 nomBkg: 0.38157 +/- 1 (2) sig -- +0.137538(0.289553) - 0.0953925(0.178861)
 [FOR TABLE] ,UntaggedTag_0,180,0.336201, assuming resolution of 1
-[INFO] mgg: 180 nomBkg: 0.334096 +/- 1 (2) sig -- +0.0203207(0.0677356) - 0.250572(0.292334)
+[INFO] mgg: 180 nomBkg: 0.334096 +/- 1 (2) sig -- +0.0203207(0.0677356) - 0.264276(0.292334)
 
 [INFO] intLumi 170.84
 Info in <TCanvas::Print>: pdf file ./ALP_BkgModel_ReReco/fit_results_run3/AllFitResults/bkgplot_21.pdf has been created

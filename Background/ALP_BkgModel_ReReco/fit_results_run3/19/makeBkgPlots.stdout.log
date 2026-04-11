@@ -197,7 +197,7 @@ Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_a
 [WSTFileWrapper] Got non-zero RooAbsPdf from ./ALP_BkgModel_ReReco/fit_results_run3/19/CMS-HGG_mva_13p6TeV_multipdf.root with name CMS_hgg_cat0_13p6TeV_bkgshape
 [WSTFileWrapper] Got non-zero RooCategory from ./ALP_BkgModel_ReReco/fit_results_run3/19/CMS-HGG_mva_13p6TeV_multipdf.root with name pdfindex_cat0_13p6TeV
 [INFO] Current PDF and data:
-[INFO] 	RooFFTConvPdf::Exp1[ Exp_soft_exp1(CMS_hza_mass) (*) Exp_gau_exp1(CMS_hza_mass) ] = 157256
+[INFO] 	RooFFTConvPdf::Exp1[ Exp_soft_exp1(CMS_hza_mass) (*) Exp_gau_exp1(CMS_hza_mass) ] = 157060
 [INFO] 	RooDataHist::roohist_data_mass_cat0[CMS_hza_mass] = 85 bins (222 weights)
 unblind: 0
 Into the blind
@@ -215,7 +215,7 @@ Error in <TLegend::AddEntry>: need to create a canvas first
 [INFO] Plot has 85 bins
 [INFO] Processing for mA = 19
 [FOR TABLE] ,UntaggedTag_0,95,2.55448, assuming resolution of 1
-[INFO] mgg: 95 nomBkg: 2.48504 +/- 1 (2) sig -- +0.0184735(0.0692755) - 2.39343(2.40496)
+[INFO] mgg: 95 nomBkg: 2.48504 +/- 1 (2) sig -- +2.25506e-06(2.25506e-06) - 2.39343(2.40496)
 [FOR TABLE] ,UntaggedTag_0,97.5,3.20287, assuming resolution of 1
 [INFO] mgg: 97.5 nomBkg: 3.20213 +/- 1 (2) sig -- +0.346007(0.712984) - 0.850567(1.30087)
 [FOR TABLE] ,UntaggedTag_0,100,3.95489, assuming resolution of 1
