@@ -68,7 +68,7 @@ bool PLOT_ONLY = false;
 
 int FTEST_NTOYS = 500; // was 5000; lower = much faster (override with --ftoys)
 int GOF_NTOYS   = 200; // was 500;  lower = faster (override with --gtoys)
-int MAX_ENVELOPE_PDFS = 4;
+int MIN_ENVELOPE_PDFS = 0; // Additional floor beyond the one-per-family baseline.
 
 float mgglow_ =95.;//FIXME
 float mgghigh_ =180;//FIXME
@@ -1514,7 +1514,8 @@ int main(int argc, char* argv[]){
 		      }
 
 		      std::stable_sort(acceptedEnvelopeCandidates.begin(), acceptedEnvelopeCandidates.end(), lowerScoreEnvelopeCandidate);
-		      const int targetEnvelopeSize = std::max(MAX_ENVELOPE_PDFS, (int)finalEnvelopeCandidates.size());
+		      const int minEnvelopeSize = std::max(MIN_ENVELOPE_PDFS, (int)functionClasses.size());
+		      const int targetEnvelopeSize = std::max(minEnvelopeSize, (int)finalEnvelopeCandidates.size());
 		      for (const auto& cand : acceptedEnvelopeCandidates) {
 		        addUniqueEnvelopeCandidate(cand);
 		        if ((int)finalEnvelopeCandidates.size() >= targetEnvelopeSize) break;
