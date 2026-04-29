@@ -19,8 +19,15 @@ COMBINEHARVESTER_TAG=94017ba5a3a657f7b88669b1a525b19d34ea41a2
 FINALFIT_TAG=higgsdnafinalfit
 
 # Install Combine with the latest EL9 compatible branch
-git clone https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
-cd HiggsAnalysis/CombinedLimit && git fetch origin ${COMBINE_TAG} && git checkout ${COMBINE_TAG}
+# Original CMSSW_14_1_0_pre4, but I, Pei-Zhu, have updated to the latest combine tools, v10.6.0, Apr. 29, 2026.
+# git clone https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
+# cd HiggsAnalysis/CombinedLimit && git fetch origin ${COMBINE_TAG} && git checkout ${COMBINE_TAG}
+# Original CMSSW_14_1_0_pre4, but I, Pei-Zhu, have updated to the latest combine tools, v10.6.0, Apr. 29, 2026.
+# ------------------------------------------------------------------
+git -c advice.detachedHead=false clone --depth 1 --branch v10.6.0 https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
+cd HiggsAnalysis/CombinedLimit
+scramv1 b clean; scramv1 b -j$(nproc --ignore=2) # always make a clean build, with n - 2 cores on the system
+# ------------------------------------------------------------------
 
 # Install CombineTools in CombineHarvester
 cd ${CMSSW_BASE}/src
