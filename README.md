@@ -16,7 +16,7 @@ cmsenv
 
 COMBINE_TAG=07b56c67ba6e4304b42c3a6cdba710d59c719192
 COMBINEHARVESTER_TAG=94017ba5a3a657f7b88669b1a525b19d34ea41a2
-FINALFIT_TAG=higgsdnafinalfit
+FINALFIT_TAG=higgsdnafinalfit_run3
 
 # Install Combine with the latest EL9 compatible branch
 # Original CMSSW_14_1_0_pre4, but I, Pei-Zhu, have updated to the latest combine tools, v10.6.0, Apr. 29, 2026.
