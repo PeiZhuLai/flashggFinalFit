@@ -15,7 +15,7 @@ baseDir=/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashgg
 ### ----------- Background Condor
 # bash $baseDir/shellScripts/bkg/Condor/subjob_bkg.sh
 # bash $baseDir/shellScripts/bkg/Condor/collect_bkg_results.sh
-### ----------- Background Condor run along 
+### ----------- Background Condor run locally
 # bash bkg/Condor/subjob_bkg.sh
 # bash bkg/Condor/collect_bkg_results.sh
 
@@ -28,10 +28,10 @@ baseDir=/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashgg
 # sh $baseDir/shellScripts/sig_sys/5_runjob_sig_plotEffSigma.sh
 
 ### ----------- Datacard
-cd $baseDir/Datacard
-sh 1_runjob_gen_datacard_makeYields.sh
-sh 2_runjob_gen_datacard_makeDatacard.sh
-sh 3_rysn_datacard.sh
+# cd $baseDir/Datacard
+# sh 1_runjob_gen_datacard_makeYields.sh
+# sh 2_runjob_gen_datacard_makeDatacard.sh
+# sh 3_rysn_datacard.sh
 
 # ### ----------- Combine Limits
 # cd $baseDir/Combine
@@ -41,12 +41,12 @@ sh 3_rysn_datacard.sh
 # cd $baseDir/Plots
 # sh 1_runLimitsPlot.sh
 
-# ### ----------- Impact Plot
-# cd $baseDir/Combine
-# sh 2_expectedImpact.sh
+### ----------- Impact Plot
+cd $baseDir/Combine
+sh 2_expectedImpact.sh
 
-# ### ----------- Bias Study
-# cd $baseDir/Combine/Checks/Bias_nominal
-# sh 1_bias_study.sh
+### ----------- Bias Study
+cd $baseDir/Combine/Checks/Bias_nominal
+sh 1_bias_study.sh
 
 cd $baseDir/shellScripts
