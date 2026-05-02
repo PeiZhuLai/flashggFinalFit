@@ -25,7 +25,10 @@ def keep(obj, canvas=None, bucket_name="_keep"):
     return obj
 
 # === 1) 在這裡直接寫你的絕對路徑 ===
-BIAS_BASE = "/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/Checks/Bias_nominal"
+BIAS_BASE = os.environ.get(
+    "BIAS_BASE_OVERRIDE",
+    "/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/Checks/Bias_nominal",
+)
 PATH_BIAS_FITS = os.path.join(BIAS_BASE, "BiasFits")
 PATH_BIAS_TOYS = os.path.join(BIAS_BASE, "BiasToys")
 
