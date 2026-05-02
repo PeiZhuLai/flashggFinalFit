@@ -42,11 +42,15 @@ baseDir=/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashgg
 # sh 1_runLimitsPlot.sh
 
 ### ----------- Impact Plot
-cd $baseDir/Combine
-sh 2_expectedImpact.sh
+# cd $baseDir/Combine
+# sh 2_expectedImpact.sh
+### ----------- Impact Plot Condor (Generate ws for bias study)
+# bash $baseDir/shellScripts/impact/Condor/subjob_expectedImpact.sh
 
 ### ----------- Bias Study
-cd $baseDir/Combine/Checks/Bias_nominal
-sh 1_bias_study.sh
+# cd $baseDir/Combine/Checks/Bias_nominal
+# sh 1_bias_study.sh
+### ----------- Bias Study Condor
+bash $baseDir/shellScripts/bias/Condor/subjob_bias_study.sh
 
 cd $baseDir/shellScripts
