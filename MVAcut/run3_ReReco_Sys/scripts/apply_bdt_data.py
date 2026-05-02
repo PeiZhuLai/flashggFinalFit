@@ -13,7 +13,7 @@ import subprocess
 
 optimized_BDT_Cut="/afs/cern.ch/work/p/pelai/HZa/HiggsZaAna/Plot/output/MVAcut_points_run3.json"
 
-INPUT_BASE = "/eos/home-p/pelai/HZa/root_P2Root/run3_mergedBDT/Data"
+INPUT_BASE = "/eos/home-p/pelai/HZa/root_P2Root/run3_bdt_scored_nominal/Data"
 mAs = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
 procductions = ['Data']
 years = ['2022preEE', '2022postEE', '2023preBPix', '2023postBPix', '2024']
