@@ -73,8 +73,13 @@ if [[ -r "${base_dir}/setup.sh" ]]; then
   source "${base_dir}/setup.sh"
 fi
 
-if [[ -r /cvmfs/cms.cern.ch/crab3/crab.sh ]]; then
+source_crab_env() {
+  set --
   source /cvmfs/cms.cern.ch/crab3/crab.sh
+}
+
+if [[ -r /cvmfs/cms.cern.ch/crab3/crab.sh ]]; then
+  source_crab_env
 fi
 
 card="${root_datacard_path}/${mA}_Datacard_leptons.root"

@@ -45,8 +45,13 @@ fi
 cd "${cmssw_top}/src" || exit 1
 cmsenv
 
-if [[ -r /cvmfs/cms.cern.ch/crab3/crab.sh ]]; then
+source_crab_env() {
+  set --
   source /cvmfs/cms.cern.ch/crab3/crab.sh
+}
+
+if [[ -r /cvmfs/cms.cern.ch/crab3/crab.sh ]]; then
+  source_crab_env
 fi
 
 cd "$combine_dir" || exit 1
