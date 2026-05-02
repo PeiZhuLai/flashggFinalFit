@@ -57,6 +57,13 @@ inline double clampDouble(double v, double lo, double hi) {
   return std::max(lo, std::min(v, hi));
 }
 
+inline void fixUnitShapeCoeff(RooRealVar* coeff) {
+  if (!coeff) return;
+  coeff->setRange(0.0, 10.0);
+  coeff->setVal(1.0);
+  coeff->setConstant(true);
+}
+
 inline StepGausWindow makeStableStepGausWindow(int massALP, double turnonShift, double sigmaScale, double widthScale) {
   const double m = clampDouble((double)massALP, 1.0, 30.0);
   const double baseTurnon = clampDouble(104.5 + 0.32*m + turnonShift, 103.0, 117.0);
@@ -302,6 +309,7 @@ RooAbsPdf* PdfModelBuilder::getBernsteinStepxGau(string prefix, int order, int m
   for (int i=0; i<order; i++){
     std::string pname = Form("%s_b%02d",prefix.c_str(),i);
     RooRealVar* raw = new RooRealVar(pname.c_str(),pname.c_str(), 0.1*(i+1), -3., 3.);
+    if (i == 0) fixUnitShapeCoeff(raw);
     rawPars.push_back(raw);
     std::string sname = Form("%s_sq_b%02d",prefix.c_str(),i);
     RooFormulaVar* sq = new RooFormulaVar(sname.c_str(),sname.c_str(),"@0*@0",RooArgList(*raw));
@@ -350,23 +358,23 @@ RooAbsPdf* PdfModelBuilder::getPowerLawStepxGau(string prefix, int order, int ca
   double coeff1_hpow1, coeff1_hpow3, coeff3_hpow3, coeff1_hpow5, coeff3_hpow5, coeff5_hpow5;
   double coeff1_lpow1, coeff1_lpow3, coeff3_lpow3, coeff1_lpow5, coeff3_lpow5, coeff5_lpow5;
 
-  coeff1_pow1 = 0.3;        coeff1_lpow1 = 0.;    coeff1_hpow1 = 1.;
+  coeff1_pow1 = 1.0;        coeff1_lpow1 = 0.;    coeff1_hpow1 = 10.;
   auto stablePow = makeStableStepGausWindow(mass_ALP, 0.6, 1.00, 1.00);
   par1_pow1 = -7.00;        par1_lpow1 = -12.;    par1_hpow1 = -5.;
   sigma_pow = stablePow.sigma;            sigma_lpow = stablePow.sigmaLo;      sigma_hpow = stablePow.sigmaHi;
   turnon_pow = stablePow.turnon;          turnon_lpow = stablePow.turnonLo;    turnon_hpow = stablePow.turnonHi;
   width_pow = stablePow.width;            width_lpow = stablePow.widthLo;      width_hpow = stablePow.widthHi;
 
-  coeff1_pow3 = 0.3;      coeff1_lpow3 = 0.;    coeff1_hpow3 = 1.;
-  coeff3_pow3 = 0.0;      coeff3_lpow3 = 0.;    coeff3_hpow3 = 1.;
+  coeff1_pow3 = 1.0;      coeff1_lpow3 = 0.;    coeff1_hpow3 = 10.;
+  coeff3_pow3 = 0.10;     coeff3_lpow3 = 1.e-4; coeff3_hpow3 = 1.;
   par1_pow3 = -6.80;      par1_lpow3 = -11.;    par1_hpow3 = -5.;
   par3_pow3 = -4.80;      par3_lpow3 = -8.;     par3_hpow3 = -2;
   sigma_pow = stablePow.sigma;          sigma_lpow = stablePow.sigmaLo;      sigma_hpow = stablePow.sigmaHi;
   turnon_pow = stablePow.turnon;        turnon_lpow = stablePow.turnonLo;    turnon_hpow = stablePow.turnonHi;
 
-  coeff1_pow5 = 0.3;      coeff1_lpow5 = 0.;    coeff1_hpow5 = 1.;
-  coeff3_pow5 = 0.0;      coeff3_lpow5 = 0.;    coeff3_hpow5 = 1.;
-  coeff5_pow5 = 0.0;      coeff5_lpow5 = 0.;    coeff5_hpow5 = 1.;
+  coeff1_pow5 = 1.0;      coeff1_lpow5 = 0.;    coeff1_hpow5 = 10.;
+  coeff3_pow5 = 0.10;     coeff3_lpow5 = 1.e-4; coeff3_hpow5 = 1.;
+  coeff5_pow5 = 0.05;     coeff5_lpow5 = 1.e-4; coeff5_hpow5 = 1.;
   par1_pow5 = -6.80;      par1_lpow5 = -11.;    par1_hpow5 = -5.;
   par3_pow5 = -4.80;      par3_lpow5 = -8.;     par3_hpow5 = -2.;
   par5_pow5 = -5.80;      par5_lpow5 = -8.5;    par5_hpow5 = -1.5;
@@ -425,8 +433,7 @@ RooAbsPdf* PdfModelBuilder::getPowerLawStepxGau(string prefix, int order, int ca
       RooRealVar *cp1         = new RooRealVar(Form("%s_cp1_pow1",prefix.c_str()),Form("%s_cp1_pow1",prefix.c_str()),coeff1_pow1,coeff1_lpow1,coeff1_hpow1);
       // [PZ-FIX] cp1 is an overall scale factor for an internally-normalized pdf -> unconstrained.
       // Fix it to 1 to avoid Minuit2 "2nd derivative zero"/invalid Hessian warnings.
-      cp1->setVal(1.0);
-      cp1->setConstant(true);
+      fixUnitShapeCoeff(cp1);
       RooGenericPdf *soft_step = new RooGenericPdf(
         Form("%s_soft_pow1",prefix.c_str()),Form("%s_soft_pow1",prefix.c_str()),
         "1e-20+0.5*(1.0+TMath::Erf((@0-@1)/(@2*sqrt(2.))))*(@4*(@0)^(@3))",
@@ -443,6 +450,7 @@ RooAbsPdf* PdfModelBuilder::getPowerLawStepxGau(string prefix, int order, int ca
       RooRealVar *cp1         = new RooRealVar(Form("%s_cp1_pow3",prefix.c_str()),Form("%s_cp1_pow3",prefix.c_str()),coeff1_pow3,coeff1_lpow3,coeff1_hpow3);
       RooRealVar *p3          = new RooRealVar(Form("%s_p3_pow3",prefix.c_str()),Form("%s_p3_pow3",prefix.c_str()),par3_pow3,par3_lpow3,par3_hpow3);
       RooRealVar *cp3         = new RooRealVar(Form("%s_cp3_pow3",prefix.c_str()),Form("%s_cp3_pow3",prefix.c_str()),coeff3_pow3,coeff3_lpow3,coeff3_hpow3);
+      fixUnitShapeCoeff(cp1);
       RooGenericPdf *soft_step = new RooGenericPdf(
         Form("%s_soft_pow3",prefix.c_str()),Form("%s_soft_pow3",prefix.c_str()),
         "1e-20+0.5*(1.0+TMath::Erf((@0-@1)/(@2*sqrt(2.))))*(@4*(@0)^(@3)+@6*(@0)^(@5))",
@@ -461,6 +469,7 @@ RooAbsPdf* PdfModelBuilder::getPowerLawStepxGau(string prefix, int order, int ca
       RooRealVar *cp3         = new RooRealVar(Form("%s_cp3_pow5",prefix.c_str()),Form("%s_cp3_pow5",prefix.c_str()),coeff3_pow5,coeff3_lpow5,coeff3_hpow5);
       RooRealVar *p5          = new RooRealVar(Form("%s_p5_pow5",prefix.c_str()),Form("%s_p5_pow5",prefix.c_str()),par5_pow5,par5_lpow5,par5_hpow5);
       RooRealVar *cp5         = new RooRealVar(Form("%s_cp5_pow5",prefix.c_str()),Form("%s_cp5_pow5",prefix.c_str()),coeff5_pow5,coeff5_lpow5,coeff5_hpow5);
+      fixUnitShapeCoeff(cp1);
     	//RooGenericPdf *step     = new RooGenericPdf(Form("%s_step_pow5",prefix.c_str()),Form("%s_step_pow5",prefix.c_str()), "1e-20+(@0 > @1)*(@3*(@0)^(@2)+@5*(@0)^(@4)+@7*(@0)^(@6))", RooArgList(*obs_var,*turnon,*p1,*cp1,*p3,*cp3,*p5,*cp5));
       RooGenericPdf *soft_step = new RooGenericPdf(
         Form("%s_soft_pow5",prefix.c_str()),Form("%s_soft_pow5",prefix.c_str()),
@@ -576,21 +585,21 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
   double coeff1_hexp1, coeff1_hexp3, coeff3_hexp3, coeff1_hexp5, coeff3_hexp5, coeff5_hexp5;
   double coeff1_lexp1, coeff1_lexp3, coeff3_lexp3, coeff1_lexp5, coeff3_lexp5, coeff5_lexp5;
   
-  coeff1_exp1 = 0.4;      coeff1_lexp1 = 0.1;     coeff1_hexp1 = 0.9;
+  coeff1_exp1 = 1.0;      coeff1_lexp1 = 0.;      coeff1_hexp1 = 10.;
   auto stableExp = makeStableStepGausWindow(mass_ALP, 0.4, 0.90, 1.15);
   par1_exp1 = -0.055;     par1_lexp1 = -0.10;     par1_hexp1 = -0.02;
   sigma_exp = stableExp.sigma;        sigma_lexp = stableExp.sigmaLo;         sigma_hexp = stableExp.sigmaHi;
   turnon_exp = stableExp.turnon;      turnon_lexp = stableExp.turnonLo;       turnon_hexp = stableExp.turnonHi;
   width_exp = stableExp.width;        width_lexp = stableExp.widthLo;         width_hexp = stableExp.widthHi;
 
-  coeff1_exp3 = 0.7;        coeff1_lexp3 = 0.;    coeff1_hexp3 = 1.;
-  coeff3_exp3 = 0.8;        coeff3_lexp3 = 0.;    coeff3_hexp3 = 1.;
+  coeff1_exp3 = 1.0;        coeff1_lexp3 = 0.;    coeff1_hexp3 = 10.;
+  coeff3_exp3 = 0.25;       coeff3_lexp3 = 1.e-4; coeff3_hexp3 = 1.;
   par1_exp3 = -0.055;       par1_lexp3 = -0.12;   par1_hexp3 = -0.02;
   par3_exp3 = -0.040;       par3_lexp3 = -0.10;   par3_hexp3 = -0.015;
 
-  coeff1_exp5 = 0.05;       coeff1_lexp5 = 0.;    coeff1_hexp5 = 1.;
-  coeff3_exp5 = 0.002;      coeff3_lexp5 = 0.;    coeff3_hexp5 = 1.;
-  coeff5_exp5 =0.002;       coeff5_lexp5 = 0.;    coeff5_hexp5 = 1.;
+  coeff1_exp5 = 1.0;        coeff1_lexp5 = 0.;    coeff1_hexp5 = 10.;
+  coeff3_exp5 = 0.20;       coeff3_lexp5 = 1.e-4; coeff3_hexp5 = 1.;
+  coeff5_exp5 = 0.05;       coeff5_lexp5 = 1.e-4; coeff5_hexp5 = 1.;
   par1_exp5 = -0.055;       par1_lexp5 = -0.12;   par1_hexp5 = -0.015;
   par3_exp5 = -0.038;       par3_lexp5 = -0.10;   par3_hexp5 = -0.015;
   par5_exp5 = -0.018;       par5_lexp5 = -0.06;   par5_hexp5 = -0.008;
@@ -647,8 +656,7 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
       RooRealVar *cp1 = new RooRealVar(Form("%s_cp1_exp1",prefix.c_str()),Form("%s_cp1_exp1",prefix.c_str()),coeff1_exp1,coeff1_lexp1,coeff1_hexp1);
       // [PZ-FIX] cp1 is an overall scale factor for an internally-normalized pdf -> unconstrained.
       // Fix it to 1 to avoid Minuit2 "2nd derivative zero"/invalid Hessian warnings.
-      cp1->setVal(1.0);
-      cp1->setConstant(true);
+      fixUnitShapeCoeff(cp1);
       RooGenericPdf *soft_step = new RooGenericPdf(
         Form("%s_soft_exp1",prefix.c_str()),Form("%s_soft_exp1",prefix.c_str()),
         "1e-20+0.5*(1.0+TMath::Erf((@0-@1)/(@2*sqrt(2.))))*(@4*TMath::Exp(@0*@3))",
@@ -665,6 +673,7 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
       RooRealVar *cp1 = new RooRealVar(Form("%s_cp1_exp3",prefix.c_str()),Form("%s_cp1_exp3",prefix.c_str()),coeff1_exp3,coeff1_lexp3,coeff1_hexp3);
       RooRealVar *p3 = new RooRealVar(Form("%s_p3_exp3",prefix.c_str()),Form("%s_p3_exp3",prefix.c_str()),par3_exp3,par3_lexp3, par3_hexp3);
       RooRealVar *cp3 = new RooRealVar(Form("%s_cp3_exp3",prefix.c_str()),Form("%s_cp3_exp3",prefix.c_str()),coeff3_exp3,coeff3_lexp3,coeff3_hexp3);
+      fixUnitShapeCoeff(cp1);
       RooGenericPdf *soft_step = new RooGenericPdf(
         Form("%s_soft_exp3",prefix.c_str()),Form("%s_soft_exp3",prefix.c_str()),
         "1e-20+0.5*(1.0+TMath::Erf((@0-@1)/(@2*sqrt(2.))))*(@4*TMath::Exp(@0*@3)+@6*TMath::Exp(@0*@5))",
@@ -683,6 +692,7 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
       RooRealVar *cp3 = new RooRealVar(Form("%s_cp3_exp5",prefix.c_str()),Form("%s_cp3_exp5",prefix.c_str()),coeff3_exp5,coeff3_lexp5,coeff3_hexp5);
       RooRealVar *p5 = new RooRealVar(Form("%s_p5_exp5",prefix.c_str()),Form("%s_p5_exp5",prefix.c_str()),par5_exp5,par5_lexp5, par5_hexp5);
       RooRealVar *cp5 = new RooRealVar(Form("%s_cp5_exp5",prefix.c_str()),Form("%s_cp5_exp5",prefix.c_str()),coeff5_exp5,coeff5_lexp5,coeff5_hexp5);
+      fixUnitShapeCoeff(cp1);
       RooGenericPdf *soft_step = new RooGenericPdf(
         Form("%s_soft_exp5",prefix.c_str()),Form("%s_soft_exp5",prefix.c_str()),
         "1e-20+0.5*(1.0+TMath::Erf((@0-@1)/(@2*sqrt(2.))))*(@4*TMath::Exp(@0*@3)+@6*TMath::Exp(@0*@5)+@8*TMath::Exp(@0*@7))",
@@ -802,27 +812,27 @@ RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat
   double coeff1_hlau1,  coeff1_hlau2, coeff2_hlau2,   coeff1_hlau3, coeff2_hlau3, coeff3_hlau3,   coeff1_hlau4, coeff2_hlau4, coeff3_hlau4, coeff4_hlau4;
   double coeff1_llau1,  coeff1_llau2, coeff2_llau2,   coeff1_llau3, coeff2_llau3, coeff3_llau3,   coeff1_llau4, coeff2_llau4, coeff3_llau4, coeff4_llau4;
  
-  coeff1_lau1 = 0.0;        coeff1_llau1 = 0.;      coeff1_hlau1 = 0.2;
+  coeff1_lau1 = 1.0;        coeff1_llau1 = 0.;      coeff1_hlau1 = 10.;
   auto stableLau = makeStableStepGausWindow(mass_ALP, 0.2, 1.00, 0.95);
   sigma_lau = stableLau.sigma;          sigma_llau = stableLau.sigmaLo;       sigma_hlau = stableLau.sigmaHi;
   turnon_lau = stableLau.turnon;        turnon_llau = stableLau.turnonLo;     turnon_hlau = stableLau.turnonHi;
   width_lau = stableLau.width;          width_llau = stableLau.widthLo;       width_hlau = stableLau.widthHi;
 
-  coeff1_lau2 = 0.0;        coeff1_llau2 = 0.;    coeff1_hlau2 = 0.5;
-  coeff2_lau2 = 0.0;        coeff2_llau2 = 0.;    coeff2_hlau2 = 0.5;
+  coeff1_lau2 = 1.0;        coeff1_llau2 = 0.;      coeff1_hlau2 = 10.;
+  coeff2_lau2 = 0.10;       coeff2_llau2 = 1.e-4;   coeff2_hlau2 = 0.5;
   sigma_lau = stableLau.sigma;          sigma_llau = stableLau.sigmaLo;      sigma_hlau = stableLau.sigmaHi;
   turnon_lau = stableLau.turnon;        turnon_llau = stableLau.turnonLo;    turnon_hlau = stableLau.turnonHi;
  
-  coeff1_lau3 = 0.0;        coeff1_llau3 = 0.;    coeff1_hlau3 = 0.5;
-  coeff2_lau3 = 0.0;        coeff2_llau3 = 0.;    coeff2_hlau3 = 0.5;
-  coeff3_lau3 = 0.0;        coeff3_llau3 = 0.;    coeff3_hlau3 = 2.0;
+  coeff1_lau3 = 1.0;        coeff1_llau3 = 0.;      coeff1_hlau3 = 10.;
+  coeff2_lau3 = 0.10;       coeff2_llau3 = 1.e-4;   coeff2_hlau3 = 0.5;
+  coeff3_lau3 = 0.05;       coeff3_llau3 = 1.e-4;   coeff3_hlau3 = 2.0;
   sigma_lau = stableLau.sigma;         sigma_llau = stableLau.sigmaLo;      sigma_hlau = stableLau.sigmaHi;
   turnon_lau = stableLau.turnon;       turnon_llau = stableLau.turnonLo;   turnon_hlau = stableLau.turnonHi;
 
-  coeff1_lau4 = 0.0;        coeff1_llau4 = 0.;    coeff1_hlau4 = 0.5;
-  coeff2_lau4 = 0.0;        coeff2_llau4 = 0.;    coeff2_hlau4 = 0.5;
-  coeff3_lau4 = 0.0;        coeff3_llau4 = 0.;    coeff3_hlau4 = 2.0;
-  coeff4_lau4 = 0.0;        coeff4_llau4 = 0.;    coeff4_hlau4 = 2.0;
+  coeff1_lau4 = 1.0;        coeff1_llau4 = 0.;      coeff1_hlau4 = 10.;
+  coeff2_lau4 = 0.10;       coeff2_llau4 = 1.e-4;   coeff2_hlau4 = 0.5;
+  coeff3_lau4 = 0.05;       coeff3_llau4 = 1.e-4;   coeff3_hlau4 = 2.0;
+  coeff4_lau4 = 0.02;       coeff4_llau4 = 1.e-4;   coeff4_hlau4 = 2.0;
   sigma_lau = stableLau.sigma;         sigma_llau = stableLau.sigmaLo;      sigma_hlau = stableLau.sigmaHi;
   turnon_lau = stableLau.turnon;       turnon_llau = stableLau.turnonLo;     turnon_hlau = stableLau.turnonHi;
 
@@ -853,8 +863,7 @@ RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat
       RooRealVar *cp1 = new RooRealVar(Form("%s_cp1_lau1",prefix.c_str()),Form("%s_cp1_lau1",prefix.c_str()),coeff1_lau1,coeff1_llau1,coeff1_hlau1);
       // [PZ-FIX] cp1 is an overall scale factor for an internally-normalized pdf -> unconstrained.
       // Fix it to 1 to avoid Minuit2 "2nd derivative zero"/invalid Hessian warnings.
-      cp1->setVal(1.0);
-      cp1->setConstant(true);
+      fixUnitShapeCoeff(cp1);
       RooGenericPdf *soft_step = new RooGenericPdf(
         Form("%s_soft_lau1",prefix.c_str()),Form("%s_soft_lau1",prefix.c_str()),
         "1e-20+0.5*(1.0+TMath::Erf((@0-@1)/(@2*sqrt(2.))))*(@3*(@0)^(-4))",
@@ -869,6 +878,7 @@ RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat
   } else if (order==2) {
       RooRealVar *cp1 = new RooRealVar(Form("%s_cp1_lau2",prefix.c_str()),Form("%s_cp1_lau2",prefix.c_str()),coeff1_lau2,coeff1_llau2,coeff1_hlau2);
       RooRealVar *cp2 = new RooRealVar(Form("%s_cp2_lau2",prefix.c_str()),Form("%s_cp2_lau2",prefix.c_str()),coeff2_lau2,coeff2_llau2,coeff2_hlau2);
+      fixUnitShapeCoeff(cp1);
       RooGenericPdf *soft_step = new RooGenericPdf(
         Form("%s_soft_lau2",prefix.c_str()),Form("%s_soft_lau2",prefix.c_str()),
         "1e-20+0.5*(1.0+TMath::Erf((@0-@1)/(@2*sqrt(2.))))*(@3*(@0)^(-4)+@4*(@0)^(-5))",
@@ -884,6 +894,7 @@ RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat
       RooRealVar *cp1 = new RooRealVar(Form("%s_cp1_lau3",prefix.c_str()),Form("%s_cp1_lau3",prefix.c_str()),coeff1_lau3,coeff1_llau3,coeff1_hlau3);
       RooRealVar *cp2 = new RooRealVar(Form("%s_cp2_lau3",prefix.c_str()),Form("%s_cp2_lau3",prefix.c_str()),coeff2_lau3,coeff2_llau3,coeff2_hlau3);
       RooRealVar *cp3 = new RooRealVar(Form("%s_cp3_lau3",prefix.c_str()),Form("%s_cp3_lau3",prefix.c_str()),coeff3_lau3,coeff3_llau3,coeff3_hlau3);
+      fixUnitShapeCoeff(cp1);
       RooGenericPdf *soft_step = new RooGenericPdf(
         Form("%s_soft_lau3",prefix.c_str()),Form("%s_soft_lau3",prefix.c_str()),
         "1e-20+0.5*(1.0+TMath::Erf((@0-@1)/(@2*sqrt(2.))))*(@3*(@0)^(-4)+@4*(@0)^(-5)+@5*(@0)^(-6))",
@@ -901,6 +912,7 @@ RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat
       RooRealVar *cp2 = new RooRealVar(Form("%s_cp2_lau4",prefix.c_str()),Form("%s_cp2_lau4",prefix.c_str()),coeff2_lau4,coeff2_llau4,coeff2_hlau4);
       RooRealVar *cp3 = new RooRealVar(Form("%s_cp3_lau4",prefix.c_str()),Form("%s_cp3_lau4",prefix.c_str()),coeff3_lau4,coeff3_llau4,coeff3_hlau4);
       RooRealVar *cp4 = new RooRealVar(Form("%s_cp4_lau4",prefix.c_str()),Form("%s_cp4_lau4",prefix.c_str()),coeff4_lau4,coeff4_llau4,coeff4_hlau4);
+      fixUnitShapeCoeff(cp1);
       RooGenericPdf *soft_step = new RooGenericPdf(
         Form("%s_soft_lau4",prefix.c_str()),Form("%s_soft_lau4",prefix.c_str()),
         "1e-20+0.5*(1.0+TMath::Erf((@0-@1)/(@2*sqrt(2.))))*(@3*(@0)^(-4)+@4*(@0)^(-5)+@5*(@0)^(-6)+@6*(@0)^(-7))",
