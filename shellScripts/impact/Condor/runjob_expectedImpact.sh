@@ -85,6 +85,10 @@ common_opts=(
   --robustFit 1
   --cminPreScan
   --freezeParameters=MH
+  --X-rtd MINIMIZER_freezeDisassociatedParams
+  --X-rtd MINIMIZER_multiMin_hideConstants
+  --X-rtd MINIMIZER_multiMin_maskConstraints
+  --X-rtd MINIMIZER_multiMin_maskChannels=2
   --setParameterRanges 'Exp_turnon_p1=95,125:Exp_width_p1=0.1,50:Exp_sigma_p1=0.05,20:Pow_turnon_p1=95,125:Pow_width_p1=0.1,50:Pow_sigma_p1=0.05,20:Lau_turnon_p1=95,125:Lau_width_p1=0.1,50:Lau_sigma_p1=0.05,20:Bern_gsigma=0.05,20:Bern_step=90,130:Bern_stepWidth=0.1,50:lumi_13p6TeV_Uncorrelated_2022preEE=-5,5'
   --cminDefaultMinimizerType Minuit2
   --cminDefaultMinimizerStrategy 0
