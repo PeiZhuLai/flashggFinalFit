@@ -57,6 +57,7 @@ inline double clampDouble(double v, double lo, double hi) {
   return std::max(lo, std::min(v, hi));
 }
 
+// RooFit normalizes these shapes, so one overall coefficient scale is unidentifiable.
 inline void fixUnitShapeCoeff(RooRealVar* coeff) {
   if (!coeff) return;
   coeff->setRange(0.0, 10.0);
