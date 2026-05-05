@@ -253,18 +253,3 @@ Error in <TLegend::AddEntry>: need to create a canvas first
 [FOR TABLE] ,UntaggedTag_0,150,0.632116, assuming resolution of 1
 [INFO] mgg: 150 nomBkg: 0.631154 +/- 1 (2) sig -- +0.00930998(0.2793) - 0.0591707(0.11341)
 [FOR TABLE] ,UntaggedTag_0,155,0.378941, assuming resolution of 1
-[INFO] mgg: 155 nomBkg: 0.378125 +/- 1 (2) sig -- +0.0684578(0.230595) - 0.0354493(0.0679444)
-[FOR TABLE] ,UntaggedTag_0,160,0.207169, assuming resolution of 1
-[INFO] mgg: 160 nomBkg: 0.20652 +/- 1 (2) sig -- +0.0106504(0.170417) - 0.0193613(0.0371091)
-[FOR TABLE] ,UntaggedTag_0,165,0.100226, assuming resolution of 1
-[INFO] mgg: 165 nomBkg: 0.0997497 +/- 1 (2) sig -- +0.0407127(0.114736) - 0.00974118(0.0179238)
-[FOR TABLE] ,UntaggedTag_0,170,0.0409602, assuming resolution of 1
-[INFO] mgg: 170 nomBkg: 0.0406479 +/- 1 (2) sig -- +0.0236266(0.0850556) - 0.00365196(0.00730393)
-[FOR TABLE] ,UntaggedTag_0,175,0.013143, assuming resolution of 1
-[INFO] mgg: 175 nomBkg: 0.0129702 +/- 1 (2) sig -- +0.0293614(0.117446) - 0.00116529(0.00243191)
-[FOR TABLE] ,UntaggedTag_0,180,0.00318094, assuming resolution of 1
-[INFO] mgg: 180 nomBkg: 0.00289451 +/- 1 (2) sig -- +0.0189143(0.0756572) - 0.00142464(0.00167339)
-
-[INFO] intLumi 170.84
-Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/AllFitResults/bkgplot_2.pdf has been created
-Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/2/BkgPlots/bkgplot_cat0.pdf has been created

@@ -247,24 +247,3 @@ Error in <TLegend::AddEntry>: need to create a canvas first
 [FOR TABLE] ,UntaggedTag_0,135,2.23772, assuming resolution of 1
 [INFO] mgg: 135 nomBkg: 2.23431 +/- 1 (2) sig -- +0.210201(0.490468) - 0.209467(0.401478)
 [FOR TABLE] ,UntaggedTag_0,140,1.59757, assuming resolution of 1
-[INFO] mgg: 140 nomBkg: 1.5955 +/- 1 (2) sig -- +0.177628(0.38486) - 0.18074(0.33655)
-[FOR TABLE] ,UntaggedTag_0,145,1.17016, assuming resolution of 1
-[INFO] mgg: 145 nomBkg: 1.16886 +/- 1 (2) sig -- +0.152035(0.329409) - 0.155239(0.283083)
-[FOR TABLE] ,UntaggedTag_0,150,0.875204, assuming resolution of 1
-[INFO] mgg: 150 nomBkg: 0.874368 +/- 1 (2) sig -- +0.131495(0.284906) - 0.129789(0.245916)
-[FOR TABLE] ,UntaggedTag_0,155,0.665378, assuming resolution of 1
-[INFO] mgg: 155 nomBkg: 0.664821 +/- 1 (2) sig -- +0.114661(0.238877) - 0.11946(0.218145)
-[FOR TABLE] ,UntaggedTag_0,160,0.512139, assuming resolution of 1
-[INFO] mgg: 160 nomBkg: 0.511756 +/- 1 (2) sig -- +0.104791(0.209581) - 0.107949(0.199905)
-[FOR TABLE] ,UntaggedTag_0,165,0.397794, assuming resolution of 1
-[INFO] mgg: 165 nomBkg: 0.397521 +/- 1 (2) sig -- +0.0849688(0.169938) - 0.0900635(0.173916)
-[FOR TABLE] ,UntaggedTag_0,170,0.311018, assuming resolution of 1
-[INFO] mgg: 170 nomBkg: 0.310819 +/- 1 (2) sig -- +0.0718667(0.143733) - 0.0825614(0.15541)
-[FOR TABLE] ,UntaggedTag_0,175,0.244316, assuming resolution of 1
-[INFO] mgg: 175 nomBkg: 0.244168 +/- 1 (2) sig -- +0.055011(0.115813) - 0.0684338(0.129714)
-[FOR TABLE] ,UntaggedTag_0,180,0.194818, assuming resolution of 1
-[INFO] mgg: 180 nomBkg: 0.192497 +/- 1 (2) sig -- +0.0231369(0.0822646) - 0.168059(0.17445)
-
-[INFO] intLumi 170.84
-Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/AllFitResults/bkgplot_23.pdf has been created
-Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/23/BkgPlots/bkgplot_cat0.pdf has been created

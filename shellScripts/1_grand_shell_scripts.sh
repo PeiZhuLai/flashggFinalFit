@@ -13,11 +13,11 @@ sh $baseDir/Trees2WS/run_tree2ws.sh
 # cd $baseDir/shellScripts
 # sh $baseDir/shellScripts/bkg/fit_bkg.sh
 ### ----------- Background Condor
-cd $baseDir/shellScripts
+# cd $baseDir/shellScripts
 bash $baseDir/shellScripts/bkg/Condor/subjob_bkg.sh
 # bash $baseDir/shellScripts/bkg/Condor/collect_bkg_results.sh
 ### ----------- Background Condor run locally
-cd $baseDir/shellScripts
+# cd $baseDir/shellScripts
 # bash bkg/Condor/subjob_bkg.sh
 # bash bkg/Condor/collect_bkg_results.sh
 

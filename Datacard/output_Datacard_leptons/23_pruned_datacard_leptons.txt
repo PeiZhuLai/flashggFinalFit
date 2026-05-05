@@ -90,11 +90,11 @@ interpolate_yield_2022preEE_mu        rateParam   cat0   ggH_2022preEE_mu       
 interpolate_yield_2022postEE_ele      rateParam   cat0   ggH_2022postEE_ele     0.9334407853024735
 interpolate_yield_2022postEE_mu       rateParam   cat0   ggH_2022postEE_mu      0.9364642151067332
 interpolate_yield_2023preBPix_ele     rateParam   cat0   ggH_2023preBPix_ele    0.9404846262149898
-interpolate_yield_2023preBPix_mu      rateParam   cat0   ggH_2023preBPix_mu     0.9471540917238144
+interpolate_yield_2023preBPix_mu      rateParam   cat0   ggH_2023preBPix_mu     0.9471540917238145
 interpolate_yield_2023postBPix_ele    rateParam   cat0   ggH_2023postBPix_ele   0.9073631391799414
 interpolate_yield_2023postBPix_mu     rateParam   cat0   ggH_2023postBPix_mu    0.9290653407632166
-interpolate_yield_2024_ele            rateParam   cat0   ggH_2024_ele           0.9573146017224544
-interpolate_yield_2024_mu             rateParam   cat0   ggH_2024_mu            0.9322189226477908
+interpolate_yield_2024_ele            rateParam   cat0   ggH_2024_ele           0.9573146017224545
+interpolate_yield_2024_mu             rateParam   cat0   ggH_2024_mu            0.9322189226477913
 
 nuisance edit freeze interpolate_yield_2022preEE_ele
 nuisance edit freeze interpolate_yield_2022preEE_mu
