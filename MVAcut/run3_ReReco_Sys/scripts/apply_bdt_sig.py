@@ -51,6 +51,10 @@ def get_args():
     parser.add_argument('-c', '--config', default='data/training_config_BDT.json', help='Path to the training config file')
     parser.add_argument('-i', '--inputFolder', default='/eos/home-p/pelai/HZa/root_P2Root/run3_bdt_scored_nominal/', help='Path to the input folder')
     parser.add_argument('-o', '--outputFolder', default='/eos/home-p/pelai/HZa/root_MVAcut/sig', help='Path to the output folder')
+    parser.add_argument('--samples', default=",".join(sig_samples),
+                        help='Comma-separated signal samples to process, e.g. mA_M1,mA_M2')
+    parser.add_argument('--years', default=",".join(years_sig),
+                        help='Comma-separated years to process')
     parser.add_argument('--reweight-json', default=DEFAULT_REWEIGHT_JSON,
                         help='Path to sideband reweight JSON, or a directory containing sideband_run3_iterative.json')
     parser.add_argument('--disable-reweight-uncertainty', action='store_true',
@@ -59,6 +63,9 @@ def get_args():
     parser.add_argument('--log-level', default='INFO', choices=['DEBUG','INFO','WARNING','ERROR','CRITICAL'],
                         help='Logging level (default: INFO)')
     return parser.parse_args()
+
+def parse_csv_arg(value: str) -> List[str]:
+    return [item.strip() for item in value.split(",") if item.strip()]
 
 def resolve_reweight_json(path: str) -> Optional[str]:
     if not path:
@@ -464,7 +471,7 @@ def get_mva_col(columns: List[str], syst: str) -> Optional[str]:
     # 若找不到，回退為無（交由 pass_map 過濾）
     return 'MVA_Score' if 'MVA_Score' in cols else None
 
-def process_files(output_folder, input_folder, pass_map: Dict[tuple, set], id_cols: Tuple[str, ...], mva_cuts: Dict[int, float], reweight_variation: Optional[SidebandReweightVariation]):
+def process_files(output_folder, input_folder, samples: List[str], years: List[str], pass_map: Dict[tuple, set], id_cols: Tuple[str, ...], mva_cuts: Dict[int, float], reweight_variation: Optional[SidebandReweightVariation]):
     """Process input files and write the results to output ROOT files, after MVA_Score filtering."""
 
     syst_variations = [
@@ -477,9 +484,9 @@ def process_files(output_folder, input_folder, pass_map: Dict[tuple, set], id_co
 
     os.makedirs(output_folder, exist_ok=True)
 
-    # 以 sig_samples 與 years_sig 取代未定義的 procductions/years
-    for proc, year in ((p, y) for p in procductions for y in years_sig):
-        for mA in sig_samples:
+    # Process only the selected sample/year slice so multiple shell jobs can run safely.
+    for proc, year in ((p, y) for p in procductions for y in years):
+        for mA in samples:
             if not os.path.exists(f"{output_folder}/{mA}/output_{year}.root"):
                 os.makedirs(f"{output_folder}/{mA}", exist_ok=True)
             with uproot.recreate(f"{output_folder}/{mA}/output_{year}.root") as outfile:
@@ -556,10 +563,14 @@ if __name__ == "__main__":
     args = get_args()
     # 新增：在進入主流程前設定日誌等級與抑制第三方刷屏
     setup_logging(args.log_level)
+    samples = parse_csv_arg(args.samples)
+    years = parse_csv_arg(args.years)
+    logging.info(f"Signal samples selected: {samples}")
+    logging.info(f"Years selected: {years}")
     reweight_variation = load_reweight_variation(args.reweight_json, disabled=args.disable_reweight_uncertainty)
     # 1) 讀取每個 ma 的最佳化 cut
     mva_cuts = parse_mva_cuts(optimized_BDT_Cut)
     # 2) 根據 INPUT_BASE 的 MVA_Score 建立通過事件對照表（回傳唯一鍵欄位）
-    pass_map, id_cols = build_pass_event_map(sig_samples, years_sig, INPUT_BASE, mva_cuts)
+    pass_map, id_cols = build_pass_event_map(samples, years, INPUT_BASE, mva_cuts)
     # 3) 在主流程中套用唯一鍵與 MVA_Score 雙重篩選
-    process_files(args.outputFolder, args.inputFolder, pass_map, id_cols, mva_cuts, reweight_variation)
+    process_files(args.outputFolder, args.inputFolder, samples, years, pass_map, id_cols, mva_cuts, reweight_variation)
