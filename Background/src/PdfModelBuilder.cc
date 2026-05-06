@@ -67,24 +67,24 @@ inline void fixUnitShapeCoeff(RooRealVar* coeff) {
 
 inline StepGausWindow makeStableStepGausWindow(int massALP, double turnonShift, double sigmaScale, double widthScale) {
   const double m = clampDouble((double)massALP, 1.0, 30.0);
-  const double baseTurnon = clampDouble(104.5 + 0.32*m + turnonShift, 103.0, 117.0);
-  const double baseSigma = clampDouble((2.2 + 0.14*m)*sigmaScale, 1.2, 8.5);
-  const double baseWidth = clampDouble((0.9 + 0.08*m)*widthScale, 0.8, 5.0);
+  const double baseTurnon = clampDouble(105.0 + 0.30*m + turnonShift, 103.0, 117.5);
+  const double baseSigma = clampDouble((2.1 + 0.15*m)*sigmaScale, 1.1, 9.0);
+  const double baseWidth = clampDouble((1.0 + 0.09*m)*widthScale, 0.8, 5.8);
 
   StepGausWindow cfg;
   cfg.turnon = baseTurnon;
-  cfg.turnonLo = std::max(100.0, baseTurnon - 3.5);
-  cfg.turnonHi = std::min(125.0, baseTurnon + 3.5);
+  cfg.turnonLo = std::max(98.0, baseTurnon - 5.0);
+  cfg.turnonHi = std::min(125.0, baseTurnon + 5.0);
   if (cfg.turnonHi <= cfg.turnonLo) cfg.turnonHi = cfg.turnonLo + 1.0;
 
   cfg.sigma = baseSigma;
-  cfg.sigmaLo = std::max(0.8, 0.45*baseSigma);
-  cfg.sigmaHi = std::min(15.0, std::max(baseSigma + 2.0, 1.9*baseSigma));
+  cfg.sigmaLo = std::max(0.6, 0.35*baseSigma);
+  cfg.sigmaHi = std::min(18.0, std::max(baseSigma + 3.0, 2.3*baseSigma));
   if (cfg.sigmaHi <= cfg.sigmaLo) cfg.sigmaHi = cfg.sigmaLo + 1.0;
 
   cfg.width = baseWidth;
-  cfg.widthLo = std::max(0.5, 0.45*baseWidth);
-  cfg.widthHi = std::min(20.0, std::max(baseWidth + 1.5, 2.6*baseWidth));
+  cfg.widthLo = std::max(0.3, 0.35*baseWidth);
+  cfg.widthHi = std::min(20.0, std::max(baseWidth + 3.0, 3.2*baseWidth));
   if (cfg.widthHi <= cfg.widthLo) cfg.widthHi = cfg.widthLo + 1.0;
 
   return cfg;
@@ -276,8 +276,8 @@ RooAbsPdf* PdfModelBuilder::getBernsteinStepxGau(string prefix, int order, int m
   double sigma_bern  = stableBern.sigma,  sigma_lbern  = stableBern.sigmaLo,  sigma_hbern  = stableBern.sigmaHi;
   double width_bern  = stableBern.width,  width_lbern  = stableBern.widthLo,  width_hbern  = stableBern.widthHi;
 
-  // Recent fits for these masses converged in narrow regions or pinned to bounds.
-  // Use mass-specific seeds/ranges to stabilize the minimizer.
+  // Recent ALP background fits converge in narrow turn-on regions for these masses.
+  // Keep only the outliers mass-specific; the default window covers the smooth trend.
   if (mass_ALP == 14) {
     turnon_bern = 106.8; turnon_lbern = 103.0; turnon_hbern = 110.0;
     sigma_bern  = 4.2;   sigma_lbern  = 1.5;   sigma_hbern  = 7.5;
@@ -294,6 +294,10 @@ RooAbsPdf* PdfModelBuilder::getBernsteinStepxGau(string prefix, int order, int m
     turnon_bern = 110.5; turnon_lbern = 107.0; turnon_hbern = 114.0;
     sigma_bern  = 7.0;   sigma_lbern  = 3.0;   sigma_hbern  = 12.0;
     width_bern  = 2.0;   width_lbern  = 0.5;   width_hbern  = 6.0;
+  } else if (mass_ALP == 30) {
+    turnon_bern = 111.0; turnon_lbern = 108.0; turnon_hbern = 115.0;
+    sigma_bern  = 7.5;   sigma_lbern  = 3.0;   sigma_hbern  = 13.0;
+    width_bern  = 2.2;   width_lbern  = 0.5;   width_hbern  = 7.0;
   }
 
   RooRealVar *g_mean  = new RooRealVar(Form("%s_gmean",prefix.c_str()),Form("%s_gmean",prefix.c_str()),0.);
@@ -635,6 +639,26 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
     sigma_exp  = 6.4;       sigma_lexp  = 3.0;    sigma_hexp  = 10.0;
     turnon_exp = 110.2;     turnon_lexp = 108.5;  turnon_hexp = 112.5;
     width_exp  = 1.0;       width_lexp  = 0.5;    width_hexp  = 6.0;
+  } else if (mass_ALP == 27) {
+    par1_exp1 = -0.0588;    par1_lexp1 = -0.09;   par1_hexp1 = -0.03;
+    par1_exp3 = -0.059;     par1_lexp3 = -0.12;   par1_hexp3 = -0.03;
+    par3_exp3 = -0.040;     par3_lexp3 = -0.10;   par3_hexp3 = -0.02;
+    par1_exp5 = -0.059;     par1_lexp5 = -0.12;   par1_hexp5 = -0.02;
+    par3_exp5 = -0.040;     par3_lexp5 = -0.10;   par3_hexp5 = -0.02;
+    par5_exp5 = -0.020;     par5_lexp5 = -0.08;   par5_hexp5 = -0.01;
+    sigma_exp  = 6.2;       sigma_lexp  = 2.5;    sigma_hexp  = 11.0;
+    turnon_exp = 114.6;     turnon_lexp = 111.5;  turnon_hexp = 118.0;
+    width_exp  = 4.2;       width_lexp  = 0.8;    width_hexp  = 9.0;
+  } else if (mass_ALP == 28) {
+    par1_exp1 = -0.0592;    par1_lexp1 = -0.09;   par1_hexp1 = -0.03;
+    par1_exp3 = -0.059;     par1_lexp3 = -0.12;   par1_hexp3 = -0.03;
+    par3_exp3 = -0.040;     par3_lexp3 = -0.10;   par3_hexp3 = -0.02;
+    par1_exp5 = -0.059;     par1_lexp5 = -0.12;   par1_hexp5 = -0.02;
+    par3_exp5 = -0.040;     par3_lexp5 = -0.10;   par3_hexp5 = -0.02;
+    par5_exp5 = -0.020;     par5_lexp5 = -0.08;   par5_hexp5 = -0.01;
+    sigma_exp  = 6.5;       sigma_lexp  = 2.5;    sigma_hexp  = 11.0;
+    turnon_exp = 115.0;     turnon_lexp = 112.0;  turnon_hexp = 118.5;
+    width_exp  = 4.5;       width_lexp  = 0.8;    width_hexp  = 9.0;
   } else if (mass_ALP == 29) {
     par1_exp1 = -0.0598;    par1_lexp1 = -0.09;   par1_hexp1 = -0.03;
     par1_exp3 = -0.060;     par1_lexp3 = -0.12;   par1_hexp3 = -0.03;
@@ -645,6 +669,16 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
     sigma_exp  = 6.8;       sigma_lexp  = 3.0;    sigma_hexp  = 10.0;
     turnon_exp = 115.5;     turnon_lexp = 113.0;  turnon_hexp = 118.0;
     width_exp  = 4.8;       width_lexp  = 1.0;    width_hexp  = 9.0;
+  } else if (mass_ALP == 30) {
+    par1_exp1 = -0.0605;    par1_lexp1 = -0.09;   par1_hexp1 = -0.03;
+    par1_exp3 = -0.061;     par1_lexp3 = -0.12;   par1_hexp3 = -0.03;
+    par3_exp3 = -0.040;     par3_lexp3 = -0.10;   par3_hexp3 = -0.02;
+    par1_exp5 = -0.061;     par1_lexp5 = -0.12;   par1_hexp5 = -0.02;
+    par3_exp5 = -0.040;     par3_lexp5 = -0.10;   par3_hexp5 = -0.02;
+    par5_exp5 = -0.020;     par5_lexp5 = -0.08;   par5_hexp5 = -0.01;
+    sigma_exp  = 7.0;       sigma_lexp  = 3.0;    sigma_hexp  = 12.0;
+    turnon_exp = 115.8;     turnon_lexp = 113.0;  turnon_hexp = 119.0;
+    width_exp  = 5.0;       width_lexp  = 1.0;    width_hexp  = 10.0;
   }
 
   
@@ -809,11 +843,13 @@ RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat
   double sigma_lau,sigma_llau,sigma_hlau;
   double turnon_lau,turnon_llau,turnon_hlau;
   double width_lau,width_llau,width_hlau;
+  double power1_lau1, power1_llau1, power1_hlau1;
   double coeff1_lau1,   coeff1_lau2,  coeff2_lau2,    coeff1_lau3,  coeff2_lau3,  coeff3_lau3,    coeff1_lau4,  coeff2_lau4,  coeff3_lau4,  coeff4_lau4;
   double coeff1_hlau1,  coeff1_hlau2, coeff2_hlau2,   coeff1_hlau3, coeff2_hlau3, coeff3_hlau3,   coeff1_hlau4, coeff2_hlau4, coeff3_hlau4, coeff4_hlau4;
   double coeff1_llau1,  coeff1_llau2, coeff2_llau2,   coeff1_llau3, coeff2_llau3, coeff3_llau3,   coeff1_llau4, coeff2_llau4, coeff3_llau4, coeff4_llau4;
  
   coeff1_lau1 = 1.0;        coeff1_llau1 = 0.;      coeff1_hlau1 = 10.;
+  power1_lau1 = -4.0;        power1_llau1 = -6.5;    power1_hlau1 = -2.0;
   auto stableLau = makeStableStepGausWindow(mass_ALP, 0.2, 1.00, 0.95);
   sigma_lau = stableLau.sigma;          sigma_llau = stableLau.sigmaLo;       sigma_hlau = stableLau.sigmaHi;
   turnon_lau = stableLau.turnon;        turnon_llau = stableLau.turnonLo;     turnon_hlau = stableLau.turnonHi;
@@ -838,21 +874,40 @@ RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat
   turnon_lau = stableLau.turnon;       turnon_llau = stableLau.turnonLo;     turnon_hlau = stableLau.turnonHi;
 
   if (mass_ALP == 14) {
+    power1_lau1 = -4.2;      power1_llau1 = -6.5;    power1_hlau1 = -2.2;
     sigma_lau  = 4.8;       sigma_llau  = 1.5;     sigma_hlau  = 8.0;
     turnon_lau = 109.0;     turnon_llau = 106.0;   turnon_hlau = 112.0;
     width_lau  = 0.8;       width_llau  = 0.3;     width_hlau  = 5.0;
   } else if (mass_ALP == 21) {
+    power1_lau1 = -3.8;      power1_llau1 = -6.0;    power1_hlau1 = -2.0;
     sigma_lau  = 3.0;       sigma_llau  = 1.0;     sigma_hlau  = 6.0;
     turnon_lau = 110.5;     turnon_llau = 108.0;   turnon_hlau = 113.0;
     width_lau  = 3.0;       width_llau  = 0.8;     width_hlau  = 8.0;
   } else if (mass_ALP == 23) {
-    sigma_lau  = 5.0;       sigma_llau  = 2.0;     sigma_hlau  = 9.0;
-    turnon_lau = 110.8;     turnon_llau = 108.0;   turnon_hlau = 113.0;
-    width_lau  = 1.0;       width_llau  = 0.5;     width_hlau  = 6.0;
+    power1_lau1 = -3.7;      power1_llau1 = -6.0;    power1_hlau1 = -2.0;
+    sigma_lau  = 5.0;       sigma_llau  = 2.0;     sigma_hlau  = 10.0;
+    turnon_lau = 111.0;     turnon_llau = 107.0;   turnon_hlau = 115.0;
+    width_lau  = 2.8;       width_llau  = 0.5;     width_hlau  = 8.0;
+  } else if (mass_ALP == 27) {
+    power1_lau1 = -3.5;      power1_llau1 = -5.5;    power1_hlau1 = -1.8;
+    sigma_lau  = 6.5;       sigma_llau  = 2.5;     sigma_hlau  = 12.0;
+    turnon_lau = 114.5;     turnon_llau = 111.0;   turnon_hlau = 118.0;
+    width_lau  = 4.2;       width_llau  = 0.8;     width_hlau  = 9.0;
+  } else if (mass_ALP == 28) {
+    power1_lau1 = -3.4;      power1_llau1 = -5.5;    power1_hlau1 = -1.8;
+    sigma_lau  = 7.0;       sigma_llau  = 2.5;     sigma_hlau  = 12.0;
+    turnon_lau = 115.0;     turnon_llau = 111.5;   turnon_hlau = 118.5;
+    width_lau  = 4.5;       width_llau  = 0.8;     width_hlau  = 9.5;
   } else if (mass_ALP == 29) {
-    sigma_lau  = 7.4;       sigma_llau  = 3.0;     sigma_hlau  = 11.0;
-    turnon_lau = 113.9;     turnon_llau = 111.0;   turnon_hlau = 117.0;
-    width_lau  = 1.0;       width_llau  = 0.5;     width_hlau  = 6.0;
+    power1_lau1 = -3.4;      power1_llau1 = -5.5;    power1_hlau1 = -1.8;
+    sigma_lau  = 7.4;       sigma_llau  = 3.0;     sigma_hlau  = 12.0;
+    turnon_lau = 115.3;     turnon_llau = 112.0;   turnon_hlau = 119.0;
+    width_lau  = 4.8;       width_llau  = 1.0;     width_hlau  = 10.0;
+  } else if (mass_ALP == 30) {
+    power1_lau1 = -3.3;      power1_llau1 = -5.5;    power1_hlau1 = -1.8;
+    sigma_lau  = 7.8;       sigma_llau  = 3.0;     sigma_hlau  = 13.0;
+    turnon_lau = 115.8;     turnon_llau = 112.0;   turnon_hlau = 119.5;
+    width_lau  = 5.0;       width_llau  = 1.0;     width_hlau  = 10.0;
   }
 
 
@@ -862,13 +917,14 @@ RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat
   
   if (order==1) {
       RooRealVar *cp1 = new RooRealVar(Form("%s_cp1_lau1",prefix.c_str()),Form("%s_cp1_lau1",prefix.c_str()),coeff1_lau1,coeff1_llau1,coeff1_hlau1);
+      RooRealVar *p1 = new RooRealVar(Form("%s_p1_lau1",prefix.c_str()),Form("%s_p1_lau1",prefix.c_str()),power1_lau1,power1_llau1,power1_hlau1);
       // [PZ-FIX] cp1 is an overall scale factor for an internally-normalized pdf -> unconstrained.
       // Fix it to 1 to avoid Minuit2 "2nd derivative zero"/invalid Hessian warnings.
       fixUnitShapeCoeff(cp1);
       RooGenericPdf *soft_step = new RooGenericPdf(
         Form("%s_soft_lau1",prefix.c_str()),Form("%s_soft_lau1",prefix.c_str()),
-        "1e-20+0.5*(1.0+TMath::Erf((@0-@1)/(@2*sqrt(2.))))*(@3*(@0)^(-4))",
-        RooArgList(*obs_var,*turnon,*width,*cp1)
+        "1e-20+0.5*(1.0+TMath::Erf((@0-@1)/(@2*sqrt(2.))))*(@3*TMath::Power(@0,@4))",
+        RooArgList(*obs_var,*turnon,*width,*cp1,*p1)
       );
       RooGaussModel *gau = new RooGaussModel(Form("%s_gau_lau1",prefix.c_str()),Form("%s_gau_lau1",prefix.c_str()),*obs_var,*mean,*sigma);
       setFftObsBinning(obs_var);
