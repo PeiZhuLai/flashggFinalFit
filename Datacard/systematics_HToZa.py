@@ -56,6 +56,11 @@ experimental_systematics = [
                 # Photon
                 {'name':'photon_id_sf_SelectedPhoton','title':'CMS_hza_photon_id','type':'factory','prior':'lnN','correlateAcrossYears':1},
 
+                # MVA training variable reweighting.
+                # Filled in root_MVAcut signal trees as:
+                #   weight_mva_reweight_central / weight_mva_reweight_Up / weight_mva_reweight_Down
+                {'name':'mva_reweight','title':'CMS_hza_mva_reweight','type':'factory','prior':'lnN','correlateAcrossYears':1},
+
                 # Electrons
                 {'name':'electron_reco_sf_SelectedElectron','title':'CMS_hza_electron_reco','type':'factory','prior':'lnN','correlateAcrossYears':1},
                 {'name':'electron_wplid_sf_SelectedElectron','title':'CMS_hza_electron_id','type':'factory','prior':'lnN','correlateAcrossYears':1},

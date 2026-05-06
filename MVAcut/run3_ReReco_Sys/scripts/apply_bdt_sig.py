@@ -1,5 +1,8 @@
 import os
 import json
+import glob
+import hashlib
+import math
 import uproot
 import pandas as pd
 import numpy as np
@@ -31,6 +34,16 @@ years_sig  = ["2022preEE","2022postEE","2023preBPix","2023postBPix","2024"]  # �
 # 新增：讀取 INPUT_BASE/*.root 用到的設定
 INPUT_BASE_TREE_NAME = "test"
 UPROOT_STEP = "200 MB"
+DEFAULT_REWEIGHT_JSON = "/afs/cern.ch/work/p/pelai/HZa/HiggsZaAna/HZaMVA/reweights/sideband_run3_iterative.json"
+MVA_REWEIGHT_SYST_NAME = "mva_reweight"
+REWEIGHT_UNCERTAINTY_FRACTION = 0.5
+
+REWEIGHT_VAR_ALIASES = {
+    "H_m": ("H_m", "H_mass", "CMS_hza_mass"),
+    "ALP_m": ("ALP_m", "ALP_mass"),
+    "pho1ECALIso": ("pho1ECALIso", "pho1PIso_noCorr", "ALP_lead_photon_ecalPFClusterIso"),
+    "pho2ECALIso": ("pho2ECALIso", "pho2PIso_noCorr", "ALP_sublead_photon_ecalPFClusterIso"),
+}
 
 def get_args():
     """Parse command-line arguments."""
@@ -38,10 +51,212 @@ def get_args():
     parser.add_argument('-c', '--config', default='data/training_config_BDT.json', help='Path to the training config file')
     parser.add_argument('-i', '--inputFolder', default='/eos/home-p/pelai/HZa/root_P2Root/run3_bdt_scored_nominal/', help='Path to the input folder')
     parser.add_argument('-o', '--outputFolder', default='/eos/home-p/pelai/HZa/root_MVAcut/sig', help='Path to the output folder')
+    parser.add_argument('--reweight-json', default=DEFAULT_REWEIGHT_JSON,
+                        help='Path to sideband reweight JSON, or a directory containing sideband_run3_iterative.json')
+    parser.add_argument('--disable-reweight-uncertainty', action='store_true',
+                        help='Do not add MVA reweight uncertainty branches to signal output trees')
     # 新增：控制日誌等級，預設 INFO；若需要完整追蹤，指定 --log-level DEBUG
     parser.add_argument('--log-level', default='INFO', choices=['DEBUG','INFO','WARNING','ERROR','CRITICAL'],
                         help='Logging level (default: INFO)')
     return parser.parse_args()
+
+def resolve_reweight_json(path: str) -> Optional[str]:
+    if not path:
+        return None
+    if os.path.isdir(path):
+        preferred = os.path.join(path, "sideband_run3_iterative.json")
+        if os.path.isfile(preferred):
+            return preferred
+        matches = sorted(glob.glob(os.path.join(path, "*.json")))
+        return matches[0] if matches else None
+    return path if os.path.isfile(path) else None
+
+def _first_present_column(frame: pd.DataFrame, logical_name: str) -> Optional[str]:
+    for candidate in REWEIGHT_VAR_ALIASES.get(logical_name, (logical_name,)):
+        if candidate in frame.columns:
+            return candidate
+    return None
+
+def _finite_float(value, default=np.nan):
+    try:
+        value = float(value)
+    except Exception:
+        return default
+    return value if math.isfinite(value) else default
+
+def _lookup_reweight(values, edges, factors):
+    values = np.asarray(values, dtype=float)
+    edges = np.asarray(edges, dtype=float)
+    factors = np.asarray(factors, dtype=float)
+    if len(edges) != len(factors) + 1:
+        raise ValueError("Invalid reweight binning: len(edges) must equal len(factors) + 1")
+    idx = np.searchsorted(edges, values, side="right") - 1
+    idx = np.clip(idx, 0, len(factors) - 1)
+    out = factors[idx]
+    return np.where(np.isfinite(values) & np.isfinite(out), out, 1.0)
+
+def _mass_from_event(events, seed, masses):
+    events = np.asarray(events, dtype=np.int64)
+    masses = np.asarray(masses, dtype=float)
+    selected = np.empty(events.shape[0], dtype=float)
+    for idx, event in enumerate(events):
+        payload = f"{seed}:{int(event)}".encode("utf-8", errors="ignore")
+        digest = hashlib.blake2b(payload, digest_size=8).digest()
+        selected[idx] = masses[int.from_bytes(digest, "little") % len(masses)]
+    return selected
+
+def _mass_from_row_order(n_rows, seed, masses):
+    rng = np.random.default_rng(seed)
+    return rng.choice(np.asarray(masses, dtype=float), size=n_rows, replace=True)
+
+class SidebandReweightVariation:
+    """Evaluate 50% variations of the training reweight corrections."""
+
+    def __init__(self, payload: Dict, source_path: str):
+        self.payload = payload
+        self.source_path = source_path
+        settings = payload.get("settings", {})
+        param = payload.get("param", {})
+        self.reweight_vars = list(settings.get("reweight_vars", []))
+        self.seed = int(settings.get("seed", 12345))
+        self.mass_hypotheses = list(param.get("mass_hypotheses", [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 15.0, 20.0, 25.0, 30.0]))
+        self.param_method = str(param.get("method", "event_hash"))
+        self.iterations = list(payload.get("iterations", []))
+
+    @classmethod
+    def from_json(cls, path: str):
+        with open(path, "r") as handle:
+            return cls(json.load(handle), source_path=path)
+
+    def _param_values(self, frame: pd.DataFrame):
+        h_col = _first_present_column(frame, "H_m")
+        alp_col = _first_present_column(frame, "ALP_m")
+        if h_col is None or alp_col is None:
+            raise KeyError("Need H_m/H_mass/CMS_hza_mass and ALP_m/ALP_mass to build sideband param.")
+
+        h_m = frame[h_col].to_numpy(dtype=float)
+        alp_m = frame[alp_col].to_numpy(dtype=float)
+        if self.param_method == "event_hash" and "event" in frame.columns:
+            mass_hyp = _mass_from_event(frame["event"].fillna(-1).to_numpy(dtype=np.int64), self.seed, self.mass_hypotheses)
+        else:
+            mass_hyp = _mass_from_row_order(len(frame), self.seed, self.mass_hypotheses)
+
+        with np.errstate(divide="ignore", invalid="ignore"):
+            return (alp_m - mass_hyp) / h_m
+
+    def _values(self, frame: pd.DataFrame, var: str):
+        if var == "param":
+            if "param" in frame.columns:
+                return frame["param"].to_numpy(dtype=float)
+            return self._param_values(frame)
+        column = _first_present_column(frame, var)
+        if column is None:
+            raise KeyError(f"Missing sideband reweight variable '{var}'.")
+        return frame[column].to_numpy(dtype=float)
+
+    def _step_weight(self, frame: pd.DataFrame, step: Dict):
+        factors = _lookup_reweight(self._values(frame, step["var"]), step["edges"], step["clipped_factors"])
+        norm = _finite_float(step.get("normalization_scale", 1.0), default=1.0)
+        return factors * norm
+
+    def weights_for_dataframe(self, frame: pd.DataFrame, varied_var: Optional[str] = None, variation_scale: float = 1.0, skipped_vars: Optional[set] = None):
+        weights = np.ones(len(frame), dtype=float)
+        for iteration in self.iterations:
+            for step in iteration.get("steps", []):
+                try:
+                    step_weight = self._step_weight(frame, step)
+                except KeyError:
+                    if skipped_vars is not None:
+                        skipped_vars.add(step.get("var", "?"))
+                        continue
+                    raise
+                if varied_var is not None and step.get("var") == varied_var:
+                    # Vary only the correction relative to unity: 1 -> 1 has no uncertainty.
+                    step_weight = 1.0 + variation_scale * (step_weight - 1.0)
+                weights *= step_weight
+        return np.where(np.isfinite(weights), weights, 1.0)
+
+def load_reweight_variation(path: str, disabled: bool = False) -> Optional[SidebandReweightVariation]:
+    if disabled:
+        logging.info("MVA reweight uncertainty disabled by command-line option.")
+        return None
+    resolved = resolve_reweight_json(path)
+    if resolved is None:
+        logging.warning(f"No reweight JSON found from '{path}'. MVA reweight uncertainty branches will be unity.")
+        return None
+    try:
+        evaluator = SidebandReweightVariation.from_json(resolved)
+        logging.info(f"Loaded MVA reweight JSON for uncertainty: {resolved}")
+        return evaluator
+    except Exception as e:
+        logging.warning(f"Failed to load reweight JSON '{resolved}': {e}. MVA reweight uncertainty branches will be unity.")
+        return None
+
+def choose_yield_weight_column(frame: pd.DataFrame) -> Optional[str]:
+    for col in ("weight", "weight_central", "factor"):
+        if col in frame.columns:
+            return col
+    return None
+
+def _weighted_ratio(ratio, base_weight):
+    ratio = np.asarray(ratio, dtype=float)
+    base_weight = np.asarray(base_weight, dtype=float)
+    valid = np.isfinite(ratio) & np.isfinite(base_weight)
+    if not np.any(valid):
+        return 1.0
+    denom = np.sum(base_weight[valid])
+    if denom == 0.0:
+        return 1.0
+    out = float(np.sum(base_weight[valid] * ratio[valid]) / denom)
+    return out if math.isfinite(out) and out > 0.0 else 1.0
+
+def add_mva_reweight_uncertainty_columns(frame: pd.DataFrame, evaluator: Optional[SidebandReweightVariation], label: str) -> pd.DataFrame:
+    central = f"weight_{MVA_REWEIGHT_SYST_NAME}_central"
+    up = f"weight_{MVA_REWEIGHT_SYST_NAME}_Up"
+    down = f"weight_{MVA_REWEIGHT_SYST_NAME}_Down"
+
+    if len(frame) == 0 or evaluator is None:
+        frame[central] = np.ones(len(frame), dtype=np.float32)
+        frame[up] = np.ones(len(frame), dtype=np.float32)
+        frame[down] = np.ones(len(frame), dtype=np.float32)
+        return frame
+
+    weight_col = choose_yield_weight_column(frame)
+    base_weight = frame[weight_col].to_numpy(dtype=float) if weight_col else np.ones(len(frame), dtype=float)
+    skipped = set()
+    try:
+        nominal = evaluator.weights_for_dataframe(frame, skipped_vars=skipped)
+    except Exception as e:
+        logging.warning(f"{label}: cannot evaluate nominal reweight factors ({e}); set MVA reweight uncertainty to unity.")
+        frame[central] = np.ones(len(frame), dtype=np.float32)
+        frame[up] = np.ones(len(frame), dtype=np.float32)
+        frame[down] = np.ones(len(frame), dtype=np.float32)
+        return frame
+
+    ratios = [1.0]
+    with np.errstate(divide="ignore", invalid="ignore"):
+        for var in evaluator.reweight_vars:
+            if var in skipped:
+                continue
+            for scale in (1.0 + REWEIGHT_UNCERTAINTY_FRACTION, 1.0 - REWEIGHT_UNCERTAINTY_FRACTION):
+                try:
+                    varied = evaluator.weights_for_dataframe(frame, varied_var=var, variation_scale=scale, skipped_vars=skipped)
+                except KeyError:
+                    skipped.add(var)
+                    continue
+                ratio = np.divide(varied, nominal, out=np.ones_like(varied), where=(nominal != 0.0))
+                ratios.append(_weighted_ratio(ratio, base_weight))
+
+    if skipped:
+        logging.debug(f"{label}: skipped reweight variables absent from tree: {sorted(skipped)}")
+
+    up_ratio = max(ratios)
+    down_ratio = min(ratios)
+    frame[central] = np.ones(len(frame), dtype=np.float32)
+    frame[up] = np.full(len(frame), up_ratio, dtype=np.float32)
+    frame[down] = np.full(len(frame), down_ratio, dtype=np.float32)
+    logging.info(f"{label}: {MVA_REWEIGHT_SYST_NAME} yield envelope down/up = {down_ratio:.6f}/{up_ratio:.6f}")
+    return frame
 
 def parse_mva_cuts(txt_path: str) -> Dict[int, float]:
     """
@@ -249,7 +464,7 @@ def get_mva_col(columns: List[str], syst: str) -> Optional[str]:
     # 若找不到，回退為無（交由 pass_map 過濾）
     return 'MVA_Score' if 'MVA_Score' in cols else None
 
-def process_files(output_folder, input_folder, pass_map: Dict[tuple, set], id_cols: Tuple[str, ...], mva_cuts: Dict[int, float]):
+def process_files(output_folder, input_folder, pass_map: Dict[tuple, set], id_cols: Tuple[str, ...], mva_cuts: Dict[int, float], reweight_variation: Optional[SidebandReweightVariation]):
     """Process input files and write the results to output ROOT files, after MVA_Score filtering."""
 
     syst_variations = [
@@ -326,8 +541,13 @@ def process_files(output_folder, input_folder, pass_map: Dict[tuple, set], id_co
                         logging.info(f"Filtered {mA} {year} {syst}: {before} -> {len(all_data)} rows")
 
                         for lep in ['ele', 'mu']:
-                            data = all_data.query('n_electrons==2' if lep == 'ele' else 'n_muons==2')
+                            data = all_data.query('n_electrons==2' if lep == 'ele' else 'n_muons==2').copy()
                             logging.info(f"Number of events in {syst if syst != 'nominal' else 'nominal'} ({lep}): {len(data)}")
+                            data = add_mva_reweight_uncertainty_columns(
+                                data,
+                                reweight_variation,
+                                label=f"{mA} {year} {syst} {lep}",
+                            )
                             data = data.rename(columns={"H_mass": "CMS_hza_mass"})
                             tree_name = f'{proc}_125_Za_{lep}_13p6TeV_cat0{syst_suffix}'
                             outfile[f'DiphotonTree/{tree_name}'] = data
@@ -336,9 +556,10 @@ if __name__ == "__main__":
     args = get_args()
     # 新增：在進入主流程前設定日誌等級與抑制第三方刷屏
     setup_logging(args.log_level)
+    reweight_variation = load_reweight_variation(args.reweight_json, disabled=args.disable_reweight_uncertainty)
     # 1) 讀取每個 ma 的最佳化 cut
     mva_cuts = parse_mva_cuts(optimized_BDT_Cut)
     # 2) 根據 INPUT_BASE 的 MVA_Score 建立通過事件對照表（回傳唯一鍵欄位）
     pass_map, id_cols = build_pass_event_map(sig_samples, years_sig, INPUT_BASE, mva_cuts)
     # 3) 在主流程中套用唯一鍵與 MVA_Score 雙重篩選
-    process_files(args.outputFolder, args.inputFolder, pass_map, id_cols, mva_cuts)
+    process_files(args.outputFolder, args.inputFolder, pass_map, id_cols, mva_cuts, reweight_variation)
