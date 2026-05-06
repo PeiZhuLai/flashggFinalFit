@@ -7,34 +7,64 @@ logDir="$baseDir/MVAcut/run3_ReReco_Sys/logs/apply_bdt_sig"
 
 mkdir -p "$logDir"
 
-sample_chunks=(
-  "mA_M1,mA_M2,mA_M3"
-  "mA_M4,mA_M5,mA_M6"
-  "mA_M7,mA_M8"
-  "mA_M9,mA_M10"
-  "mA_M15,mA_M20"
-  "mA_M25,mA_M30"
+samples=(
+  "mA_M1" "mA_M2" "mA_M3" "mA_M4" "mA_M5" "mA_M6" "mA_M7"
+  "mA_M8" "mA_M9" "mA_M10" "mA_M15" "mA_M20" "mA_M25" "mA_M30"
 )
 
+years=(
+  "2022preEE" "2022postEE" "2023preBPix" "2023postBPix" "2024"
+)
+
+max_parallel=6
+batch_id=1
+job_in_batch=0
+total_jobs=0
 pids=()
-for i in "${!sample_chunks[@]}"; do
-  job_id=$((i + 1))
-  samples="${sample_chunks[$i]}"
-  log_file="$logDir/job_${job_id}.log"
-  echo "[INFO] Start apply_bdt_sig job ${job_id}/6: ${samples}"
-  python3 "$script" --samples "$samples" "$@" > "$log_file" 2>&1 &
-  pids+=("$!")
-done
+labels=()
 
 status=0
-for i in "${!pids[@]}"; do
-  job_id=$((i + 1))
-  if wait "${pids[$i]}"; then
-    echo "[INFO] apply_bdt_sig job ${job_id}/6 finished"
-  else
-    echo "[ERROR] apply_bdt_sig job ${job_id}/6 failed; see $logDir/job_${job_id}.log" >&2
-    status=1
+wait_batch() {
+  if [ "${#pids[@]}" -eq 0 ]; then
+    return
   fi
+
+  echo "[INFO] Waiting for batch ${batch_id} (${#pids[@]} jobs)"
+  for i in "${!pids[@]}"; do
+    if wait "${pids[$i]}"; then
+      echo "[INFO] Finished ${labels[$i]}"
+    else
+      echo "[ERROR] Failed ${labels[$i]}; see $logDir/${labels[$i]}.log" >&2
+      status=1
+    fi
+  done
+
+  pids=()
+  labels=()
+  job_in_batch=0
+  batch_id=$((batch_id + 1))
+}
+
+for sample in "${samples[@]}"; do
+  for year in "${years[@]}"; do
+    total_jobs=$((total_jobs + 1))
+    job_in_batch=$((job_in_batch + 1))
+    label="${sample}_${year}"
+    log_file="$logDir/${label}.log"
+
+    echo "[INFO] Start batch ${batch_id} job ${job_in_batch}/${max_parallel}: ${label}"
+    python3 "$script" --samples "$sample" --years "$year" "$@" > "$log_file" 2>&1 &
+    pids+=("$!")
+    labels+=("$label")
+
+    if [ "$job_in_batch" -eq "$max_parallel" ]; then
+      wait_batch
+    fi
+  done
 done
+
+wait_batch
+
+echo "[INFO] Submitted ${total_jobs} apply_bdt_sig jobs in ordered batches of ${max_parallel}."
 
 exit "$status"
