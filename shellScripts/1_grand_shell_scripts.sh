@@ -3,12 +3,12 @@ baseDir=/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashgg
 
 ### ----------- MVA Cut 
 # python3 $baseDir/MVAcut/run3_ReReco_Sys/scripts/apply_bdt_data.py &
-bash $baseDir/shellScripts/mva/run_apply_bdt_sig_6jobs.sh
+python3 $baseDir/MVAcut/run3_ReReco_Sys/scripts/apply_bdt_sig.py &
 
-# wait
+wait
 # ### ----------- Tree2WS
-# cd $baseDir/Trees2WS
-# sh $baseDir/Trees2WS/run_tree2ws.sh
+cd $baseDir/Trees2WS
+sh $baseDir/Trees2WS/run_tree2ws.sh
 
 ### ----------- Background 
 # cd $baseDir/shellScripts
