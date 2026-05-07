@@ -3,12 +3,12 @@ baseDir=/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashgg
 
 ### ----------- MVA Cut 
 # python3 $baseDir/MVAcut/run3_ReReco_Sys/scripts/apply_bdt_data.py &
-bash $baseDir/shellScripts/mva/run_apply_bdt_sig_6jobs.sh
+# bash $baseDir/shellScripts/mva/run_apply_bdt_sig_6jobs.sh
 
 # wait
 # ### ----------- Tree2WS
-cd $baseDir/Trees2WS
-bash $baseDir/Trees2WS/run_tree2ws.sh
+# cd $baseDir/Trees2WS
+# bash $baseDir/Trees2WS/run_tree2ws.sh
 
 ### ----------- Background 
 # cd $baseDir/shellScripts
@@ -16,7 +16,7 @@ bash $baseDir/Trees2WS/run_tree2ws.sh
 ### ----------- Background Condor
 # cd $baseDir/shellScripts
 # bash $baseDir/shellScripts/bkg/Condor/subjob_bkg.sh
-# bash $baseDir/shellScripts/bkg/Condor/collect_bkg_results.sh
+bash $baseDir/shellScripts/bkg/Condor/collect_bkg_results.sh
 ### ----------- Background Condor run locally
 # cd $baseDir/shellScripts
 # bash bkg/Condor/subjob_bkg.sh
@@ -24,11 +24,11 @@ bash $baseDir/Trees2WS/run_tree2ws.sh
 
 ### ----------- Signal
 # cd $baseDir/shellScripts
-# sh $baseDir/shellScripts/sig_sys/1_runjob_sig_fTest.sh
-# sh $baseDir/shellScripts/sig_sys/2_runjob_sig_calcPhotonSyst.sh
-# sh $baseDir/shellScripts/sig_sys/3_runjob_sig_signalFit.sh
-# sh $baseDir/shellScripts/sig_sys/4_runjob_sig_RunPlotter.sh
-# sh $baseDir/shellScripts/sig_sys/5_runjob_sig_plotEffSigma.sh
+# bash $baseDir/shellScripts/sig_sys/1_runjob_sig_fTest.sh
+# bash $baseDir/shellScripts/sig_sys/2_runjob_sig_calcPhotonSyst.sh
+# bash $baseDir/shellScripts/sig_sys/3_runjob_sig_signalFit.sh
+# bash $baseDir/shellScripts/sig_sys/4_runjob_sig_RunPlotter.sh
+# bash $baseDir/shellScripts/sig_sys/5_runjob_sig_plotEffSigma.sh
 
 ### ----------- Datacard
 cd $baseDir/Datacard
@@ -54,7 +54,7 @@ sh 1_runLimitsPlot.sh
 ### ----------- Bias Study
 # cd $baseDir/Combine/Checks/Bias_nominal
 # sh 1_bias_study.sh
-### ----------- Bias Study Condor
+### ----------- Bias Study Condor (not working, need to check)
 # bash $baseDir/shellScripts/bias/Condor/subjob_bias_study.sh
 
 ### ----------- Collect Bkg Fit Summary
