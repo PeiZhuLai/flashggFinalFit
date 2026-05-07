@@ -416,16 +416,16 @@ RooAbsPdf* PdfModelBuilder::getPowerLawStepxGau(string prefix, int order, int ca
     sigma_pow  = 5.5;      sigma_lpow  = 2.0;    sigma_hpow  = 10.0;
     turnon_pow = 110.5;    turnon_lpow = 108.0;  turnon_hpow = 113.0;
     width_pow  = 1.0;      width_lpow  = 0.5;    width_hpow  = 6.0;
-  } else if (mass_ALP == 29) {
-    par1_pow1 = -8.6;      par1_lpow1 = -11.0;   par1_hpow1 = -6.5;
-    par1_pow3 = -8.3;      par1_lpow3 = -11.0;   par1_hpow3 = -6.0;
-    par3_pow3 = -5.5;      par3_lpow3 = -8.5;    par3_hpow3 = -2.0;
-    par1_pow5 = -8.3;      par1_lpow5 = -11.0;   par1_hpow5 = -6.0;
-    par3_pow5 = -5.5;      par3_lpow5 = -8.5;    par3_hpow5 = -2.0;
-    par5_pow5 = -6.4;      par5_lpow5 = -8.5;    par5_hpow5 = -2.0;
-    sigma_pow  = 8.0;      sigma_lpow  = 4.0;    sigma_hpow  = 12.0;
-    turnon_pow = 115.2;    turnon_lpow = 112.0;  turnon_hpow = 118.0;
-    width_pow  = 1.0;      width_lpow  = 0.5;    width_hpow  = 6.0;
+  } else if (mass_ALP >= 28) {
+    par1_pow1 = -4.8;      par1_lpow1 = -9.0;    par1_hpow1 = -2.0;
+    par1_pow3 = -5.0;      par1_lpow3 = -10.0;   par1_hpow3 = -2.0;
+    par3_pow3 = -3.2;      par3_lpow3 = -8.0;    par3_hpow3 = -1.0;
+    par1_pow5 = -5.0;      par1_lpow5 = -10.0;   par1_hpow5 = -2.0;
+    par3_pow5 = -3.2;      par3_lpow5 = -8.0;    par3_hpow5 = -1.0;
+    par5_pow5 = -4.0;      par5_lpow5 = -8.0;    par5_hpow5 = -1.0;
+    sigma_pow  = 7.0;      sigma_lpow  = 2.5;    sigma_hpow  = 14.0;
+    turnon_pow = 112.5;    turnon_lpow = 107.0;  turnon_hpow = 118.5;
+    width_pow  = 5.0;      width_lpow  = 0.8;    width_hpow  = 12.0;
   }
 
   
@@ -640,45 +640,25 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
     turnon_exp = 110.2;     turnon_lexp = 108.5;  turnon_hexp = 112.5;
     width_exp  = 1.0;       width_lexp  = 0.5;    width_hexp  = 6.0;
   } else if (mass_ALP == 27) {
-    par1_exp1 = -0.0588;    par1_lexp1 = -0.09;   par1_hexp1 = -0.03;
-    par1_exp3 = -0.059;     par1_lexp3 = -0.12;   par1_hexp3 = -0.03;
-    par3_exp3 = -0.040;     par3_lexp3 = -0.10;   par3_hexp3 = -0.02;
-    par1_exp5 = -0.059;     par1_lexp5 = -0.12;   par1_hexp5 = -0.02;
-    par3_exp5 = -0.040;     par3_lexp5 = -0.10;   par3_hexp5 = -0.02;
-    par5_exp5 = -0.020;     par5_lexp5 = -0.08;   par5_hexp5 = -0.01;
-    sigma_exp  = 6.2;       sigma_lexp  = 2.5;    sigma_hexp  = 11.0;
-    turnon_exp = 114.6;     turnon_lexp = 111.5;  turnon_hexp = 118.0;
-    width_exp  = 4.2;       width_lexp  = 0.8;    width_hexp  = 9.0;
-  } else if (mass_ALP == 28) {
-    par1_exp1 = -0.0592;    par1_lexp1 = -0.09;   par1_hexp1 = -0.03;
-    par1_exp3 = -0.059;     par1_lexp3 = -0.12;   par1_hexp3 = -0.03;
-    par3_exp3 = -0.040;     par3_lexp3 = -0.10;   par3_hexp3 = -0.02;
-    par1_exp5 = -0.059;     par1_lexp5 = -0.12;   par1_hexp5 = -0.02;
-    par3_exp5 = -0.040;     par3_lexp5 = -0.10;   par3_hexp5 = -0.02;
-    par5_exp5 = -0.020;     par5_lexp5 = -0.08;   par5_hexp5 = -0.01;
-    sigma_exp  = 6.5;       sigma_lexp  = 2.5;    sigma_hexp  = 11.0;
-    turnon_exp = 115.0;     turnon_lexp = 112.0;  turnon_hexp = 118.5;
-    width_exp  = 4.5;       width_lexp  = 0.8;    width_hexp  = 9.0;
-  } else if (mass_ALP == 29) {
-    par1_exp1 = -0.0598;    par1_lexp1 = -0.09;   par1_hexp1 = -0.03;
-    par1_exp3 = -0.060;     par1_lexp3 = -0.12;   par1_hexp3 = -0.03;
-    par3_exp3 = -0.040;     par3_lexp3 = -0.10;   par3_hexp3 = -0.02;
-    par1_exp5 = -0.060;     par1_lexp5 = -0.12;   par1_hexp5 = -0.02;
-    par3_exp5 = -0.040;     par3_lexp5 = -0.10;   par3_hexp5 = -0.02;
-    par5_exp5 = -0.020;     par5_lexp5 = -0.08;   par5_hexp5 = -0.01;
-    sigma_exp  = 6.8;       sigma_lexp  = 3.0;    sigma_hexp  = 10.0;
-    turnon_exp = 115.5;     turnon_lexp = 113.0;  turnon_hexp = 118.0;
-    width_exp  = 4.8;       width_lexp  = 1.0;    width_hexp  = 9.0;
-  } else if (mass_ALP == 30) {
-    par1_exp1 = -0.0605;    par1_lexp1 = -0.09;   par1_hexp1 = -0.03;
-    par1_exp3 = -0.061;     par1_lexp3 = -0.12;   par1_hexp3 = -0.03;
-    par3_exp3 = -0.040;     par3_lexp3 = -0.10;   par3_hexp3 = -0.02;
-    par1_exp5 = -0.061;     par1_lexp5 = -0.12;   par1_hexp5 = -0.02;
-    par3_exp5 = -0.040;     par3_lexp5 = -0.10;   par3_hexp5 = -0.02;
-    par5_exp5 = -0.020;     par5_lexp5 = -0.08;   par5_hexp5 = -0.01;
-    sigma_exp  = 7.0;       sigma_lexp  = 3.0;    sigma_hexp  = 12.0;
-    turnon_exp = 115.8;     turnon_lexp = 113.0;  turnon_hexp = 119.0;
-    width_exp  = 5.0;       width_lexp  = 1.0;    width_hexp  = 10.0;
+    par1_exp1 = -0.050;     par1_lexp1 = -0.09;   par1_hexp1 = -0.015;
+    par1_exp3 = -0.050;     par1_lexp3 = -0.12;   par1_hexp3 = -0.010;
+    par3_exp3 = -0.028;     par3_lexp3 = -0.10;   par3_hexp3 = -0.005;
+    par1_exp5 = -0.050;     par1_lexp5 = -0.12;   par1_hexp5 = -0.010;
+    par3_exp5 = -0.028;     par3_lexp5 = -0.10;   par3_hexp5 = -0.005;
+    par5_exp5 = -0.015;     par5_lexp5 = -0.08;   par5_hexp5 = -0.003;
+    sigma_exp  = 6.2;       sigma_lexp  = 2.0;    sigma_hexp  = 12.0;
+    turnon_exp = 113.0;     turnon_lexp = 108.0;  turnon_hexp = 118.0;
+    width_exp  = 4.2;       width_lexp  = 0.8;    width_hexp  = 10.0;
+  } else if (mass_ALP >= 28) {
+    par1_exp1 = -0.045;     par1_lexp1 = -0.09;   par1_hexp1 = -0.010;
+    par1_exp3 = -0.045;     par1_lexp3 = -0.12;   par1_hexp3 = -0.008;
+    par3_exp3 = -0.024;     par3_lexp3 = -0.10;   par3_hexp3 = -0.004;
+    par1_exp5 = -0.045;     par1_lexp5 = -0.12;   par1_hexp5 = -0.008;
+    par3_exp5 = -0.024;     par3_lexp5 = -0.10;   par3_hexp5 = -0.004;
+    par5_exp5 = -0.012;     par5_lexp5 = -0.08;   par5_hexp5 = -0.002;
+    sigma_exp  = 7.0;       sigma_lexp  = 2.5;    sigma_hexp  = 14.0;
+    turnon_exp = 112.8;     turnon_lexp = 107.0;  turnon_hexp = 118.5;
+    width_exp  = 5.0;       width_lexp  = 0.8;    width_hexp  = 12.0;
   }
 
   
@@ -891,23 +871,13 @@ RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat
   } else if (mass_ALP == 27) {
     power1_lau1 = -3.5;      power1_llau1 = -5.5;    power1_hlau1 = -1.8;
     sigma_lau  = 6.5;       sigma_llau  = 2.5;     sigma_hlau  = 12.0;
-    turnon_lau = 114.5;     turnon_llau = 111.0;   turnon_hlau = 118.0;
+    turnon_lau = 113.0;     turnon_llau = 108.0;   turnon_hlau = 118.0;
     width_lau  = 4.2;       width_llau  = 0.8;     width_hlau  = 9.0;
-  } else if (mass_ALP == 28) {
+  } else if (mass_ALP >= 28) {
     power1_lau1 = -3.4;      power1_llau1 = -5.5;    power1_hlau1 = -1.8;
-    sigma_lau  = 7.0;       sigma_llau  = 2.5;     sigma_hlau  = 12.0;
-    turnon_lau = 115.0;     turnon_llau = 111.5;   turnon_hlau = 118.5;
-    width_lau  = 4.5;       width_llau  = 0.8;     width_hlau  = 9.5;
-  } else if (mass_ALP == 29) {
-    power1_lau1 = -3.4;      power1_llau1 = -5.5;    power1_hlau1 = -1.8;
-    sigma_lau  = 7.4;       sigma_llau  = 3.0;     sigma_hlau  = 12.0;
-    turnon_lau = 115.3;     turnon_llau = 112.0;   turnon_hlau = 119.0;
-    width_lau  = 4.8;       width_llau  = 1.0;     width_hlau  = 10.0;
-  } else if (mass_ALP == 30) {
-    power1_lau1 = -3.3;      power1_llau1 = -5.5;    power1_hlau1 = -1.8;
-    sigma_lau  = 7.8;       sigma_llau  = 3.0;     sigma_hlau  = 13.0;
-    turnon_lau = 115.8;     turnon_llau = 112.0;   turnon_hlau = 119.5;
-    width_lau  = 5.0;       width_llau  = 1.0;     width_hlau  = 10.0;
+    sigma_lau  = 7.2;       sigma_llau  = 2.5;     sigma_hlau  = 14.0;
+    turnon_lau = 112.8;     turnon_llau = 107.0;   turnon_hlau = 118.5;
+    width_lau  = 5.0;       width_llau  = 0.8;     width_hlau  = 12.0;
   }
 
 
