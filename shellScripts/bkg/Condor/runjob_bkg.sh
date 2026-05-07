@@ -21,6 +21,7 @@ path_out_bkg="$6"
 total_outdir="$7"
 base_dir="${8:-/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit}"
 cmssw_top="${9:-/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4}"
+gof_toys="${GOF_TOYS:-100}"
 
 format_duration() {
   local total_seconds="${1:-0}"
@@ -60,6 +61,7 @@ echo "  version   = ${version}"
 echo "  int_lumi  = ${int_lumi}"
 echo "  dir_input = ${dir_input}"
 echo "  output    = ${path_out_bkg}"
+echo "  GOF toys  = ${gof_toys}"
 
 ulimit -s unlimited
 
@@ -142,6 +144,7 @@ ftest_start_time=$(date +%s)
   --mhHigh 180 \
   --mhLowBlind 115 \
   --mhHighBlind 135 \
+  --gtoys "$gof_toys" \
   > "$ftest_stdout" 2>&1
 ftest_cmd_status=$?
 ftest_end_time=$(date +%s)

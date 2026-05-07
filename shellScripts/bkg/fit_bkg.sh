@@ -13,6 +13,7 @@ source /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggF
 lable='run3'
 version='ReReco'
 Lumi_run3='170.84'
+gof_toys="${GOF_TOYS:-100}"
 
 format_duration() {
   local total_seconds="${1:-0}"
@@ -23,6 +24,7 @@ format_duration() {
 }
 
 script_start_time=$(date +%s)
+echo "[INFO] GOF toys per candidate: ${gof_toys} (override with GOF_TOYS=<N>)"
 
 Lumis=( 7.98 27.01 17.61 9.53 108.95)
 
@@ -143,7 +145,7 @@ for ((iBin=0; iBin<$nMass; iBin++))
     ######################################
     # ./bin/fTest_ALP_turnOn -i $dir_input/mA_M${massList[$iBin]}/ws/run3.root --saveMultiPdf $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -D $path_bkg/HZAmassInde_fTest --mass_ALP ${massList[$iBin]} -c 1 --isFlashgg 0 --isData 0 -f data, --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 > $path_bkg/ftest.log
     ftest_start_time=$(date +%s)
-    ./bin/fTest_ALP_turnOn -i $dir_input/mA_M${massList[$iBin]}/ws/run3.root --saveMultiPdf $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -D $ftest_outdir --mass_ALP ${massList[$iBin]} -c 1 --isFlashgg 0 --isData 0 -f data, --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 > "$ftest_stdout" 2>&1
+    ./bin/fTest_ALP_turnOn -i $dir_input/mA_M${massList[$iBin]}/ws/run3.root --saveMultiPdf $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -D $ftest_outdir --mass_ALP ${massList[$iBin]} -c 1 --isFlashgg 0 --isData 0 -f data, --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 --gtoys "$gof_toys" > "$ftest_stdout" 2>&1
     ftest_cmd_status=$?
     ftest_end_time=$(date +%s)
     echo "[Timer] mA=${massList[$iBin]} fTest finished in $(format_duration $((ftest_end_time - ftest_start_time)))"
