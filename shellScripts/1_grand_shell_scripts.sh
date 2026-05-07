@@ -3,9 +3,9 @@ baseDir=/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashgg
 
 ### ----------- MVA Cut 
 # python3 $baseDir/MVAcut/run3_ReReco_Sys/scripts/apply_bdt_data.py &
-bash $baseDir/shellScripts/mva/run_apply_bdt_sig_6jobs.sh
+# bash $baseDir/shellScripts/mva/run_apply_bdt_sig_6jobs.sh
 
-wait
+# wait
 # ### ----------- Tree2WS
 cd $baseDir/Trees2WS
 sh $baseDir/Trees2WS/run_tree2ws.sh
@@ -49,13 +49,13 @@ sh 1_runLimitsPlot.sh
 # cd $baseDir/Combine
 # sh 3_expectedImpact.sh
 ### ----------- Impact Plot Condor (Generate ws for bias study)
-# bash $baseDir/shellScripts/impact/Condor/subjob_expectedImpact.sh
+bash $baseDir/shellScripts/impact/Condor/subjob_expectedImpact.sh
 
 ### ----------- Bias Study
 # cd $baseDir/Combine/Checks/Bias_nominal
 # sh 1_bias_study.sh
 ### ----------- Bias Study Condor
-# bash $baseDir/shellScripts/bias/Condor/subjob_bias_study.sh
+bash $baseDir/shellScripts/bias/Condor/subjob_bias_study.sh
 
 ### ----------- Collect Bkg Fit Summary
 bash $baseDir/shellScripts/bkg/Condor/collect_bkg_results.sh
