@@ -53,6 +53,8 @@
 #include "HiggsAnalysis/CombinedLimit/interface/RooBernsteinFast.h"
 
 #include <iostream>
+#include <algorithm>
+#include <vector>
 
 #include "../../tdrStyle/tdrstyle.C"
 #include "../../tdrStyle/CMS_lumi.C"
@@ -722,9 +724,12 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 		}
 	}
 
-	// Black, Red, Blue, Green, Pink, Teal,  
-	// 4 Bernstein, 2 Exponential, 1 Power Law, 3 Laurent
-	string color[12] = {"#031927","#FE0000","#0000FE","#00FF00", "#FE00FF","#00FFFF",  "#00FFFF", "#FFCC00",  "#EBB9DF","#7F7EFF","#8CBA80", "#9D8189"};
+	// Unique palette for the pdf curves. The preferred family/order color below
+	// is checked against usedColorIds so two curves in one plot cannot reuse it.
+	string color[24] = {"#031927","#FE0000","#0000FE","#00FF00","#FE00FF","#00FFFF","#F28E2B","#FFCC00",
+	                    "#EBB9DF","#7F7EFF","#8CBA80","#632B30","#D64045","#4E79A7","#59A14F","#B07AA1",
+	                    "#9C755F","#76B7B2","#E15759","#EDC948","#A0CBE8","#FF9DA7","#BAB0AC","#8CD17D"};
+	std::vector<int> usedColorIds;
 
 	// 小工具：轉小寫、擷取尾端數字作為階數、產生序數字尾
 	auto toLower = [](std::string s){
@@ -749,6 +754,19 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 			case 3: return std::to_string(n) + "rd";
 			default: return std::to_string(n) + "th";
 		}
+	};
+	auto chooseUnusedColor = [&](int preferred)->int{
+		const int nColors = sizeof(color)/sizeof(color[0]);
+		if (preferred < 0) preferred = 0;
+		if (preferred >= nColors) preferred = nColors - 1;
+		for (int step = 0; step < nColors; ++step) {
+			int candidate = (preferred + step) % nColors;
+			if (std::find(usedColorIds.begin(), usedColorIds.end(), candidate) == usedColorIds.end()) {
+				usedColorIds.push_back(candidate);
+				return candidate;
+			}
+		}
+		return preferred;
 	};
 
 	// 在圖前先決定最佳 pdf index（若未提供則自動掃描），並保護外部 state
@@ -787,10 +805,7 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 		} else {
 			type = "Background"; base = 0;
 		}
-		int color_id = base + order - 1;
-		int maxColor = (sizeof(color)/sizeof(color[0])) - 1;
-		if (color_id < 0) color_id = 0;
-		if (color_id > maxColor) color_id = maxColor;
+		int color_id = chooseUnusedColor(base + order - 1);
 
 		std::string printed_name = type + std::to_string(order);
 
