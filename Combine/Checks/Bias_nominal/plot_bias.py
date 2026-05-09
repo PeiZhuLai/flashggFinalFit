@@ -238,7 +238,7 @@ def draw_cms_lumi(canvas, lumi_fb):
 def parse_args():
     p = argparse.ArgumentParser(description="Plot pull overlay")
     p.add_argument("--mA", type=str, default=None, help="Prefix for output plots")
-    p.add_argument("--lumi", type=float, default=170.84, help="Luminosity in fb^-1 for label")
+    p.add_argument("--lumi", type=float, default=172.13, help="Luminosity in fb^-1 for label")
     return p.parse_args()
 
 def main():

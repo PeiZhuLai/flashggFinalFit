@@ -229,4 +229,3 @@ Error in <TLegend::AddEntry>: need to create a canvas first
 [FOR TABLE] ,UntaggedTag_0,110,3.90855, assuming resolution of 1
 [INFO] mgg: 110 nomBkg: 3.91644 +/- 1 (2) sig -- +0.440636(0.927656) - 0.42836(0.826123)
 [FOR TABLE] ,UntaggedTag_0,112.5,4.43933, assuming resolution of 1
-[INFO] mgg: 112.5 nomBkg: 4.44951 +/- 1 (2) sig -- +0.444949(1.13709) - 0.0347618(0.799521)

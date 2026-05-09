@@ -13,33 +13,22 @@ twd__ = "%s/Trees2WS"%cwd__
 # Centre of mass energy string
 sqrts__ = "13p6TeV"
 
-# Luminosity map in fb^-1: for using UL 2018
-# lumiMap = {
-#     '2016':36.33, 
-#     '2017':41.48, 
-#     '2018':59.83, 
-#     'combined':137.65, 
-#     'merged':137.65,
-#     '2022preEE':8.00,
-#     '2022postEE':26.70
-# }
-
 lumiMap = {
-    '16':16.81,
-    '16APV':19.52, 
-    '17':41.48, 
-    '18':59.83, 
-    # 'combined':137.65, 
-    # 'merged':137.65,
-    # '2022preEE':61.89,
-    '2022preEE':7.98,
-    '2022postEE':26.67,
-    '2023preBPix':17.79,
-    '2023postBPix':9.45,
-    '2024':108.95,
-    'merged':170.84,
-    'combined':170.84, 
-    # Set 2022preEE to 61.89 for lack of signal MC samples 
+    "2016" : 36.31,
+    "2016preVFP" : 19.51, 
+    "2016postVFP" : 16.80, 
+    "2017" : 41.48,
+    "2018" : 59.83,
+    "2022" : 34.6521,
+    "2022preEE": 7.99,
+    "2022postEE": 26.68,
+    "2022": 34.67,
+    "2023preBPix": 17.96,
+    "2023postBPix": 9.68,
+    "2023" : 27.64,
+    "2024": 109.82,
+    "2025": 110.67,
+    "combined_run3" : 172.13
 }
 
 # If using ReReco samples then switch to lumiMap below (missing data in 2018 EGamma data set)

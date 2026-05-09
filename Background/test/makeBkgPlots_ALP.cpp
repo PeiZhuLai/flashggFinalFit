@@ -960,7 +960,7 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 	// CMS_lumi( canv, 4, 0);
 
 	latex->SetTextAlign(31);
-	latex->DrawLatex(1. - rightMargin, 1. - topMargin + 0.01, ("170.84 fb^{-1} (13.6 TeV)"));
+	latex->DrawLatex(1. - rightMargin, 1. - topMargin + 0.01, ("172.13 fb^{-1} (13.6 TeV)"));
 
 
 	canv->Modified();
