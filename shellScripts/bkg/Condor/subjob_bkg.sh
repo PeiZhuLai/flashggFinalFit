@@ -77,6 +77,7 @@ getenv                = True
 request_memory        = 2000
 request_cpus          = 1
 +JobFlavour           = "workday"
+batch_name            = Fit_bkg
 
 # Send the job to Held state on failure.
 on_exit_hold          = (ExitBySignal == True) || (ExitCode != 0)
