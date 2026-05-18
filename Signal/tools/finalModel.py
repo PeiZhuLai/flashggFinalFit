@@ -72,6 +72,11 @@ def initialiseXSBR():
   if('ggZH' in productionModes)&('ZH' in productionModes): xsbr['qqZH'] = xsbr['ZH']-xsbr['ggZH']
   return xsbr
 
+def initialiseConstantXSBR():
+  xsbr = od()
+  xsbr['constant'] = np.ones(101)
+  return xsbr
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   
 class FinalModel:
   # Constructor
@@ -112,7 +117,12 @@ class FinalModel:
     self.Pdfs = od()
     self.Datasets = od()
     # Build XS/BR/EA splines
-    self.XSBR = initialiseXSBR() 
+    procMode = self.xsbrMap[self.proc]['mode']
+    decayMode_ = self.xsbrMap['decay']['mode']
+    if (procMode == 'constant')&(decayMode_ == 'constant'):
+      self.XSBR = initialiseConstantXSBR()
+    else:
+      self.XSBR = initialiseXSBR()
     self.buildXSBRSplines()
     self.buildEffAccSpline()
     # 兼容 channel/mass_ALP 別名（以無底線參數優先，再回退到有底線參數，最後讀 kwargs）
