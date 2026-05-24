@@ -16,7 +16,8 @@ mA="$1"
 base_dir="${2:-/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit}"
 cmssw_top="${3:-/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4}"
 bias_dir="${base_dir}/Combine/Checks/Bias_nominal"
-root_datacard_path="${base_dir}/Combine/root_t2w"
+root_datacard_path="${ROOT_DATACARD_PATH:-${base_dir}/Combine/root_t2w}"
+fit_config="${bias_dir}/bias_fit_config.sh"
 
 format_duration() {
   local total_seconds="${1:-0}"
@@ -56,6 +57,7 @@ echo "  mA        = ${mA}"
 echo "  BASE_DIR  = ${base_dir}"
 echo "  CMSSW_TOP = ${cmssw_top}"
 echo "  BIAS_DIR  = ${bias_dir}"
+echo "  CARD_DIR  = ${root_datacard_path}"
 
 ulimit -s unlimited
 
@@ -72,6 +74,15 @@ cmsenv
 if [[ -r "${base_dir}/setup.sh" ]]; then
   source "${base_dir}/setup.sh"
 fi
+
+if [[ ! -r "${fit_config}" ]]; then
+  echo "[ERROR] Missing ${fit_config}"
+  exit 1
+fi
+
+source "${fit_config}"
+bias_fit_opts="$(resolve_bias_fit_combine_options)"
+echo "  fit opts  = ${bias_fit_opts}"
 
 source_crab_env() {
   set --
@@ -108,7 +119,7 @@ python3 "${bias_dir}/RunBiasStudy.py" \
   -d "$card" \
   --mA "$mA" \
   -f \
-  -c "--cminDefaultMinimizerStrategy 0 --X-rtd MINIMIZER_freezeDisassociatedParams --X-rtd MINIMIZER_multiMin_hideConstants --X-rtd MINIMIZER_multiMin_maskConstraints --X-rtd MINIMIZER_multiMin_maskChannels=2 --freezeParameters MH"
+  -c "${bias_fit_opts}"
 require_glob "BiasFits/biasStudy_*_fits.root" "bias fits"
 fits_end_time=$(date +%s)
 echo "[Timer] mA=${mA} fits finished in $(format_duration $((fits_end_time - fits_start_time)))"

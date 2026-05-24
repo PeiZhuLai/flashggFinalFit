@@ -45,6 +45,12 @@ Here is an example:
 The options for the second step are passed to combine; these are recommended to get the fit to converge. 
 The additional option on the plotting is fairly self-explanatory; it adds a gaussian fit to the output plot.
 
+For this ALP workflow, the wrapper scripts now default to a broader-but-bounded fit setup:
+`Minuit2`, `cminPreScan`, a fallback minimizer, `r` bounds, and explicit ranges for the step-times-Gaussian parameters across the `Exp`, `Pow`, `Lau`, and `Bern` families.
+If only a few mass points still need hand tuning, override the wrapper default with `BIAS_FIT_COMBINE_OPTIONS="..."` instead of editing the scripts each time.
+
+The local wrappers also honour `ROOT_DATACARD_PATH`, `BASE_DIR`, and `CMSSW_TOP`, so you can point a local mirror to non-AFS datacards and CMSSW areas without rewriting the scripts.
+
 ## More options
 
 There are various things one can tweak for these studies. 

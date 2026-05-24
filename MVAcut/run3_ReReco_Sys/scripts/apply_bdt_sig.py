@@ -36,7 +36,7 @@ INPUT_BASE_TREE_NAME = "test"
 UPROOT_STEP = "200 MB"
 DEFAULT_REWEIGHT_JSON = "/afs/cern.ch/work/p/pelai/HZa/HiggsZaAna/HZaMVA/reweights/sideband_run3_iterative.json"
 MVA_REWEIGHT_SYST_NAME = "mva_reweight"
-REWEIGHT_UNCERTAINTY_FRACTION = 1.0
+REWEIGHT_UNCERTAINTY_FRACTION = 0.5
 
 REWEIGHT_VAR_ALIASES = {
     "H_m": ("H_m", "H_mass", "CMS_hza_mass"),
@@ -117,7 +117,7 @@ def _mass_from_row_order(n_rows, seed, masses):
     return rng.choice(np.asarray(masses, dtype=float), size=n_rows, replace=True)
 
 class SidebandReweightVariation:
-    """Evaluate 100% variations of the training reweight corrections."""
+    """Evaluate configurable variations of the training reweight corrections."""
 
     def __init__(self, payload: Dict, source_path: str):
         self.payload = payload

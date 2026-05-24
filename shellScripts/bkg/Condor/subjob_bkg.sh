@@ -7,8 +7,11 @@ fi
 
 set -eo pipefail
 
-BASE_DIR="${BASE_DIR:-/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit}"
-CMSSW_TOP="${CMSSW_TOP:-/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4}"
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+default_base_dir="$(cd "${script_dir}/../../.." && pwd)"
+
+BASE_DIR="${BASE_DIR:-${default_base_dir}}"
+CMSSW_TOP="${CMSSW_TOP:-${CMSSW_BASE:-/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4}}"
 lable="${LABLE:-run3}"
 version="${VERSION:-ReReco}"
 Lumi_run3="${LUMI_RUN3:-170.84}"
