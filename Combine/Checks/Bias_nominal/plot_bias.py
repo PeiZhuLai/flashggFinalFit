@@ -42,8 +42,9 @@ MEAN_VS_R_XMAX =  0.5
 MEAN_VS_R_YMIN = None
 MEAN_VS_R_YMAX = None
 
-PULL_HIST_XMIN = -4.8
-PULL_HIST_XMAX =  4.8
+PULL_HIST_NBINS = 80
+PULL_HIST_XMIN = -4.0
+PULL_HIST_XMAX =  4.0
 
 def file_label(path):
     base = os.path.basename(path)
@@ -111,21 +112,6 @@ def load_gaussfit_json(json_path):
         print(f"[WARN] cannot load JSON: {json_path} ({e})")
         return {}, {}, None
 
-def _resolve_val_err(tree):
-    leaves = [l.GetName() for l in tree.GetListOfLeaves()]
-    has_q = ("quantileExpected" in leaves)
-    if "r" in leaves and "limitErr" in leaves:
-        return ("r", "limitErr", has_q)
-    if "r" in leaves and ("rErr" in leaves or ("rErrP" in leaves and "rErrM" in leaves)):
-        return ("r", None, has_q)
-    if "r" in leaves:
-        return ("r", None, has_q)
-    if "limit" in leaves and "limitErr" in leaves:
-        return ("limit", "limitErr", has_q)
-    if "limit" in leaves:
-        return ("limit", None, has_q)
-    return (None, None, has_q)
-
 def _list_leaves(tree):
     try:
         if not tree:
@@ -134,93 +120,84 @@ def _list_leaves(tree):
     except Exception:
         return []
 
+def _quantile_matches(value, target, tol=1e-3):
+    try:
+        return abs(float(value) - float(target)) < tol
+    except Exception:
+        return False
+
 def get_pulls(fname, r_true=1.0):
-    import math
     f = ROOT.TFile.Open(fname)
     if not f or f.IsZombie():
         print(f"[WARN] cannot open {fname}")
-        return []
+        return [], []
     t = f.Get("limit")
     if not t:
         print(f"[WARN] no TTree 'limit' in {fname}")
         f.Close()
-        return []
+        return [], []
 
     leaves_list = _list_leaves(t)
-    vname, ename, has_q = _resolve_val_err(t)
-    if not vname:
-        print(f"[WARN] no suitable (value,error) branches in {fname}. Leaves={leaves_list}")
+    if "r" not in leaves_list or "quantileExpected" not in leaves_list:
+        print(f"[WARN] missing required branches in {fname}. Leaves={leaves_list}")
         f.Close()
-        return []
+        return [], []
 
-    def compute_pulls(apply_quantile_filter=True):
-        pulls = []; raw_vals = []; used_r_vals = []
-        n_total = int(t.GetEntriesFast()); n_kept = 0; n_qrej = 0; n_poserr = 0
-        has_r_branch = ("r" in leaves_list)
-        for _ in range(n_total):
-            t.GetEntry(_)
-            if apply_quantile_filter and has_q:
-                try:
-                    if getattr(t, "quantileExpected") >= 0:
-                        n_qrej += 1; continue
-                except Exception:
-                    pass
-            val = getattr(t, vname, float("nan"))
-            raw_vals.append(val)
-            if ename:
-                err = getattr(t, ename, 0.0)
-            else:
-                err = 0.0
-                if hasattr(t, "rErr"):
-                    err = getattr(t, "rErr", 0.0)
-                else:
-                    rp = getattr(t, "rErrP", 0.0) if hasattr(t, "rErrP") else 0.0
-                    rm = abs(getattr(t, "rErrM", 0.0)) if hasattr(t, "rErrM") else 0.0
-                    if (rp > 0) or (rm > 0):
-                        err = 0.5*(rp+rm)
-            if err and err > 0 and math.isfinite(err) and math.isfinite(val):
-                pulls.append((val - r_true)/err)
-                n_kept += 1; n_poserr += 1
-                if has_r_branch:
-                    rv = getattr(t, "r", float("nan"))
-                    if math.isfinite(rv):
-                        used_r_vals.append(rv)
-        return pulls, raw_vals, used_r_vals, n_total, n_kept, n_qrej, n_poserr
+    pulls = []
+    used_r_vals = []
+    n_total = int(t.GetEntriesFast())
+    n_triplets = n_total // 3
+    n_bad_quantile = 0
+    n_bad_unc = 0
 
-    apply_q = bool(has_q)
-    pulls, raw_vals, r_used, n_total, n_kept, n_qrej, n_poserr = compute_pulls(apply_quantile_filter=apply_q)
+    for itoy in range(n_triplets):
+        i_bf = 3 * itoy
+        i_lo = i_bf + 1
+        i_hi = i_bf + 2
 
-    used_fallback = False
-    mode = "with-quantile" if apply_q else "no-quantile"
-    if has_q and n_kept == 0:
-        pulls, raw_vals, r_used, n_total, n_kept, _, n_poserr = compute_pulls(apply_quantile_filter=False)
-        mode = "fallback(no-quantile)"
+        t.GetEntry(i_bf)
+        q_bf = getattr(t, "quantileExpected", float("nan"))
+        bf = getattr(t, "r", float("nan"))
 
-    if n_kept == 0 and vname == "r":
-        vals = [v for v in raw_vals if math.isfinite(v)]
-        if len(vals) > 1:
-            mean_diff_sq = sum((v - r_true)*(v - r_true) for v in vals)/float(len(vals))
-            std = math.sqrt(mean_diff_sq) if mean_diff_sq > 0 else 0.0
-            if std > 0:
-                pulls = [(v - r_true)/std for v in vals]
-                n_kept = len(pulls); used_fallback = True; mode = "global-rms"; r_used = list(vals)
+        t.GetEntry(i_lo)
+        q_lo = getattr(t, "quantileExpected", float("nan"))
+        lo = getattr(t, "r", float("nan"))
+
+        t.GetEntry(i_hi)
+        q_hi = getattr(t, "quantileExpected", float("nan"))
+        hi = getattr(t, "r", float("nan"))
+
+        if (not _quantile_matches(q_bf, -1.0) or
+            not _quantile_matches(q_lo, -0.32) or
+            not _quantile_matches(q_hi, 0.32)):
+            n_bad_quantile += 1
+            continue
+
+        unc = 0.5 * (hi - lo)
+        if unc <= 0.0 or not math.isfinite(unc) or not math.isfinite(bf):
+            n_bad_unc += 1
+            continue
+
+        pulls.append((bf - r_true) / unc)
+        used_r_vals.append(bf)
+
     f.Close()
-    tag = f"{mode}";  tag += " (no per-entry err)" if used_fallback else ""
-    print(f"[INFO] {os.path.basename(fname)}: entries={n_total}, pulls_kept={n_kept}, mode={tag}")
-    if n_kept == 0:
+    print(
+        f"[INFO] {os.path.basename(fname)}: "
+        f"entries={n_total}, triplets={n_triplets}, pulls_kept={len(pulls)}, "
+        f"bad_quantile={n_bad_quantile}, bad_unc={n_bad_unc}"
+    )
+    if not pulls:
         print(f"[HINT] Available leaves: {leaves_list}")
-    return pulls, r_used
+    return pulls, used_r_vals
 
 def make_hist(values, name, bins=48, xmin=-5, xmax=5):
-    xmin_final = PULL_HIST_XMIN if PULL_HIST_XMIN is not None else xmin
-    xmax_final = PULL_HIST_XMAX if PULL_HIST_XMAX is not None else xmax
-    h = ROOT.TH1F(name, name, bins, xmin_final, xmax_final)
+    h = ROOT.TH1F(name, name, PULL_HIST_NBINS, PULL_HIST_XMIN, PULL_HIST_XMAX)
     h.Sumw2(False)
-    for v in values: h.Fill(v)
-    if h.Integral() > 0:
-        h.Scale(1.0 / h.Integral("width"))
-    h.GetXaxis().SetTitle(r"(#mu - #mu_{True}) / #sigma_{#mu}")
-    h.GetYaxis().SetTitle(f"A.U. / {h.GetBinWidth(1):.2f}")
+    for v in values:
+        h.Fill(v)
+    h.GetXaxis().SetTitle("Pull")
+    h.GetYaxis().SetTitle("Entries")
     h.GetXaxis().SetTitleSize(0.055); h.GetXaxis().SetLabelSize(0.05); h.GetXaxis().SetTitleOffset(1.1)
     h.GetYaxis().SetTitleSize(0.05);  h.GetYaxis().SetLabelSize(0.05);  h.GetYaxis().SetTitleOffset(1.3)
     h.GetYaxis().CenterTitle(True);   h.GetXaxis().CenterTitle(True)
@@ -289,7 +266,7 @@ def main():
     if not hists:
         raise SystemExit("[ERR] nothing to plot.")
 
-    ymax = max(h.GetMaximum() for h,_ in hists) * 1.7
+    ymax = max(h.GetMaximum() for h,_ in hists) * 1.35
     for idx, (h, label) in enumerate(hists):
         h.SetMaximum(ymax)
         h.SetTitle("" if idx==0 else h.GetTitle())
