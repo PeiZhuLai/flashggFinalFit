@@ -47,6 +47,7 @@ getenv                = True
 request_memory        = 4000
 request_cpus          = 4
 +JobFlavour           = "tomorrow"
+batch_name            = impactPlots
 
 # Send the job to Held state on failure.
 on_exit_hold          = (ExitBySignal == True) || (ExitCode != 0)
