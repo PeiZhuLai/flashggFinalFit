@@ -24,13 +24,10 @@ def keep(obj, canvas=None, bucket_name="_keep"):
         getattr(canvas, bucket_name).append(obj)
     return obj
 
-# === 1) 在這裡直接寫你的絕對路徑 ===
-BIAS_BASE = os.environ.get(
-    "BIAS_BASE_OVERRIDE",
-    "/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/Checks/Bias_nominal",
-)
-PATH_BIAS_FITS = os.path.join(BIAS_BASE, "BiasFits")
-PATH_BIAS_TOYS = os.path.join(BIAS_BASE, "BiasToys")
+# Prefer an explicit override, then a local working directory, then the script directory.
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+DEFAULT_BIAS_BASE = os.getcwd() if os.path.isdir(os.path.join(os.getcwd(), "BiasFits")) else SCRIPT_DIR
+BIAS_BASE = os.environ.get("BIAS_BASE_OVERRIDE", DEFAULT_BIAS_BASE)
 
 R_TRUE = 1.0
 TITLE  = "Bias study pull comparison"
@@ -111,6 +108,15 @@ def load_gaussfit_json(json_path):
     except Exception as e:
         print(f"[WARN] cannot load JSON: {json_path} ({e})")
         return {}, {}, None
+
+def resolve_bias_base(base_dir, mA=None):
+    candidates = [base_dir]
+    if mA is not None:
+        candidates.append(os.path.join(base_dir, "bias_outputs", f"mA_{mA}"))
+    for candidate in candidates:
+        if os.path.isdir(os.path.join(candidate, "BiasFits")):
+            return candidate
+    return candidates[-1]
 
 def _list_leaves(tree):
     try:
@@ -220,21 +226,23 @@ def parse_args():
 
 def main():
     args = parse_args()
+    bias_base = resolve_bias_base(BIAS_BASE, args.mA)
+    path_bias_fits = os.path.join(bias_base, "BiasFits")
 
     json_means, json_errs, json_exp = {}, {}, None
     if args.mA:
-        json_path = os.path.join(BIAS_BASE, "BiasJson", f"{args.mA}_gaussfit.json")
+        json_path = os.path.join(bias_base, "BiasJson", f"{args.mA}_gaussfit.json")
         json_means, json_errs, json_exp = load_gaussfit_json(json_path)
         if json_means: print(f"[INFO] loaded JSON means from {json_path}")
         if json_exp is not None: print(f"[INFO] JSON exp = {json_exp}")
 
-    if not os.path.isdir(PATH_BIAS_FITS):
-        raise SystemExit(f"[ERR] Not found: {PATH_BIAS_FITS}")
+    if not os.path.isdir(path_bias_fits):
+        raise SystemExit(f"[ERR] Not found: {path_bias_fits}")
 
-    files = sorted(glob.glob(os.path.join(PATH_BIAS_FITS, "biasStudy_*_fits.root")))
+    files = sorted(glob.glob(os.path.join(path_bias_fits, "biasStudy_*_fits.root")))
     files = [f for f in files if "split" not in os.path.basename(f)]
     if not files:
-        raise SystemExit(f"[ERR] No files in {PATH_BIAS_FITS}/biasStudy_*_fits.root")
+        raise SystemExit(f"[ERR] No files in {path_bias_fits}/biasStudy_*_fits.root")
 
     c = keep(ROOT.TCanvas("c","c",800,600))
     c.SetTopMargin(0.09); c.SetBottomMargin(0.14)

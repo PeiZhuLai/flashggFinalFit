@@ -14,8 +14,34 @@ bias_dir="${base_dir}/Combine/Checks/Bias_nominal"
 root_datacard_path="${ROOT_DATACARD_PATH:-${base_dir}/Combine/root_t2w}"
 fit_config="${bias_dir}/bias_fit_config.sh"
 
+copy_outputs() {
+  local src_dir="$1"
+  local dst_dir="$2"
+
+  mkdir -p "$dst_dir"
+  for subdir in BiasToys BiasFits BiasPlots BiasJson plots_bias; do
+    if [[ -d "${src_dir}/${subdir}" ]]; then
+      mkdir -p "${dst_dir}/${subdir}"
+      cp -p "${src_dir}/${subdir}"/* "${dst_dir}/${subdir}/" 2>/dev/null || true
+    fi
+  done
+}
+
+if [[ $# -lt 1 ]]; then
+  echo "Usage: $0 MASS"
+  exit 2
+fi
+
 if [[ ! -r "${fit_config}" ]]; then
   echo "[ERROR] Missing ${fit_config}"
+  exit 1
+fi
+
+MA="$1"
+card="${root_datacard_path}/${MA}_Datacard_leptons.root"
+
+if [[ ! -f "${card}" ]]; then
+  echo "[ERROR] Missing datacard workspace: ${card}"
   exit 1
 fi
 
@@ -29,28 +55,23 @@ cmsenv
 source "${base_dir}/setup.sh"
 export PYTHONPATH="${PYTHONPATH}:${base_dir}/tools:${base_dir}/Signal/tools"
 
-mAs=( 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 )
-# mAs=( 5 15 30 )
-# mAs=( 14 )
+mkdir -p "${bias_dir}/bias_jobs" "${bias_dir}/bias_outputs"
+work_dir="${bias_dir}/bias_jobs/mA_${MA}_local_$(date +%Y%m%d_%H%M%S)_${RANDOM}"
+output_dir="${bias_dir}/bias_outputs/mA_${MA}"
+mkdir -p "${work_dir}" "${output_dir}"
+cd "${work_dir}"
 
-echo ">>> Bias fit opts = ${bias_fit_opts}"
+echo ">>> Running bias study for mA = ${MA}"
+echo "  BASE_DIR           = ${base_dir}"
+echo "  CMSSW_TOP          = ${cmssw_top}"
+echo "  ROOT_DATACARD_PATH = ${root_datacard_path}"
+echo "  fit opts           = ${bias_fit_opts}"
+echo "  work dir           = ${work_dir}"
+echo "  output dir         = ${output_dir}"
 
-for mA in "${mAs[@]}"; do
-    card="${root_datacard_path}/${mA}_Datacard_leptons.root"
-    if [[ ! -f "${card}" ]]; then
-        echo "[ERROR] Missing datacard workspace: ${card}"
-        exit 1
-    fi
+python3 "${bias_dir}/RunBiasStudy.py" -d "${card}" --mA "${MA}" -t
+python3 "${bias_dir}/RunBiasStudy.py" -d "${card}" --mA "${MA}" -f -c "${bias_fit_opts}"
+python3 "${bias_dir}/RunBiasStudy.py" -d "${card}" --mA "${MA}" -p --gaussianFit
+BIAS_BASE_OVERRIDE="${work_dir}" python3 "${bias_dir}/plot_bias.py" --mA "${MA}"
 
-    echo "=============================="
-    echo "Processing BiasStudy for mA = ${mA}"
-    echo "=============================="
-
-    rm -rf BiasFits BiasToys 2>/dev/null
-
-    ./RunBiasStudy.py -d "${card}" --mA "${mA}" -t
-    ./RunBiasStudy.py -d "${card}" --mA "${mA}" -f -c "${bias_fit_opts}"
-    ./RunBiasStudy.py -d "${card}" --mA "${mA}" -p --gaussianFit
-
-    python3 plot_bias.py --mA "${mA}"
-done
+copy_outputs "${work_dir}" "${output_dir}"
