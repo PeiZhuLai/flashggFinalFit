@@ -80,19 +80,19 @@ done
 wait_batch
 
 # # ---- Data ----
-mAs_data=(1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30)
-data_samples=()
-for m in "${mAs_data[@]}"; do
-    data_samples+=("mA_M${m}")
-done
-for ma in "${data_samples[@]}"; do
-    path="/eos/home-p/pelai/HZa/root_MVAcut/data/${ma}"
-    submit_job "data_${ma}" \
-        python3 trees2ws_data.py --inputConfig config.py --inputTreeFile "${path}/run3.root"
-done
+# mAs_data=(1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30)
+# data_samples=()
+# for m in "${mAs_data[@]}"; do
+#     data_samples+=("mA_M${m}")
+# done
+# for ma in "${data_samples[@]}"; do
+#     path="/eos/home-p/pelai/HZa/root_MVAcut/data/${ma}"
+#     submit_job "data_${ma}" \
+#         python3 trees2ws_data.py --inputConfig config.py --inputTreeFile "${path}/run3.root"
+# done
 
-wait_batch
-exit "${status}"
+# wait_batch
+# exit "${status}"
 
 
 # # For CERN

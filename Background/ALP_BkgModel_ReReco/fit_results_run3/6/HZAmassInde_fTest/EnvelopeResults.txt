@@ -1,5 +1,5 @@
-category : 0 , pdf : Lau1 , gof : 0.395000, isTruth : 1
- category : 0 , pdf : Pow1 , gof : 0.410000, isTruth : 1
- category : 0 , pdf : Exp1 , gof : 0.460000, isTruth : 1
- category : 0 , pdf : Bern4 , gof : 0.570000, isTruth : 1
+category : 0 , pdf : Pow1 , gof : 0.530000, isTruth : 1
+ category : 0 , pdf : Exp1 , gof : 0.505000, isTruth : 1
+ category : 0 , pdf : Lau1 , gof : 0.440000, isTruth : 1
+ category : 0 , pdf : Bern3 , gof : 0.535000, isTruth : 1
  
