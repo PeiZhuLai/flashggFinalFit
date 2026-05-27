@@ -197,8 +197,8 @@ Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_a
 [WSTFileWrapper] Got non-zero RooAbsPdf from /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/8/CMS-HGG_mva_13p6TeV_multipdf.root with name CMS_hgg_cat0_13p6TeV_bkgshape
 [WSTFileWrapper] Got non-zero RooCategory from /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/8/CMS-HGG_mva_13p6TeV_multipdf.root with name pdfindex_cat0_13p6TeV
 [INFO] Current PDF and data:
-[INFO] 	RooFFTConvPdf::Exp1[ Exp_soft_exp1(CMS_hza_mass) (*) Exp_gau_exp1(CMS_hza_mass) ] = 354855
-[INFO] 	RooDataHist::roohist_data_mass_cat0[CMS_hza_mass] = 85 bins (57 weights)
+[INFO] 	RooFFTConvPdf::Exp1[ Exp_soft_exp1(CMS_hza_mass) (*) Exp_gau_exp1(CMS_hza_mass) ] = 269520
+[INFO] 	RooDataHist::roohist_data_mass_cat0[CMS_hza_mass] = 85 bins (116 weights)
 unblind: 0
 Into the blind
 Number of PDFs: 4
@@ -208,62 +208,62 @@ Into the blind
 Number of PDFs: 4
 Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/AllFitResults/allPdfs_8.pdf has been created
 [INFO] Best fit PDF and data:
-[INFO] 	RooFFTConvPdf::Exp1[ Exp_soft_exp1(CMS_hza_mass) (*) Exp_gau_exp1(CMS_hza_mass) ] = 354147
-[INFO] 	RooDataHist::roohist_data_mass_cat0[CMS_hza_mass] = 85 bins (57 weights)
+[INFO] 	RooFFTConvPdf::Exp1[ Exp_soft_exp1(CMS_hza_mass) (*) Exp_gau_exp1(CMS_hza_mass) ] = 267625
+[INFO] 	RooDataHist::roohist_data_mass_cat0[CMS_hza_mass] = 85 bins (116 weights)
 Error in <TLegend::AddEntry>: need to create a canvas first
 [INFO] Plotting data and nominal curve
 [INFO] Plot has 85 bins
 [INFO] Processing for mA = 8
-[FOR TABLE] ,UntaggedTag_0,95,0.0714565, assuming resolution of 1
-[INFO] mgg: 95 nomBkg: 0.0611451 +/- 1 (2) sig -- +0.0811373(0.266594) - 0.0573236(0.0611377)
-[FOR TABLE] ,UntaggedTag_0,97.5,0.220104, assuming resolution of 1
-[INFO] mgg: 97.5 nomBkg: 0.214589 +/- 1 (2) sig -- +0.260571(0.608) - 0.140824(0.20453)
-[FOR TABLE] ,UntaggedTag_0,100,0.548911, assuming resolution of 1
-[INFO] mgg: 100 nomBkg: 0.544166 +/- 1 (2) sig -- +0.276629(0.587836) - 0.221067(0.374114)
-[FOR TABLE] ,UntaggedTag_0,102.5,1.01808, assuming resolution of 1
-[INFO] mgg: 102.5 nomBkg: 1.01836 +/- 1 (2) sig -- +0.331123(0.709549) - 0.302324(0.541001)
-[FOR TABLE] ,UntaggedTag_0,105,1.45864, assuming resolution of 1
-[INFO] mgg: 105 nomBkg: 1.46511 +/- 1 (2) sig -- +0.425537(0.96455) - 0.389169(0.663876)
-[FOR TABLE] ,UntaggedTag_0,107.5,1.70274, assuming resolution of 1
-[INFO] mgg: 107.5 nomBkg: 1.70966 +/- 1 (2) sig -- +0.398391(0.858074) - 0.373989(0.694551)
-[FOR TABLE] ,UntaggedTag_0,110,1.72889, assuming resolution of 1
-[INFO] mgg: 110 nomBkg: 1.73265 +/- 1 (2) sig -- +0.354785(0.802122) - 0.2978(0.649745)
-[FOR TABLE] ,UntaggedTag_0,112.5,1.62732, assuming resolution of 1
-[INFO] mgg: 112.5 nomBkg: 1.62802 +/- 1 (2) sig -- +0.343905(0.747621) - 0.279816(0.572351)
-[FOR TABLE] ,UntaggedTag_0,115,1.48679, assuming resolution of 1
-[INFO] mgg: 115 nomBkg: 1.48664 +/- 1 (2) sig -- +0.314345(0.685844) - 0.243902(0.464575)
-[FOR TABLE] ,UntaggedTag_0,117.5,1.34671, assuming resolution of 1
-[INFO] mgg: 117.5 nomBkg: 1.34647 +/- 1 (2) sig -- +0.285561(0.625515) - 0.210386(0.389215)
-[FOR TABLE] ,UntaggedTag_0,120,1.2178, assuming resolution of 1
-[INFO] mgg: 120 nomBkg: 1.21731 +/- 1 (2) sig -- +0.245661(0.568898) - 0.180694(0.342368)
-[FOR TABLE] ,UntaggedTag_0,122.5,1.10098, assuming resolution of 1
-[INFO] mgg: 122.5 nomBkg: 1.10076 +/- 1 (2) sig -- +0.209015(0.491799) - 0.163394(0.309589)
-[FOR TABLE] ,UntaggedTag_0,125,0.995356, assuming resolution of 1
-[INFO] mgg: 125 nomBkg: 0.994952 +/- 1 (2) sig -- +0.175337(0.420809) - 0.147688(0.27983)
-[FOR TABLE] ,UntaggedTag_0,127.5,0.899861, assuming resolution of 1
-[INFO] mgg: 127.5 nomBkg: 0.899678 +/- 1 (2) sig -- +0.150058(0.377923) - 0.140575(0.260063)
-[FOR TABLE] ,UntaggedTag_0,130,0.813527, assuming resolution of 1
-[INFO] mgg: 130 nomBkg: 0.813196 +/- 1 (2) sig -- +0.132096(0.380436) - 0.127062(0.241418)
-[FOR TABLE] ,UntaggedTag_0,135,0.664914, assuming resolution of 1
-[INFO] mgg: 135 nomBkg: 0.664644 +/- 1 (2) sig -- +0.229291(0.401259) - 0.132409(0.228471)
-[FOR TABLE] ,UntaggedTag_0,140,0.543449, assuming resolution of 1
-[INFO] mgg: 140 nomBkg: 0.543228 +/- 1 (2) sig -- +0.259116(0.380036) - 0.131563(0.212199)
-[FOR TABLE] ,UntaggedTag_0,145,0.444173, assuming resolution of 1
-[INFO] mgg: 145 nomBkg: 0.443993 +/- 1 (2) sig -- +0.113224(0.32015) - 0.100592(0.166497)
-[FOR TABLE] ,UntaggedTag_0,150,0.363033, assuming resolution of 1
-[INFO] mgg: 150 nomBkg: 0.362885 +/- 1 (2) sig -- +0.0917718(0.268256) - 0.0793811(0.147422)
-[FOR TABLE] ,UntaggedTag_0,155,0.296715, assuming resolution of 1
-[INFO] mgg: 155 nomBkg: 0.296594 +/- 1 (2) sig -- +0.0893492(0.216991) - 0.0741485(0.134394)
-[FOR TABLE] ,UntaggedTag_0,160,0.242512, assuming resolution of 1
-[INFO] mgg: 160 nomBkg: 0.242413 +/- 1 (2) sig -- +0.0807769(0.184633) - 0.0681787(0.121207)
-[FOR TABLE] ,UntaggedTag_0,165,0.19821, assuming resolution of 1
-[INFO] mgg: 165 nomBkg: 0.19813 +/- 1 (2) sig -- +0.0782433(0.177352) - 0.0619155(0.105256)
-[FOR TABLE] ,UntaggedTag_0,170,0.162002, assuming resolution of 1
-[INFO] mgg: 170 nomBkg: 0.161936 +/- 1 (2) sig -- +0.0754523(0.179199) - 0.0556654(0.0936192)
-[FOR TABLE] ,UntaggedTag_0,175,0.132408, assuming resolution of 1
-[INFO] mgg: 175 nomBkg: 0.132354 +/- 1 (2) sig -- +0.07674(0.170533) - 0.0475646(0.0853062)
-[FOR TABLE] ,UntaggedTag_0,180,0.109315, assuming resolution of 1
-[INFO] mgg: 180 nomBkg: 0.10821 +/- 1 (2) sig -- +0.0154196(0.0539688) - 0.0990161(0.100073)
+[FOR TABLE] ,UntaggedTag_0,95,0.517588, assuming resolution of 1
+[INFO] mgg: 95 nomBkg: 0.482315 +/- 1 (2) sig -- +0.101732(0.203464) - 0.403185(0.45217)
+[FOR TABLE] ,UntaggedTag_0,97.5,0.895628, assuming resolution of 1
+[INFO] mgg: 97.5 nomBkg: 0.89143 +/- 1 (2) sig -- +0.398316(0.796631) - 0.334286(0.585001)
+[FOR TABLE] ,UntaggedTag_0,100,1.4293, assuming resolution of 1
+[INFO] mgg: 100 nomBkg: 1.42777 +/- 1 (2) sig -- +0.322061(0.672126) - 0.301169(0.58003)
+[FOR TABLE] ,UntaggedTag_0,102.5,1.99692, assuming resolution of 1
+[INFO] mgg: 102.5 nomBkg: 1.99832 +/- 1 (2) sig -- +0.430713(0.828293) - 0.312238(0.6557)
+[FOR TABLE] ,UntaggedTag_0,105,2.48168, assuming resolution of 1
+[INFO] mgg: 105 nomBkg: 2.48717 +/- 1 (2) sig -- +0.535959(1.10888) - 0.38862(0.77724)
+[FOR TABLE] ,UntaggedTag_0,107.5,2.79094, assuming resolution of 1
+[INFO] mgg: 107.5 nomBkg: 2.79708 +/- 1 (2) sig -- +0.529173(1.09754) - 0.437043(0.852234)
+[FOR TABLE] ,UntaggedTag_0,110,2.90245, assuming resolution of 1
+[INFO] mgg: 110 nomBkg: 2.90729 +/- 1 (2) sig -- +0.43959(0.959106) - 0.408838(0.817676)
+[FOR TABLE] ,UntaggedTag_0,112.5,2.85398, assuming resolution of 1
+[INFO] mgg: 112.5 nomBkg: 2.85587 +/- 1 (2) sig -- +0.376274(0.831764) - 0.345828(0.713968)
+[FOR TABLE] ,UntaggedTag_0,115,2.71154, assuming resolution of 1
+[INFO] mgg: 115 nomBkg: 2.71307 +/- 1 (2) sig -- +0.328141(0.772098) - 0.296743(0.551093)
+[FOR TABLE] ,UntaggedTag_0,117.5,2.52821, assuming resolution of 1
+[INFO] mgg: 117.5 nomBkg: 2.52833 +/- 1 (2) sig -- +0.298138(0.708079) - 0.276536(0.533319)
+[FOR TABLE] ,UntaggedTag_0,120,2.33727, assuming resolution of 1
+[INFO] mgg: 120 nomBkg: 2.33692 +/- 1 (2) sig -- +0.268717(0.680749) - 0.273858(0.492945)
+[FOR TABLE] ,UntaggedTag_0,122.5,2.15381, assuming resolution of 1
+[INFO] mgg: 122.5 nomBkg: 2.15355 +/- 1 (2) sig -- +0.240762(0.653496) - 0.260782(0.454265)
+[FOR TABLE] ,UntaggedTag_0,125,1.98277, assuming resolution of 1
+[INFO] mgg: 125 nomBkg: 1.98224 +/- 1 (2) sig -- +0.214488(0.593966) - 0.24778(0.418128)
+[FOR TABLE] ,UntaggedTag_0,127.5,1.82484, assuming resolution of 1
+[INFO] mgg: 127.5 nomBkg: 1.82459 +/- 1 (2) sig -- +0.205782(0.538199) - 0.242328(0.399129)
+[FOR TABLE] ,UntaggedTag_0,130,1.67939, assuming resolution of 1
+[INFO] mgg: 130 nomBkg: 1.67893 +/- 1 (2) sig -- +0.182213(0.51627) - 0.222983(0.380383)
+[FOR TABLE] ,UntaggedTag_0,135,1.42233, assuming resolution of 1
+[INFO] mgg: 135 nomBkg: 1.42194 +/- 1 (2) sig -- +0.160701(0.503065) - 0.19996(0.333267)
+[FOR TABLE] ,UntaggedTag_0,140,1.20461, assuming resolution of 1
+[INFO] mgg: 140 nomBkg: 1.20428 +/- 1 (2) sig -- +0.147891(0.462965) - 0.169352(0.30107)
+[FOR TABLE] ,UntaggedTag_0,145,1.02022, assuming resolution of 1
+[INFO] mgg: 145 nomBkg: 1.01994 +/- 1 (2) sig -- +0.14202(0.426061) - 0.143429(0.262954)
+[FOR TABLE] ,UntaggedTag_0,150,0.864057, assuming resolution of 1
+[INFO] mgg: 150 nomBkg: 0.863818 +/- 1 (2) sig -- +0.130699(0.348532) - 0.121474(0.229452)
+[FOR TABLE] ,UntaggedTag_0,155,0.731795, assuming resolution of 1
+[INFO] mgg: 155 nomBkg: 0.731593 +/- 1 (2) sig -- +0.130304(0.280656) - 0.114311(0.217192)
+[FOR TABLE] ,UntaggedTag_0,160,0.619778, assuming resolution of 1
+[INFO] mgg: 160 nomBkg: 0.619607 +/- 1 (2) sig -- +0.129142(0.276733) - 0.106495(0.203309)
+[FOR TABLE] ,UntaggedTag_0,165,0.524909, assuming resolution of 1
+[INFO] mgg: 165 nomBkg: 0.524764 +/- 1 (2) sig -- +0.135826(0.28863) - 0.0983932(0.188587)
+[FOR TABLE] ,UntaggedTag_0,170,0.44456, assuming resolution of 1
+[INFO] mgg: 170 nomBkg: 0.444438 +/- 1 (2) sig -- +0.14453(0.281248) - 0.0937486(0.20833)
+[FOR TABLE] ,UntaggedTag_0,175,0.376511, assuming resolution of 1
+[INFO] mgg: 175 nomBkg: 0.376407 +/- 1 (2) sig -- +0.150984(0.287588) - 0.0852798(0.247017)
+[FOR TABLE] ,UntaggedTag_0,180,0.321545, assuming resolution of 1
+[INFO] mgg: 180 nomBkg: 0.318873 +/- 1 (2) sig -- +0.0165436(0.059557) - 0.298943(0.261575)
 
 [INFO] intLumi 170.84
 Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/AllFitResults/bkgplot_8.pdf has been created

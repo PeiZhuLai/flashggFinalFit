@@ -339,33 +339,34 @@ def plotPdfComponents(ssf,_outdir='./',_extension='',_proc='',_cat='',_Amass='1'
   leg.AddEntry(hists['data'],"Simulation","ep")
   leg.AddEntry(hists['final'],"Parametric Model","L")
   leg.Draw("Same")
+  def _component_label(k, ordinal):
+        # nGauss keys end with a digit (g0, g1, ...). DCB keys are non-numeric (dcb, gauss).
+        try:
+            idx = int(k[-1]) + 1
+        except (ValueError, TypeError):
+            return k.upper()
+        suffix = {1:"st", 2:"nd", 3:"rd"}.get(idx, "th")
+        return f"{idx}{suffix} Gau"
+
   if len(pdfs.keys())!=1:
-    if(len(pdfs)==2): 
+    if(len(pdfs)==2):
       leg1 = ROOT.TLegend(0.595,0.57,0.94,0.72)
       leg1.SetFillStyle(0)
       leg1.SetLineColor(0)
       leg1.SetBorderSize(0)
       leg1.SetTextSize(0.05)
       for k,v in pdfs.items():
-        if( int(k[-1])+1 == 1):
-          leg1.AddEntry(hists[k],f"{int(k[-1])+1}st Gau","L")
-        elif( int(k[-1])+1 == 2):
-          leg1.AddEntry(hists[k],f"{int(k[-1])+1}nd Gau","L")
+        leg1.AddEntry(hists[k], _component_label(k, 0), "L")
       leg1.Draw("Same")
 
-    elif(len(pdfs)==3): 
+    elif(len(pdfs)==3):
       leg1 = ROOT.TLegend(0.595,0.52,0.94,0.72)
       leg1.SetFillStyle(0)
       leg1.SetLineColor(0)
       leg1.SetBorderSize(0)
       leg1.SetTextSize(0.05)
       for k,v in pdfs.items():
-        if( int(k[-1])+1 == 1):
-          leg1.AddEntry(hists[k],f"{int(k[-1])+1}st Gau","L")
-        elif( int(k[-1])+1 == 2):
-          leg1.AddEntry(hists[k],f"{int(k[-1])+1}nd Gau","L")
-        elif( int(k[-1])+1 == 3):
-          leg1.AddEntry(hists[k],f"{int(k[-1])+1}rd Gau","L")
+        leg1.AddEntry(hists[k], _component_label(k, 0), "L")
       leg1.Draw("Same")
 
     elif(len(pdfs)==4): 

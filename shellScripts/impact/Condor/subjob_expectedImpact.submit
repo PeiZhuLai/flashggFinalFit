@@ -192,3 +192,4 @@ output                = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_
 error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_mA30.$(ClusterId).$(ProcId).err
 arguments             = 30 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
 queue
+

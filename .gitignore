@@ -57,6 +57,7 @@ Combine/output_impacts/*_impacts.json
 !Combine/output_combine_results
 !Combine/output_combine_results/higgsCombine*.AsymptoticLimits.mH125.38.root
 .DS_Store
+Combine/Checks/Bias_nominal/bias_jobs
 !Signal/scripts/audit_m20_2024_ele.csv
 !Background/ALP_BkgModel_ReReco/fit_results_run3/*/makeBkgPlots.stdout.log
 !Background/ALP_BkgModel_ReReco/fit_results_run3/*/HZAmassInde_fTest/fTestResults.txt

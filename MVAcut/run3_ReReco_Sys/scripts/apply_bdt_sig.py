@@ -36,7 +36,7 @@ INPUT_BASE_TREE_NAME = "test"
 UPROOT_STEP = "200 MB"
 DEFAULT_REWEIGHT_JSON = "/afs/cern.ch/work/p/pelai/HZa/HiggsZaAna/HZaMVA/reweights/sideband_run3_iterative.json"
 MVA_REWEIGHT_SYST_NAME = "mva_reweight"
-REWEIGHT_UNCERTAINTY_FRACTION = 0.5
+REWEIGHT_UNCERTAINTY_FRACTION = 0.1
 
 REWEIGHT_VAR_ALIASES = {
     "H_m": ("H_m", "H_mass", "CMS_hza_mass"),

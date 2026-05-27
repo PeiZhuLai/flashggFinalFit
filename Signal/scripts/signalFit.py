@@ -26,6 +26,30 @@ from plottingTools import *
 MHLow, MHHigh = '100', '180' # In this way, the result will be as same as the fTest
 MHNominal = '125'
 
+def _resolve_fit_range(mass_alp, default_low, default_high):
+    try:
+        mA = int(mass_alp)
+    except Exception:
+        return default_low, default_high
+    if mA <= 1:
+        return '118', '135'
+    if mA == 2:
+        return '115', '135'
+    if mA <= 4:
+        return '110', '140'
+    return default_low, default_high
+
+def _force_dcb_for_low_ma(mass_alp, current_useDCB):
+    """Low ma has a real bremsstrahlung/merged-photon low-side tail; DCB describes it
+    with a power-law tail instead of inflating sigma like nGaussians do."""
+    try:
+        mA = int(mass_alp)
+    except Exception:
+        return current_useDCB
+    if mA <= 4:
+        return True
+    return current_useDCB
+
 print(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ HZallgg SIGNAL FITTER ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ")
 def leave():
   print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ HZallgg SIGNAL FITTER (END) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ")
@@ -206,6 +230,10 @@ def get_options():
   return parser.parse_args()
 (opt,args) = get_options()
 
+# Low ma: switch to DCB+Gaussian to handle the photon-merging / brem tail.
+opt.useDCB = _force_dcb_for_low_ma(opt.mass_ALP, opt.useDCB)
+print(f" [CFG] useDCB resolved to {opt.useDCB} for mA={opt.mass_ALP}")
+
 # 解析與正規化最終的系統誤差開關，兼容 --skipSystematics 與 --doSystematics
 # 規則：有 --doSystematics 或（有 --skipSystematics 旗標）=> 啟用系統
 #      其他情況 => 依預設（目前為停用系統）
@@ -303,10 +331,22 @@ f0.Close()
 # inputWSName__ = "CMS_hza_workspace"
 # RooDataSet::ggh_125_13TeV_cat0(CMS_hza_mass)
 
+# Mass-dependent fit range: low ma suffers from low-side photon-merging tail,
+# nGauss inflates sigma to cover the tail and σ_eff explodes.
+# Tighten the fit window for low ma so the core resolution is recovered.
+MHLow, MHHigh = _resolve_fit_range(opt.mass_ALP, MHLow, MHHigh)
+print(f" [CFG] Fit range for mA={opt.mass_ALP}: [{MHLow}, {MHHigh}]")
+
 # Create MH var
 MH = ROOT.RooRealVar("MH","m_{H}", int(MHLow), int(MHHigh))
 MH.setUnit("GeV")
 MH.setConstant(True)
+# Constrain the observable to the chosen fit window before reduceDataset cuts events.
+try:
+    xvar.setRange(int(MHLow), int(MHHigh))
+    xvarFit.setRange(int(MHLow), int(MHHigh))
+except Exception:
+    pass
 
 if opt.skipZeroes:
   # Extract nominal mass dataset and see if entries == 0
@@ -536,11 +576,17 @@ fout.Close()
 if opt.doPlots:
   print("\n --> Making plots...")
   if not os.path.isdir("%s/outdir_%s/signalFit/Plots"%(swd__,opt.channel)): os.system("mkdir %s/outdir_%s/signalFit/Plots"%(swd__,opt.channel))
+  # Plot failures are cosmetic; the workspace has already been written above.
+  def _safe(fn, *a, **kw):
+    try:
+      fn(*a, **kw)
+    except Exception as e:
+      print(f"   [WARN] Plot step '{fn.__name__}' failed: {e}; continuing.")
   if opt.skipVertexScenarioSplit:
-    plotPdfComponents(ssfRV,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.channel),_extension="total_",_proc=procRVFit,_cat=catRVFit, _Amass=opt.mass_ALP,_year=opt.year,_channel=opt.channel) 
+    _safe(plotPdfComponents, ssfRV,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.channel),_extension="total_",_proc=procRVFit,_cat=catRVFit, _Amass=opt.mass_ALP,_year=opt.year,_channel=opt.channel)
   if not opt.skipVertexScenarioSplit:
-    plotPdfComponents(ssfRV,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.channel),_extension="RV_",_proc=procRVFit,_cat=catRVFit, _Amass=opt.mass_ALP,_year=opt.year,_channel=opt.channel) 
-    plotPdfComponents(ssfWV,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.channel),_extension="WV_",_proc=procWVFit,_cat=catRVFit, _Amass=opt.mass_ALP,_year=opt.year,_channel=opt.channel) 
+    _safe(plotPdfComponents, ssfRV,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.channel),_extension="RV_",_proc=procRVFit,_cat=catRVFit, _Amass=opt.mass_ALP,_year=opt.year,_channel=opt.channel)
+    _safe(plotPdfComponents, ssfWV,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.channel),_extension="WV_",_proc=procWVFit,_cat=catRVFit, _Amass=opt.mass_ALP,_year=opt.year,_channel=opt.channel)
   # Plot interpolation
-  plotInterpolation(fm,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.channel), _Amass=opt.mass_ALP,_year=opt.year,_channel=opt.channel) 
-  plotSplines(fm,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.channel),_nominalMass=MHNominal, _Amass=opt.mass_ALP,_year=opt.year,_channel=opt.channel)
+  _safe(plotInterpolation, fm,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.channel), _Amass=opt.mass_ALP,_year=opt.year,_channel=opt.channel)
+  _safe(plotSplines, fm,_outdir="%s/outdir_%s/signalFit/Plots"%(swd__,opt.channel),_nominalMass=MHNominal, _Amass=opt.mass_ALP,_year=opt.year,_channel=opt.channel)

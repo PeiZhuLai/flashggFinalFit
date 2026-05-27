@@ -1331,7 +1331,7 @@ int main(int argc, char* argv[]){
 			RooAbsPdf *prev_pdf=NULL;
 			RooAbsPdf *cache_pdf=NULL;
 				int counter =0;
-				while (prob<0.05 && order < (((*funcType)=="Bernstein") ? 5 : 7) ){
+				while (prob<0.05 && order < 7){
 				
         RooAbsPdf *bkgPdf = getPdf(pdfsModel,*funcType,order,"", mass_ALP);
 				if (!bkgPdf){
@@ -1390,7 +1390,7 @@ int main(int argc, char* argv[]){
 				std::cout << "[INFO] Upper end Threshold for highest order function " << upperEnvThreshold <<std::endl;
 
 
-				while (prob<upperEnvThreshold && order < (((*funcType)=="Bernstein") ? 5 : 7) ){
+				while (prob<upperEnvThreshold){
 					RooAbsPdf *bkgPdf = getPdf(pdfsModel,*funcType,order,"", mass_ALP);
 
           if (!bkgPdf ){
