@@ -328,7 +328,7 @@ def main():
             g.SetPointError(0, xerr, 0.0)  # x 向誤差棒；y 無誤差
             g.SetMarkerColor(col)
             g.SetMarkerStyle(20 + ((j + 1) % 10))
-            g.SetMarkerSize(2.0)
+            g.SetMarkerSize(2.8)
             g.SetLineColor(col); g.SetLineWidth(3)
             mg.Add(g, "P")
             graphs.append(g)

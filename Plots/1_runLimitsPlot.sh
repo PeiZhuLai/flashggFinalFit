@@ -28,7 +28,7 @@ python3 makeLimitsPlot.py \
   --outdir plot_limits \
   --assume-xs 100 \
   --ggf-xs 59703.914 \
-  --lumi 170.84 \
+  --lumi 172.13 \
   --formats pdf \
   --masses 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30 \
   --only xs,br,wilson,compare

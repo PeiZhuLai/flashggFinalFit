@@ -106,6 +106,7 @@ def plotFTest(ssfs,_opt=1,_outdir='./',_extension='',_proc='',_cat='',_mass='125
   print("bin width:", (ssf.xvar.getMax()-ssf.xvar.getMin())/ssf.nBins)
   hists['data'].Scale(float(ssf.nBins)/1600)
   hists['data'].SetMarkerStyle(20)
+  hists['data'].SetMarkerSize(1.8)
   hists['data'].SetMarkerColor(1)
   hists['data'].SetLineColor(1)
   hists['data'].SetTitle("")

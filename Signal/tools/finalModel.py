@@ -188,9 +188,11 @@ class FinalModel:
       # sumw will be multiplied by ( xs * br * keepfb * lumi(fb) ) so that we have to divide them
       keepfb = 1000.0
       
-      # However, we only use a half of dataset for training, so we need to multiply by 2
-      # So, sumw = self.datasets[mp].sumEntries() * 2
-      test2Allstats = 2.0
+      # Only the test tree (fraction = TEST_TREE_FRAC of the full sample) is used here,
+      # so multiply by 1/TEST_TREE_FRAC to recover the full-sample expected yield.
+      # 30% test tree -> 1/0.3 = 3.33333...
+      TEST_TREE_FRAC = 0.3
+      test2Allstats = 1.0 / TEST_TREE_FRAC
       denom = xs_val * br_val * lumi_fb * keepfb
       sumw = test2Allstats * self.datasets[mp].sumEntries() / denom if denom > 0. else 1.0
       ea.append(sumw)

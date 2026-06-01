@@ -232,8 +232,8 @@ def draw_channel(channel, years, mAs, base_dir):
 
     # 固定座標範圍
     first_line.GetXaxis().SetLimits(0.0, 32.0)  # x-axis [0, 33]
-    first_line.SetMinimum(0.6)                  # y-axis min = 0
-    first_line.SetMaximum(6.2)                  # y-axis max = 5.2
+    first_line.SetMinimum(0.8)
+    first_line.SetMaximum(6.8)
 
     # 畫第一個年的原始點
     first_pts.Draw("P SAME")

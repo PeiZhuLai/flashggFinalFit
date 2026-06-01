@@ -62,3 +62,4 @@ Combine/Checks/Bias_nominal/bias_jobs
 !Background/ALP_BkgModel_ReReco/fit_results_run3/*/makeBkgPlots.stdout.log
 !Background/ALP_BkgModel_ReReco/fit_results_run3/*/HZAmassInde_fTest/fTestResults.txt
 !Background/ALP_BkgModel_ReReco/fit_results_run3/*/HZAmassInde_fTest/EnvelopeResults.txt
+Background/ENVELOPE.md

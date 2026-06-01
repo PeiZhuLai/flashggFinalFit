@@ -27,27 +27,9 @@ MHLow, MHHigh = '100', '180' # In this way, the result will be as same as the fT
 MHNominal = '125'
 
 def _resolve_fit_range(mass_alp, default_low, default_high):
-    try:
-        mA = int(mass_alp)
-    except Exception:
-        return default_low, default_high
-    if mA <= 1:
-        return '118', '135'
-    if mA == 2:
-        return '115', '135'
-    if mA <= 4:
-        return '110', '140'
     return default_low, default_high
 
 def _force_dcb_for_low_ma(mass_alp, current_useDCB):
-    """Low ma has a real bremsstrahlung/merged-photon low-side tail; DCB describes it
-    with a power-law tail instead of inflating sigma like nGaussians do."""
-    try:
-        mA = int(mass_alp)
-    except Exception:
-        return current_useDCB
-    if mA <= 4:
-        return True
     return current_useDCB
 
 print(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ HZallgg SIGNAL FITTER ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ")

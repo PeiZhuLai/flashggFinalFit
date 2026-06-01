@@ -68,7 +68,9 @@ bool PLOT_ONLY = false;
 
 int FTEST_NTOYS = 500; // was 5000; lower = much faster (override with --ftoys)
 int GOF_NTOYS   = 200; // was 500;  lower = faster (override with --gtoys)
-int MIN_ENVELOPE_PDFS = 0; // Additional floor beyond the one-per-family baseline.
+int MIN_ENVELOPE_PDFS = 6; // Keep >= 6 PDFs per envelope so adjacent mA points share more
+                           // discrete-profile members; reduces "staircase" in the limit plot
+                           // caused by pruning that drops e.g. the second-best Exponential order.
 
 float mgglow_ =95.;//FIXME
 float mgghigh_ =180;//FIXME

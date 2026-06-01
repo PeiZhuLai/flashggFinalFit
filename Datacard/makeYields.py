@@ -756,13 +756,17 @@ for ir,r in data[data['type']=='sig'].iterrows():
       if f_COWCorr != 0:
         y_COWCorr += w*(f_NNLOPS/f_COWCorr)
 
-  # Need to times 2 on sumw b/c only use half of the dataset
-  # Times 4 on sumw2
-  data.at[ir,'nominal_yield'] = 2.0*y*row_yield_scale
-  data.at[ir,'sumw2'] = 4.0*sumw2*(row_yield_scale**2)
+  # Only the test tree (fraction = TEST_TREE_FRAC of the full sample) is used here,
+  # so scale yield by 1/TEST_TREE_FRAC and sumw2 by (1/TEST_TREE_FRAC)**2.
+  # 30% test tree -> 1/0.3 = 3.33333..., (1/0.3)**2 = 11.1111...
+  TEST_TREE_FRAC = 0.3
+  _y_scale  = 1.0 / TEST_TREE_FRAC
+  _w2_scale = _y_scale * _y_scale
+  data.at[ir,'nominal_yield'] = _y_scale*y*row_yield_scale
+  data.at[ir,'sumw2'] = _w2_scale*sumw2*(row_yield_scale**2)
   if not opt.skipCOWCorr:
-    # 也需乘 2.0，與 nominal_yield 一致（只用半個 dataset）
-    data.at[ir,'nominal_yield_COWCorr'] = 2.0*y_COWCorr*row_yield_scale
+    # 與 nominal_yield 一致：同樣乘 1/TEST_TREE_FRAC
+    data.at[ir,'nominal_yield_COWCorr'] = _y_scale*y_COWCorr*row_yield_scale
 
   if opt.debugNames:
     print("[DEBUG] Nominal yield 結果: proc=%s cat=%s anchor_mass=%s scale=%.6f raw_yield=%.6f scaled_yield=%.6f sumw2=%.6f%s" %
@@ -837,17 +841,21 @@ for ir,r in data[data['type']=='sig'].iterrows():
         if not opt.skipCOWCorr:
           data.at[ir,"%s_yield_COWCorr"%s] = theorySystYields["%s_COWCorr"%s]
 
-    # === 新增：系統誤差 yield 全部乘 2.0（因使用半 dataset） ===
+    # === 系統誤差 yield 也要乘 1/TEST_TREE_FRAC（與 nominal_yield 一致） ===
+    # 之前是 2.0（50% test tree），現在 30% test tree 要用 1/0.3 = 3.333；
+    # 否則 ratio = syst_yield/nominal_yield 會被多除一個 (3.333/2 = 1.667)，把
+    # 其他 lnN 系統誤差全部錯誤地壓到 ~0.6×（trigger/pileup/electron/muon/photon ID/CSEV…）。
+    _y_scale_syst = 1.0 / TEST_TREE_FRAC
     for col in data.columns:
       if (col.endswith("_yield") or col.endswith("_yield_COWCorr")) and not col.startswith("nominal_"):
         val = data.at[ir, col]
         if val != '-' and val is not None:
           try:
-            data.at[ir, col] = 2.0 * float(val) * row_yield_scale
+            data.at[ir, col] = _y_scale_syst * float(val) * row_yield_scale
           except Exception:
             pass
     if opt.debugNames:
-      print(f"[DEBUG] 系統誤差 yield 已統一乘 2.0*scale={2.0*row_yield_scale:.6f}: proc={r['proc']} cat={r['cat']}")
+      print(f"[DEBUG] 系統誤差 yield 已統一乘 {_y_scale_syst:.4f}*scale={_y_scale_syst*row_yield_scale:.6f}: proc={r['proc']} cat={r['cat']}")
 
   if opt.doSystematics and opt.debugNames:
     print("[DEBUG] 已填入系統誤差變動: proc=%s cat=%s" % (r['proc'], r['cat']))

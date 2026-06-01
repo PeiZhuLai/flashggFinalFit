@@ -1243,7 +1243,7 @@ string catname;
 	// 原先：leg->AddEntry(dataLeg,"Data","LEP");
 	if (auto e = leg->AddEntry(dataLeg,"Data","LEP")) {
 		e->SetMarkerStyle(20);
-		e->SetMarkerSize(1.3);
+		e->SetMarkerSize(1.8);
 	}
 	leg->AddEntry(nomBkgCurve,"Bkg Fit","L");
 
@@ -1455,14 +1455,14 @@ string catname;
 			RooFit::Binning(nbin),
 			RooFit::CutRange("unblind_down,unblind_up"),
 			RooFit::MarkerStyle(20),
-			RooFit::MarkerSize(1.3)
+			RooFit::MarkerSize(1.8)
 		); // PZ
 	}
 	else {
 		data->plotOn(plot,
 			RooFit::Binning(nbin),
 			RooFit::MarkerStyle(20),
-			RooFit::MarkerSize(1.3)
+			RooFit::MarkerSize(1.8)
 		);
 	}
 

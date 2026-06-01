@@ -36,7 +36,7 @@ INPUT_BASE_TREE_NAME = "test"
 UPROOT_STEP = "200 MB"
 DEFAULT_REWEIGHT_JSON = "/afs/cern.ch/work/p/pelai/HZa/HiggsZaAna/HZaMVA/reweights/sideband_run3_iterative.json"
 MVA_REWEIGHT_SYST_NAME = "mva_reweight"
-REWEIGHT_UNCERTAINTY_FRACTION = 0.1
+REWEIGHT_UNCERTAINTY_FRACTION = 1.0
 
 REWEIGHT_VAR_ALIASES = {
     "H_m": ("H_m", "H_mass", "CMS_hza_mass"),
@@ -240,6 +240,12 @@ def add_mva_reweight_uncertainty_columns(frame: pd.DataFrame, evaluator: Optiona
         frame[down] = np.ones(len(frame), dtype=np.float32)
         return frame
 
+    # Sample-mean of the nominal reweight factor on THIS signal sample.
+    # Rescaling each varied weight to preserve sig_mean_nominal removes the
+    # global yield-shift component, so the envelope captures only the
+    # shape-only uncertainty of the sideband-data/MC reweight.
+    sig_mean_nominal = _weighted_ratio(nominal, base_weight)
+
     ratios = [1.0]
     with np.errstate(divide="ignore", invalid="ignore"):
         for var in evaluator.reweight_vars:
@@ -251,6 +257,10 @@ def add_mva_reweight_uncertainty_columns(frame: pd.DataFrame, evaluator: Optiona
                 except KeyError:
                     skipped.add(var)
                     continue
+                # Rescale so weighted-mean(varied) == weighted-mean(nominal): isolate shape only.
+                sig_mean_varied = _weighted_ratio(varied, base_weight)
+                if sig_mean_varied > 0.0:
+                    varied = varied * (sig_mean_nominal / sig_mean_varied)
                 ratio = np.divide(varied, nominal, out=np.ones_like(varied), where=(nominal != 0.0))
                 ratios.append(_weighted_ratio(ratio, base_weight))
 
