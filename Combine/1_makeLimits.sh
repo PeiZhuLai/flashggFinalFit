@@ -21,7 +21,11 @@ for iALPmass in "${!ALPmassList[@]}"; do
     echo "Processing for mA = ${mA}"
     # ---------- Asymptotic Limit ---------- 
     path_datacard="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Datacard/output_Datacard_leptons/${ALPmassList[iALPmass]}_pruned_datacard_leptons.txt"
-    combine -M AsymptoticLimits $path_datacard --cminDefaultMinimizerStrategy 0 -m 125.38 --run blind --setParameterRanges MH=115,135 -n ${ALPmassList[iALPmass]}
+    # NOTE: MH must be frozen at 125.38 (not profiled) -- floating it over [115,135] pushes the
+    #       signal eff/xs/BR splines out of their GSL interpolation domain -> NaN-poisoned fit.
+    #       rMax must be kept small: default rMax=20 is ~200x the true limit (~0.1) and makes the
+    #       CLs search land on a false crossing (gave the spurious mA=2 limit ~1.0). See doc.
+    combine -M AsymptoticLimits $path_datacard --cminDefaultMinimizerStrategy 0 -m 125.38 --run blind --setParameters MH=125.38 --freezeParameters MH --rMax 2 -n ${ALPmassList[iALPmass]}
     
     # Move the output files to the output directory
     mv higgsCombine${ALPmassList[iALPmass]}.AsymptoticLimits.mH125.38.root ./output_combine_results

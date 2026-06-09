@@ -4,9 +4,17 @@ mAs=( 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28
 # mAs=( 1 2 3 4 5 6 7 8 9 10 15 20 25 30 )
 # mAs=( 5 15 30 )
 BaseDir="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/Checks/Bias_nominal"
-Executable="$BaseDir/1_run_bias_study.sh"
+FlashggBase="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit"
+CmsswTop="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4"
+Executable="$BaseDir/1_bias_study.sh"
 LogDir="$BaseDir/logs"
 SubmitFile="1_sub_bias_study.submit"
+
+# Clean logs from the previous run so they don't accumulate and fill the work quota.
+# Done here at submit time (not after the run): Condor writes these asynchronously
+# while the jobs are still running, so they can only be safely wiped before the next launch.
+echo ">>> Cleaning logs from previous run (logs/, condor_logs/)..."
+rm -rf "$LogDir" "$BaseDir/condor_logs"
 
 # Create log directory if it doesn't exist
 mkdir -p "$LogDir"
@@ -17,8 +25,12 @@ cat > $SubmitFile << EOF
 universe              = vanilla
 executable            = $Executable
 getenv                = True
-request_memory        = 1000
-+JobFlavour           = "workday"
+environment           = "BASE_DIR=$FlashggBase CMSSW_TOP=$CmsswTop"
+request_memory        = 2500
+transfer_output_files = ""
++JobFlavour           = "tomorrow"
+on_exit_hold          = (ExitBySignal == True) || (ExitCode != 0)
+periodic_release      = (NumJobStarts < 3) && ((CurrentTime - EnteredCurrentStatus) > 600)
 
 EOF
 

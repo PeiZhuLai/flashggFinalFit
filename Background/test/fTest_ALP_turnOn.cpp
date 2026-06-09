@@ -68,9 +68,10 @@ bool PLOT_ONLY = false;
 
 int FTEST_NTOYS = 500; // was 5000; lower = much faster (override with --ftoys)
 int GOF_NTOYS   = 200; // was 500;  lower = faster (override with --gtoys)
-int MIN_ENVELOPE_PDFS = 6; // Keep >= 6 PDFs per envelope so adjacent mA points share more
-                           // discrete-profile members; reduces "staircase" in the limit plot
-                           // caused by pruning that drops e.g. the second-best Exponential order.
+int MIN_ENVELOPE_PDFS = 0; // No artificial floor: let envelope size be driven by the F-test
+                           // (looser upperEnvThreshold) + one representative per family.
+                           // Padding with sub-threshold "next-best" orders introduced jumps in
+                           // the limits because the filler PDF was inconsistent across mA.
 
 float mgglow_ =95.;//FIXME
 float mgghigh_ =180;//FIXME
@@ -1189,7 +1190,8 @@ int main(int argc, char* argv[]){
   mass->setRange(mgg_low, mgg_high);
   mass->setBins((int)nBinsForMass);
 	pdfsModel.setObsVar(mass);
-	double upperEnvThreshold = 0.1;
+	double upperEnvThreshold = 0.10; // Looser F-test cut for envelope construction; truth-model
+	                                  // selection above stays at the stricter 0.05 (hardcoded).
 	const double minEnvelopeGof = 0.01;
 
 	fprintf(resFile,"Truth Model & d.o.f & $\\Delta NLL_{N+1}$ & $p(\\chi^{2}>\\chi^{2}_{(N\\rightarrow N+1)})$ \\\\\n");

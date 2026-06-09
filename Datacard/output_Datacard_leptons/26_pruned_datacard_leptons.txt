@@ -39,15 +39,15 @@ lumi_13p6TeV_Correlated_2223                        lnN           1.0101        
 lumi_13p6TeV_Correlated_2324                        lnN           -               -               -               -               1.0141          1.0141          1.0141          1.0141          1.0141          1.0141          -              
 lumi_13p6TeV_Correlated_222324                      lnN           1.0120          1.0120          1.0120          1.0120          1.0120          1.0120          1.0120          1.0120          1.0120          1.0120          -              
 CMS_hza_trigger                                     lnN           1.002           -               1.002           -               1.002           -               1.002           -               -               -               -              
-CMS_hza_pileup                                      lnN           0.980           1.017/0.982     1.018/0.987     1.023/0.980     1.018/0.978     0.982           0.976           0.980           1.024/0.960     1.015/0.967     -              
-CMS_hza_photon_id                                   lnN           1.008           1.008           1.006           1.005           1.005           1.005           1.007           1.006           1.004           1.004           -              
-CMS_hza_mva_reweight                                lnN           1.011           1.010           1.010           1.011           1.011           1.011           1.011           1.011           1.013           1.012           -              
-CMS_hza_electron_reco                               lnN           0.956/1.045     -               1.030           -               0.954/1.047     -               0.961/1.040     -               1.008           -               -              
-CMS_hza_electron_id                                 lnN           1.017           -               1.015           -               1.010           -               1.012           -               1.003           -               -              
-CMS_hza_electron_id_nomatch                         lnN           1.001           1.001           1.001           1.001           1.001           1.001           0.998/1.004     1.001           -               -               -              
+CMS_hza_pileup                                      lnN           1.012/0.988     1.024/0.977     1.030/0.969     1.022/0.973     1.025/0.973     1.021/0.977     1.028/0.974     1.026/0.974     1.026/0.959     1.012/0.973     -              
+CMS_hza_photon_id                                   lnN           1.008           1.008           1.005           1.005           1.005           1.005           1.006           1.006           1.004           1.004           -              
+CMS_hza_mva_reweight                                lnN           1.021           1.019           1.020           1.022           1.020           1.021           1.021           1.022           1.019           1.020           -              
+CMS_hza_electron_reco                               lnN           0.957/1.043     -               0.971/1.030     -               0.953/1.048     -               0.960/1.041     -               1.008           -               -              
+CMS_hza_electron_id                                 lnN           1.016           -               1.015           -               1.010           -               1.012           -               1.003           -               -              
+CMS_hza_electron_id_nomatch                         lnN           1.001           1.001           1.001           1.001           -               -               -               1.001           -               -               -              
 CMS_hza_muon_reco                                   lnN           -               -               -               -               -               -               -               -               -               1.001           -              
 CMS_hza_muon_id                                     lnN           -               1.003           -               1.001           -               1.008           -               1.011           -               1.003           -              
-CMS_hza_muon_id_nomatch                             lnN           -               -               -               -               -               -               -               -               -               -               -              
+CMS_hza_muon_id_nomatch                             lnN           -               -               -               -               -               1.001           -               1.001           -               -               -              
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 QCDscale_ggH                                        lnN           1.047/0.931     1.047/0.931     1.047/0.931     1.047/0.931     1.047/0.931     1.047/0.931     1.047/0.931     1.047/0.931     1.047/0.931     1.047/0.931     -              
 pdf_Higgs_ggH                                       lnN           1.019           1.019           1.019           1.019           1.019           1.019           1.019           1.019           1.019           1.019           -              
@@ -86,16 +86,16 @@ CMS_hza_nuisance_PhotonSmear_13p6TeVsmear_2023preBPix                   param   
 CMS_hza_nuisance_PhotonSmear_13p6TeVsmear_2023postBPix                  param    0.0    1.0   
 CMS_hza_nuisance_PhotonSmear_13p6TeVsmear_2024                          param    0.0    1.0   
 
-interpolate_yield_2022preEE_ele       rateParam   cat0   ggH_2022preEE_ele      1.064648634810726
-interpolate_yield_2022preEE_mu        rateParam   cat0   ggH_2022preEE_mu       1.066218561073071
-interpolate_yield_2022postEE_ele      rateParam   cat0   ggH_2022postEE_ele     1.061602959480947
-interpolate_yield_2022postEE_mu       rateParam   cat0   ggH_2022postEE_mu      1.062694583133089
-interpolate_yield_2023preBPix_ele     rateParam   cat0   ggH_2023preBPix_ele    1.061215855262075
-interpolate_yield_2023preBPix_mu      rateParam   cat0   ggH_2023preBPix_mu     1.074497589275945
-interpolate_yield_2023postBPix_ele    rateParam   cat0   ggH_2023postBPix_ele   1.063340375035721
-interpolate_yield_2023postBPix_mu     rateParam   cat0   ggH_2023postBPix_mu    1.062234580571907
-interpolate_yield_2024_ele            rateParam   cat0   ggH_2024_ele           1.063202934747687
-interpolate_yield_2024_mu             rateParam   cat0   ggH_2024_mu            1.065148703275913
+interpolate_yield_2022preEE_ele       rateParam   cat0   ggH_2022preEE_ele      1.065344363133585
+interpolate_yield_2022preEE_mu        rateParam   cat0   ggH_2022preEE_mu       1.079949677794242
+interpolate_yield_2022postEE_ele      rateParam   cat0   ggH_2022postEE_ele     1.056947811116389
+interpolate_yield_2022postEE_mu       rateParam   cat0   ggH_2022postEE_mu      1.075275674294305
+interpolate_yield_2023preBPix_ele     rateParam   cat0   ggH_2023preBPix_ele    1.059354278737643
+interpolate_yield_2023preBPix_mu      rateParam   cat0   ggH_2023preBPix_mu     1.073710545433296
+interpolate_yield_2023postBPix_ele    rateParam   cat0   ggH_2023postBPix_ele   1.071173075978387
+interpolate_yield_2023postBPix_mu     rateParam   cat0   ggH_2023postBPix_mu    1.061346788255771
+interpolate_yield_2024_ele            rateParam   cat0   ggH_2024_ele           1.057195320383669
+interpolate_yield_2024_mu             rateParam   cat0   ggH_2024_mu            1.073613353575893
 
 nuisance edit freeze interpolate_yield_2022preEE_ele
 nuisance edit freeze interpolate_yield_2022preEE_mu

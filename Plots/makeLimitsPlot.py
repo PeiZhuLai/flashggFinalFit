@@ -16,7 +16,7 @@ from ROOT import (
     gSystem, gPad, gROOT
 )
 import json
-from ROOT import TPad
+from ROOT import TPad, TLine
 
 run2XsLimitsJSON = "/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Plots/run2/xs_limits.json"
 run2WilsonLimitsJSON = "/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Plots/run2/wilson_limits.json"
@@ -37,6 +37,19 @@ gamma_HToSM = 3.2e-3  # H 總寬度 (GeV) Zebing
 
 decoupling_energy_scale = 1000.0
 ZToll_br = 0.06729
+
+# Ratio pad (pad2) y-axis range — edit these to adjust the bottom panel scale
+FRAME2_YMIN = -0.72
+FRAME2_YMAX = +0.72
+
+# Brazilian-style limit plot y-axis ranges (XS / BR / Wilson modes)
+BRAZILIAN_XS_YMIN,     BRAZILIAN_XS_YMAX     = 4e-1, 100.0
+BRAZILIAN_BR_YMIN,     BRAZILIAN_BR_YMAX     = 1e-6, 2e-2
+BRAZILIAN_WILSON_YMIN, BRAZILIAN_WILSON_YMAX = 5e-3, 10.0
+
+# Run3-vs-Run2 comparison plot top-pad (pad1) y-axis ranges
+COMPARE_XS_YMIN,     COMPARE_XS_YMAX     = 0.4,  100.0
+COMPARE_WILSON_YMIN, COMPARE_WILSON_YMAX = 5e-3, 10.0
 
 def lamda_formula(x, y):
     return (1 - x - y) ** 2 - 4 * x * y
@@ -412,8 +425,8 @@ def make_comparison_plot(
     pad2.cd()
     frame2 = TH1F("frame2", f";m_{{a}} (GeV);{ratio_title}", 100, xmin, xmax)
     frame2.SetStats(0)
-    frame2.SetMinimum(-1.0)
-    frame2.SetMaximum(+1.0)
+    frame2.SetMinimum(FRAME2_YMIN)
+    frame2.SetMaximum(FRAME2_YMAX)
     frame2.GetXaxis().SetTitleSize(0.132)
     frame2.GetXaxis().SetTitleOffset(1.05)
     frame2.GetXaxis().SetLabelSize(0.122)
@@ -424,7 +437,13 @@ def make_comparison_plot(
     frame2.GetYaxis().SetTitleOffset(0.62)
     frame2.GetYaxis().SetNdivisions(505)
     frame2.GetYaxis().CenterTitle(True)
-    frame2.Draw()
+    frame2.Draw("AXIS")
+
+    line_zero = TLine(xmin, 0.0, xmax, 0.0)
+    line_zero.SetLineStyle(2)
+    line_zero.SetLineWidth(3)
+    line_zero.SetLineColor(ROOT.kBlack)
+    line_zero.Draw("same")
 
     g_ratio.SetLineColor(ROOT.TColor.GetColor("#E31A1C"))
     g_ratio.SetLineWidth(3)
@@ -558,14 +577,14 @@ def BrazilianPlots(sample: int = 0,
 
     if setLimitsOnWilsonCoefficient:
         ytitle = "|C^{eff}_{ZH}| [#frac{#Lambda}{1 TeV}]"
-        ymin, ymax = 1e-2, 10.0
+        ymin, ymax = BRAZILIAN_WILSON_YMIN, BRAZILIAN_WILSON_YMAX
     else:
         if not setLimitsOnBR:
             ytitle = "#sigma(pp #rightarrow H) #times B(#rightarrow Za #rightarrow 2l + 2#gamma) [fb]"
-            ymin, ymax = 4e-1, 100.0
+            ymin, ymax = BRAZILIAN_XS_YMIN, BRAZILIAN_XS_YMAX
         else:
             ytitle = "Br(H #rightarrow Za #rightarrow 2l + 2#gamma)"
-            ymin, ymax = 1e-6, 2e-2
+            ymin, ymax = BRAZILIAN_BR_YMIN, BRAZILIAN_BR_YMAX
 
     frame = TH1F("frame", f";m_{{a}} (GeV);{ytitle}", 100, xmin, xmax)
     frame.SetStats(0)
@@ -749,8 +768,8 @@ def main():
             formats=formats,
             logy=logy,
             lumi_fb=args.lumi,
-            y_max=100,
-            y_min=0.4,
+            y_max=COMPARE_XS_YMAX,
+            y_min=COMPARE_XS_YMIN,
             title_size=0.06,
             sqrts_tev=13.6,
             header_left="#bf{CMS} #it{Preliminary}",
@@ -777,8 +796,8 @@ def main():
             formats=formats,
             logy=logy,
             lumi_fb=args.lumi,
-            y_max=10,
-            y_min=1E-2,
+            y_max=COMPARE_WILSON_YMAX,
+            y_min=COMPARE_WILSON_YMIN,
             title_size=0.07,
             sqrts_tev=13.6,
             header_left="#bf{CMS} #it{Preliminary}",

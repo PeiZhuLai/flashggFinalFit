@@ -60,7 +60,7 @@ EOF
 for mA in "${mAs[@]}"; do
   cat >> "$submit_file" << EOF
 log                   = ${log_dir}/impact_mA${mA}.\$(ClusterId).log
-output                = ${log_dir}/impact_mA${mA}.\$(ClusterId).\$(ProcId).out
+output                = /dev/null
 error                 = ${log_dir}/impact_mA${mA}.\$(ClusterId).\$(ProcId).err
 arguments             = ${mA} ${BASE_DIR} ${CMSSW_TOP}
 queue
