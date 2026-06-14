@@ -13,8 +13,8 @@ SubmitFile="1_sub_bias_study.submit"
 # Clean logs from the previous run so they don't accumulate and fill the work quota.
 # Done here at submit time (not after the run): Condor writes these asynchronously
 # while the jobs are still running, so they can only be safely wiped before the next launch.
-echo ">>> Cleaning logs from previous run (logs/, condor_logs/)..."
-rm -rf "$LogDir" "$BaseDir/condor_logs"
+echo ">>> Cleaning logs from previous run (logs/, condor_logs/, bias_jobs/)..."
+rm -rf "$LogDir" "$BaseDir/condor_logs" "$BaseDir/bias_jobs"
 
 # Create log directory if it doesn't exist
 mkdir -p "$LogDir"

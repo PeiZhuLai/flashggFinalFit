@@ -27,7 +27,19 @@ MHLow, MHHigh = '100', '180' # In this way, the result will be as same as the fT
 MHNominal = '125'
 
 def _resolve_fit_range(mass_alp, default_low, default_high):
-    return default_low, default_high
+    # Merged sub-GeV: the m_llГ core sits near 125 GeV (M0p1 is pulled to ~142 by the
+    # 0.1 GeV merged-photon energy mismeasurement) on a broad high-side combinatorial
+    # pedestal. Over the full [100,180] window nGauss/DCB absorb the pedestal and inflate
+    # sigma_eff (per-mass instability: some fits go broad, some collapse). Tighten to a
+    # ~+/-13 GeV window around the measured core peak so the detector-resolution core is
+    # recovered consistently. Resolved (integer mass) points fall through unchanged.
+    windows = {
+        "0p1": ("118", "158"),
+        "0p2": ("112", "140"), "0p3": ("112", "140"), "0p4": ("112", "140"),
+        "0p5": ("112", "140"), "0p6": ("112", "140"), "0p7": ("112", "140"),
+        "0p8": ("112", "140"), "0p9": ("112", "140"),
+    }
+    return windows.get(str(mass_alp), (default_low, default_high))
 
 def _force_dcb_for_low_ma(mass_alp, current_useDCB):
     return current_useDCB
@@ -173,7 +185,7 @@ def build_channel_systematics(channel, skip, scales, scalesCorr, scalesGlobal, s
 
 def get_options():
   parser = OptionParser()
-  parser.add_option('--mass_ALP', dest='mass_ALP', default=1, type='int', help="ALP mass") # PZ
+  parser.add_option('--mass_ALP', dest='mass_ALP', default='1', type='string', help="ALP mass") # PZ
   parser.add_option("--channel", dest='channel', default='', help="ele, mu, or leptons") # PZ
 
   parser.add_option("--xvar", dest='xvar', default='CMS_hza_mass', help="Observable to fit")

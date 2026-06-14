@@ -12,7 +12,7 @@ source /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggF
 
 lable='run3'
 version='ReReco'
-Lumi_run3='170.84'
+Lumi_run3='172.13'
 gof_toys="${GOF_TOYS:-100}"
 
 format_duration() {

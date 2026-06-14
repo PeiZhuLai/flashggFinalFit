@@ -128,7 +128,7 @@ def leave():
 def get_options():
   parser = OptionParser()
 
-  parser.add_option('--mass_ALP', dest='mass_ALP', default=5, type='int', help="ALP mass") # PZ
+  parser.add_option('--mass_ALP', dest='mass_ALP', default='5', type='string', help="ALP mass") # PZ
   parser.add_option('--year', dest='year', default='16', help="year") # PZ
   parser.add_option("--channel", dest='channel', default='', help="ele, mu, or leptons") # PZ
 
@@ -155,18 +155,31 @@ def get_options():
                     help="當找不到 nominal RooDataSet 時的動作: error|skip|guess (guess=嘗試模糊匹配)")
   parser.add_option('--disableAutoWeightFix', dest='disableAutoWeightFix', default=False, action="store_true",
                     help="停用：自動把缺 RooDataHist 但具 weight_* 變數的系統誤差由 a_h 轉為 a_w")
+  # Low-mA merged analysis (sub-GeV): no interpolation, single merged bkg/data, lumi override
+  parser.add_option('--mergedLowMA', dest='mergedLowMA', default=False, action="store_true",
+                    help="Merged low-mA mode: mass_ALP is a string label (e.g. 0p5), single 'merged' bkg/data, no interpolation")
+  parser.add_option('--lumi', dest='lumi', default=0.0, type='float',
+                    help="Override total lumi [fb^-1] for the datacard rate (e.g. 172.13 for Run-3). 0 = use lumiMap[year]")
   return parser.parse_args()
 
 (opt,args) = get_options()
 
 # 決定「實際用來讀檔/取模型」的 mass
-signal_mass_for_io = resolve_mass_for_io(opt.mass_ALP, ma_list, interploate_ma_list)
-signal_components = [{"anchor_mass": signal_mass_for_io, "shape_weight": 1.0, "label": ""}]
-if int(round(float(opt.mass_ALP))) in interploate_ma_list:
-  print(f" --> [INFO] signal shape 改回最近 anchor: mA={opt.mass_ALP} -> anchor={signal_mass_for_io}")
-  print(" --> [INFO] signal normalization 將在 datacard 階段由 writeInterpolateYields() 使用 quadratic efficiency 做修正")
-bkg_mass_for_io = int(round(float(opt.mass_ALP)))
-print(f" --> [INFO] background/data 使用目標 mass 自身路徑 mA={bkg_mass_for_io}")
+if opt.mergedLowMA:
+  # sub-GeV merged: the mass label (e.g. "0p5") IS the signal model anchor; no interpolation;
+  # background/data are a single mass-independent "merged" model.
+  signal_mass_for_io = opt.mass_ALP
+  signal_components = [{"anchor_mass": signal_mass_for_io, "shape_weight": 1.0, "label": ""}]
+  bkg_mass_for_io = "merged"
+  print(f" --> [INFO] mergedLowMA: signal anchor={signal_mass_for_io}, bkg/data=merged")
+else:
+  signal_mass_for_io = resolve_mass_for_io(opt.mass_ALP, ma_list, interploate_ma_list)
+  signal_components = [{"anchor_mass": signal_mass_for_io, "shape_weight": 1.0, "label": ""}]
+  if int(round(float(opt.mass_ALP))) in interploate_ma_list:
+    print(f" --> [INFO] signal shape 改回最近 anchor: mA={opt.mass_ALP} -> anchor={signal_mass_for_io}")
+    print(" --> [INFO] signal normalization 將在 datacard 階段由 writeInterpolateYields() 使用 quadratic efficiency 做修正")
+  bkg_mass_for_io = int(round(float(opt.mass_ALP)))
+  print(f" --> [INFO] background/data 使用目標 mass 自身路徑 mA={bkg_mass_for_io}")
 
 # Extract years and inputWSDir
 inputWSDirMap = od()
@@ -435,7 +448,7 @@ for year in years:
   for proc in procs:
     for lep_channel in leps:
       for comp in signal_components:
-        anchor_mass = int(comp['anchor_mass'])
+        anchor_mass = comp['anchor_mass'] if opt.mergedLowMA else int(comp['anchor_mass'])
         shape_weight = float(comp['shape_weight'])
         mix_label = comp.get('label', '')
         mix_group = "%s_%s_%s"%(procToDatacardName(proc),year,lep_channel)
@@ -502,8 +515,9 @@ for year in years:
           _modelWSFile = f"{opt.sigModelWSDir}/outdir_{lep_channel}/signalFit/output/{anchor_mass}_CMS-HGG_sigfit_{year}_{lep_channel}_Hm125.root"
           _model = "%s_%s:%s_%s"%(outputWSName__,sqrts__,outputWSObjectTitle__,origin_id)
 
-        # Extract rate from lumi and mixture scaling
-        _rate = float(lumiMap[year])*1000*yield_scale
+        # Extract rate from lumi and mixture scaling (--lumi overrides lumiMap[year], e.g. Run-3 172.13)
+        _lumi_fb = float(opt.lumi) if getattr(opt, 'lumi', 0.0) else float(lumiMap[year])
+        _rate = _lumi_fb*1000*yield_scale
 
         if opt.debugNames:
           _print_block("Signal 名稱組合",

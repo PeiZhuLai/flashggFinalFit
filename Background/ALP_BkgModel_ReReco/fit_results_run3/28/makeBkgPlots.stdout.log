@@ -259,13 +259,12 @@ Error in <TLegend::AddEntry>: need to create a canvas first
 [FOR TABLE] ,UntaggedTag_0,165,0.757415, assuming resolution of 1
 [INFO] mgg: 165 nomBkg: 0.756372 +/- 1 (2) sig -- +0.107013(0.224219) - 0.124092(0.254094)
 [FOR TABLE] ,UntaggedTag_0,170,0.522556, assuming resolution of 1
-Error in <Minuit2>: VariableMetricBuilder Initial matrix not pos.def.
 [INFO] mgg: 170 nomBkg: 0.521834 +/- 1 (2) sig -- +0.084654(0.177773) - 0.0978438(0.203841)
 [FOR TABLE] ,UntaggedTag_0,175,0.361216, assuming resolution of 1
 [INFO] mgg: 175 nomBkg: 0.360655 +/- 1 (2) sig -- +0.0633388(0.133715) - 0.0732581(0.152151)
 [FOR TABLE] ,UntaggedTag_0,180,0.263402, assuming resolution of 1
 [INFO] mgg: 180 nomBkg: 0.259774 +/- 1 (2) sig -- +0.0642078(0.131402) - 0.186713(0.194831)
 
-[INFO] intLumi 170.84
+[INFO] intLumi 172.13
 Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/AllFitResults/bkgplot_28.pdf has been created
 Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/28/BkgPlots/bkgplot_cat0.pdf has been created

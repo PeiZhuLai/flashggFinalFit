@@ -415,9 +415,9 @@ RooAbsPdf* PdfModelBuilder::getPowerLawStepxGau(string prefix, int order, int ca
   turnon_pow = stablePow.turnon;        turnon_lpow = stablePow.turnonLo;    turnon_hpow = stablePow.turnonHi;
 
   if (mass_ALP == 1) {
-    sigma_pow  = 3.6;      sigma_lpow  = 1.0;    sigma_hpow  = 7.0;
-    turnon_pow = 104.8;    turnon_lpow = 101.5;  turnon_hpow = 109.0;
-    width_pow  = 2.2;      width_lpow  = 0.5;    width_hpow  = 7.0;
+    sigma_pow  = 5.5;      sigma_lpow  = 2.5;    sigma_hpow  = 9.0;   // broaden (105 cut)
+    turnon_pow = 104.8;    turnon_lpow = 103.0;  turnon_hpow = 106.0; // pin near 105 edge
+    width_pow  = 3.5;      width_lpow  = 1.0;    width_hpow  = 8.0;
   } else if (mass_ALP == 2) {
     sigma_pow  = 3.3;      sigma_lpow  = 1.0;    sigma_hpow  = 6.5;
     turnon_pow = 105.1;    turnon_lpow = 102.0;  turnon_hpow = 109.3;
@@ -694,9 +694,9 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
   par5_exp5 = -0.018;       par5_lexp5 = -0.06;   par5_hexp5 = -0.008;
 
   if (mass_ALP == 1) {
-    sigma_exp  = 3.4;       sigma_lexp  = 1.0;    sigma_hexp  = 6.5;
-    turnon_exp = 104.5;     turnon_lexp = 101.5;  turnon_hexp = 108.5;
-    width_exp  = 2.4;       width_lexp  = 0.6;    width_hexp  = 7.5;
+    sigma_exp  = 5.5;       sigma_lexp  = 2.5;    sigma_hexp  = 9.0;   // broaden (105 cut: smoother turn-on, more stable fit)
+    turnon_exp = 104.5;     turnon_lexp = 103.0;  turnon_hexp = 106.0; // pin near 105 data edge; don't let it float into data
+    width_exp  = 3.5;       width_lexp  = 1.0;    width_hexp  = 8.0;
   } else if (mass_ALP == 2) {
     sigma_exp  = 3.0;       sigma_lexp  = 1.0;    sigma_hexp  = 6.0;
     turnon_exp = 104.9;     turnon_lexp = 102.0;  turnon_hexp = 108.8;
@@ -1005,9 +1005,9 @@ RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat
 
   if (mass_ALP == 1) {
     power1_lau1 = -4.3;      power1_llau1 = -6.8;    power1_hlau1 = -2.2;
-    sigma_lau  = 3.4;       sigma_llau  = 1.0;     sigma_hlau  = 6.5;
-    turnon_lau = 104.3;     turnon_llau = 101.2;   turnon_hlau = 108.2;
-    width_lau  = 2.0;       width_llau  = 0.5;     width_hlau  = 6.5;
+    sigma_lau  = 5.5;       sigma_llau  = 2.5;     sigma_hlau  = 9.0;   // broaden (105 cut)
+    turnon_lau = 104.3;     turnon_llau = 103.0;   turnon_hlau = 106.0; // pin near 105 edge
+    width_lau  = 3.5;       width_llau  = 1.0;     width_hlau  = 8.0;
   } else if (mass_ALP == 2) {
     power1_lau1 = -4.2;      power1_llau1 = -6.8;    power1_hlau1 = -2.2;
     sigma_lau  = 3.1;       sigma_llau  = 1.0;     sigma_hlau  = 6.0;

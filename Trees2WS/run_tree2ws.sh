@@ -71,6 +71,10 @@ for ma in "${sig_samples[@]}"; do
             if [ "${DO_SYSTEMATICS}" = "1" ]; then
                 extra_args+=(--doSystematics)
             fi
+            # Raise the m_llgg low edge to 105 for mA=1,2 (skip the low-m_llgg turn-on).
+            if [[ "${ma}" == "mA_M1" || "${ma}" == "mA_M2" ]]; then
+                extra_args+=(--massLow 105)
+            fi
             submit_job "sig_${ma}_${year}_${lep}" \
                 python3 trees2ws.py --inputConfig config.py --inputTreeFile "${path}/output_${year}.root" --inputMass 125 --productionMode ggh --year "${year}" --lepton "${lep}" "${extra_args[@]}"
         done
@@ -87,8 +91,15 @@ for m in "${mAs_data[@]}"; do
 done
 for ma in "${data_samples[@]}"; do
     path="/eos/home-p/pelai/HZa/root_MVAcut/data/${ma}"
+    data_range_args=()
+    # Raise the m_llgg low edge + event cut to 105 for mA=1,2 (skip the low-m_llgg turn-on).
+    if [[ "${ma}" == "mA_M1" || "${ma}" == "mA_M2" ]]; then
+        # --applyMassCut is REQUIRED, else trees2ws_data.py ignores massCutRange and the
+        # <105 events pile into the 105 underflow bin (spurious spike in the bkg fit).
+        data_range_args+=(--massLow 105 --massCutRange 105,180 --applyMassCut)
+    fi
     submit_job "data_${ma}" \
-        python3 trees2ws_data.py --inputConfig config.py --inputTreeFile "${path}/run3.root"
+        python3 trees2ws_data.py --inputConfig config.py --inputTreeFile "${path}/run3.root" "${data_range_args[@]}"
 done
 
 # wait_batch

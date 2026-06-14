@@ -23,6 +23,7 @@ def get_options():
   parser.add_option('--lepton',dest='lepton', default="all", help='Lepton channel to process [ele,mu,all]')
   # 新增：輸出工作空間目錄名稱（預設 ws_Tree2WS）
   parser.add_option('--outputWSDirName',dest='outputWSDirName', default='ws_Tree2WS', help='Output workspace directory name (default: ws_Tree2WS)')
+  parser.add_option('--massLow',dest='massLow', default='100', help='Low edge of the CMS_hza_mass RooRealVar range (raise to 105 for mA=1,2 to match the raised background fit range)')
   return parser.parse_args()
 (opt,args) = get_options()
 
@@ -54,9 +55,9 @@ def add_vars_to_workspace(_ws=None,_data=None,_stxsVar=None):
   _vars = od()
   for var in _data.columns:
     if var in ['type','cat','lep',_stxsVar,'']: continue
-    if var == "CMS_hza_mass": 
-      _vars[var] = ROOT.RooRealVar(var,var,125.,100.,180.)
-      _vars[var].setBins(80)
+    if var == "CMS_hza_mass":
+      _vars[var] = ROOT.RooRealVar(var,var,125.,float(opt.massLow),180.)
+      _vars[var].setBins(int(round(180.-float(opt.massLow))))
     elif var == "dZ": 
       _vars[var] = ROOT.RooRealVar(var,var,0.,-20.,20.)
       _vars[var].setBins(40)

@@ -31,7 +31,7 @@ def leave():
 def get_options():
   parser = OptionParser()
   
-  parser.add_option('--mass_ALP', dest='mass_ALP', default=1, type='int', help="ALP mass") # PZ
+  parser.add_option('--mass_ALP', dest='mass_ALP', default='1', type='string', help="ALP mass") # PZ
   parser.add_option('--year', dest='year', default='16', help="year") # PZ
   parser.add_option("--channel", dest='channel', default='', help="ele, mu, or leptons") # PZ
 

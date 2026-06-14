@@ -1558,7 +1558,7 @@ string catname;
 	latex->DrawLatex(0.15, 1. - topMargin - 0.10,("m_{a} = "+to_string(int(mavalue_))+" GeV").c_str());
 
 	latex->SetTextAlign(31);
-	latex->DrawLatex(1. - rightMargin, 1. - topMargin + 0.02, ("170.84 fb^{-1} (13.6 TeV)"));
+	latex->DrawLatex(1. - rightMargin, 1. - topMargin + 0.02, ("172.13 fb^{-1} (13.6 TeV)"));
 
 	TLatex *cmslatex = new TLatex();
 	cmslatex->SetTextSize(0.03);

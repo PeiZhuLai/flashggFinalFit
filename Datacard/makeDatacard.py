@@ -17,7 +17,7 @@ interploate_ma_list = [11,12,13,14,16,17,18,19,21,22,23,24,26,27,28,29]
 def get_options():
   parser = OptionParser()
 
-  parser.add_option('--mass_ALP', dest='mass_ALP', default=1, type='int', help="ALP mass") # PZ
+  parser.add_option('--mass_ALP', dest='mass_ALP', default='1', type='string', help="ALP mass") # PZ
   parser.add_option('--years', dest='years', default='2022preEE,2022postEE', help="Comma separated list of years in makeYields output")
   parser.add_option("--channel", dest='channel', default='', help="ele, mu, or leptons") # PZ
 

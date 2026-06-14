@@ -215,7 +215,7 @@ Error in <TLegend::AddEntry>: need to create a canvas first
 [INFO] Plot has 85 bins
 [INFO] Processing for mA = 18
 [FOR TABLE] ,UntaggedTag_0,95,3.89547, assuming resolution of 1
-[INFO] mgg: 95 nomBkg: 3.80951 +/- 1 (2) sig -- +0.0314498(0.125799) - 3.26821(3.31844)
+[INFO] mgg: 95 nomBkg: 3.80951 +/- 1 (2) sig -- +2.79207e-06(2.79207e-06) - 3.26821(3.31844)
 [FOR TABLE] ,UntaggedTag_0,97.5,4.66294, assuming resolution of 1
 [INFO] mgg: 97.5 nomBkg: 4.6643 +/- 1 (2) sig -- +0.961741(1.61977) - 0.437278(1.0932)
 [FOR TABLE] ,UntaggedTag_0,100,5.45029, assuming resolution of 1
@@ -238,33 +238,3 @@ Error in <TLegend::AddEntry>: need to create a canvas first
 [INFO] mgg: 120 nomBkg: 4.75782 +/- 1 (2) sig -- +0.472887(0.920212) - 0.39029(0.743409)
 [FOR TABLE] ,UntaggedTag_0,122.5,4.15852, assuming resolution of 1
 [INFO] mgg: 122.5 nomBkg: 4.15778 +/- 1 (2) sig -- +0.549592(0.931916) - 0.389792(0.714619)
-[FOR TABLE] ,UntaggedTag_0,125,3.59452, assuming resolution of 1
-[INFO] mgg: 125 nomBkg: 3.59226 +/- 1 (2) sig -- +0.577482(0.932856) - 0.364839(0.645484)
-[FOR TABLE] ,UntaggedTag_0,127.5,3.08562, assuming resolution of 1
-[INFO] mgg: 127.5 nomBkg: 3.08434 +/- 1 (2) sig -- +0.565973(0.905556) - 0.33735(0.578314)
-[FOR TABLE] ,UntaggedTag_0,130,2.63986, assuming resolution of 1
-[INFO] mgg: 130 nomBkg: 2.63732 +/- 1 (2) sig -- +0.532869(0.837365) - 0.298758(0.494497)
-[FOR TABLE] ,UntaggedTag_0,135,1.93265, assuming resolution of 1
-[INFO] mgg: 135 nomBkg: 1.9306 +/- 1 (2) sig -- +0.390785(0.651309) - 0.211159(0.354445)
-[FOR TABLE] ,UntaggedTag_0,140,1.43001, assuming resolution of 1
-[INFO] mgg: 140 nomBkg: 1.42854 +/- 1 (2) sig -- +0.224103(0.448205) - 0.150666(0.290171)
-[FOR TABLE] ,UntaggedTag_0,145,1.07559, assuming resolution of 1
-[INFO] mgg: 145 nomBkg: 1.07457 +/- 1 (2) sig -- +0.133626(0.291549) - 0.184693(0.335805)
-[FOR TABLE] ,UntaggedTag_0,150,0.824121, assuming resolution of 1
-[INFO] mgg: 150 nomBkg: 0.823419 +/- 1 (2) sig -- +0.101022(0.212678) - 0.231586(0.34738)
-[FOR TABLE] ,UntaggedTag_0,155,0.64383, assuming resolution of 1
-[INFO] mgg: 155 nomBkg: 0.643339 +/- 1 (2) sig -- +0.098694(0.216187) - 0.251304(0.341774)
-[FOR TABLE] ,UntaggedTag_0,160,0.513165, assuming resolution of 1
-[INFO] mgg: 160 nomBkg: 0.512819 +/- 1 (2) sig -- +0.0671346(0.234975) - 0.252403(0.320512)
-[FOR TABLE] ,UntaggedTag_0,165,0.417486, assuming resolution of 1
-[INFO] mgg: 165 nomBkg: 0.417239 +/- 1 (2) sig -- +0.0605569(0.238443) - 0.0684533(0.286852)
-[FOR TABLE] ,UntaggedTag_0,170,0.346783, assuming resolution of 1
-[INFO] mgg: 170 nomBkg: 0.3466 +/- 1 (2) sig -- +0.110386(0.262168) - 0.0690492(0.23558)
-[FOR TABLE] ,UntaggedTag_0,175,0.295295, assuming resolution of 1
-[INFO] mgg: 175 nomBkg: 0.295053 +/- 1 (2) sig -- +0.101847(0.26735) - 0.124476(0.193629)
-[FOR TABLE] ,UntaggedTag_0,180,0.273165, assuming resolution of 1
-[INFO] mgg: 180 nomBkg: 0.273245 +/- 1 (2) sig -- +0.0245029(0.0857601) - 0.233753(0.243359)
-
-[INFO] intLumi 170.84
-Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/AllFitResults/bkgplot_18.pdf has been created
-Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/18/BkgPlots/bkgplot_cat0.pdf has been created

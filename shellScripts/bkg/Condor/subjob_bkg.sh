@@ -14,7 +14,7 @@ BASE_DIR="${BASE_DIR:-${default_base_dir}}"
 CMSSW_TOP="${CMSSW_TOP:-${CMSSW_BASE:-/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4}}"
 lable="${LABLE:-run3}"
 version="${VERSION:-ReReco}"
-Lumi_run3="${LUMI_RUN3:-170.84}"
+Lumi_run3="${LUMI_RUN3:-172.13}"
 dir_input="${DIR_INPUT:-/eos/home-p/pelai/HZa/root_MVAcut/data}"
 
 if [[ $# -gt 0 ]]; then

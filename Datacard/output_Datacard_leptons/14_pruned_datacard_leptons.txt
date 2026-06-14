@@ -86,16 +86,16 @@ CMS_hza_nuisance_PhotonSmear_13p6TeVsmear_2023preBPix                   param   
 CMS_hza_nuisance_PhotonSmear_13p6TeVsmear_2023postBPix                  param    0.0    1.0   
 CMS_hza_nuisance_PhotonSmear_13p6TeVsmear_2024                          param    0.0    1.0   
 
-interpolate_yield_2022preEE_ele       rateParam   cat0   ggH_2022preEE_ele      0.9828588814536416
-interpolate_yield_2022preEE_mu        rateParam   cat0   ggH_2022preEE_mu       0.9723726155037774
-interpolate_yield_2022postEE_ele      rateParam   cat0   ggH_2022postEE_ele     0.9830210486081947
-interpolate_yield_2022postEE_mu       rateParam   cat0   ggH_2022postEE_mu      0.9607515268162021
-interpolate_yield_2023preBPix_ele     rateParam   cat0   ggH_2023preBPix_ele    0.9576061085640577
-interpolate_yield_2023preBPix_mu      rateParam   cat0   ggH_2023preBPix_mu     0.9869599325044961
-interpolate_yield_2023postBPix_ele    rateParam   cat0   ggH_2023postBPix_ele   1.010505568750181
-interpolate_yield_2023postBPix_mu     rateParam   cat0   ggH_2023postBPix_mu    1.003958359868869
-interpolate_yield_2024_ele            rateParam   cat0   ggH_2024_ele           0.9841961636399058
-interpolate_yield_2024_mu             rateParam   cat0   ggH_2024_mu            0.9860273513693322
+interpolate_yield_2022preEE_ele       rateParam   cat0   ggH_2022preEE_ele      1.028908403140434
+interpolate_yield_2022preEE_mu        rateParam   cat0   ggH_2022preEE_mu       0.9999753135618039
+interpolate_yield_2022postEE_ele      rateParam   cat0   ggH_2022postEE_ele     1.019520333651067
+interpolate_yield_2022postEE_mu       rateParam   cat0   ggH_2022postEE_mu      0.9900792495467091
+interpolate_yield_2023preBPix_ele     rateParam   cat0   ggH_2023preBPix_ele    0.9954398827926726
+interpolate_yield_2023preBPix_mu      rateParam   cat0   ggH_2023preBPix_mu     1.012356348331732
+interpolate_yield_2023postBPix_ele    rateParam   cat0   ggH_2023postBPix_ele   1.020715215225535
+interpolate_yield_2023postBPix_mu     rateParam   cat0   ggH_2023postBPix_mu    1.033566703986497
+interpolate_yield_2024_ele            rateParam   cat0   ggH_2024_ele           1.024196385397162
+interpolate_yield_2024_mu             rateParam   cat0   ggH_2024_mu            1.017996903376403
 
 nuisance edit freeze interpolate_yield_2022preEE_ele
 nuisance edit freeze interpolate_yield_2022preEE_mu

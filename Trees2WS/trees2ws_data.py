@@ -13,6 +13,7 @@ def get_options():
   parser.add_option('--outputWSDir',dest='outputWSDir', default=None, help='Output dir (default is same as input dir)')
   parser.add_option('--applyMassCut',dest='applyMassCut', default=False, action="store_true", help='Apply cut on CMS_hza_mass')
   parser.add_option('--massCutRange',dest='massCutRange', default='100,180', help='CMS_hgg_mass cut range')
+  parser.add_option('--massLow',dest='massLow', default='95', help='Low edge of the CMS_hza_mass RooRealVar range (raise to 105 for mA=1,2 to skip the low-m_llgg turn-on)')
   return parser.parse_args()
 (opt,args) = get_options()
 
@@ -42,8 +43,8 @@ def add_vars_to_workspace(_ws=None,_dataVars=None):
   _vars = od()
   for var in _dataVars:
     if var == "CMS_hza_mass":
-      _vars[var] = ROOT.RooRealVar(var,var,125.,95.,180.)
-      _vars[var].setBins(170)
+      _vars[var] = ROOT.RooRealVar(var,var,125.,float(opt.massLow),180.)
+      _vars[var].setBins(int(round((180.-float(opt.massLow))/0.5)))
     elif var == "dZ":
       _vars[var] = ROOT.RooRealVar(var,var,0.,-20.,20.)
       _vars[var].setBins(40)

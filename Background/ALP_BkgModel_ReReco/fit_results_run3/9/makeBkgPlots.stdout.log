@@ -265,6 +265,6 @@ Error in <TLegend::AddEntry>: need to create a canvas first
 [FOR TABLE] ,UntaggedTag_0,180,0.132333, assuming resolution of 1
 [INFO] mgg: 180 nomBkg: 0.13186 +/- 1 (2) sig -- +0.0159577(0.0553199) - 0.104818(0.125679)
 
-[INFO] intLumi 170.84
+[INFO] intLumi 172.13
 Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/AllFitResults/bkgplot_9.pdf has been created
 Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/9/BkgPlots/bkgplot_cat0.pdf has been created

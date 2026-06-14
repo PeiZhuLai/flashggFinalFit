@@ -268,6 +268,6 @@ Error in <Minuit2>: VariableMetricBuilder Initial matrix not pos.def.
 Error in <Minuit2>: VariableMetricBuilder Initial matrix not pos.def.
 [INFO] mgg: 180 nomBkg: 0.162963 +/- 1 (2) sig -- +0.00827874(0.0331149) - 0.122222(0.122222)
 
-[INFO] intLumi 170.84
+[INFO] intLumi 172.13
 Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/AllFitResults/bkgplot_21.pdf has been created
 Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/21/BkgPlots/bkgplot_cat0.pdf has been created

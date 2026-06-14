@@ -233,39 +233,3 @@ Error in <TLegend::AddEntry>: need to create a canvas first
 [FOR TABLE] ,UntaggedTag_0,115,2.77912, assuming resolution of 1
 [INFO] mgg: 115 nomBkg: 2.7792 +/- 1 (2) sig -- +0.31258(0.664232) - 0.282262(0.564524)
 [FOR TABLE] ,UntaggedTag_0,117.5,2.38909, assuming resolution of 1
-[INFO] mgg: 117.5 nomBkg: 2.38838 +/- 1 (2) sig -- +0.262604(0.579539) - 0.242569(0.46648)
-[FOR TABLE] ,UntaggedTag_0,120,2.03259, assuming resolution of 1
-[INFO] mgg: 120 nomBkg: 2.03057 +/- 1 (2) sig -- +0.217087(0.50097) - 0.198298(0.380732)
-[FOR TABLE] ,UntaggedTag_0,122.5,1.72516, assuming resolution of 1
-[INFO] mgg: 122.5 nomBkg: 1.72415 +/- 1 (2) sig -- +0.176956(0.461625) - 0.168374(0.323278)
-[FOR TABLE] ,UntaggedTag_0,125,1.46795, assuming resolution of 1
-[INFO] mgg: 125 nomBkg: 1.46615 +/- 1 (2) sig -- +0.148991(0.39731) - 0.137452(0.263449)
-[FOR TABLE] ,UntaggedTag_0,127.5,1.25554, assuming resolution of 1
-[INFO] mgg: 127.5 nomBkg: 1.25479 +/- 1 (2) sig -- +0.124707(0.315049) - 0.117637(0.22547)
-[FOR TABLE] ,UntaggedTag_0,130,1.08075, assuming resolution of 1
-[INFO] mgg: 130 nomBkg: 1.07952 +/- 1 (2) sig -- +0.0974047(0.292218) - 0.101205(0.193976)
-[FOR TABLE] ,UntaggedTag_0,135,0.817828, assuming resolution of 1
-[INFO] mgg: 135 nomBkg: 0.817017 +/- 1 (2) sig -- +0.0211836(0.211849) - 0.0797868(0.153191)
-[FOR TABLE] ,UntaggedTag_0,140,0.637303, assuming resolution of 1
-[INFO] mgg: 140 nomBkg: 0.636762 +/- 1 (2) sig -- +0.14962(0.280538) - 0.130586(0.164165)
-[FOR TABLE] ,UntaggedTag_0,145,0.511698, assuming resolution of 1
-[INFO] mgg: 145 nomBkg: 0.511332 +/- 1 (2) sig -- +0.180165(0.251394) - 0.12284(0.151802)
-[FOR TABLE] ,UntaggedTag_0,150,0.423201, assuming resolution of 1
-[INFO] mgg: 150 nomBkg: 0.42295 +/- 1 (2) sig -- +0.0876443(0.198152) - 0.0726946(0.125563)
-[FOR TABLE] ,UntaggedTag_0,155,0.360113, assuming resolution of 1
-[INFO] mgg: 155 nomBkg: 0.359939 +/- 1 (2) sig -- +0.0913985(0.196858) - 0.0759247(0.129353)
-[FOR TABLE] ,UntaggedTag_0,160,0.314644, assuming resolution of 1
-[INFO] mgg: 160 nomBkg: 0.314521 +/- 1 (2) sig -- +0.0952959(0.210308) - 0.0786304(0.132689)
-[FOR TABLE] ,UntaggedTag_0,165,0.281533, assuming resolution of 1
-Error in <Minuit2>: VariableMetricBuilder Initial matrix not pos.def.
-[INFO] mgg: 165 nomBkg: 0.281447 +/- 1 (2) sig -- +0.0994717(0.211377) - 0.0835545(0.138525)
-[FOR TABLE] ,UntaggedTag_0,170,0.25719, assuming resolution of 1
-[INFO] mgg: 170 nomBkg: 0.257127 +/- 1 (2) sig -- +0.101019(0.213923) - 0.0843699(0.144634)
-[FOR TABLE] ,UntaggedTag_0,175,0.239128, assuming resolution of 1
-[INFO] mgg: 175 nomBkg: 0.239083 +/- 1 (2) sig -- +0.10314(0.21774) - 0.0859203(0.149427)
-[FOR TABLE] ,UntaggedTag_0,180,0.226193, assuming resolution of 1
-[INFO] mgg: 180 nomBkg: 0.225597 +/- 1 (2) sig -- +0.0153067(0.0556606) - 0.188915(0.207972)
-
-[INFO] intLumi 170.84
-Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/AllFitResults/bkgplot_12.pdf has been created
-Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/12/BkgPlots/bkgplot_cat0.pdf has been created

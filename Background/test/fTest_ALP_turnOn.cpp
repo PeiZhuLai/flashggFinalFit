@@ -167,11 +167,32 @@ RooAbsPdf* getPdf(PdfModelBuilder &pdfsModel, string type, int order, const char
   else if (type=="PowerLaw") return pdfsModel.getPowerLawStepxGau("Pow",order,2, mass_ALP);//PZ
   else if (type=="Laurent") return pdfsModel.getLaurentStepxGau("Lau",order,2, mass_ALP);//PZ
 
-  else 
+  else
   {
     cerr << "[ERROR] -- getPdf() -- type " << type << " not recognised." << endl;
     return NULL;
   }
+}
+
+// Exclusive upper bound on the order scanned per family (loop runs while order < this).
+// Bias study (2026-06-13): with Bern4 in the envelope the bias study failed badly at high mass
+// (Bern4 worst at 11 of mA4-30, up to -0.488 at mA27) because the 4th-order Bernstein is flexible
+// enough to absorb signal. fTest never selects Bern4 anyway -> cap Bernstein at order 3 for ALL
+// masses (envMaxOrder=4 -> scans orders 1,2,3). This also lets mA1-3 reach Bern3 (Bern2 under-fit
+// gave mA3 = -0.213). At mA=1 the steep turn-on makes Pow3 (+0.52)/Exp3 (+0.30) badly biased ->
+// keep exponential/power-law capped at order 2 there.
+static int envMaxOrder(const std::string& funcType, int mass_ALP)
+{
+  // Bernstein cap is set via env BERN_CAP (default 3). envMaxOrder is an exclusive
+  // upper bound, so return cap+1 -> scans orders 1..cap. Used for the Bern5/Bern6
+  // order-vs-bias study (set BERN_CAP=5 or 6 at runtime, no recompile needed).
+  if (funcType=="Bernstein") {
+    const char* bc = getenv("BERN_CAP");
+    int cap = (bc && atoi(bc) > 0) ? atoi(bc) : 3;
+    return cap + 1;
+  }
+  if (mass_ALP==1 && (funcType=="Exponential" || funcType=="PowerLaw")) return 3;  // excludes Exp3/Pow3
+  return 7;
 }
 
 void runFit(RooAbsPdf *pdf, RooAbsData *data, double *NLL, int *stat_t, int MaxTries){
@@ -1335,7 +1356,7 @@ int main(int argc, char* argv[]){
 			RooAbsPdf *prev_pdf=NULL;
 			RooAbsPdf *cache_pdf=NULL;
 				int counter =0;
-				while (prob<0.05 && order < (((*funcType)=="Bernstein") ? 5 : 7) ){
+				while (prob<0.05 && order < envMaxOrder(*funcType, mass_ALP) ){
 				
         RooAbsPdf *bkgPdf = getPdf(pdfsModel,*funcType,order,"", mass_ALP);
 				if (!bkgPdf){
@@ -1394,7 +1415,7 @@ int main(int argc, char* argv[]){
 				std::cout << "[INFO] Upper end Threshold for highest order function " << upperEnvThreshold <<std::endl;
 
 
-				while (prob<upperEnvThreshold && order < (((*funcType)=="Bernstein") ? 5 : 7) ){
+				while (prob<upperEnvThreshold && order < envMaxOrder(*funcType, mass_ALP) ){
 					RooAbsPdf *bkgPdf = getPdf(pdfsModel,*funcType,order,"", mass_ALP);
 
           if (!bkgPdf ){

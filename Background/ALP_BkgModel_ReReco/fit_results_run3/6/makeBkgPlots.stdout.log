@@ -215,7 +215,7 @@ Error in <TLegend::AddEntry>: need to create a canvas first
 [INFO] Plot has 85 bins
 [INFO] Processing for mA = 6
 [FOR TABLE] ,UntaggedTag_0,95,1.07657, assuming resolution of 1
-[INFO] mgg: 95 nomBkg: 1.04115 +/- 1 (2) sig -- +0.0194308(0.0777232) - 1.01573(1.02488)
+[INFO] mgg: 95 nomBkg: 1.04115 +/- 1 (2) sig -- +0.0194308(0.0777232) - 1.01268(1.02183)
 [FOR TABLE] ,UntaggedTag_0,97.5,1.4051, assuming resolution of 1
 [INFO] mgg: 97.5 nomBkg: 1.40504 +/- 1 (2) sig -- +0.250033(0.555629) - 0.285398(0.59275)
 [FOR TABLE] ,UntaggedTag_0,100,1.77091, assuming resolution of 1
@@ -251,21 +251,3 @@ Error in <TLegend::AddEntry>: need to create a canvas first
 [FOR TABLE] ,UntaggedTag_0,145,0.429334, assuming resolution of 1
 [INFO] mgg: 145 nomBkg: 0.428968 +/- 1 (2) sig -- +0.122804(0.230258) - 0.103891(0.167566)
 [FOR TABLE] ,UntaggedTag_0,150,0.320641, assuming resolution of 1
-[INFO] mgg: 150 nomBkg: 0.320368 +/- 1 (2) sig -- +0.0862281(0.185722) - 0.0725833(0.135155)
-[FOR TABLE] ,UntaggedTag_0,155,0.239465, assuming resolution of 1
-[INFO] mgg: 155 nomBkg: 0.239261 +/- 1 (2) sig -- +0.0745179(0.171964) - 0.0598153(0.108415)
-[FOR TABLE] ,UntaggedTag_0,160,0.17884, assuming resolution of 1
-[INFO] mgg: 160 nomBkg: 0.178688 +/- 1 (2) sig -- +0.104028(0.178333) - 0.065612(0.094928)
-[FOR TABLE] ,UntaggedTag_0,165,0.133564, assuming resolution of 1
-Error in <Minuit2>: VariableMetricBuilder Initial matrix not pos.def.
-[INFO] mgg: 165 nomBkg: 0.13345 +/- 1 (2) sig -- +0.0920406(0.162676) - 0.0510864(0.0750657)
-[FOR TABLE] ,UntaggedTag_0,170,0.0997556, assuming resolution of 1
-[INFO] mgg: 170 nomBkg: 0.09967 +/- 1 (2) sig -- +0.0554951(0.133188) - 0.0327042(0.049835)
-[FOR TABLE] ,UntaggedTag_0,175,0.0746509, assuming resolution of 1
-[INFO] mgg: 175 nomBkg: 0.0745754 +/- 1 (2) sig -- +0.0832056(0.140809) - 0.0343746(0.0477749)
-[FOR TABLE] ,UntaggedTag_0,180,0.058323, assuming resolution of 1
-[INFO] mgg: 180 nomBkg: 0.0576943 +/- 1 (2) sig -- +0.0119629(0.0365924) - 0.0421439(0.0468767)
-
-[INFO] intLumi 170.84
-Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/AllFitResults/bkgplot_6.pdf has been created
-Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/6/BkgPlots/bkgplot_cat0.pdf has been created

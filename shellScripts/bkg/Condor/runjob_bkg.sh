@@ -130,6 +130,11 @@ if [[ "$ws_input" -ot "$tree_input" ]]; then
   finish_skipped
 fi
 
+# Per-mass m_llgg fit low edge: raise to 105 for mA=1,2 to avoid the steep low-m_llgg
+# turn-on that biased the low-mass background fits (bias study, 2026-06). Others stay 95.
+mhLow=95
+if [[ "$mass" == "1" || "$mass" == "2" ]]; then mhLow=105; fi
+
 ftest_start_time=$(date +%s)
 ./bin/fTest_ALP_turnOn \
   -i "$ws_input" \
@@ -140,7 +145,7 @@ ftest_start_time=$(date +%s)
   --isFlashgg 0 \
   --isData 0 \
   -f data, \
-  --mhLow 95 \
+  --mhLow "$mhLow" \
   --mhHigh 180 \
   --mhLowBlind 115 \
   --mhHighBlind 135 \
@@ -174,7 +179,7 @@ bkgplots_start_time=$(date +%s)
   --massStep 2.5 \
   --mhVal 125.0 \
   --maVal "$mass" \
-  --mhLow 95 \
+  --mhLow "$mhLow" \
   --mhHigh 180 \
   --mhLowBlind 115 \
   --mhHighBlind 135 \

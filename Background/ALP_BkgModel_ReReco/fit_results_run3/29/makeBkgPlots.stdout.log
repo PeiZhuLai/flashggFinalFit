@@ -259,13 +259,13 @@ Error in <TLegend::AddEntry>: need to create a canvas first
 [FOR TABLE] ,UntaggedTag_0,165,0.6238, assuming resolution of 1
 [INFO] mgg: 165 nomBkg: 0.622761 +/- 1 (2) sig -- +0.0971027(0.147965) - 0.0827104(0.170286)
 [FOR TABLE] ,UntaggedTag_0,170,0.414995, assuming resolution of 1
-Error in <Minuit2>: VariableMetricBuilder Initial matrix not pos.def.
 [INFO] mgg: 170 nomBkg: 0.414284 +/- 1 (2) sig -- +0.0716563(0.150855) - 0.0614953(0.122991)
 [FOR TABLE] ,UntaggedTag_0,175,0.279484, assuming resolution of 1
 [INFO] mgg: 175 nomBkg: 0.278834 +/- 1 (2) sig -- +0.0525984(0.111385) - 0.0435678(0.0914923)
 [FOR TABLE] ,UntaggedTag_0,180,0.215541, assuming resolution of 1
+Error in <Minuit2>: VariableMetricBuilder Initial matrix not pos.def.
 [INFO] mgg: 180 nomBkg: 0.214201 +/- 1 (2) sig -- +0.0284742(0.0433892) - 0.141406(0.152283)
 
-[INFO] intLumi 170.84
+[INFO] intLumi 172.13
 Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/AllFitResults/bkgplot_29.pdf has been created
 Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/29/BkgPlots/bkgplot_cat0.pdf has been created

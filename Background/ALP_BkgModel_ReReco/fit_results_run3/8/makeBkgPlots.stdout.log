@@ -215,56 +215,9 @@ Error in <TLegend::AddEntry>: need to create a canvas first
 [INFO] Plot has 85 bins
 [INFO] Processing for mA = 8
 [FOR TABLE] ,UntaggedTag_0,95,0.421184, assuming resolution of 1
-[INFO] mgg: 95 nomBkg: 0.387775 +/- 1 (2) sig -- +0.0583796(0.277303) - 0.340818(0.369598)
+[INFO] mgg: 95 nomBkg: 0.387775 +/- 1 (2) sig -- +0.0583796(0.277303) - 0.342333(0.371113)
 [FOR TABLE] ,UntaggedTag_0,97.5,0.786823, assuming resolution of 1
 [INFO] mgg: 97.5 nomBkg: 0.782625 +/- 1 (2) sig -- +0.253994(0.746433) - 0.342399(0.550283)
 [FOR TABLE] ,UntaggedTag_0,100,1.30302, assuming resolution of 1
 [INFO] mgg: 100 nomBkg: 1.30325 +/- 1 (2) sig -- +0.21405(0.695661) - 0.285085(0.549807)
 [FOR TABLE] ,UntaggedTag_0,102.5,1.81088, assuming resolution of 1
-[INFO] mgg: 102.5 nomBkg: 1.81621 +/- 1 (2) sig -- +0.236895(0.758063) - 0.312161(0.624322)
-[FOR TABLE] ,UntaggedTag_0,105,2.15979, assuming resolution of 1
-[INFO] mgg: 105 nomBkg: 2.16719 +/- 1 (2) sig -- +0.327781(1.00059) - 0.372486(0.744972)
-[FOR TABLE] ,UntaggedTag_0,107.5,2.2744, assuming resolution of 1
-[INFO] mgg: 107.5 nomBkg: 2.28061 +/- 1 (2) sig -- +0.371644(0.991049) - 0.374163(0.748327)
-[FOR TABLE] ,UntaggedTag_0,110,2.18729, assuming resolution of 1
-[INFO] mgg: 110 nomBkg: 2.19105 +/- 1 (2) sig -- +0.312234(0.763239) - 0.325235(0.616234)
-[FOR TABLE] ,UntaggedTag_0,112.5,1.98863, assuming resolution of 1
-[INFO] mgg: 112.5 nomBkg: 1.98921 +/- 1 (2) sig -- +0.264449(0.628067) - 0.264193(0.497304)
-[FOR TABLE] ,UntaggedTag_0,115,1.75785, assuming resolution of 1
-[INFO] mgg: 115 nomBkg: 1.75729 +/- 1 (2) sig -- +0.23302(0.559249) - 0.219661(0.439322)
-[FOR TABLE] ,UntaggedTag_0,117.5,1.53781, assuming resolution of 1
-[INFO] mgg: 117.5 nomBkg: 1.53727 +/- 1 (2) sig -- +0.203416(0.523069) - 0.180149(0.420348)
-[FOR TABLE] ,UntaggedTag_0,120,1.34325, assuming resolution of 1
-[INFO] mgg: 120 nomBkg: 1.34217 +/- 1 (2) sig -- +0.19007(0.461598) - 0.157286(0.398457)
-[FOR TABLE] ,UntaggedTag_0,122.5,1.17525, assuming resolution of 1
-[INFO] mgg: 122.5 nomBkg: 1.17478 +/- 1 (2) sig -- +0.177823(0.406453) - 0.13767(0.357942)
-[FOR TABLE] ,UntaggedTag_0,125,1.03082, assuming resolution of 1
-[INFO] mgg: 125 nomBkg: 1.03002 +/- 1 (2) sig -- +0.1784(0.380587) - 0.120705(0.329928)
-[FOR TABLE] ,UntaggedTag_0,127.5,0.906458, assuming resolution of 1
-[INFO] mgg: 127.5 nomBkg: 0.906119 +/- 1 (2) sig -- +0.156172(0.334653) - 0.109725(0.29732)
-[FOR TABLE] ,UntaggedTag_0,130,0.799092, assuming resolution of 1
-[INFO] mgg: 130 nomBkg: 0.798517 +/- 1 (2) sig -- +0.136134(0.314155) - 0.0935762(0.268252)
-[FOR TABLE] ,UntaggedTag_0,135,0.625444, assuming resolution of 1
-[INFO] mgg: 135 nomBkg: 0.625027 +/- 1 (2) sig -- +0.111176(0.259411) - 0.0756869(0.219736)
-[FOR TABLE] ,UntaggedTag_0,140,0.49392, assuming resolution of 1
-[INFO] mgg: 140 nomBkg: 0.493613 +/- 1 (2) sig -- +0.102916(0.230533) - 0.0597735(0.181249)
-[FOR TABLE] ,UntaggedTag_0,145,0.393303, assuming resolution of 1
-[INFO] mgg: 145 nomBkg: 0.393075 +/- 1 (2) sig -- +0.0918394(0.191026) - 0.047599(0.147403)
-[FOR TABLE] ,UntaggedTag_0,150,0.315614, assuming resolution of 1
-[INFO] mgg: 150 nomBkg: 0.315443 +/- 1 (2) sig -- +0.0855629(0.177708) - 0.049288(0.128149)
-[FOR TABLE] ,UntaggedTag_0,155,0.255107, assuming resolution of 1
-[INFO] mgg: 155 nomBkg: 0.254978 +/- 1 (2) sig -- +0.0769265(0.165688) - 0.0597605(0.115537)
-[FOR TABLE] ,UntaggedTag_0,160,0.2076, assuming resolution of 1
-[INFO] mgg: 160 nomBkg: 0.207502 +/- 1 (2) sig -- +0.0693961(0.149469) - 0.0518754(0.106993)
-[FOR TABLE] ,UntaggedTag_0,165,0.170016, assuming resolution of 1
-[INFO] mgg: 165 nomBkg: 0.16994 +/- 1 (2) sig -- +0.0628018(0.135265) - 0.0531062(0.0955912)
-[FOR TABLE] ,UntaggedTag_0,170,0.140069, assuming resolution of 1
-[INFO] mgg: 170 nomBkg: 0.14001 +/- 1 (2) sig -- +0.0570039(0.219246) - 0.0503162(0.0875065)
-[FOR TABLE] ,UntaggedTag_0,175,0.116048, assuming resolution of 1
-[INFO] mgg: 175 nomBkg: 0.116002 +/- 1 (2) sig -- +0.0518869(0.111756) - 0.0471259(0.0779389)
-[FOR TABLE] ,UntaggedTag_0,180,0.0975312, assuming resolution of 1
-[INFO] mgg: 180 nomBkg: 0.0966487 +/- 1 (2) sig -- +0.00819713(0.0327885) - 0.0824912(0.0950442)
-
-[INFO] intLumi 170.84
-Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/AllFitResults/bkgplot_8.pdf has been created
-Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/8/BkgPlots/bkgplot_cat0.pdf has been created
