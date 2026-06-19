@@ -48,7 +48,7 @@ def cms_label(lumi):
 
 
 def collect(masses, fname_fn, assume_xs):
-    """Return list of (ma, exp, e1lo, e1hi, e2lo, e2hi) for valid points."""
+    """Return list of (ma, exp, e1lo, e1hi, e2lo, e2hi, obs_xs_or_None) for valid points."""
     pts, missing = [], []
     for ma in masses:
         ok, q025, q16, q50, q84, q975, obs, hasObs = read_limits_from_file(fname_fn(ma))
@@ -57,7 +57,8 @@ def collect(masses, fname_fn, assume_xs):
         exp = q50 * assume_xs
         pts.append((ma, exp,
                     (q50 - q16) * assume_xs, (q84 - q50) * assume_xs,
-                    (q50 - q025) * assume_xs, (q975 - q50) * assume_xs))
+                    (q50 - q025) * assume_xs, (q975 - q50) * assume_xs,
+                    obs * assume_xs if hasObs else None))
     return pts, missing
 
 
@@ -77,6 +78,8 @@ def main():
     ap.add_argument("--lumi", type=float, default=172.13)
     ap.add_argument("--formats", default="pdf,png")
     ap.add_argument("--tag", default="full_0p1_30")
+    ap.add_argument("--draw-observed", action="store_true",
+                    help="overlay the observed limit line (point resolved/merged dirs at observed combine files)")
     args = ap.parse_args()
     os.makedirs(args.outdir, exist_ok=True)
 
@@ -106,11 +109,16 @@ def main():
     g_exp = ROOT.TGraph()
     g_1s = ROOT.TGraphAsymmErrors()
     g_2s = ROOT.TGraphAsymmErrors()
-    for j, (ma, exp, e1lo, e1hi, e2lo, e2hi) in enumerate(all_pts):
+    g_obs = ROOT.TGraph()
+    n_obs = 0
+    for j, p in enumerate(all_pts):
+        ma, exp, e1lo, e1hi, e2lo, e2hi = p[:6]
         g_exp.SetPoint(j, ma, exp)
         g_1s.SetPoint(j, ma, exp); g_2s.SetPoint(j, ma, exp)
         g_1s.SetPointError(j, 0, 0, e1lo, e1hi)
         g_2s.SetPointError(j, 0, 0, e2lo, e2hi)
+        if args.draw_observed and len(p) > 6 and p[6] is not None:
+            g_obs.SetPoint(n_obs, ma, p[6]); n_obs += 1
 
     c = ROOT.TCanvas("cLimits_full", "", 900, 600)
     c.SetLeftMargin(0.13); c.SetRightMargin(0.05); c.SetBottomMargin(0.13); c.SetTopMargin(0.08)
@@ -119,7 +127,8 @@ def main():
     xlo, xhi = 0.08, 35.0
     ys = [p[1] for p in all_pts]
     e2 = [p[5] for p in all_pts]
-    ymax = max(y + e for y, e in zip(ys, e2)) * 2.5
+    obs_vals = [p[6] for p in all_pts if len(p) > 6 and p[6] is not None] if args.draw_observed else []
+    ymax = max([y + e for y, e in zip(ys, e2)] + obs_vals) * 2.5
     ymin = min(ys) * 0.25
 
     ytitle = "#sigma(pp #rightarrow H) #times B(#rightarrow Za #rightarrow 2l + 2#gamma) [fb]"
@@ -137,6 +146,9 @@ def main():
     g_1s.SetFillColor(3); g_1s.SetLineColor(3); g_1s.SetFillStyle(1001)
     g_exp.SetLineColor(ROOT.kBlack); g_exp.SetLineWidth(2); g_exp.SetLineStyle(2)
     g_2s.Draw("3 same"); g_1s.Draw("3 same"); g_exp.Draw("L same")
+    if args.draw_observed and g_obs.GetN() > 0:
+        g_obs.SetLineColor(ROOT.kBlack); g_obs.SetLineWidth(2); g_obs.SetLineStyle(1)
+        g_obs.Draw("L same")
 
     # boundary marker at m_a = 1 GeV + regime labels in the empty lower band
     bnd = ROOT.TLine(1.0, ymin, 1.0, ymax)
@@ -147,8 +159,10 @@ def main():
     txt.SetTextAlign(32); txt.DrawLatex(0.92, ylab, "merged #gamma #leftarrow")
     txt.SetTextAlign(12); txt.DrawLatex(1.1, ylab, "#rightarrow resolved #gamma#gamma")
 
-    leg = ROOT.TLegend(0.42, 0.69, 0.93, 0.90)
+    leg = ROOT.TLegend(0.42, 0.66 if args.draw_observed else 0.69, 0.93, 0.90)
     leg.SetBorderSize(0); leg.SetFillStyle(0); leg.SetTextFont(42); leg.SetTextSize(0.038)
+    if args.draw_observed and g_obs.GetN() > 0:
+        leg.AddEntry(g_obs, "Observed", "l")
     leg.AddEntry(g_exp, "Median expected", "l")
     leg.AddEntry(g_1s, "68% expected", "f")
     leg.AddEntry(g_2s, "95% expected", "f")

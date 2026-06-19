@@ -69,8 +69,9 @@ fi
 
 path_out_bkg="$dir_output/fit_results_${lable}"
 mkdir -p $path_out_bkg
-mkdir -p $path_out_bkg/AllFitResults
-total_OutDir="$path_out_bkg/AllFitResults"
+mkdir -p $path_out_bkg/AllFitResults_blind $path_out_bkg/AllFitResults_unblind
+total_OutDir_blind="$path_out_bkg/AllFitResults_blind"
+total_OutDir_unblind="$path_out_bkg/AllFitResults_unblind"
 
 
 # mkdir -p "$path_out_bkg/5"
@@ -171,8 +172,13 @@ for ((iBin=0; iBin<$nMass; iBin++))
     ######################################
     # makeBkgPlots 只負責產圖與 band，可用來診斷；datacard 真正讀的是上面的 CMS-HGG_mva_13p6TeV_multipdf.root
     bkgplots_start_time=$(date +%s)
-    ./bin/makeBkgPlots_ALP -b $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -d $path_bkg/BkgPlots --total_OutDir $total_OutDir -o $path_bkg/BkgPlots.root --sqrts 13p6TeV --isMultiPdf --useBinnedData --massStep 2.5 --mhVal 125.0 --maVal ${massList[$iBin]} --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 --intLumi $Lumi_run3 -c 0 --isFlashgg 0 --doBands > "$bkgplots_stdout" 2>&1
+    # Two sets of bkg-fit plots per mA: blinded (data blanked in 115-135) and unblinded.
+    # Blinded:
+    ./bin/makeBkgPlots_ALP -b $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -d $path_bkg/BkgPlots_blind --total_OutDir $total_OutDir_blind -o $path_bkg/BkgPlots_blind.root --sqrts 13p6TeV --isMultiPdf --useBinnedData --massStep 2.5 --mhVal 125.0 --maVal ${massList[$iBin]} --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 --intLumi $Lumi_run3 -c 0 --isFlashgg 0 --doBands > "$bkgplots_stdout" 2>&1
     bkgplots_cmd_status=$?
+    # Unblinded:
+    ./bin/makeBkgPlots_ALP -b $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -d $path_bkg/BkgPlots_unblind --total_OutDir $total_OutDir_unblind -o $path_bkg/BkgPlots_unblind.root --sqrts 13p6TeV --isMultiPdf --useBinnedData --massStep 2.5 --mhVal 125.0 --maVal ${massList[$iBin]} --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 --intLumi $Lumi_run3 -c 0 --isFlashgg 0 --doBands --unblind >> "$bkgplots_stdout" 2>&1
+    bkgplots_cmd_status=$(( bkgplots_cmd_status + $? ))
     bkgplots_end_time=$(date +%s)
     echo "[Timer] mA=${massList[$iBin]} makeBkgPlots finished in $(format_duration $((bkgplots_end_time - bkgplots_start_time)))"
 

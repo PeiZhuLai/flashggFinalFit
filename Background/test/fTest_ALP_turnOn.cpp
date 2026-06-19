@@ -181,15 +181,39 @@ RooAbsPdf* getPdf(PdfModelBuilder &pdfsModel, string type, int order, const char
 // masses (envMaxOrder=4 -> scans orders 1,2,3). This also lets mA1-3 reach Bern3 (Bern2 under-fit
 // gave mA3 = -0.213). At mA=1 the steep turn-on makes Pow3 (+0.52)/Exp3 (+0.30) badly biased ->
 // keep exponential/power-law capped at order 2 there.
+// Per-mA optimal Bernstein order (2026-06-14 bias study). For each mA the order
+// is the one with the smallest |bias| among the GOF-passing (p>0.01) Bernstein
+// orders, requiring the bias study to pass (|median|<0.2). Returns 0 where no
+// Bernstein order passes -> Bernstein dropped from the envelope at that mA
+// (mA 1: all functions fail GOF; mA 6: best Bern4=-0.244 still biases; mA 28: no
+// GOF-passing Bernstein). The hung high-order points (12,21,24) land on a stable
+// lower order that passes (B5/B4/B4), so this also avoids the Bern6 instability.
+static int bestBernOrder(int m)
+{
+  // Per-mA Bernstein order chosen from ALL bias runs (Bern3/4/5/6 + validation v1):
+  // among orders that pass GOF (p>0.01) AND have |median bias|<0.2 in EVERY available
+  // measurement (robust against the Bernstein irreproducibility seen in single runs),
+  // pick the one with the smallest max|bias| (largest margin). Returns 0 -> drop:
+  //   mA 1, 28: no Bernstein order passes GOF;  mA 5, 6: no order robustly passes bias.
+  switch (m) {
+    case 2: return 2; case 3: return 3; case 4: return 5; case 9: return 6;
+    case 10: return 5; case 11: return 5; case 12: return 5; case 13: return 4;
+    case 14: return 5; case 15: return 5; case 16: return 6; case 17: return 5;
+    case 18: return 5; case 19: return 5; case 20: return 6; case 22: return 6;
+    case 23: return 6; case 24: return 5; case 25: return 6; case 26: return 6;
+    case 27: return 6; case 29: return 6; case 30: return 6;
+    default: return 0;  // mA 1, 5, 6, 7, 8, 21, 28: Bernstein dropped
+  }
+}
+
 static int envMaxOrder(const std::string& funcType, int mass_ALP)
 {
-  // Bernstein cap is set via env BERN_CAP (default 3). envMaxOrder is an exclusive
-  // upper bound, so return cap+1 -> scans orders 1..cap. Used for the Bern5/Bern6
-  // order-vs-bias study (set BERN_CAP=5 or 6 at runtime, no recompile needed).
+  // Bernstein: cap at the per-mA optimal order (exclusive upper bound = order+1).
+  // 0 -> return 1 so the scan loop body never runs (Bernstein also excluded from
+  // functionClasses below, so this is belt-and-braces).
   if (funcType=="Bernstein") {
-    const char* bc = getenv("BERN_CAP");
-    int cap = (bc && atoi(bc) > 0) ? atoi(bc) : 3;
-    return cap + 1;
+    int o = bestBernOrder(mass_ALP);
+    return (o > 0) ? (o + 1) : 1;
   }
   if (mass_ALP==1 && (funcType=="Exponential" || funcType=="PowerLaw")) return 3;  // excludes Exp3/Pow3
   return 7;
@@ -1181,8 +1205,12 @@ int main(int argc, char* argv[]){
 	}
 
   // function switch
+	// Per-mA Bernstein (2026-06-14 bias study): include Bernstein only at the masses
+	// where some GOF-passing order also passes the bias study; bestBernOrder() caps
+	// it at that optimal order. Dropped at mA 1, 6, 28 (bestBernOrder==0). Exp/Pow/Lau
+	// are always included (they pass GOF wherever any function does and stay unbiased).
 	vector<string> functionClasses;
-	functionClasses.push_back("Bernstein");
+	if (bestBernOrder(mass_ALP) > 0) functionClasses.push_back("Bernstein");
 	functionClasses.push_back("Exponential");
 	functionClasses.push_back("PowerLaw");
 	functionClasses.push_back("Laurent");

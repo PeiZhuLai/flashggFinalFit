@@ -415,9 +415,21 @@ RooAbsPdf* PdfModelBuilder::getPowerLawStepxGau(string prefix, int order, int ca
   turnon_pow = stablePow.turnon;        turnon_lpow = stablePow.turnonLo;    turnon_hpow = stablePow.turnonHi;
 
   if (mass_ALP == 1) {
-    sigma_pow  = 5.5;      sigma_lpow  = 2.5;    sigma_hpow  = 9.0;   // broaden (105 cut)
+    // [PZ 2026-06-16] On data_R1 (R=1 cut, 268 ev) Pow1 was the weak envelope member at mA1
+    // (committed GOF p=0.09, chi2=163, vs Exp1 102 with the SAME turn-on). A single power law
+    // m^p has the wrong curvature for this falling spectrum, so it can only fit by heavy
+    // gaussian smearing AND a shallow slope. turnon/width/sigma/par1 are mutually degenerate:
+    // the likelihood has NO interior minimum -> every bound choice rails toward "shallower +
+    // broader" (verified: iter1 par1>=-4 -> p=0.25; iter2 par1>=-1.5 -> p=0.65 but near-flat;
+    // iter3 par1>=-3 same story). We deliberately floor par1 at -4 (genuine falling power law,
+    // steepest of the viable tunings) rather than chase the best GOF with a near-flat shape:
+    // a flat bkg under the signal peak is what would bias the signal extraction. This fixes
+    // "Pow1 很不好" (p 0.09->0.25, chi2 163->120) while keeping Pow1 bias-safe; the bias study
+    // is the final arbiter.
+    par1_pow1  = -7.7;     par1_lpow1  = -11.0;  par1_hpow1  = -4.0;  // floor slope at m^-4
+    sigma_pow  = 7.0;      sigma_lpow  = 3.5;    sigma_hpow  = 12.0;  // broaden conv (105 cut)
     turnon_pow = 104.8;    turnon_lpow = 103.0;  turnon_hpow = 106.0; // pin near 105 edge
-    width_pow  = 3.5;      width_lpow  = 1.0;    width_hpow  = 8.0;
+    width_pow  = 4.5;      width_lpow  = 1.5;    width_hpow  = 9.0;
   } else if (mass_ALP == 2) {
     sigma_pow  = 3.3;      sigma_lpow  = 1.0;    sigma_hpow  = 6.5;
     turnon_pow = 105.1;    turnon_lpow = 102.0;  turnon_hpow = 109.3;

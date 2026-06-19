@@ -400,8 +400,13 @@ double guessNew(RooRealVar *mgg, RooMultiPdf *mpdf, RooCategory *mcat, RooAbsDat
 		}
 		nIts++;
 		// because these are envelope nll curves this algorithm can get stuck in local minima
-		// hacked get out is just to start trying again
-		if (nIts>20) {
+		// hacked get out is just to start trying again.
+		// Cap at 8 (was 20): well-behaved sides converge to the 0.05 tolerance in <=~12 steps,
+		// but high-statistics mA (e.g. mA23) have an almost-flat high-side envelope NLL whose
+		// bisection never meets tolerance and runs to the cap -- at those (already non-converged,
+		// ill-defined upper-edge) points capping at 8 returns essentially the same band edge in
+		// ~2.5x less time. Bounds mA23's band cost without changing converged points materially.
+		if (nIts>8) {
 			return guess;
 			lowPoint = TMath::Max(0.,lowPoint-20);
 			highPoint += 20;
@@ -740,7 +745,7 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 		catname = Form("cat%d",cat);//FIXED
 		//catname = Form("%d",cat);
 	}
-	RooPlot *plot = mgg->frame();
+	RooPlot *plot = mgg->frame(RooFit::Range((double)mgg_low,(double)mgg_high));
 	plot->SetTitle(Form("Background functions profiled for category %s",catname.c_str()));
 	const double dataMarkerSizeAllPdfs = 1.8;
 	//plot->GetXaxis()->SetTitle("m_{a} (GeV)");//FIXED
@@ -1075,6 +1080,7 @@ int main(int argc, char* argv[]){
 	//bing
 	mgg_low =mhLow;//FIXME
   	mgg_high =mhHigh;//FIXME
+  	nbin = (float)(mgg_high - mgg_low);// [PZ] 1 GeV bins over the plotted range (so --mhLow 105 -> x-axis starts at 105 with correct binning)
   	mgg_blind_low =mggblindlow_;//FIXME
   	mgg_blind_high =mggblindhigh_;//FIXME
 
@@ -1102,7 +1108,15 @@ int main(int argc, char* argv[]){
 		}
 	    // Numerical stability for FFT-convolved PDFs (Step x Gaussian):
 	    // use a fine binning for RooFFTConvPdf sampling/caches (independent of histogram binning).
-	    const int _fftBins = 4096; // power-of-two is FFT-friendly
+	    // NOTE: this binning drives the cost of every RooFFTConvPdf evaluation, and the band
+	    // calculation re-evaluates the (FFT-convolution) best-fit pdf ~thousands of times, so an
+	    // over-fine value makes mA whose envelope best-fit is an FFT pdf (e.g. mA4/mA23) take hours.
+	    // 1024 bins matches kBkgCacheBins used by PdfModelBuilder when the multipdf was *fit*,
+	    // so the plotted FFT-convolution pdf is evaluated at exactly the fit accuracy (the old
+	    // 4096 was an over-fine plot-only override that made each eval ~4x heavier). This makes
+	    // mA whose envelope best-fit is an FFT pdf (e.g. mA4/mA23) finish in minutes, not hours.
+	    // (Purely analytic pdfs, i.e. all other mA, have no FFT cache and are unaffected.)
+	    const int _fftBins = 1024; // power-of-two is FFT-friendly; matches the fit-time cache binning
     mgg->setBins(_fftBins, "cache");
     mgg->setBins(_fftBins, "fft");
 	mgg->setBins(nbin); //PZ 
@@ -1217,8 +1231,8 @@ string catname;
 	gStyle->SetPadTickY(1);
 	//Second Plot
 	cout<< "[INFO] " << "Plotting data and nominal curve" << endl;
-	RooPlot *plot = mgg->frame();
-	RooPlot *plotLC = mgg->frame();
+	RooPlot *plot = mgg->frame(RooFit::Range((double)mgg_low,(double)mgg_high));
+	RooPlot *plotLC = mgg->frame(RooFit::Range((double)mgg_low,(double)mgg_high));
 	//plot->GetXaxis()->SetTitle("m_{a} (GeV)");//FIXED
 	//plot->GetXaxis()->SetTitle("m_{ll#gamma#gamma} (GeV)");//PZ
 	plot->GetYaxis()->SetTitleSize(0.22);

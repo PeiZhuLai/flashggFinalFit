@@ -1,0 +1,30 @@
+{
+  "exp": 0.0207,
+  "fit_results": {
+    "Bern4": {
+      "mean": -0.2444,
+      "mean_err": 0.041,
+      "sigma": 1.0062,
+      "sigma_err": 0.0366
+    },
+    "Exp1": {
+      "mean": -0.0395,
+      "mean_err": 0.0339,
+      "sigma": 0.9392,
+      "sigma_err": 0.0274
+    },
+    "Lau1": {
+      "mean": -0.1185,
+      "mean_err": 0.0367,
+      "sigma": 1.018,
+      "sigma_err": 0.031
+    },
+    "Pow1": {
+      "mean": -0.0794,
+      "mean_err": 0.0349,
+      "sigma": 0.9393,
+      "sigma_err": 0.0275
+    }
+  },
+  "mA": 6
+}

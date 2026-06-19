@@ -1,0 +1,24 @@
+{
+  "exp": 0.2352,
+  "fit_results": {
+    "Exp1": {
+      "mean": -0.0821,
+      "mean_err": 0.0345,
+      "sigma": 1.0096,
+      "sigma_err": 0.0284
+    },
+    "Lau1": {
+      "mean": -0.1871,
+      "mean_err": 0.0313,
+      "sigma": 0.9243,
+      "sigma_err": 0.0238
+    },
+    "Pow1": {
+      "mean": 0.1263,
+      "mean_err": 0.0339,
+      "sigma": 0.993,
+      "sigma_err": 0.0279
+    }
+  },
+  "mA": 1
+}

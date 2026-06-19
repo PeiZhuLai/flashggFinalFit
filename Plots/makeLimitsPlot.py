@@ -480,12 +480,15 @@ def BrazilianPlots(sample: int = 0,
                    logy: bool = True,
                    save_root: bool = False,
                    tag_suffix: str = "",
+                   results_dir: str = None,
                    indirect_min: float = None,
                    indirect_max: float = None,
                    indirect_step: float = None):
 
+    _resdir = results_dir or "/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/output_combine_results"
+
     def make_file_name(m):
-        return f"/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/output_combine_results/higgsCombine{m}.AsymptoticLimits.mH125.38.root"
+        return f"{_resdir}/higgsCombine{m}.AsymptoticLimits.mH125.38.root"
 
     if masses is None:
         masses = list(range(5, 31))
@@ -614,10 +617,9 @@ def BrazilianPlots(sample: int = 0,
     g_exp.Draw("L same")
 
     if drawObs and g_obs.GetN() > 0 and (not setLimitsOnWilsonCoefficient):
-        g_obs.SetMarkerStyle(20)
         g_obs.SetLineColor(1)
         g_obs.SetLineWidth(3)
-        g_obs.Draw("LP same")
+        g_obs.Draw("L same")
 
     if setLimitsOnWilsonCoefficient and g_indirect is not None:
         g_indirect.SetLineColor(2)
@@ -637,11 +639,13 @@ def BrazilianPlots(sample: int = 0,
             x += _istep
         g_indirect.Draw("L same")
 
-    leg = TLegend(0.58, 0.68, 0.95, 0.87)
+    leg = TLegend(0.58, 0.64, 0.95, 0.87)
     leg.SetBorderSize(0)
     leg.SetFillStyle(0)
     leg.SetTextFont(42)
     leg.SetTextSize(0.045)
+    if drawObs and g_obs.GetN() > 0 and (not setLimitsOnWilsonCoefficient):
+        leg.AddEntry(g_obs, "Observed", "l")
     leg.AddEntry(g_exp, "Median expected", "l")
     leg.AddEntry(g_exp_1s, "68% expected", "f")
     leg.AddEntry(g_exp_2s, "95% expected", "f")
@@ -685,6 +689,9 @@ def main():
     parser.add_argument("--linear-y", action="store_true", help="Use linear y-axis (default log)")
     parser.add_argument("--save-root", action="store_true", help="Also save TGraphs to ROOT file")
     parser.add_argument("--tag-suffix", default="", help="Extra tag suffix for output filenames")
+    parser.add_argument("--results-dir", default=None,
+                        help="combine results dir (default=output_combine_results=expected/blind). "
+                             "Point at output_combine_results_observed to draw the observed line.")
     parser.add_argument("--masses", default="", help="逗號分隔質量點 (例: 5,15,30) 留空使用內建")
     parser.add_argument("--only", default="",
                         help="只輸出哪些: xs,br,wilson,compare (逗號分隔), 留空=全部(=5張)")
@@ -728,19 +735,19 @@ def main():
     if "xs" in req:
         BrazilianPlots(
             masses=masses, outdir=args.outdir, assume_xs=args.assume_xs, ggF_xs=args.ggf_xs,
-            lumi_fb=args.lumi, formats=formats, logy=logy, save_root=save_root, tag_suffix=args.tag_suffix,
+            lumi_fb=args.lumi, formats=formats, logy=logy, save_root=save_root, tag_suffix=args.tag_suffix, results_dir=args.results_dir,
             drawObs=not args.no_obs, setLimitsOnBR=False, setLimitsOnWilsonCoefficient=False,
         )
     if "br" in req:
         BrazilianPlots(
             masses=masses, outdir=args.outdir, assume_xs=args.assume_xs, ggF_xs=args.ggf_xs,
-            lumi_fb=args.lumi, formats=formats, logy=logy, save_root=save_root, tag_suffix=args.tag_suffix,
+            lumi_fb=args.lumi, formats=formats, logy=logy, save_root=save_root, tag_suffix=args.tag_suffix, results_dir=args.results_dir,
             drawObs=not args.no_obs, setLimitsOnBR=True, setLimitsOnWilsonCoefficient=False,
         )
     if "wilson" in req:
         BrazilianPlots(
             masses=masses, outdir=args.outdir, assume_xs=args.assume_xs, ggF_xs=args.ggf_xs,
-            lumi_fb=args.lumi, formats=formats, logy=logy, save_root=save_root, tag_suffix=args.tag_suffix,
+            lumi_fb=args.lumi, formats=formats, logy=logy, save_root=save_root, tag_suffix=args.tag_suffix, results_dir=args.results_dir,
             drawObs=not args.no_obs, setLimitsOnBR=True, setLimitsOnWilsonCoefficient=True,
             indirect_min=args.indirect_min, indirect_max=args.indirect_max, indirect_step=args.indirect_step,
         )
