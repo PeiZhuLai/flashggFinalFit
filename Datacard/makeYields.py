@@ -170,8 +170,12 @@ if opt.mergedLowMA:
   # background/data are a single mass-independent "merged" model.
   signal_mass_for_io = opt.mass_ALP
   signal_components = [{"anchor_mass": signal_mass_for_io, "shape_weight": 1.0, "label": ""}]
-  bkg_mass_for_io = "merged"
-  print(f" --> [INFO] mergedLowMA: signal anchor={signal_mass_for_io}, bkg/data=merged")
+  # per-mA ROI: each m_a selects its own MLPhoton_lead_mass sub-sample -> its own
+  # data spectrum & multipdf (NOT a single shared "merged" bkg). The bkg model dir
+  # is <bkgModelWSDir>/<mass_ALP>/CMS-HGG_mva_13p6TeV_multipdf.root, matching the
+  # per-mA fit produced by 1_grand_merged.sh Stage 4.
+  bkg_mass_for_io = opt.mass_ALP
+  print(f" --> [INFO] mergedLowMA per-mA ROI: signal anchor={signal_mass_for_io}, bkg/data=per-mA({bkg_mass_for_io})")
 else:
   signal_mass_for_io = resolve_mass_for_io(opt.mass_ALP, ma_list, interploate_ma_list)
   signal_components = [{"anchor_mass": signal_mass_for_io, "shape_weight": 1.0, "label": ""}]

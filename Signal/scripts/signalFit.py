@@ -38,6 +38,15 @@ def _resolve_fit_range(mass_alp, default_low, default_high):
         "0p2": ("112", "140"), "0p3": ("112", "140"), "0p4": ("112", "140"),
         "0p5": ("112", "140"), "0p6": ("112", "140"), "0p7": ("112", "140"),
         "0p8": ("112", "140"), "0p9": ("112", "140"),
+        # mA=1 GeV: resolved point but still in the merged-photon regime. The
+        # m_llgg core sits at ~124-125 GeV with detector resolution ~3-4 GeV, but a
+        # large high-side combinatorial/merged-photon tail pushes the full-window
+        # nGauss fit to sigma_eff ~5.5 GeV with wild per-year scatter (3.4-6.4).
+        # Tighten to the core window so the resolution is recovered consistently
+        # (chi2/ndf ~1.0, sigma_eff ~3.8 GeV). The EA yield is reduced to this
+        # window too (see below) so the narrow model is normalised only to
+        # in-window events instead of over-concentrating the full yield.
+        "1": ("115", "137"),
     }
     return windows.get(str(mass_alp), (default_low, default_high))
 
@@ -401,6 +410,30 @@ for mp in opt.massPoints.split(","):
   else: datasetRVForFit[mp] = splitRVWV(d,aset,mode="RV")
   inputWS.Delete()
   f.Close()
+
+# mA=1 CORE-WINDOW REDUCTION
+# For mA=1 the fit range was tightened to the core window (see _resolve_fit_range).
+# reduceDataset() only selects columns (it does NOT apply a mass cut), so both the
+# shape-fit dataset AND the nominal dataset used for the eff*acc yield still span the
+# full [105,180]. Apply an explicit mass cut here -- BEFORE beamspotReweigh, so that
+# out-of-window events are DROPPED rather than clamped to the [MHLow,MHHigh] edges by
+# the beamspot setVal() (which would pile up the tail at the boundaries and corrupt
+# the shape). This makes:
+#   (1) the nGauss shape fit only to core events (clean, stable sigma_eff), and
+#   (2) buildEffAccSpline normalise the narrow model to the in-window yield only --
+#       we drop the ~37% high-side merged-photon tail rather than concentrate the
+#       full yield into the narrow core (which would give an optimistic limit).
+if str(opt.mass_ALP) == "1":
+  _cut = "%s>=%s&&%s<=%s"%(opt.xvar, MHLow, opt.xvar, MHHigh)
+  _n_full = nominalDatasets[MHNominal].sumEntries()
+  for mp in list(datasetRVForFit.keys()):
+    datasetRVForFit[mp] = datasetRVForFit[mp].reduce(_cut)
+  for mp in list(nominalDatasets.keys()):
+    nominalDatasets[mp] = nominalDatasets[mp].reduce(_cut)
+  _n_win = nominalDatasets[MHNominal].sumEntries()
+  _frac = (_n_win/_n_full) if _n_full else 0.
+  print(" [CFG] mA=1: reduced shape+yield datasets to core window [%s,%s]"%(MHLow,MHHigh))
+  print("        EA yield: full sumEntries=%.4f -> in-window=%.4f (kept %.1f%%)"%(_n_full,_n_win,100.*_frac))
 
 # Check if nominal yield > threshold (or if +ve sum of weights). If not then use replacement proc x cat
 if( datasetRVForFit[MHNominal].numEntries() < opt.replacementThreshold  )|( datasetRVForFit[MHNominal].sumEntries() < 0. ):

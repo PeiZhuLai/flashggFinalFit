@@ -667,7 +667,16 @@ def plotSignalModel(_hists,_opt,_outdir=".",offset=0.03,_Amass='1',_year='16', _
   canv.SetTicky()
   h_axes = _hists['data'].Clone()
   h_axes.Reset()
-  h_axes.SetMaximum(_hists['data'].GetMaximum()*1.2)
+  # y-max must cover the parametric-model curve too, not just the simulation points:
+  # for narrow/peaky mA (e.g. mA1) the pdf peak sits above the data points and was
+  # being clipped at the top frame. Take the max over data and all pdf histograms.
+  _ymax = _hists['data'].GetMaximum()
+  for _k, _h in _hists.items():
+    if _k == 'data':
+      continue
+    if hasattr(_h, "GetMaximum") and hasattr(_h, "GetXaxis"):
+      _ymax = max(_ymax, _h.GetMaximum())
+  h_axes.SetMaximum(_ymax*1.2)
   h_axes.SetMinimum(0.)
   h_axes.GetXaxis().SetRangeUser(104,135)
   h_axes.GetXaxis().CenterTitle(True)

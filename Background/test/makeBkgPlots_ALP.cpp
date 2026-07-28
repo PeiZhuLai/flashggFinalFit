@@ -961,7 +961,7 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 	latex->SetNDC();
 	latex->SetTextAlign(11);
 	latex->DrawLatex(0.111, 1. - topMargin + 0.01, "#bf{CMS} #it{Preliminary}");
-	latex->DrawLatex(0.15,1. - topMargin - 0.08,("m_{a} = "+to_string(int(ma))+" GeV").c_str());
+	latex->DrawLatex(0.15,1. - topMargin - 0.08,("m_{a} = "+std::string(Form("%g",ma))+" GeV").c_str());
 	// CMS_lumi( canv, 4, 0);
 
 	latex->SetTextAlign(31);
@@ -1225,7 +1225,7 @@ string catname;
 	leg->SetBorderSize(0);
 	leg->SetTextFont(52);
 	leg->SetTextSize(0.08);
-	leg->AddEntry("",("m_{a} = "+to_string(int(mavalue_))+" GeV").c_str(),"");
+	leg->AddEntry("",("m_{a} = "+std::string(Form("%g",mavalue_))+" GeV").c_str(),"");
 
 	gStyle->SetPadTickX(1);
 	gStyle->SetPadTickY(1);
@@ -1569,7 +1569,7 @@ string catname;
 	latex->SetNDC();
 	latex->SetTextAlign(11);
 	latex->DrawLatex(0.111, 1. - topMargin + 0.02, "#bf{CMS} #it{Preliminary}");
-	latex->DrawLatex(0.15, 1. - topMargin - 0.10,("m_{a} = "+to_string(int(mavalue_))+" GeV").c_str());
+	latex->DrawLatex(0.15, 1. - topMargin - 0.10,("m_{a} = "+std::string(Form("%g",mavalue_))+" GeV").c_str());
 
 	latex->SetTextAlign(31);
 	latex->DrawLatex(1. - rightMargin, 1. - topMargin + 0.02, ("172.13 fb^{-1} (13.6 TeV)"));

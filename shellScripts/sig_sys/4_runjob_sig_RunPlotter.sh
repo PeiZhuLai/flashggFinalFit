@@ -30,3 +30,13 @@ for mA in "${mAs[@]}"; do
         python3 $dir_sig/RunPlotter.py --mass_ALP ${mA} --channel ${channel} --years '2022preEE,2022postEE,2023preBPix,2023postBPix,2024'
     done
 done
+
+# ------------- Sub-GeV (merged low-mA) points: 2024 only -------------
+# 0pX signalFit output exists for 2024 only; other eras/combined would raise OSError.
+# Requires RunPlotter.py --mass_ALP as type='string' (0p5 is not an int).
+mAs_lowMA=( 0p1 0p2 0p3 0p4 0p5 0p6 0p7 0p8 0p9 )
+for mA in "${mAs_lowMA[@]}"; do
+    for channel in "${channels[@]}"; do
+        python3 $dir_sig/RunPlotter.py --mass_ALP ${mA} --years 2024 --channel ${channel}
+    done
+done

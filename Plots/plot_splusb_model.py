@@ -1,57 +1,95 @@
 #!/usr/bin/env python3
-# S+B post-fit model plot for one mA, from a FitDiagnostics output (shapes_fit_s).
-# Draws: observed data points, the post-fit S+B curve (total) and the B component
-# (total_background) on the m_llgg axis, with the CMS Preliminary + lumi label.
-# Usage: python3 plot_splusb_model.py <mA> <fitDiagnostics.root> <out.pdf> "<lumi fb^-1>" [blind=0] [blo=115] [bhi=135]
-#   blind=1 blanks the observed data points in the (blo, bhi) GeV window (S+B/B curves stay full range).
+# S+B post-fit model plot for one mA, drawn as CONTINUOUS post-fit pdf curves.
+# Instead of the binned shapes_fit_s histograms (which look like a staircase), this
+# loads the combine workspace, applies the post-fit parameter values + the post-fit
+# discrete background pdf index from FitDiagnostics (fit_s), and plots the S+B and
+# B-only pdfs as smooth RooCurves on the m_llgg axis, with the observed data points.
+# Usage:
+#   plot_splusb_model.py <mA> <workspace.root> <fitDiagnostics.root> <out.pdf> "<lumi fb^-1>" [blind=0] [blo=115] [bhi=135]
+#   blind=1 blanks the observed data points in the (blo, bhi) GeV window (the curves stay full range).
 import sys, ROOT
 ROOT.gROOT.SetBatch(True); ROOT.gStyle.SetOptStat(0)
+ROOT.RooMsgService.instance().setGlobalKillBelow(ROOT.RooFit.WARNING)
+RF = ROOT.RooFit
 
-mA, infile, outpdf = sys.argv[1], sys.argv[2], sys.argv[3]
-lumi = sys.argv[4] if len(sys.argv) > 4 else "172.13 fb^{-1}"
-blind = (len(sys.argv) > 5 and sys.argv[5] not in ("0", "", "false", "False"))
-blo = float(sys.argv[6]) if len(sys.argv) > 6 else 115.0
-bhi = float(sys.argv[7]) if len(sys.argv) > 7 else 135.0
+mA, wsfile, infile, outpdf = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
+lumi  = sys.argv[5] if len(sys.argv) > 5 else "172.13 fb^{-1}"
+blind = (len(sys.argv) > 6 and sys.argv[6] not in ("0", "", "false", "False"))
+blo   = float(sys.argv[7]) if len(sys.argv) > 7 else 115.0
+bhi   = float(sys.argv[8]) if len(sys.argv) > 8 else 135.0
 
-f = ROOT.TFile.Open(infile)
-d = f.Get("shapes_fit_s/cat0")
-if not d:
-    print(f"[ERROR] shapes_fit_s/cat0 not in {infile}"); sys.exit(1)
-data = d.Get("data"); bkg = d.Get("total_background"); sb = d.Get("total")
+# --- workspace: observable + data + S+B / B-only channel pdfs ---
+wf = ROOT.TFile.Open(wsfile)
+w = wf.Get("w")
+if not w:
+    print(f"[ERROR] no RooWorkspace 'w' in {wsfile}"); sys.exit(1)
+x = w.var("CMS_hza_mass")
+data = w.data("data_obs")
+sb = w.pdf("pdf_bincat0_nuis")           # S+B channel pdf (RooAddPdf: signal + background)
+b  = w.pdf("pdf_bincat0_bonly_nuis")     # B-only channel pdf
+if not (x and data and sb and b):
+    print(f"[ERROR] missing observable/data/pdf in {wsfile}"); sys.exit(1)
 
-# Blinding: drop observed data points inside (blo, bhi). The S+B/B curves are unaffected.
-if blind:
-    g = ROOT.TGraphAsymmErrors(); j = 0
-    for i in range(data.GetN()):
-        x = data.GetPointX(i)
-        if blo < x < bhi:
-            continue
-        g.SetPoint(j, x, data.GetPointY(i))
-        g.SetPointError(j, data.GetErrorXlow(i), data.GetErrorXhigh(i),
-                        data.GetErrorYlow(i), data.GetErrorYhigh(i))
-        j += 1
-    data = g
+# --- apply the post-fit state from FitDiagnostics (fit_s) ---
+ff = ROOT.TFile.Open(infile)
+fit = ff.Get("fit_s")
+if not fit:
+    print(f"[ERROR] fit_s not in {infile}"); sys.exit(1)
+w.allVars().assign(fit.floatParsFinal())                 # continuous post-fit params (incl r)
+idxpar = fit.constPars().find("pdfindex_cat0_13p6TeV")   # discrete multipdf index (post-fit, kept const, RooCategory)
+cat = w.cat("pdfindex_cat0_13p6TeV")
+if idxpar and cat:
+    cat.setIndex(idxpar.getIndex())
+
+obs = ROOT.RooArgSet(x)
+Nsb = sb.expectedEvents(obs)             # post-fit total S+B yield (reflects r-hat)
+Nb  = b.expectedEvents(obs)             # post-fit background yield
+
+# --- frame: continuous curves + data points (1 GeV bins to match "Events / 1 GeV") ---
+xlo, xhi = x.getMin(), x.getMax()
+nbin = int(round(xhi - xlo))
+frame = x.frame(RF.Range(xlo, xhi), RF.Bins(nbin))
+frame.SetTitle("")
+
+# B (dashed azure) and S+B (solid red) as smooth post-fit pdf curves
+b.plotOn(frame,  RF.Normalization(Nb,  ROOT.RooAbsReal.NumEvent),
+         RF.LineColor(ROOT.kAzure + 2), RF.LineStyle(2), RF.LineWidth(3), RF.Name("bkg"))
+sb.plotOn(frame, RF.Normalization(Nsb, ROOT.RooAbsReal.NumEvent),
+          RF.LineColor(ROOT.kRed + 1), RF.LineWidth(3), RF.Name("sb"))
+
+# observed data points (Poisson errors), drawn last so they sit on top
+data.plotOn(frame, RF.Binning(nbin), RF.Name("dh"),
+            RF.MarkerStyle(20), RF.MarkerSize(0.9), RF.LineColor(ROOT.kBlack))
+dh = frame.getHist("dh")
+if blind:                                # drop observed points inside (blo, bhi)
+    i = 0
+    while i < dh.GetN():
+        if blo < dh.GetPointX(i) < bhi:
+            dh.RemovePoint(i)
+        else:
+            i += 1
+
+# y-range: cover data (incl. error bars) and the curve peak
+ymax = 0.0
+for i in range(dh.GetN()):
+    ymax = max(ymax, dh.GetPointY(i) + dh.GetErrorYhigh(i))
+csb = frame.getCurve("sb")
+for i in range(csb.GetN()):
+    ymax = max(ymax, csb.GetPointY(i))
+frame.SetMaximum(ymax * 1.4); frame.SetMinimum(0.0)
+
+frame.GetXaxis().SetTitle("m_{ll#gamma#gamma} (GeV)"); frame.GetXaxis().SetTitleSize(0.05); frame.GetXaxis().SetLabelSize(0.04)
+frame.GetYaxis().SetTitle("Events / 1 GeV");           frame.GetYaxis().SetTitleSize(0.05); frame.GetYaxis().SetLabelSize(0.04)
 
 c = ROOT.TCanvas("c", "", 800, 700)
 c.SetLeftMargin(0.13); c.SetRightMargin(0.05); c.SetTopMargin(0.07); c.SetBottomMargin(0.13)
-
-bkg.SetLineColor(ROOT.kAzure+2); bkg.SetLineWidth(3); bkg.SetLineStyle(2); bkg.SetFillStyle(0)
-sb.SetLineColor(ROOT.kRed+1);   sb.SetLineWidth(3);  sb.SetFillStyle(0)
-bkg.SetTitle("")
-bkg.GetXaxis().SetTitle("m_{ll#gamma#gamma} (GeV)"); bkg.GetXaxis().SetTitleSize(0.05); bkg.GetXaxis().SetLabelSize(0.04)
-bkg.GetYaxis().SetTitle("Events / 1 GeV");           bkg.GetYaxis().SetTitleSize(0.05); bkg.GetYaxis().SetLabelSize(0.04)
-
-ymax = max(bkg.GetMaximum(), sb.GetMaximum())
-for i in range(data.GetN()):
-    ymax = max(ymax, data.GetPointY(i) + data.GetErrorYhigh(i))
-bkg.SetMaximum(ymax*1.4); bkg.SetMinimum(0.0)
-
-bkg.Draw("HIST"); sb.Draw("HIST SAME")
-data.SetMarkerStyle(20); data.SetMarkerSize(0.9); data.SetLineColor(ROOT.kBlack); data.Draw("PE SAME")
+frame.Draw()
 
 leg = ROOT.TLegend(0.58, 0.68, 0.93, 0.88)
 leg.SetBorderSize(0); leg.SetFillStyle(0); leg.SetTextFont(42); leg.SetTextSize(0.04)
-leg.AddEntry(data, "Data", "PE"); leg.AddEntry(sb, "S+B fit", "L"); leg.AddEntry(bkg, "B component", "L")
+leg.AddEntry(dh, "Data", "PE")
+leg.AddEntry(frame.getCurve("sb"),  "S+B fit", "L")
+leg.AddEntry(frame.getCurve("bkg"), "B component", "L")
 leg.Draw()
 
 lat = ROOT.TLatex(); lat.SetNDC(); lat.SetTextFont(42)
@@ -60,4 +98,4 @@ lat.SetTextSize(0.040); lat.SetTextAlign(31); lat.DrawLatex(0.95, 0.94, f"{lumi}
 lat.SetTextSize(0.045); lat.SetTextAlign(11); lat.DrawLatex(0.17, 0.85, f"m_{{a}} = {mA} GeV")
 
 c.SaveAs(outpdf)
-print(f"[plot] {outpdf}")
+print(f"[plot] {outpdf}  (S+B post-fit pdf curve; Nb={Nb:.1f}, Nsb={Nsb:.1f}, bkg index={cat.getIndex() if cat else 'NA'})")

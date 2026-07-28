@@ -11,7 +11,7 @@ from tools.plottingTools import *
 
 def get_options():
   parser = OptionParser()
-  parser.add_option('--mass_ALP', dest='mass_ALP', default=1, type='int', help="ALP mass") # PZ
+  parser.add_option('--mass_ALP', dest='mass_ALP', default='1', type='string', help="ALP mass (flashgg label, e.g. 5 or 0p5)") # PZ
   parser.add_option("--channel", dest='channel', default='', help="ele, mu, or leptons") # PZ
 
   parser.add_option('--procs', dest='procs', default='GG2H', help="Comma separated list of processes to include. all = sum all signal procs")  
@@ -276,7 +276,14 @@ for cat, f_or_map in inputFiles.items():
         print(f'[WARN] Missing pdf extend{outputWSObjectTitle__}_{_id}ThisLumi -> skipping')
         continue
       hpdfs[_id] = pdf.createHistogram("h_pdf_%s"%_id,xvar,ROOT.RooFit.Binning(opt.pdf_nBins))
-      hpdfs[_id].Scale(wcat*float(opt.nBins)/80)
+      # Scale the fine-binned model curve to the DATA bin width so it overlays the
+      # (coarser) data histogram on the "Events / <data-binwidth>" axis. The data bin
+      # width is (xvar range)/nBins; for the default full window [100,180] with
+      # nBins=80 this is 1.0 GeV, reproducing the previous hard-coded nBins/80 factor.
+      # For tightened windows (e.g. mA=1 -> [115,137]) the range shrinks, so the fixed
+      # /80 over-scaled the model; using the actual data bin width fixes it.
+      _bw_data = (xvar.getMax()-xvar.getMin())/float(opt.nBins)
+      hpdfs[_id].Scale(wcat*_bw_data)
 
       # per-year accumulation is explicit (no string guessing)
       if f'pdf_{year}' in hists:

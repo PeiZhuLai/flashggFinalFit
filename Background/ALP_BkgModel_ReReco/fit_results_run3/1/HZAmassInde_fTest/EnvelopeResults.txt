@@ -1,4 +1,4 @@
-category : 0 , pdf : Lau1 , gof : 0.610000, isTruth : 1
- category : 0 , pdf : Exp1 , gof : 0.630000, isTruth : 0
- category : 0 , pdf : Pow1 , gof : 0.250000, isTruth : 0
+category : 0 , pdf : Lau1 , gof : 0.180000, isTruth : 1
+ category : 0 , pdf : Exp1 , gof : 0.300000, isTruth : 0
+ category : 0 , pdf : Pow1 , gof : 0.100000, isTruth : 0
  

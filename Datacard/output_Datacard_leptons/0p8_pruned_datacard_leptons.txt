@@ -9,8 +9,8 @@ kmax *
 
 shapes      ggH_2024_ele               cat0    /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/outdir_ele/signalFit/output/0p8_CMS-HGG_sigfit_2024_ele_Hm125.root wsig_13p6TeV:hggpdfsmrel_GG2H_2024_cat0_13p6TeV
 shapes      ggH_2024_mu                cat0    /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Signal/outdir_mu/signalFit/output/0p8_CMS-HGG_sigfit_2024_mu_Hm125.root wsig_13p6TeV:hggpdfsmrel_GG2H_2024_cat0_13p6TeV
-shapes      bkg_mass                   cat0    /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_merged/merged/CMS-HGG_mva_13p6TeV_multipdf.root multipdf:CMS_hgg_cat0_13p6TeV_bkgshape
-shapes      data_obs                   cat0    /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_merged/merged/CMS-HGG_mva_13p6TeV_multipdf.root multipdf:roohist_data_mass_cat0
+shapes      bkg_mass                   cat0    /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_merged/0p8/CMS-HGG_mva_13p6TeV_multipdf.root multipdf:CMS_hgg_cat0_13p6TeV_bkgshape
+shapes      data_obs                   cat0    /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_merged/0p8/CMS-HGG_mva_13p6TeV_multipdf.root multipdf:roohist_data_mass_cat0
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 bin            cat0                

@@ -4,7 +4,7 @@
 # of up-crossings of the observed Z(mA) scan above a reference level u0:
 #   p_global = p_local(Zmax) + <N(u0)> * exp(-(Zmax^2 - u0^2)/2)
 # Reads Combine/output_significance/, prints Zmax, local/global p and Z_global, and
-# writes a one-line summary to Combine/output_significance/global_significance.txt.
+# writes a one-line summary to Plots/plot_limits/4_significance_global/global_significance.txt.
 #
 # NOTE: this is the analytic GV estimate using the observed up-crossings. For a fully
 # rigorous number, replace <N(u0)> by the toy-averaged up-crossing count (B-only toys,
@@ -36,6 +36,8 @@ zglob=ROOT.Math.normal_quantile_c(min(pglob,0.5),1.0)
 line=(f"Max local Z = {zmax:.3f} sigma at mA = {mmax} GeV (local p = {plocal:.5f}); "
       f"up-crossings(u0={u0})={Nu}; GLOBAL p = {pglob:.4f} -> Z_global = {zglob:.2f} sigma")
 print(line)
-with open(f"{SIGDIR}/global_significance.txt","w") as fo: fo.write(line+"\n")
-print(f"[1c] wrote {SIGDIR}/global_significance.txt")
+OUTDIR="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Plots/plot_limits/4_significance_global"
+os.makedirs(OUTDIR, exist_ok=True)
+with open(f"{OUTDIR}/global_significance.txt","w") as fo: fo.write(line+"\n")
+print(f"[1c] wrote {OUTDIR}/global_significance.txt")
 PY

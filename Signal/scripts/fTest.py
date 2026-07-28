@@ -24,6 +24,19 @@ from plottingTools import *
 
 MHLow, MHHigh = '100', '180'
 
+def _resolve_fit_range(mass_alp, default_low, default_high):
+    # Keep in sync with signalFit.py _resolve_fit_range so the nGauss selection is
+    # performed on the SAME (tightened) window that signalFit later fits.
+    windows = {
+        "0p1": ("118", "158"),
+        "0p2": ("112", "140"), "0p3": ("112", "140"), "0p4": ("112", "140"),
+        "0p5": ("112", "140"), "0p6": ("112", "140"), "0p7": ("112", "140"),
+        "0p8": ("112", "140"), "0p9": ("112", "140"),
+        # mA=1: core window to avoid the high-side merged-photon tail (see signalFit).
+        "1": ("115", "137"),
+    }
+    return windows.get(str(mass_alp), (default_low, default_high))
+
 def leave():
   print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ HGG SIGNAL FTEST (END) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ")
   exit(0)
@@ -117,6 +130,15 @@ if not xvar:
   print(f"Error: Workspace does not contain variable '{opt.xvar}'")
   leave()
 xvarFit = xvar.Clone()
+# Mass-dependent fit range (kept in sync with signalFit.py). For mA=1 this tightens
+# to the core window so the nGauss count is chosen for the same window signalFit uses.
+MHLow, MHHigh = _resolve_fit_range(opt.mass_ALP, MHLow, MHHigh)
+print(f" [CFG] fTest fit range for mA={opt.mass_ALP}: [{MHLow}, {MHHigh}]")
+try:
+  xvar.setRange(int(MHLow), int(MHHigh))
+  xvarFit.setRange(int(MHLow), int(MHHigh))
+except Exception:
+  pass
 # prefer workspace dZ if present, else create dummy
 dZ_ws = inputWS0.var("dZ")
 if dZ_ws:
@@ -176,6 +198,10 @@ for pidx, proc in enumerate(procsToFTest):
     f.Close()
     continue
   d = reduceDataset(inputWS.data("%s_%s_Za_%s_%s_%s"%(procToData(proc.split("_")[0]),opt.mass,opt.channel,sqrts__,opt.cat)),aset) # PZ
+  # reduceDataset only selects columns; apply the (tightened) mass window here so the
+  # nGauss selection is performed on the same core window signalFit will fit (mA=1).
+  if str(opt.mass_ALP) == "1":
+    d = d.reduce("%s>=%s&&%s<=%s"%(opt.xvar, MHLow, opt.xvar, MHHigh))
   # datasets_RV[opt.mass] = splitRVWV(d,aset,mode="RV")
   # datasets_WV[opt.mass] = splitRVWV(d,aset,mode="WV")
   datasets_RV[opt.mass] = d #PZ

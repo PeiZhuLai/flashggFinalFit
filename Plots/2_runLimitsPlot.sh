@@ -35,7 +35,7 @@ OBSDIR="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashgg
 
 # resolved-only (m_a = 1..30) EXPECTED: XS / BR / Wilson / compare
 python3 makeLimitsPlot.py \
-  --outdir plot_limits \
+  --outdir plot_limits/2_runLimitsPlot \
   --assume-xs 100 \
   --ggf-xs 59703.914 \
   --lumi 172.13 \
@@ -45,7 +45,7 @@ python3 makeLimitsPlot.py \
 
 # resolved-only (m_a = 1..30) with OBSERVED line (reads output_combine_results_observed)
 python3 makeLimitsPlot.py \
-  --outdir plot_limits \
+  --outdir plot_limits/2_runLimitsPlot \
   --assume-xs 100 \
   --ggf-xs 59703.914 \
   --lumi 172.13 \
@@ -61,7 +61,7 @@ OBSDIR="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashgg
 
 # expected-only
 python3 makeLimitsPlot_full.py \
-  --outdir plot_limits \
+  --outdir plot_limits/2_runLimitsPlot \
   --assume-xs 100 \
   --lumi 172.13 \
   --formats pdf,png \
@@ -69,7 +69,7 @@ python3 makeLimitsPlot_full.py \
 
 # with observed overlay
 python3 makeLimitsPlot_full.py \
-  --outdir plot_limits \
+  --outdir plot_limits/2_runLimitsPlot \
   --assume-xs 100 \
   --lumi 172.13 \
   --formats pdf,png \

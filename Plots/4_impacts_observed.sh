@@ -5,7 +5,7 @@
 #   signal strength r-hat with its uncertainty), and the ranked nuisance impacts on r.
 #   MH frozen at 125.38, r in [-5,5], robustFit. NO -t / --expectSignal (this is OBSERVED
 #   data, not an Asimov/expected dataset). mA1 uses the R=1 working-point datacard.
-# Output -> Combine/output_impacts_observed/{mA}_impacts.{json,pdf}
+# Output -> Plots/plot_limits/9_impacts/mA{NN}_impacts.{json,pdf}  (combine intermediate roots in Combine/output_impacts_observed/)
 # TWO parallel axes: NPROC mA-workers (default 2) x PARALLEL nuisance-fits each (default 2).
 # Keep NPROC*PARALLEL modest on shared lxplus. ALPMASS="1 2 3" to restrict.
 set -e
@@ -14,8 +14,9 @@ cd /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src
 eval `scramv1 runtime -sh`
 FFIT=/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit
 T2W=$FFIT/Combine/root_t2w
-OUT=$FFIT/Combine/output_impacts_observed
-mkdir -p "$OUT" "$OUT/logs_parallel"
+OUT=$FFIT/Combine/output_impacts_observed              # combine intermediate roots stay here
+PLOTDIR=$FFIT/Plots/plot_limits/9_impacts             # human-facing json+pdf (execution-order #9)
+mkdir -p "$OUT" "$OUT/logs_parallel" "$PLOTDIR"
 
 PARALLEL="${PARALLEL:-2}"   # combineTool --parallel (nuisance fits per mA)
 NPROC="${NPROC:-2}"          # mA workers
@@ -29,12 +30,13 @@ run_one() {
     local ws=$T2W/${mA}_Datacard_leptons.root
     [ -f "$ws" ] || { echo "[skip] missing $ws (run 1_makeLimits_observed.sh first)"; return 0; }
     echo "=== OBSERVED impacts mA = ${mA} ==="
+    local mApad; printf -v mApad "%02d" "$mA"
     local workdir; workdir=$(mktemp -d "$OUT/work_${mA}_XXXX")
     ( cd "$workdir"
       combineTool.py -M Impacts -d "$ws" $common --doInitialFit
       combineTool.py -M Impacts -d "$ws" $common --doFits --parallel "$PARALLEL"
-      combineTool.py -M Impacts -d "$ws" $common -o "$OUT/${mA}_impacts.json"
-      plotImpacts.py -i "$OUT/${mA}_impacts.json" -o "$OUT/${mA}_impacts" )
+      combineTool.py -M Impacts -d "$ws" $common -o "$PLOTDIR/mA${mApad}_impacts.json"
+      plotImpacts.py -i "$PLOTDIR/mA${mApad}_impacts.json" -o "$PLOTDIR/mA${mApad}_impacts" )
     rm -rf "$workdir"
 }
 
@@ -43,4 +45,4 @@ for mA in "${ALPmassList[@]}"; do
     while [ "$(jobs -rp | wc -l)" -ge "$NPROC" ]; do sleep 2; done
 done
 wait
-echo "[1e] observed impacts (r=observed) -> $OUT/{mA}_impacts.{json,pdf} (logs: $OUT/logs_parallel/)"
+echo "[1e] observed impacts (r=observed) -> $PLOTDIR/mA{NN}_impacts.{json,pdf} (logs: $OUT/logs_parallel/)"

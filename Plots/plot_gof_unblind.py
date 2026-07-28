@@ -6,8 +6,8 @@ For each mA reads the saturated-GOF combine outputs:
   unblind_GOF/roots/higgsCombine{mA}_toys.GoodnessOfFit.mH125.38.12345.root (toy t distribution)
 draws the toy distribution + observed arrow, computes the GOF p-value
 (= fraction of toys with t_toy >= t_obs), and saves:
-  unblind_GOF/gof_mA{mA}.{pdf,png}     per-mA
-  unblind_GOF/gof_pvalue_vs_mA.{pdf,png}  summary p-value vs mA
+  plot_limits/5_gof/mA{mA:02d}_gof.{pdf,png}     per-mA
+  plot_limits/5_gof/gof_pvalue_vs_mA.{pdf,png}   summary p-value vs mA
 Run in higgs-alp-ana (ROOT 6.24).
 """
 import os, glob, array, ROOT
@@ -17,8 +17,9 @@ ROOT.gErrorIgnoreLevel = ROOT.kError + 1
 ROOT.gStyle.SetOptStat(0)
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-ROOTS = f"{BASE}/unblind_GOF/roots"
-OUT = f"{BASE}/unblind_GOF"
+ROOTS = f"{BASE}/unblind_GOF/roots"                  # combine GOF roots (input) stay here
+OUT = f"{BASE}/plot_limits/5_gof"                     # human-facing gof pdf/png (execution-order #5)
+os.makedirs(OUT, exist_ok=True)
 MASSES = list(range(1, 31))
 LUMI = "172.13 fb^{-1} (13.6 TeV)"
 
@@ -77,7 +78,7 @@ def main():
         tl.DrawLatex(0.16, 0.80, f"observed t = {t_obs:.1f}")
         tl.DrawLatex(0.16, 0.75, f"GOF p-value = {p:.2f}")
         for ext in ("pdf", "png"):
-            c.SaveAs(f"{OUT}/gof_mA{m:02d}.{ext}")
+            c.SaveAs(f"{OUT}/mA{m:02d}_gof.{ext}")
         print(f"[gof] mA{m}: t_obs={t_obs:.1f}  p={p:.3f}  ({len(toys)} toys)")
 
     # summary: p-value vs mA

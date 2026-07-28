@@ -1,23 +1,23 @@
 {
-  "exp": 0.0207,
+  "exp": 0.0215,
   "fit_results": {
     "Exp1": {
-      "mean": -0.0326,
-      "mean_err": 0.0352,
-      "sigma": 0.9691,
-      "sigma_err": 0.0306
+      "mean": -0.1045,
+      "mean_err": 0.0373,
+      "sigma": 1.0221,
+      "sigma_err": 0.0286
     },
     "Lau1": {
-      "mean": -0.1808,
-      "mean_err": 0.0346,
-      "sigma": 1.0169,
-      "sigma_err": 0.0266
+      "mean": -0.0888,
+      "mean_err": 0.0326,
+      "sigma": 0.9552,
+      "sigma_err": 0.0268
     },
     "Pow1": {
-      "mean": -0.0897,
-      "mean_err": 0.0345,
-      "sigma": 0.9895,
-      "sigma_err": 0.0279
+      "mean": -0.043,
+      "mean_err": 0.0319,
+      "sigma": 0.9344,
+      "sigma_err": 0.0254
     }
   },
   "mA": 6

@@ -1,29 +1,29 @@
 {
-  "exp": 0.0582,
+  "exp": 0.0613,
   "fit_results": {
-    "Bern2": {
-      "mean": -0.1615,
-      "mean_err": 0.0356,
-      "sigma": 1.044,
-      "sigma_err": 0.0298
+    "Bern3": {
+      "mean": -0.1859,
+      "mean_err": 0.0345,
+      "sigma": 1.0113,
+      "sigma_err": 0.0274
     },
     "Exp1": {
-      "mean": 0.0119,
-      "mean_err": 0.0362,
-      "sigma": 1.0137,
-      "sigma_err": 0.0303
+      "mean": 0.0519,
+      "mean_err": 0.0365,
+      "sigma": 1.0458,
+      "sigma_err": 0.0318
     },
     "Lau1": {
-      "mean": 0.0819,
-      "mean_err": 0.0346,
-      "sigma": 1.0244,
-      "sigma_err": 0.0267
+      "mean": 0.1266,
+      "mean_err": 0.0347,
+      "sigma": 1.026,
+      "sigma_err": 0.0286
     },
     "Pow3": {
-      "mean": 0.0805,
-      "mean_err": 0.0364,
-      "sigma": 1.0208,
-      "sigma_err": 0.0311
+      "mean": 0.099,
+      "mean_err": 0.0335,
+      "sigma": 0.9772,
+      "sigma_err": 0.0292
     }
   },
   "mA": 3
