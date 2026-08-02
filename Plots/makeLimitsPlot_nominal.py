@@ -190,7 +190,7 @@ def BrazilianPlots(sample: int = 0,
                    masses: List[int] = None,
                    outdir: str = "output_plots",
                    assume_xs: float = 100.0,
-                   ggF_xs: float = 56027.0,
+                   higgs_xs: float = 59703.914,
                    lumi_fb: float = 61.89,
                    formats: List[str] = None,
                    logy: bool = True,
@@ -202,7 +202,7 @@ def BrazilianPlots(sample: int = 0,
     """
     生成巴西圖 (Brazilian plot)
     setLimitsOnBR: True 則轉成 BR
-    setLimitsOnWilsonCoefficient: True 則將 (sigma*BR)/ggF_xs 轉換成 Wilson coupling
+    setLimitsOnWilsonCoefficient: True 則將 (sigma*BR)/higgs_xs 轉換成 Wilson coupling
     若為 Wilson 模式, 並提供 indirect_* 參數, 會用平滑 (min,max,step) 生成間接限制紅線
     """
     def make_file_name(m):
@@ -239,19 +239,19 @@ def BrazilianPlots(sample: int = 0,
             p2s = (q975 - q50) * assume_xs
             m2s = (q50 - q025) * assume_xs
         else:
-            exp = q50 * assume_xs / ggF_xs
-            p1s = (q84 - q50) * assume_xs / ggF_xs
-            m1s = (q50 - q16) * assume_xs / ggF_xs
-            p2s = (q975 - q50) * assume_xs / ggF_xs
-            m2s = (q50 - q025) * assume_xs / ggF_xs
+            exp = q50 * assume_xs / higgs_xs
+            p1s = (q84 - q50) * assume_xs / higgs_xs
+            m1s = (q50 - q16) * assume_xs / higgs_xs
+            p2s = (q975 - q50) * assume_xs / higgs_xs
+            m2s = (q50 - q025) * assume_xs / higgs_xs
 
         # 修正: Wilson 誤差用「轉換後差值」而非直接把差值丟進公式
         if setLimitsOnWilsonCoefficient:
-            mid_br   = q50 * assume_xs / ( ggF_xs * ZToll_br )
-            up1_br   = q84 * assume_xs / ( ggF_xs * ZToll_br )
-            dn1_br   = q16 * assume_xs / ( ggF_xs * ZToll_br )
-            up2_br   = q975 * assume_xs / ( ggF_xs * ZToll_br )
-            dn2_br   = q025 * assume_xs / ( ggF_xs * ZToll_br )
+            mid_br   = q50 * assume_xs / ( higgs_xs * ZToll_br )
+            up1_br   = q84 * assume_xs / ( higgs_xs * ZToll_br )
+            dn1_br   = q16 * assume_xs / ( higgs_xs * ZToll_br )
+            up2_br   = q975 * assume_xs / ( higgs_xs * ZToll_br )
+            dn2_br   = q025 * assume_xs / ( higgs_xs * ZToll_br )
             mid_coup = calc_Wilson_coupling(mid_br, m)
             up1_coup = calc_Wilson_coupling(up1_br, m)
             dn1_coup = calc_Wilson_coupling(dn1_br, m)
@@ -273,7 +273,7 @@ def BrazilianPlots(sample: int = 0,
             if not setLimitsOnBR:
                 g_obs.SetPoint(idx, m, obs * assume_xs)
             else:
-                g_obs.SetPoint(idx, m, obs * assume_xs / ggF_xs)
+                g_obs.SetPoint(idx, m, obs * assume_xs / higgs_xs)
 
         print(f"[BrazilianPlots] m={m} ({'BR' if setLimitsOnBR else 'XS'}) median={exp:.3g}")
         idx += 1
@@ -457,7 +457,10 @@ def main():
     # 移除 --br 與 --wilson 參數
     parser.add_argument("--outdir", default="output_plots", help="Output directory")
     parser.add_argument("--assume-xs", type=float, default=100.0, help="Assumed signal cross section (fb)")
-    parser.add_argument("--ggf-xs", type=float, default=52170.0, help="ggF total cross section (fb)")
+    parser.add_argument("--higgs-xs", "--ggf-xs", dest="higgs_xs", type=float, default=59703.914,
+                        help="Inclusive SM Higgs boson production cross section (fb), summed over all "
+                             "production modes (default: 59703.914 fb at 13.6 TeV for m_H=125.38 GeV). "
+                             "--ggf-xs is a deprecated alias kept for backward compatibility.")
     parser.add_argument("--lumi", type=float, default=61.89, help="Luminosity in fb^-1 for label")
     parser.add_argument("--formats", default="png,pdf", help="Output formats, e.g. png,pdf,root")
     parser.add_argument("--linear-y", action="store_true", help="Use linear y-axis (default log)")
@@ -504,7 +507,7 @@ def main():
         masses=masses,
         outdir=args.outdir,
         assume_xs=args.assume_xs,
-        ggF_xs=args.ggf_xs,
+        higgs_xs=args.higgs_xs,
         lumi_fb=args.lumi,
         formats=fmts,
         logy=not args.linear_y,

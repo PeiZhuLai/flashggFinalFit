@@ -23,7 +23,7 @@ cd /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinal
 # ttH = 17.20 fb tWH-chan for 125.38 GeV
 # tH = 83.17 fb for 125.38 GeV
 # bbH = 632 fb for 125.40 GeV
-# 13.6 Tot = 59703.914 fb for 125.38 GeV
+# 13.6 Tot = 59703.914 fb for 125.38 GeV  (inclusive: sum over ALL production modes, not ggF alone)
 
 # Run2
 # pp to H 56000 Zebing
@@ -37,7 +37,7 @@ OBSDIR="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashgg
 python3 makeLimitsPlot.py \
   --outdir plot_limits/2_runLimitsPlot \
   --assume-xs 100 \
-  --ggf-xs 59703.914 \
+  --higgs-xs 59703.914 \
   --lumi 172.13 \
   --formats pdf \
   --masses $MASSES_RES \
@@ -47,7 +47,7 @@ python3 makeLimitsPlot.py \
 python3 makeLimitsPlot.py \
   --outdir plot_limits/2_runLimitsPlot \
   --assume-xs 100 \
-  --ggf-xs 59703.914 \
+  --higgs-xs 59703.914 \
   --lumi 172.13 \
   --formats pdf,png \
   --masses $MASSES_RES \

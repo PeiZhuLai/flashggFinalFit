@@ -248,7 +248,7 @@ def _infer_masses_from_hepdata(jmap: dict) -> List[int]:
     return ms
 
 def build_graph_from_combine(masses: List[int], mode: str = "xs",
-                            assume_xs: float = 100.0, ggF_xs: float = 52170.0):
+                            assume_xs: float = 100.0, higgs_xs: float = 59703.914):
     mode = (mode or "xs").lower()
     g = TGraph()
     failed = []
@@ -266,7 +266,7 @@ def build_graph_from_combine(masses: List[int], mode: str = "xs",
         if mode == "xs":
             y = float(q50) * float(assume_xs)
         elif mode == "wilson":
-            br = float(q50) * float(assume_xs) / (float(ggF_xs) * float(ZToll_br))
+            br = float(q50) * float(assume_xs) / (float(higgs_xs) * float(ZToll_br))
             y = float(calc_Wilson_coupling(br, m))
         else:
             raise ValueError(f"Unknown mode: {mode}")
@@ -474,7 +474,7 @@ def BrazilianPlots(sample: int = 0,
                    masses: List[int] = None,
                    outdir: str = "output_plots",
                    assume_xs: float = 100.0,
-                   ggF_xs: float = 52170.0,
+                   higgs_xs: float = 59703.914,
                    lumi_fb: float = 61.89,
                    formats: List[str] = None,
                    logy: bool = True,
@@ -519,18 +519,18 @@ def BrazilianPlots(sample: int = 0,
             p2s = (q975 - q50) * assume_xs
             m2s = (q50 - q025) * assume_xs
         else:
-            exp = q50 * assume_xs / ggF_xs
-            p1s = (q84 - q50) * assume_xs / ggF_xs
-            m1s = (q50 - q16) * assume_xs / ggF_xs
-            p2s = (q975 - q50) * assume_xs / ggF_xs
-            m2s = (q50 - q025) * assume_xs / ggF_xs
+            exp = q50 * assume_xs / higgs_xs
+            p1s = (q84 - q50) * assume_xs / higgs_xs
+            m1s = (q50 - q16) * assume_xs / higgs_xs
+            p2s = (q975 - q50) * assume_xs / higgs_xs
+            m2s = (q50 - q025) * assume_xs / higgs_xs
 
         if setLimitsOnWilsonCoefficient:
-            mid_br = q50 * assume_xs / (ggF_xs * ZToll_br)
-            up1_br = q84 * assume_xs / (ggF_xs * ZToll_br)
-            dn1_br = q16 * assume_xs / (ggF_xs * ZToll_br)
-            up2_br = q975 * assume_xs / (ggF_xs * ZToll_br)
-            dn2_br = q025 * assume_xs / (ggF_xs * ZToll_br)
+            mid_br = q50 * assume_xs / (higgs_xs * ZToll_br)
+            up1_br = q84 * assume_xs / (higgs_xs * ZToll_br)
+            dn1_br = q16 * assume_xs / (higgs_xs * ZToll_br)
+            up2_br = q975 * assume_xs / (higgs_xs * ZToll_br)
+            dn2_br = q025 * assume_xs / (higgs_xs * ZToll_br)
 
             mid_c = calc_Wilson_coupling(mid_br, m)
             up1_c = calc_Wilson_coupling(up1_br, m)
@@ -551,7 +551,7 @@ def BrazilianPlots(sample: int = 0,
         g_exp_2s.SetPointError(idx, 0.0, 0.0, m2s, p2s)
 
         if drawObs and hasObs and (not setLimitsOnWilsonCoefficient):
-            yobs = obs * assume_xs if not setLimitsOnBR else obs * assume_xs / ggF_xs
+            yobs = obs * assume_xs if not setLimitsOnBR else obs * assume_xs / higgs_xs
             g_obs.SetPoint(idx, m, yobs)
 
         idx += 1
@@ -683,7 +683,10 @@ def main():
     parser.add_argument("--no-obs", action="store_true", help="Do not draw observed")
     parser.add_argument("--outdir", default="output_plots", help="Output directory")
     parser.add_argument("--assume-xs", type=float, default=100.0, help="Assumed signal cross section (fb)")
-    parser.add_argument("--ggf-xs", type=float, default=52170.0, help="ggF total cross section (fb)")
+    parser.add_argument("--higgs-xs", "--ggf-xs", dest="higgs_xs", type=float, default=59703.914,
+                        help="Inclusive SM Higgs boson production cross section (fb), summed over all "
+                             "production modes (default: 59703.914 fb at 13.6 TeV for m_H=125.38 GeV). "
+                             "--ggf-xs is a deprecated alias kept for backward compatibility.")
     parser.add_argument("--lumi", type=float, default=61.89, help="Luminosity in fb^-1 for label")
     parser.add_argument("--formats", default="pdf", help="Output formats, e.g. png,pdf,root")
     parser.add_argument("--linear-y", action="store_true", help="Use linear y-axis (default log)")
@@ -734,19 +737,19 @@ def main():
 
     if "xs" in req:
         BrazilianPlots(
-            masses=masses, outdir=args.outdir, assume_xs=args.assume_xs, ggF_xs=args.ggf_xs,
+            masses=masses, outdir=args.outdir, assume_xs=args.assume_xs, higgs_xs=args.higgs_xs,
             lumi_fb=args.lumi, formats=formats, logy=logy, save_root=save_root, tag_suffix=args.tag_suffix, results_dir=args.results_dir,
             drawObs=not args.no_obs, setLimitsOnBR=False, setLimitsOnWilsonCoefficient=False,
         )
     if "br" in req:
         BrazilianPlots(
-            masses=masses, outdir=args.outdir, assume_xs=args.assume_xs, ggF_xs=args.ggf_xs,
+            masses=masses, outdir=args.outdir, assume_xs=args.assume_xs, higgs_xs=args.higgs_xs,
             lumi_fb=args.lumi, formats=formats, logy=logy, save_root=save_root, tag_suffix=args.tag_suffix, results_dir=args.results_dir,
             drawObs=not args.no_obs, setLimitsOnBR=True, setLimitsOnWilsonCoefficient=False,
         )
     if "wilson" in req:
         BrazilianPlots(
-            masses=masses, outdir=args.outdir, assume_xs=args.assume_xs, ggF_xs=args.ggf_xs,
+            masses=masses, outdir=args.outdir, assume_xs=args.assume_xs, higgs_xs=args.higgs_xs,
             lumi_fb=args.lumi, formats=formats, logy=logy, save_root=save_root, tag_suffix=args.tag_suffix, results_dir=args.results_dir,
             drawObs=not args.no_obs, setLimitsOnBR=True, setLimitsOnWilsonCoefficient=True,
             indirect_min=args.indirect_min, indirect_max=args.indirect_max, indirect_step=args.indirect_step,
@@ -760,7 +763,7 @@ def main():
         g_run2_xs_obs = build_graph_from_hepdata_values(j_xs, masses, which="obs")
 
         g_this_xs_exp, failed_xs = build_graph_from_combine(
-            masses, mode="xs", assume_xs=args.assume_xs, ggF_xs=args.ggf_xs
+            masses, mode="xs", assume_xs=args.assume_xs, higgs_xs=args.higgs_xs
         )
 
         outbase_xs = os.path.join(args.outdir, f"compare_xs_run2{args.tag_suffix}")
@@ -788,7 +791,7 @@ def main():
         g_run2_w_obs = build_graph_from_hepdata_values(j_w, masses, which="obs")
 
         g_this_w_exp, failed_w = build_graph_from_combine(
-            masses, mode="wilson", assume_xs=args.assume_xs, ggF_xs=args.ggf_xs
+            masses, mode="wilson", assume_xs=args.assume_xs, higgs_xs=args.higgs_xs
         )
 
         outbase_w = os.path.join(args.outdir, f"compare_wilson_run2{args.tag_suffix}")
