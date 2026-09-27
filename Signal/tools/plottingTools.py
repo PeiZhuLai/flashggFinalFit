@@ -173,7 +173,7 @@ def plotFTest(ssfs,_opt=1,_outdir='./',_extension='',_proc='',_cat='',_mass='125
   lat.SetTextFont(42)
   lat.DrawLatex(0.97,0.93,(f"{lumiMap[_year]} fb^{{-1}} (13.6 TeV)"))
   canv.Update()
-  canv.SaveAs(f"{_outdir}/{_Amass}_fTest_{_year}_{_channel}_Hm{_Hmass}.pdf")
+  canv.SaveAs(f"{_outdir}/{_Amass}_nGaussScan_{_year}_{_channel}_Hm{_Hmass}.pdf")
 
 # Plot reduced chi2 vs nGauss
 def plotFTestResults(ssfs,_opt,_outdir="./",_extension='',_proc='',_cat='',_mass='125',_Amass='1',_year='16',_channel='ele',_Hmass='125'):
@@ -186,12 +186,14 @@ def plotFTestResults(ssfs,_opt,_outdir="./",_extension='',_proc='',_cat='',_mass
   p = 0
   xmax = 1
   ymax = -1
+  ymin = 1e9
   for k,ssf in ssfs.items():
     ssf.MH.setVal(int(_mass))
     x = int(k.split("_")[-1])
     if x > xmax: xmax = x
     y = ssf.getReducedChi2()
     if y > ymax: ymax = y
+    if y < ymin: ymin = y
     gr.SetPoint(p,x,y)
     p += 1
 
@@ -216,8 +218,18 @@ def plotFTestResults(ssfs,_opt,_outdir="./",_extension='',_proc='',_cat='',_mass
   haxes.GetXaxis().SetLabelSize(0.05)
   haxes.GetXaxis().SetLabelOffset(0.009)
 
-  haxes.SetMaximum(1.2*ymax)
-  haxes.SetMinimum(0.5)
+  # Adaptive y-range: the previous hard-coded minimum of 0.5 silently clipped every
+  # point with chi2/dof < 0.5 out of the frame -- including, at low mA, the optimum
+  # nGauss the plot is meant to advertise. Pad asymmetrically so the two TLatex
+  # lines in the top-right corner stay clear of the highest point.
+  span = ymax - ymin
+  if span > 0:
+    pad_lo, pad_hi = 0.15*span, 0.45*span
+  else: # single point, or all nGauss give the same chi2/dof
+    ref = max(abs(ymax), 1e-3)
+    pad_lo, pad_hi = 0.10*ref, 0.50*ref
+  haxes.SetMaximum(ymax+pad_hi)
+  haxes.SetMinimum(max(0.,ymin-pad_lo))
   # haxes.GetXaxis().SetRangeUser(0.5,5.5)
   haxes.GetXaxis().SetLimits(0.6,5.4)
   haxes.Draw()
@@ -250,7 +262,7 @@ def plotFTestResults(ssfs,_opt,_outdir="./",_extension='',_proc='',_cat='',_mass
   lat.SetTextFont(42)
   lat.DrawLatex(0.97,0.93,(f"{lumiMap[_year]} fb^{{-1}} (13.6 TeV)"))
   canv.Update()
-  canv.SaveAs(f"{_outdir}/{_Amass}_fTest_{_year}_{_channel}_Hm{_Hmass}_chi2_vs_nGauss.pdf")
+  canv.SaveAs(f"{_outdir}/{_Amass}_nGaussScan_{_year}_{_channel}_Hm{_Hmass}_chi2_vs_nGauss.pdf")
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Signal fit plots

@@ -71,10 +71,10 @@ with open("%s/outdir_%s/getDiagProc/json/diagonal_process.json"%(swd__,opt.ext),
 # One json file for each cat: diagonal proc first line in file
 if opt.makeSimpleFTest:
   print(" --> Making simple fTest config json using diagonal procs (nRV,nWV) = (%s,%s)"%(opt.nRV,opt.nWV))
-  if not os.path.isdir("%s/outdir_%s/fTest"%(swd__,opt.ext)): os.system("mkdir %s/outdir_%s/fTest"%(swd__,opt.ext))
-  if not os.path.isdir("%s/outdir_%s/fTest/json"%(swd__,opt.ext)): os.system("mkdir %s/outdir_%s/fTest/json"%(swd__,opt.ext))
+  if not os.path.isdir("%s/outdir_%s/nGaussScan"%(swd__,opt.ext)): os.system("mkdir %s/outdir_%s/nGaussScan"%(swd__,opt.ext))
+  if not os.path.isdir("%s/outdir_%s/nGaussScan/json"%(swd__,opt.ext)): os.system("mkdir %s/outdir_%s/nGaussScan/json"%(swd__,opt.ext))
   for cidx, cat in enumerate(allCats.split(",")):
-    ff = open("%s/outdir_%s/fTest/json/nGauss_%s.json"%(swd__,opt.ext,cat),"w")
+    ff = open("%s/outdir_%s/nGaussScan/json/nGauss_%s.json"%(swd__,opt.ext,cat),"w")
     ff.write("{\n")
     pitr = 1
     # First write diagonal proc

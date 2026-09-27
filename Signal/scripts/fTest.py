@@ -32,10 +32,53 @@ def _resolve_fit_range(mass_alp, default_low, default_high):
         "0p2": ("112", "140"), "0p3": ("112", "140"), "0p4": ("112", "140"),
         "0p5": ("112", "140"), "0p6": ("112", "140"), "0p7": ("112", "140"),
         "0p8": ("112", "140"), "0p9": ("112", "140"),
-        # mA=1: core window to avoid the high-side merged-photon tail (see signalFit).
-        "1": ("115", "137"),
+        # mA=1: core window. The upper edge is 133 rather than 137 because the
+        # 134-137 region holds a distinct second population (~13-41% of the peak
+        # yield depending on era, present in all 10 era/channel combinations) whose
+        # kinematics do not match a 1 GeV ALP: median lead-photon pT 33.7 vs 19.1 GeV
+        # in the peak, and a dR(g,g) tail reaching 0.875 vs 0.090. These are photon
+        # mis-pairings -- the "two highest-pT photons" rule picks the wrong pair when
+        # extra photons are present -- not genuine mA=1 signal, so they are excluded
+        # from the signal model. Note an m(gg) cut cannot separate them (their median
+        # m(gg) is 1.365 vs 1.034 for signal); fixing the pairing rule is the proper
+        # long-term solution.
+        "1": ("115", "133"),
     }
+    # Optional study override, e.g. HZA_FIT_WINDOW="1:115,133" to test a
+    # different window for one mass point without touching the defaults.
+    import os as _os
+    _ov = _os.environ.get("HZA_FIT_WINDOW", "")
+    for _item in [t for t in _ov.split(";") if t.strip()]:
+        try:
+            _m, _rng = _item.split(":"); _lo, _hi = _rng.split(",")
+            if str(_m).strip() == str(mass_alp): return (_lo.strip(), _hi.strip())
+        except Exception:
+            pass
     return windows.get(str(mass_alp), (default_low, default_high))
+
+
+def _resolve_fit_bins(mass_alp, default_bins):
+    # The fit range is tightened for some mass points (see _resolve_fit_range) but
+    # --nBins stayed at its default, so the bin width shrank with the window: at
+    # mA=1 the 115-137 window over 80 bins gives 0.28 GeV/bin instead of the
+    # 1.0 GeV/bin used at every other mass point. Since mA=1 is also the lowest
+    # statistics point, that left only a handful of events per bin, drove every
+    # chi2/dof below 1 and let the nGauss selection pick a high order on
+    # statistical noise -- producing a visibly double-peaked signal shape.
+    # Setting 22 bins over the 22 GeV window restores 1.0 GeV/bin.
+    # NOTE: the sub-GeV windows (0p1: 118-158, 0p2-0p9: 112-140) have the same
+    # issue and would need 40 and 28 bins respectively; they are not part of the
+    # current mass scan (1-30) so they are left untouched here.
+    import os as _os
+    _ob = _os.environ.get("HZA_FIT_BINS", "")
+    for _item in [t for t in _ob.split(";") if t.strip()]:
+        try:
+            _m, _b = _item.split(":")
+            if str(_m).strip() == str(mass_alp): return int(_b)
+        except Exception:
+            pass
+    overrides = {"1": 18}   # 115-133 over 18 bins = 1.0 GeV/bin
+    return overrides.get(str(mass_alp), default_bins)
 
 def leave():
   print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ HGG SIGNAL FTEST (END) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ")
@@ -114,8 +157,8 @@ def get_workspace(rootfile, name_hint=None):
 ROOT.gStyle.SetOptStat(0)
 ROOT.gROOT.SetBatch(True)
 if opt.doPlots: 
-  # if not os.path.isdir("%s/outdir_%s/fTest/Plots"%(swd__,opt.ext)): os.system("mkdir -p %s/outdir_%s/fTest/Plots"%(swd__,opt.ext))
-  if not os.path.isdir("%s/outdir_%s/fTest/Plots"%(swd__,opt.channel)): os.system("mkdir -p %s/outdir_%s/fTest/Plots"%(swd__,opt.channel))
+  # if not os.path.isdir("%s/outdir_%s/nGaussScan/Plots"%(swd__,opt.ext)): os.system("mkdir -p %s/outdir_%s/nGaussScan/Plots"%(swd__,opt.ext))
+  if not os.path.isdir("%s/outdir_%s/nGaussScan/Plots"%(swd__,opt.channel)): os.system("mkdir -p %s/outdir_%s/nGaussScan/Plots"%(swd__,opt.channel))
 
 # Load xvar to fit (robust)
 print(f"Looking for files in: {opt.inputWSDir}")
@@ -134,6 +177,8 @@ xvarFit = xvar.Clone()
 # to the core window so the nGauss count is chosen for the same window signalFit uses.
 MHLow, MHHigh = _resolve_fit_range(opt.mass_ALP, MHLow, MHHigh)
 print(f" [CFG] fTest fit range for mA={opt.mass_ALP}: [{MHLow}, {MHHigh}]")
+opt.nBins = _resolve_fit_bins(opt.mass_ALP, opt.nBins)
+print(f" [CFG] fit bins for mA={opt.mass_ALP}: {opt.nBins} ({(int(MHHigh)-int(MHLow))/float(opt.nBins):.2f} GeV/bin)")
 try:
   xvar.setRange(int(MHLow), int(MHHigh))
   xvarFit.setRange(int(MHLow), int(MHHigh))
@@ -229,8 +274,8 @@ for pidx, proc in enumerate(procsToFTest):
     df.loc[df['proc']==proc,'nRV'] = nGauss_opt
     # Make plots
     if( opt.doPlots )&( len(ssfs.keys())!=0 ):
-      plotFTest(ssfs,_opt=nGauss_opt,_outdir="%s/outdir_%s/fTest/Plots"%(swd__,opt.channel),_extension="RV",_proc=proc,_cat=opt.cat,_mass=opt.mass, _Amass=opt.mass_ALP,_year=opt.year,_channel=opt.channel,_Hmass=opt.mass)
-      plotFTestResults(ssfs,_opt=nGauss_opt,_outdir="%s/outdir_%s/fTest/Plots"%(swd__,opt.channel),_extension="RV",_proc=proc,_cat=opt.cat,_mass=opt.mass, _Amass=opt.mass_ALP,_year=opt.year,_channel=opt.channel,_Hmass=opt.mass)
+      plotFTest(ssfs,_opt=nGauss_opt,_outdir="%s/outdir_%s/nGaussScan/Plots"%(swd__,opt.channel),_extension="RV",_proc=proc,_cat=opt.cat,_mass=opt.mass, _Amass=opt.mass_ALP,_year=opt.year,_channel=opt.channel,_Hmass=opt.mass)
+      plotFTestResults(ssfs,_opt=nGauss_opt,_outdir="%s/outdir_%s/nGaussScan/Plots"%(swd__,opt.channel),_extension="RV",_proc=proc,_cat=opt.cat,_mass=opt.mass, _Amass=opt.mass_ALP,_year=opt.year,_channel=opt.channel,_Hmass=opt.mass)
 
   # Run fTest: WV
   # If numEntries below threshold then keep as n = 1
@@ -254,16 +299,16 @@ for pidx, proc in enumerate(procsToFTest):
     df.loc[df['proc']==proc,'nWV'] = nGauss_opt
     # Make plots
     if( opt.doPlots )&( len(ssfs.keys())!=0 ):
-      plotFTest(ssfs,_opt=nGauss_opt,_outdir="%s/outdir_%s/fTest/Plots"%(swd__,opt.channel),_extension="WV",_proc=proc,_cat=opt.cat,_mass=opt.mass)
-      plotFTestResults(ssfs,_opt=nGauss_opt,_outdir="%s/outdir_%s/fTest/Plots"%(swd__,opt.channel),_extension="WV",_proc=proc,_cat=opt.cat,_mass=opt.mass)
+      plotFTest(ssfs,_opt=nGauss_opt,_outdir="%s/outdir_%s/nGaussScan/Plots"%(swd__,opt.channel),_extension="WV",_proc=proc,_cat=opt.cat,_mass=opt.mass)
+      plotFTestResults(ssfs,_opt=nGauss_opt,_outdir="%s/outdir_%s/nGaussScan/Plots"%(swd__,opt.channel),_extension="WV",_proc=proc,_cat=opt.cat,_mass=opt.mass)
 
   # Close ROOT file
   inputWS.Delete()
   f.Close()
 
 # Make output
-if not os.path.isdir("%s/outdir_%s/fTest/json"%(swd__,opt.channel)): os.system("mkdir %s/outdir_%s/fTest/json"%(swd__,opt.channel))
-ff = open(f"{swd__}/outdir_{opt.channel}/fTest/json/{opt.mass_ALP}_nGauss_{opt.year}_{opt.channel}_Hm{opt.mass}.json","w")
+if not os.path.isdir("%s/outdir_%s/nGaussScan/json"%(swd__,opt.channel)): os.system("mkdir %s/outdir_%s/nGaussScan/json"%(swd__,opt.channel))
+ff = open(f"{swd__}/outdir_{opt.channel}/nGaussScan/json/{opt.mass_ALP}_nGauss_{opt.year}_{opt.channel}_Hm{opt.mass}.json","w")
 ff.write("{\n")
 # Iterate over rows in dataframe: sorted by sumEntries
 pitr = 1

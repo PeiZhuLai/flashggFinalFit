@@ -46,14 +46,56 @@ def _resolve_fit_range(mass_alp, default_low, default_high):
         # (chi2/ndf ~1.0, sigma_eff ~3.8 GeV). The EA yield is reduced to this
         # window too (see below) so the narrow model is normalised only to
         # in-window events instead of over-concentrating the full yield.
-        "1": ("115", "137"),
+        # 2026-08-10: upper edge moved 137 -> 133. The 134-137 region holds a
+        # distinct second population (13-41% of the peak yield, present in all 10
+        # era/channel combinations) whose kinematics do not match a 1 GeV ALP:
+        # median lead-photon pT 33.7 vs 19.1 GeV in the peak and a dR(g,g) tail to
+        # 0.875 vs 0.090. These are photon mis-pairings, not signal, so they are
+        # excluded. An m(gg) cut cannot separate them (median m(gg) 1.365 vs 1.034
+        # for signal); fixing the pairing rule is the proper long-term solution.
+        # Keep in sync with fTest.py.
+        "1": ("115", "133"),
     }
+    # Optional study override, e.g. HZA_FIT_WINDOW="1:115,133" to test a
+    # different window for one mass point without touching the defaults.
+    import os as _os
+    _ov = _os.environ.get("HZA_FIT_WINDOW", "")
+    for _item in [t for t in _ov.split(";") if t.strip()]:
+        try:
+            _m, _rng = _item.split(":"); _lo, _hi = _rng.split(",")
+            if str(_m).strip() == str(mass_alp): return (_lo.strip(), _hi.strip())
+        except Exception:
+            pass
     return windows.get(str(mass_alp), (default_low, default_high))
 
 def _force_dcb_for_low_ma(mass_alp, current_useDCB):
     return current_useDCB
 
 print(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ HZallgg SIGNAL FITTER ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ")
+
+def _resolve_fit_bins(mass_alp, default_bins):
+    # The fit range is tightened for some mass points (see _resolve_fit_range) but
+    # --nBins stayed at its default, so the bin width shrank with the window: at
+    # mA=1 the 115-137 window over 80 bins gives 0.28 GeV/bin instead of the
+    # 1.0 GeV/bin used at every other mass point. Since mA=1 is also the lowest
+    # statistics point, that left only a handful of events per bin, drove every
+    # chi2/dof below 1 and let the nGauss selection pick a high order on
+    # statistical noise -- producing a visibly double-peaked signal shape.
+    # Setting 22 bins over the 22 GeV window restores 1.0 GeV/bin.
+    # NOTE: the sub-GeV windows (0p1: 118-158, 0p2-0p9: 112-140) have the same
+    # issue and would need 40 and 28 bins respectively; they are not part of the
+    # current mass scan (1-30) so they are left untouched here.
+    import os as _os
+    _ob = _os.environ.get("HZA_FIT_BINS", "")
+    for _item in [t for t in _ob.split(";") if t.strip()]:
+        try:
+            _m, _b = _item.split(":")
+            if str(_m).strip() == str(mass_alp): return int(_b)
+        except Exception:
+            pass
+    overrides = {"1": 18}   # 115-133 over 18 bins = 1.0 GeV/bin
+    return overrides.get(str(mass_alp), default_bins)
+
 def leave():
   print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ HZallgg SIGNAL FITTER (END) ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ")
   exit()
@@ -339,6 +381,8 @@ f0.Close()
 # Tighten the fit window for low ma so the core resolution is recovered.
 MHLow, MHHigh = _resolve_fit_range(opt.mass_ALP, MHLow, MHHigh)
 print(f" [CFG] Fit range for mA={opt.mass_ALP}: [{MHLow}, {MHHigh}]")
+opt.nBins = _resolve_fit_bins(opt.mass_ALP, opt.nBins)
+print(f" [CFG] fit bins for mA={opt.mass_ALP}: {opt.nBins} ({(int(MHHigh)-int(MHLow))/float(opt.nBins):.2f} GeV/bin)")
 
 # Create MH var
 MH = ROOT.RooRealVar("MH","m_{H}", int(MHLow), int(MHHigh))
@@ -421,8 +465,11 @@ for mp in opt.massPoints.split(","):
 # the shape). This makes:
 #   (1) the nGauss shape fit only to core events (clean, stable sigma_eff), and
 #   (2) buildEffAccSpline normalise the narrow model to the in-window yield only --
-#       we drop the ~37% high-side merged-photon tail rather than concentrate the
-#       full yield into the narrow core (which would give an optimistic limit).
+#       we drop the out-of-window events rather than concentrate the full yield
+#       into the narrow core (which would give an optimistic limit). Measured
+#       2026-08-10 with the [115,133] window: 37.6-51.2% of the full-range yield
+#       is retained (mean 45.7%), i.e. slightly over half is discarded -- this is
+#       both sides of the window, not only the high-side tail.
 if str(opt.mass_ALP) == "1":
   _cut = "%s>=%s&&%s<=%s"%(opt.xvar, MHLow, opt.xvar, MHHigh)
   _n_full = nominalDatasets[MHNominal].sumEntries()
@@ -539,12 +586,12 @@ if not opt.skipBeamspotReweigh:
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # If using nGaussian fit then extract nGaussians from fTest json file
 if not opt.useDCB:
-  # with open("%s/outdir_%s/fTest/json/nGauss_%s.json"%(swd__,opt.ext,catRVFit)) as jf: ngauss = json.load(jf)
-  with open(f"{swd__}/outdir_{opt.channel}/fTest/json/{opt.mass_ALP}_nGauss_{opt.year}_{opt.channel}_Hm125.json") as jf: ngauss = json.load(jf)
+  # with open("%s/outdir_%s/nGaussScan/json/nGauss_%s.json"%(swd__,opt.ext,catRVFit)) as jf: ngauss = json.load(jf)
+  with open(f"{swd__}/outdir_{opt.channel}/nGaussScan/json/{opt.mass_ALP}_nGauss_{opt.year}_{opt.channel}_Hm125.json") as jf: ngauss = json.load(jf)
   nRV = int(ngauss["%s__%s"%(procRVFit,catRVFit)]['nRV'])
   if opt.skipVertexScenarioSplit: print(" --> Fitting function: convolution of nGaussians (%g)"%nRV)
   else: 
-    with open(f"{swd__}/outdir_{opt.channel}/fTest/json/{opt.mass_ALP}_nGauss_{opt.year}_{opt.channel}_Hm125.json") as jf: ngauss = json.load(jf)
+    with open(f"{swd__}/outdir_{opt.channel}/nGaussScan/json/{opt.mass_ALP}_nGauss_{opt.year}_{opt.channel}_Hm125.json") as jf: ngauss = json.load(jf)
     nWV = int(ngauss["%s__%s"%(procWVFit,catWVFit)]['nWV'])
     print(" --> Fitting function: convolution of nGaussians (RV=%g,WV=%g)"%(nRV,nWV))
 else:

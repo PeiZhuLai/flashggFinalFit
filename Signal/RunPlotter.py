@@ -33,6 +33,22 @@ def get_options():
   return parser.parse_args()
 (opt,args) = get_options()
 
+def _resolve_plot_bins(mass_alp, default_bins):
+  # Keep in sync with fTest.py/signalFit.py _resolve_fit_bins. For mA=1 the fit
+  # window was tightened to [115,133] (see signalFit.py _resolve_fit_range); with
+  # the default 80 bins that window gives 0.23 GeV/bin, so the displayed points
+  # are far finer than the 1.0 GeV/bin actually used in the fit and the plot
+  # looks much noisier than the fit really is. Match the fit binning here so the
+  # figure represents what was fitted. Display only -- the model and all numbers
+  # come from the workspace and are unaffected.
+  overrides = {"1": 18}   # 115-133 over 18 bins = 1.0 GeV/bin
+  return overrides.get(str(mass_alp), default_bins)
+
+_nb_default = opt.nBins
+opt.nBins = _resolve_plot_bins(opt.mass_ALP, opt.nBins)
+if opt.nBins != _nb_default:
+  print(" [CFG] plot bins for mA=%s: %d (was %d)" % (opt.mass_ALP, opt.nBins, _nb_default))
+
 ROOT.gROOT.SetBatch(True)
 ROOT.gStyle.SetOptStat(0)
 
