@@ -120,6 +120,11 @@ float mgg_high =180;//FIXME
 float mgg_blind_low =115;//FIXME
 float mgg_blind_high =135;//FIXME
 float nbin = 85;
+// [PZ] Legend text for the plotted points, and the residual-panel y-axis title. Defaults are
+// "Data" / "Data - Bkg"; override with --dataLegend / --ratioYTitle so the same binary can
+// correctly label MC-as-pseudo-data plots (sculpting closure test).
+string dataLegend_ = "Data";
+string ratioYTitle_ = "Data - Bkg";
 
 // 180 - 95 = 85
 
@@ -800,12 +805,12 @@ void plotAllPdfs(RooRealVar *mgg, RooAbsData *data, RooMultiPdf *mpdf, RooCatego
 		}
 	// 原先直接 AddEntry 可能無法控制 legend 樣式，改用 TLegendEntry
 		if (mpdf->getNumPdfs() > 6) {
-			if (auto e = leg->AddEntry(dataLeg,"Data","LEP")) {
+			if (auto e = leg->AddEntry(dataLeg,dataLegend_.c_str(),"LEP")) {
 				e->SetMarkerStyle(20);
 				e->SetMarkerSize(dataMarkerSizeAllPdfs);
 			}
 		} else {
-			if (auto e = leg_s->AddEntry(dataLeg,"Data","LEP")) {
+			if (auto e = leg_s->AddEntry(dataLeg,dataLegend_.c_str(),"LEP")) {
 				e->SetMarkerStyle(20);
 				e->SetMarkerSize(dataMarkerSizeAllPdfs);
 			}
@@ -1062,6 +1067,8 @@ int main(int argc, char* argv[]){
 		("verbose,v", 																							"Verbose")
 		("smoothBands",                                                                                        "Smooth ratio error bands (TH1::Smooth on +/- errors)")
 		("smoothIters",  po::value<int>(&smoothIters)->default_value(1),                                       "Number of smoothing iterations (>=0)")
+		("dataLegend",  po::value<string>(&dataLegend_)->default_value("Data"),                                "Legend text for the plotted points (e.g. 'MC pseudo-data')")
+		("ratioYTitle", po::value<string>(&ratioYTitle_)->default_value("Data - Bkg"),                         "Y-axis title of the residual panel (e.g. 'MC - Bkg')")
 	;
 	po::variables_map vm;
 	po::store(po::parse_command_line(argc,argv,desc),vm);
@@ -1218,7 +1225,14 @@ string catname;
 	cout<< "[INFO] " << "\t"; data->Print();
 
 	// plot the data
-	TLegend *leg = new TLegend(0.68,0.48,1.1,0.85);
+	// [PZ] Widen the legend to the left if --dataLegend is longer than the default "Data",
+	// otherwise the entry runs off the right-hand edge of the canvas. Unchanged for "Data".
+	double legX1 = 0.68;
+	{
+		const double needed = 0.98 - 0.024*(double)dataLegend_.size() - 0.10;
+		if (needed < legX1) legX1 = max(0.40, needed);
+	}
+	TLegend *leg = new TLegend(legX1,0.48,1.1,0.85);
 	leg->SetFillColor(0);
 	leg->SetLineColor(0);
 	leg->SetFillStyle(0);
@@ -1255,7 +1269,7 @@ string catname;
 	RooCurve *nomBkgCurve = (RooCurve*)plot->getObject(plot->numItems()-1);
 
 	// 原先：leg->AddEntry(dataLeg,"Data","LEP");
-	if (auto e = leg->AddEntry(dataLeg,"Data","LEP")) {
+	if (auto e = leg->AddEntry(dataLeg,dataLegend_.c_str(),"LEP")) {
 		e->SetMarkerStyle(20);
 		e->SetMarkerSize(1.8);
 	}
@@ -1655,7 +1669,7 @@ string catname;
 
 	
 
-	hdummy->GetYaxis()->SetTitle("Data - Bkg"); //PZ
+	hdummy->GetYaxis()->SetTitle(ratioYTitle_.c_str()); //PZ
 	hdummy->GetYaxis()->SetTitleSize(0.127);
 	hdummy->GetYaxis()->SetTitleOffset(0.39);
 	hdummy->GetYaxis()->CenterTitle(true);

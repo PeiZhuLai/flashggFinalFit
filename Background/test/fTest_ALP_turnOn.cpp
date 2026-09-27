@@ -47,6 +47,8 @@
 #include <cctype>
 #include <cstring>
 #include <cmath>
+#include <sstream>
+#include <cstdlib>
 
 using namespace std;
 using namespace RooFit;
@@ -195,19 +197,77 @@ static int bestBernOrder(int m)
   // measurement (robust against the Bernstein irreproducibility seen in single runs),
   // pick the one with the smallest max|bias| (largest margin). Returns 0 -> drop:
   //   mA 1, 28: no Bernstein order passes GOF;  mA 5, 6: no order robustly passes bias.
+  // [PZ 2026-08-04] m_a = 2, 4 and 27 additionally drop Bernstein. The orders
+  // in this table were picked from the 2026-06-14 bias study, which used 1000
+  // toys per function. Repeating the whole scan with 10000 toys showed that
+  // 1000 toys systematically underestimates |bias| by ~0.03-0.05 (the Gaussian
+  // fit to a 1000-entry pull distribution is pulled towards zero by the tails),
+  // and that the three surviving points above the 0.2 threshold were all
+  // Bernstein: Bern2 = -0.222 at m_a = 2, Bern4 = -0.221 at m_a = 4 and
+  // Bern5 = -0.299 at m_a = 27 (the latter 8.5 sigma above threshold, and
+  // already flagged as the worst point by the note above). At m_a = 2 and 4 the
+  // family is already at low order, so there is no order left to fall back on;
+  // the family is therefore removed from the envelope at these three points,
+  // exactly as is done at the mass points listed in the default branch.
   switch (m) {
-    case 2: return 2; case 3: return 3; case 4: return 5; case 9: return 6;
+    case 3: return 3; case 9: return 6;
+    // m_a = 11 is further capped to Bern3 by envMaxOrder (low-order envelope,
+    // see the comment there); the value below only keeps Bernstein in the family
+    // list for that mass point.
     case 10: return 5; case 11: return 5; case 12: return 5; case 13: return 4;
     case 14: return 5; case 15: return 5; case 16: return 6; case 17: return 5;
-    case 18: return 5; case 19: return 5; case 20: return 6; case 22: return 6;
+    // [PZ 2026-09-26] m_a = 20: after the FSR fix Bern6 = +0.208 (10000 toys, pull with the
+    // error facing the truth), the only function above threshold -> next lower order (AN Sec 7.4).
+    case 18: return 5; case 19: return 5; case 20: return 5; case 22: return 6;
     case 23: return 6; case 24: return 5; case 25: return 6; case 26: return 6;
-    case 27: return 6; case 29: return 6; case 30: return 6;
-    default: return 0;  // mA 1, 5, 6, 7, 8, 21, 28: Bernstein dropped
+    case 29: return 6; case 30: return 6;
+    // Bernstein dropped: m_a = 1, 5, 6, 7, 8, 21, 28 (no order passes GOF or
+    // bias) and m_a = 2, 4, 27 (bias above 0.2 at 10000 toys, see above).
+    default: return 0;
   }
+}
+
+// Optional study override: LOWORDER_MASSES="11" (comma separated) restricts the
+// envelope at those mass points to the lowest orders -- Exp1/Pow1 and Bernstein
+// up to 3. Motivation: at m_a = 11 only 99 data events are available, yet the
+// nominal envelope uses Exp3/Pow3/Bern5 (6-7 free parameters each). The spare
+// freedom is what the toys absorb signal with, giving the -0.24/-0.29 bias seen
+// in the 10000-toy study, and it cannot be removed by widening or narrowing the
+// parameter ranges (verified offline: the GOF is already saturated at p~0.99).
+// Unset by default, so the nominal configuration is untouched.
+static bool isLowOrderMass(int m)
+{
+  const char* env = getenv("LOWORDER_MASSES");
+  if (!env || !*env) return false;
+  std::string s(env);
+  std::stringstream ss(s);
+  std::string tok;
+  while (std::getline(ss, tok, ',')) {
+    try { if (std::stoi(tok) == m) return true; } catch (...) {}
+  }
+  return false;
 }
 
 static int envMaxOrder(const std::string& funcType, int mass_ALP)
 {
+  // [PZ 2026-08-03] m_a = 11 uses the low-order envelope as its nominal
+  // configuration. It is the only mass point that combined the second-lowest
+  // statistics of the scan (99 data events) with the highest-order envelope
+  // (Exp3/Pow3/Bern5, 6-7 free parameters each). The spare freedom was absorbed
+  // by the toys as signal: with 10000 toys the nominal envelope gave a mean pull
+  // of -0.240 (Exp3) and -0.289 (Pow3), the only points above the 0.2 threshold
+  // in the whole scan. Widening or narrowing the parameter ranges does not help
+  // (the GOF is already saturated at p ~ 0.99, and the parameters simply rail
+  // against whatever bound they are given). Restricting the scan to Exp1/Pow1
+  // and Bernstein <= 3 brings those two to -0.031 and -0.022, and the largest
+  // bias of the mass point from 0.289 to 0.167, while the goodness of fit stays
+  // comfortably above threshold (0.41-0.55). See Section 7.5 of the AN.
+  if (mass_ALP==11 || isLowOrderMass(mass_ALP)) {
+    // [PZ 2026-09-25] after the FSR fix Bern3 = -0.288 at m_a = 11 (10000 toys), the only
+    // function above threshold; per AN Sec 7.4 fall back to the next lower order.
+    if (funcType=="Bernstein") return (mass_ALP==11) ? 3 : 4;   // m_a=11: Bern1..Bern2
+    return 3;                              // Exp1/Pow1 only (orders are odd), Lau1..Lau2
+  }
   // Bernstein: cap at the per-mA optimal order (exclusive upper bound = order+1).
   // 0 -> return 1 so the scan loop body never runs (Bernstein also excluded from
   // functionClasses below, so this is belt-and-braces).

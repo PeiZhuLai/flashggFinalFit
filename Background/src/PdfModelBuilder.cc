@@ -509,9 +509,17 @@ RooAbsPdf* PdfModelBuilder::getPowerLawStepxGau(string prefix, int order, int ca
     par1_pow5 = -8.3;      par1_lpow5 = -11.0;   par1_hpow5 = -6.0;
     par3_pow5 = -5.5;      par3_lpow5 = -8.5;    par3_hpow5 = -2.0;
     par5_pow5 = -6.4;      par5_lpow5 = -8.5;    par5_hpow5 = -2.0;
-    sigma_pow  = 8.0;      sigma_lpow  = 4.0;    sigma_hpow  = 12.0;
-    turnon_pow = 115.2;    turnon_lpow = 112.0;  turnon_hpow = 118.0;
-    width_pow  = 1.0;      width_lpow  = 0.5;    width_hpow  = 6.0;
+    // [PZ 2026-08-02] The previous window pinned the step-Gaussian parameters on their
+    // bounds: turnon railed to its lower edge 112, width to its upper edge 6, and the fit
+    // could not reach the interior minimum (GOF p = 7.5e-4 for Pow1). The turn-on of the
+    // llgg spectrum is set by the Z + two p_T > 10 GeV photon threshold and does not move
+    // with m_a, so the old m_a-scaled window was pushing the step away from the data. The
+    // window below is opened to a physically motivated range instead of being tuned to the
+    // fitted values; Pow1 then converges in the interior with GOF p ~ 0.98.
+    par1_pow1  = -8.0;     par1_lpow1  = -12.0;  par1_hpow1  = -4.0;
+    sigma_pow  = 5.0;      sigma_lpow  = 0.5;    sigma_hpow  = 15.0;
+    turnon_pow = 110.0;    turnon_lpow = 100.0;  turnon_hpow = 120.0;
+    width_pow  = 3.0;      width_lpow  = 0.2;    width_hpow  = 12.0;
   } else if (mass_ALP >= 28) {
     par1_pow1 = -4.8;      par1_lpow1 = -9.0;    par1_hpow1 = -2.0;
     par1_pow3 = -5.0;      par1_lpow3 = -10.0;   par1_hpow3 = -2.0;
@@ -1074,16 +1082,22 @@ RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat
     sigma_lau  = 7.0;       sigma_llau  = 2.5;     sigma_hlau  = 12.0;
     turnon_lau = 115.0;     turnon_llau = 111.5;   turnon_hlau = 118.5;
     width_lau  = 4.5;       width_llau  = 0.8;     width_hlau  = 9.5;
-  } else if (mass_ALP == 29) {
-    power1_lau1 = -3.4;      power1_llau1 = -5.5;    power1_hlau1 = -1.8;
-    sigma_lau  = 7.4;       sigma_llau  = 3.0;     sigma_hlau  = 12.0;
-    turnon_lau = 115.3;     turnon_llau = 112.0;   turnon_hlau = 119.0;
-    width_lau  = 4.8;       width_llau  = 1.0;     width_hlau  = 10.0;
-  } else if (mass_ALP == 30) {
-    power1_lau1 = -3.3;      power1_llau1 = -5.5;    power1_hlau1 = -1.8;
-    sigma_lau  = 7.8;       sigma_llau  = 3.0;     sigma_hlau  = 13.0;
-    turnon_lau = 115.8;     turnon_llau = 112.0;   turnon_hlau = 119.5;
-    width_lau  = 5.0;       width_llau  = 1.0;     width_hlau  = 10.0;
+  } else if (mass_ALP == 29 || mass_ALP == 30) {
+    // [PZ 2026-08-02] Same problem as PowerLaw at these two mass points: every one of
+    // power1/sigma/turnon/width was railed against a bound (turnon at its lower edge 112,
+    // sigma at its lower edge 3, width at its upper edge 10) and the fit was nowhere near
+    // an interior minimum (GOF p ~ 6e-15 at m_a = 29, 6e-13 at m_a = 30). The turn-on is a
+    // kinematic threshold of the llgg system and does not scale with m_a, so the window is
+    // opened to a physically motivated range rather than tuned to the fitted values.
+    // Only the step-Gaussian parameters are opened: widening power1 as well (tried with
+    // [-9, -1.8]) lets Lau1 rail onto the Pow1 solution -- at m_a = 29 the two came out
+    // identical to 1e-6 relative, which would silently drop the envelope to three distinct
+    // shapes and understate the background-shape systematic. power1 therefore keeps its
+    // original window, which is what distinguishes the Laurent family from the power law.
+    power1_lau1 = -3.4;     power1_llau1 = -5.5;   power1_hlau1 = -1.8;
+    sigma_lau  = 5.0;       sigma_llau  = 0.5;     sigma_hlau  = 15.0;
+    turnon_lau = 110.0;     turnon_llau = 100.0;   turnon_hlau = 120.0;
+    width_lau  = 3.0;       width_llau  = 0.2;     width_hlau  = 12.0;
   }
 
 
