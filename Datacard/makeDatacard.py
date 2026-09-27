@@ -218,7 +218,9 @@ if opt.doSystematics:
     if not writeSystematic(fdata,data,syst,opt):
       print(" --> [ERROR] in writing systematic %s (signal shape). Leaving"%syst['name'])
       leave()
-  if opt.mass_ALP in interploate_ma_list:
+  # --mass_ALP is parsed as a string; comparing it to the int list was always False, so the
+  # interpolated mass points never got their efficiency rateParam (fixed 2026-09-24).
+  if int(round(float(opt.mass_ALP))) in interploate_ma_list:
     if not writeInterpolateYields(fdata,data,syst,opt):
       print(" --> [ERROR] in writing systematic %s (signal shape). Leaving"%syst['name'])
       leave()

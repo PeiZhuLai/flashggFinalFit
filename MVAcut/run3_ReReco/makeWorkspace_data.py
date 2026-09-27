@@ -1,3 +1,29 @@
+# =============================================================================
+# DEPRECATED -- 2025-12 vintage, kept for reference only. Does not run as-is.
+#
+# Superseded by the live chain in 1_grand.sh:
+#     MVAcut/run3_ReReco_Sys/scripts/apply_bdt_data.py   (reads the pre-scored
+#     root_P2Root/run3_bdt_scored_nominal trees)  ->  Trees2WS/run_tree2ws.sh
+#     -> trees2ws.py / trees2ws_data.py
+# The call to this script is already commented out in Trees2WS/run_tree2ws.sh
+# and in MVAcut/run3_ReReco/runjob.sh.
+#
+# Three things are stale (checked 2026-08-23); fixing only one is not enough:
+#   1. Input tree  /eos/home-p/pelai/HZa/Root_Dataset/run3/Data/run3.root
+#      no longer exists. Present equivalent:
+#      /eos/home-p/pelai/HZa/root_P2Root/run3_bdt_inputs_nominal/Data/run3.root
+#   2. BDT_filename HZaMVA/model_Za_BDT_run3.pkl no longer exists. Copies now
+#      live in HZaMVA/{using,scripts}/ (2026-07, 16 features) and
+#      HZaMVA/{keep,train3mA}/ (2025-12, 15 features).
+#   3. The MVA_list below builds 15 features, matching only the 2025-12 model.
+#      The current model needs 16: photon/H pT are normalized (pho1Pt_oHm,
+#      pho2Pt_oHm, H_pt_oHm) and pho_pt_asym is added -- see
+#      HiggsZaAna/HZaMVA/scripts/hza_features.py. Feeding it 15 raises
+#      "ValueError: Feature shape mismatch, expected: 16, got 15".
+#
+# So this script did NOT produce the current MVAcut workspaces. Do not treat it
+# as the reference for how the per-mA selection is defined today.
+# =============================================================================
 #############################
 from ROOT import *
 from ROOT import RooFit

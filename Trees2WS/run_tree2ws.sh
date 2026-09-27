@@ -17,6 +17,10 @@ done
 years_sig=(2022preEE 2022postEE 2023preBPix 2023postBPix 2024)  # 信號
 DO_SYSTEMATICS=1  # 設為 1 時會加上 --doSystematics
 leps=(ele mu)     # 逐個 lepton 輸出各自的 ws 檔
+# Which halves to run: sig | data | both (default both, i.e. unchanged behaviour).
+# Useful when only one side needs regenerating and the other side's workspaces
+# have already been validated -- rerunning them risks clobbering good output.
+TREE2WS_PART="${TREE2WS_PART:-both}"
 max_parallel=6
 logDir="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Trees2WS/logs"
 mkdir -p "${logDir}"
@@ -63,6 +67,7 @@ submit_job() {
     fi
 }
 
+if [ "${TREE2WS_PART}" = "sig" ] || [ "${TREE2WS_PART}" = "both" ]; then
 for ma in "${sig_samples[@]}"; do
     for year in "${years_sig[@]}"; do
         for lep in "${leps[@]}"; do
@@ -71,10 +76,11 @@ for ma in "${sig_samples[@]}"; do
             if [ "${DO_SYSTEMATICS}" = "1" ]; then
                 extra_args+=(--doSystematics)
             fi
-            # Raise the m_llgg low edge to 105 for mA=1,2 (skip the low-m_llgg turn-on).
-            if [[ "${ma}" == "mA_M1" || "${ma}" == "mA_M2" ]]; then
-                extra_args+=(--massLow 105)
-            fi
+            # 2026-07-31: mA1,2 restored to default massLow 95 (low-mass sculpting controlled;
+            # R~1 WP + pseudo-data closure + 1 GeV mass-shape check show no turn-on fake peak).
+            # if [[ "${ma}" == "mA_M1" || "${ma}" == "mA_M2" ]]; then
+            #     extra_args+=(--massLow 105)
+            # fi
             submit_job "sig_${ma}_${year}_${lep}" \
                 python3 trees2ws.py --inputConfig config.py --inputTreeFile "${path}/output_${year}.root" --inputMass 125 --productionMode ggh --year "${year}" --lepton "${lep}" "${extra_args[@]}"
         done
@@ -82,27 +88,31 @@ for ma in "${sig_samples[@]}"; do
 done
 
 wait_batch
+fi
 
----- Data ----
+# ---- Data ----
 mAs_data=(1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30)
 data_samples=()
 for m in "${mAs_data[@]}"; do
     data_samples+=("mA_M${m}")
 done
+if [ "${TREE2WS_PART}" = "data" ] || [ "${TREE2WS_PART}" = "both" ]; then
 for ma in "${data_samples[@]}"; do
     path="/eos/home-p/pelai/HZa/root_MVAcut/data/${ma}"
     data_range_args=()
-    # Raise the m_llgg low edge + event cut to 105 for mA=1,2 (skip the low-m_llgg turn-on).
-    if [[ "${ma}" == "mA_M1" || "${ma}" == "mA_M2" ]]; then
-        # --applyMassCut is REQUIRED, else trees2ws_data.py ignores massCutRange and the
-        # <105 events pile into the 105 underflow bin (spurious spike in the bkg fit).
-        data_range_args+=(--massLow 105 --massCutRange 105,180 --applyMassCut)
-    fi
+    # 2026-07-31: mA1,2 restored to default massLow 95 (low-mass sculpting controlled).
+    # if [[ "${ma}" == "mA_M1" || "${ma}" == "mA_M2" ]]; then
+    #     data_range_args+=(--massLow 105 --massCutRange 105,180 --applyMassCut)
+    # fi
     submit_job "data_${ma}" \
         python3 trees2ws_data.py --inputConfig config.py --inputTreeFile "${path}/run3.root" "${data_range_args[@]}"
 done
+fi
 
-# wait_batch
+# [PZ 2026-09-26] the final wait was commented out, so the last batch of data jobs was left
+# running in the background when this script returned (a caller checking the outputs right
+# away saw stale files, and a caller that exited killed them).
+wait_batch
 # exit "${status}"
 
 

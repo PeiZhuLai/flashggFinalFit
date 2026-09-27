@@ -1,3 +1,31 @@
+# =============================================================================
+# DEPRECATED -- 2025-12 vintage, kept for reference only. Does not run as-is.
+#
+# Still referenced by MVAcut/run3_ReReco/runjob.sh, but that runjob is itself no
+# longer invoked by anything: 1_grand.sh does the signal MVA step through
+# shellScripts/mva/run_apply_bdt_sig_6jobs.sh ->
+# MVAcut/run3_ReReco_Sys/scripts/apply_bdt_sig.py.
+#
+# Four things are stale (checked 2026-08-23); fixing only the paths is not enough:
+#   1. Data tree  /eos/home-p/pelai/HZa/Root_Dataset/run3/Data/run3.root
+#      no longer exists. Present equivalent:
+#      /eos/home-p/pelai/HZa/root_P2Root/run3_bdt_inputs_nominal/Data/run3.root
+#      (that handle is dead code here anyway -- it is reassigned to the per-year
+#       signal file inside the year loop before ever being read).
+#   2. Signal tree Root_Dataset/run3/ALP_M<mass>/<year>.root no longer exists.
+#      Present equivalent: root_P2Root/run3_bdt_inputs_nominal/mA_M<mass>/<year>.root
+#      -- note the directory prefix changed from ALP_M to mA_M as well.
+#   3. BDT_filename HZaMVA/model_Za_BDT_run3.pkl no longer exists. Copies now
+#      live in HZaMVA/{using,scripts}/ (2026-07, 16 features) and
+#      HZaMVA/{keep,train3mA}/ (2025-12, 15 features).
+#   4. The MVA_list below builds 15 features, matching only the 2025-12 model.
+#      The current model needs 16: photon/H pT are normalized (pho1Pt_oHm,
+#      pho2Pt_oHm, H_pt_oHm) and pho_pt_asym is added -- see
+#      HiggsZaAna/HZaMVA/scripts/hza_features.py. Feeding it 15 raises
+#      "ValueError: Feature shape mismatch, expected: 16, got 15".
+#
+# Also note the year loop below is pinned to ['2022preEE'] only.
+# =============================================================================
 
 #############################
 from ROOT import *

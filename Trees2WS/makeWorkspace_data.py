@@ -1,3 +1,21 @@
+# =============================================================================
+# DEPRECATED -- 2025-12 vintage, kept for reference only. Does not run as-is.
+# (Near-duplicate of MVAcut/run3_ReReco/makeWorkspace_data.py; see that file's
+#  header for the full account.)
+#
+# Superseded by the live chain in 1_grand.sh:
+#     MVAcut/run3_ReReco_Sys/scripts/apply_bdt_data.py  ->  run_tree2ws.sh
+#     -> trees2ws.py / trees2ws_data.py
+# The call to this script is already commented out in Trees2WS/run_tree2ws.sh.
+#
+# Stale in three places (checked 2026-08-23):
+#   1. Input tree Root_Dataset/run3/Data/run3.root no longer exists
+#      (now root_P2Root/run3_bdt_inputs_nominal/Data/run3.root).
+#   2. BDT_filename HZaMVA/model_Za_BDT_run3.pkl no longer exists
+#      (now under HZaMVA/using/ or HZaMVA/scripts/).
+#   3. MVA_list builds 15 features; the current model needs 16 (normalized
+#      pT + pho_pt_asym, see HiggsZaAna/HZaMVA/scripts/hza_features.py).
+# =============================================================================
 #############################
 from ROOT import *
 from ROOT import RooFit
