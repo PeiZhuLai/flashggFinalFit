@@ -190,81 +190,349 @@ Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_a
 
 Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libXMLParser_rdict.pcm
 
-[WSTFileWrapper] successfully opened this file: /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/21/CMS-HGG_mva_13p6TeV_multipdf.root
-[WSTFileWrapper] on file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/21/CMS-HGG_mva_13p6TeV_multipdf.root opened workspace named: multipdf
+[WSTFileWrapper] successfully opened this file: ./ALP_BkgModel_ReReco/fit_results_run3/21/CMS-HGG_mva_13p6TeV_multipdf.root
+[WSTFileWrapper] on file ./ALP_BkgModel_ReReco/fit_results_run3/21/CMS-HGG_mva_13p6TeV_multipdf.root opened workspace named: multipdf
 [INFO] sqrts=13p6TeV -> extStr=13p6TeV
-[WSTFileWrapper] Got non-zero RooAbsData from /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/21/CMS-HGG_mva_13p6TeV_multipdf.root with name roohist_data_mass_cat0
-[WSTFileWrapper] Got non-zero RooAbsPdf from /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/21/CMS-HGG_mva_13p6TeV_multipdf.root with name CMS_hgg_cat0_13p6TeV_bkgshape
-[WSTFileWrapper] Got non-zero RooCategory from /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/21/CMS-HGG_mva_13p6TeV_multipdf.root with name pdfindex_cat0_13p6TeV
+[WSTFileWrapper] Got non-zero RooAbsData from ./ALP_BkgModel_ReReco/fit_results_run3/21/CMS-HGG_mva_13p6TeV_multipdf.root with name roohist_data_mass_cat0
+[WSTFileWrapper] Got non-zero RooAbsPdf from ./ALP_BkgModel_ReReco/fit_results_run3/21/CMS-HGG_mva_13p6TeV_multipdf.root with name CMS_hgg_cat0_13p6TeV_bkgshape
+[WSTFileWrapper] Got non-zero RooCategory from ./ALP_BkgModel_ReReco/fit_results_run3/21/CMS-HGG_mva_13p6TeV_multipdf.root with name pdfindex_cat0_13p6TeV
 [INFO] Current PDF and data:
-[INFO] 	RooFFTConvPdf::Exp1[ Exp_soft_exp1(CMS_hza_mass) (*) Exp_gau_exp1(CMS_hza_mass) ] = 6021
-[INFO] 	RooDataHist::roohist_data_mass_cat0[CMS_hza_mass] = 85 bins (247 weights)
+[INFO] 	RooFFTConvPdf::Exp3[ Exp_soft_exp3(CMS_hza_mass) (*) Exp_gau_exp3(CMS_hza_mass) ] = 6004.95
+[INFO] 	RooDataHist::roohist_data_mass_cat0[CMS_hza_mass] = 85 bins (249 weights)
 unblind: 0
 Into the blind
 Number of PDFs: 3
-Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/21/BkgPlots/allPdfs_cat0.pdf has been created
+Info in <TCanvas::Print>: pdf file ./ALP_BkgModel_ReReco/fit_results_run3/21/BkgPlots_blind/allPdfs_cat0.pdf has been created
 unblind: 0
 Into the blind
 Number of PDFs: 3
-Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/AllFitResults/allPdfs_21.pdf has been created
+Info in <TCanvas::Print>: pdf file ./ALP_BkgModel_ReReco/fit_results_run3/AllFitResults_blind/allPdfs_21.pdf has been created
 [INFO] Best fit PDF and data:
-[INFO] 	RooFFTConvPdf::Exp1[ Exp_soft_exp1(CMS_hza_mass) (*) Exp_gau_exp1(CMS_hza_mass) ] = 6027.61
-[INFO] 	RooDataHist::roohist_data_mass_cat0[CMS_hza_mass] = 85 bins (247 weights)
+[INFO] 	RooFFTConvPdf::Exp3[ Exp_soft_exp3(CMS_hza_mass) (*) Exp_gau_exp3(CMS_hza_mass) ] = 5989.4
+[INFO] 	RooDataHist::roohist_data_mass_cat0[CMS_hza_mass] = 85 bins (249 weights)
 Error in <TLegend::AddEntry>: need to create a canvas first
 [INFO] Plotting data and nominal curve
 [INFO] Plot has 85 bins
 [INFO] Processing for mA = 21
-[FOR TABLE] ,UntaggedTag_0,95,2.41679, assuming resolution of 1
-[INFO] mgg: 95 nomBkg: 2.31913 +/- 1 (2) sig -- +0.00892306(0.0446153) - 2.19683(2.21042)
-[FOR TABLE] ,UntaggedTag_0,97.5,3.41348, assuming resolution of 1
-[INFO] mgg: 97.5 nomBkg: 3.41012 +/- 1 (2) sig -- +0.562651(0.99546) - 0.50619(1.01238)
-[FOR TABLE] ,UntaggedTag_0,100,4.67267, assuming resolution of 1
-[INFO] mgg: 100 nomBkg: 4.67149 +/- 1 (2) sig -- +0.582555(1.11445) - 0.529192(1.02189)
-[FOR TABLE] ,UntaggedTag_0,102.5,5.95726, assuming resolution of 1
-[INFO] mgg: 102.5 nomBkg: 5.96021 +/- 1 (2) sig -- +0.572192(1.14438) - 0.535487(1.02441)
-[FOR TABLE] ,UntaggedTag_0,105,7.09531, assuming resolution of 1
-[INFO] mgg: 105 nomBkg: 7.10793 +/- 1 (2) sig -- +0.687346(1.37469) - 0.638603(1.16615)
-[FOR TABLE] ,UntaggedTag_0,107.5,7.92751, assuming resolution of 1
-[INFO] mgg: 107.5 nomBkg: 7.9413 +/- 1 (2) sig -- +0.759548(1.45305) - 0.713476(1.30287)
-[FOR TABLE] ,UntaggedTag_0,110,8.34042, assuming resolution of 1
-[INFO] mgg: 110 nomBkg: 8.35403 +/- 1 (2) sig -- +0.779035(1.49033) - 0.734241(1.30532)
-[FOR TABLE] ,UntaggedTag_0,112.5,8.30479, assuming resolution of 1
-[INFO] mgg: 112.5 nomBkg: 8.31162 +/- 1 (2) sig -- +0.777055(1.41897) - 0.730514(1.36363)
-[FOR TABLE] ,UntaggedTag_0,115,7.88134, assuming resolution of 1
-[INFO] mgg: 115 nomBkg: 7.89269 +/- 1 (2) sig -- +0.592606(1.18521) - 0.585786(1.29489)
-[FOR TABLE] ,UntaggedTag_0,117.5,7.17709, assuming resolution of 1
-[INFO] mgg: 117.5 nomBkg: 7.18017 +/- 1 (2) sig -- +0.502422(1.00484) - 0.476808(1.23409)
-[FOR TABLE] ,UntaggedTag_0,120,6.31753, assuming resolution of 1
-[INFO] mgg: 120 nomBkg: 6.31907 +/- 1 (2) sig -- +0.412416(0.883749) - 0.394942(1.03672)
-[FOR TABLE] ,UntaggedTag_0,122.5,5.41587, assuming resolution of 1
-[INFO] mgg: 122.5 nomBkg: 5.41501 +/- 1 (2) sig -- +0.395411(0.818092) - 0.380743(0.846095)
-[FOR TABLE] ,UntaggedTag_0,125,4.55407, assuming resolution of 1
-[INFO] mgg: 125 nomBkg: 4.55046 +/- 1 (2) sig -- +0.374973(0.749946) - 0.37328(0.675459)
-[FOR TABLE] ,UntaggedTag_0,127.5,3.7794, assuming resolution of 1
-[INFO] mgg: 127.5 nomBkg: 3.77724 +/- 1 (2) sig -- +0.364409(0.683266) - 0.339362(0.619704)
-[FOR TABLE] ,UntaggedTag_0,130,3.11071, assuming resolution of 1
-[INFO] mgg: 130 nomBkg: 3.10643 +/- 1 (2) sig -- +0.340797(0.640285) - 0.315496(0.558186)
-[FOR TABLE] ,UntaggedTag_0,135,2.08215, assuming resolution of 1
-[INFO] mgg: 135 nomBkg: 2.07882 +/- 1 (2) sig -- +0.27034(0.506887) - 0.243612(0.438502)
-[FOR TABLE] ,UntaggedTag_0,140,1.38611, assuming resolution of 1
-[INFO] mgg: 140 nomBkg: 1.38382 +/- 1 (2) sig -- +0.206782(0.413564) - 0.183789(0.324333)
-[FOR TABLE] ,UntaggedTag_0,145,0.921808, assuming resolution of 1
-[INFO] mgg: 145 nomBkg: 0.920276 +/- 1 (2) sig -- +0.151766(0.427193) - 0.136603(0.244448)
-[FOR TABLE] ,UntaggedTag_0,150,0.612948, assuming resolution of 1
-[INFO] mgg: 150 nomBkg: 0.611928 +/- 1 (2) sig -- +0.114589(0.403352) - 0.100394(0.181666)
-[FOR TABLE] ,UntaggedTag_0,155,0.407569, assuming resolution of 1
-[INFO] mgg: 155 nomBkg: 0.406891 +/- 1 (2) sig -- +0.0859643(0.179404) - 0.0731132(0.133511)
-[FOR TABLE] ,UntaggedTag_0,160,0.271005, assuming resolution of 1
-[INFO] mgg: 160 nomBkg: 0.270555 +/- 1 (2) sig -- +0.0670504(0.140196) - 0.0549564(0.0972306)
-[FOR TABLE] ,UntaggedTag_0,165,0.1802, assuming resolution of 1
-[INFO] mgg: 165 nomBkg: 0.1799 +/- 1 (2) sig -- +0.0497047(0.328051) - 0.0393532(0.0674627)
-[FOR TABLE] ,UntaggedTag_0,170,0.119821, assuming resolution of 1
-[INFO] mgg: 170 nomBkg: 0.119622 +/- 1 (2) sig -- +0.0364778(0.308035) - 0.0289708(0.0485962)
-[FOR TABLE] ,UntaggedTag_0,175,0.0796727, assuming resolution of 1
-[INFO] mgg: 175 nomBkg: 0.0795402 +/- 1 (2) sig -- +0.0247877(0.277622) - 0.0205064(0.0341774)
-[FOR TABLE] ,UntaggedTag_0,180,0.054118, assuming resolution of 1
-[INFO] mgg: 180 nomBkg: 0.0530283 +/- 1 (2) sig -- +0.00404787(0.0121436) - 0.0384248(0.0392533)
+[FOR TABLE] ,UntaggedTag_0,95,2.17583, assuming resolution of 1
+[INFO] mgg: 95 nomBkg: 2.06396 +/- 1 (2) sig -- +0.0757608(0.269372) - 1.58425(1.66891)
+[FOR TABLE] ,UntaggedTag_0,97.5,3.35853, assuming resolution of 1
+[INFO] mgg: 97.5 nomBkg: 3.35274 +/- 1 (2) sig -- +0.772474(1.63078) - 0.654832(1.20489)
+[FOR TABLE] ,UntaggedTag_0,100,4.92877, assuming resolution of 1
+[INFO] mgg: 100 nomBkg: 4.92614 +/- 1 (2) sig -- +0.72827(1.56058) - 0.654253(1.27002)
+[FOR TABLE] ,UntaggedTag_0,102.5,6.55583, assuming resolution of 1
+[INFO] mgg: 102.5 nomBkg: 6.56062 +/- 1 (2) sig -- +0.660354(1.38074) - 0.615058(1.23012)
+[FOR TABLE] ,UntaggedTag_0,105,7.95086, assuming resolution of 1
+[INFO] mgg: 105 nomBkg: 7.96639 +/- 1 (2) sig -- +0.694595(1.38919) - 0.684612(1.36922)
+[FOR TABLE] ,UntaggedTag_0,107.5,8.84008, assuming resolution of 1
+[INFO] mgg: 107.5 nomBkg: 8.85987 +/- 1 (2) sig -- +0.802274(1.53479) - 0.761395(1.52279)
+[FOR TABLE] ,UntaggedTag_0,110,9.08801, assuming resolution of 1
+[INFO] mgg: 110 nomBkg: 9.10678 +/- 1 (2) sig -- +0.848741(1.69748) - 0.778012(1.4853)
+[FOR TABLE] ,UntaggedTag_0,112.5,8.72369, assuming resolution of 1
+[INFO] mgg: 112.5 nomBkg: 8.73824 +/- 1 (2) sig -- +0.796748(1.66278) - 0.750942(1.43362)
+[FOR TABLE] ,UntaggedTag_0,115,7.90981, assuming resolution of 1
+[INFO] mgg: 115 nomBkg: 7.91906 +/- 1 (2) sig -- +0.692528(1.45101) - 0.649611(1.23735)
+[FOR TABLE] ,UntaggedTag_0,117.5,6.86489, assuming resolution of 1
+[INFO] mgg: 117.5 nomBkg: 6.86565 +/- 1 (2) sig -- +0.552706(1.22824) - 0.536379(1.01912)
+[FOR TABLE] ,UntaggedTag_0,120,5.77598, assuming resolution of 1
+[INFO] mgg: 120 nomBkg: 5.77236 +/- 1 (2) sig -- +0.506793(1.12621) - 0.428417(0.811738)
+[FOR TABLE] ,UntaggedTag_0,122.5,4.76968, assuming resolution of 1
+[INFO] mgg: 122.5 nomBkg: 4.76675 +/- 1 (2) sig -- +0.409367(0.972246) - 0.335162(0.670324)
+[FOR TABLE] ,UntaggedTag_0,125,3.90575, assuming resolution of 1
+[INFO] mgg: 125 nomBkg: 3.89949 +/- 1 (2) sig -- +0.185129(0.833082) - 0.289416(0.548366)
+[FOR TABLE] ,UntaggedTag_0,127.5,3.19544, assuming resolution of 1
+[INFO] mgg: 127.5 nomBkg: 3.19265 +/- 1 (2) sig -- +0.282677(0.670049) - 0.249425(0.473908)
+[FOR TABLE] ,UntaggedTag_0,130,2.62424, assuming resolution of 1
+[INFO] mgg: 130 nomBkg: 2.61962 +/- 1 (2) sig -- +0.265539(0.606947) - 0.225124(0.429782)
+[FOR TABLE] ,UntaggedTag_0,135,1.80468, assuming resolution of 1
+[INFO] mgg: 135 nomBkg: 1.80183 +/- 1 (2) sig -- +0.235955(0.48764) - 0.190036(0.365996)
+[FOR TABLE] ,UntaggedTag_0,140,1.27651, assuming resolution of 1
+[INFO] mgg: 140 nomBkg: 1.27478 +/- 1 (2) sig -- +0.185236(0.396935) - 0.164327(0.308735)
+[FOR TABLE] ,UntaggedTag_0,145,0.925789, assuming resolution of 1
+[INFO] mgg: 145 nomBkg: 0.924711 +/- 1 (2) sig -- +0.157766(0.315531) - 0.15171(0.267299)
+[FOR TABLE] ,UntaggedTag_0,150,0.685237, assuming resolution of 1
+[INFO] mgg: 150 nomBkg: 0.684545 +/- 1 (2) sig -- +0.116349(0.261786) - 0.123004(0.224616)
+[FOR TABLE] ,UntaggedTag_0,155,0.515286, assuming resolution of 1
+[INFO] mgg: 155 nomBkg: 0.514826 +/- 1 (2) sig -- +0.105105(0.218617) - 0.0965298(0.185015)
+[FOR TABLE] ,UntaggedTag_0,160,0.392136, assuming resolution of 1
+[INFO] mgg: 160 nomBkg: 0.39182 +/- 1 (2) sig -- +0.0550156(0.198056) - 0.0857107(0.159177)
+[FOR TABLE] ,UntaggedTag_0,165,0.301048, assuming resolution of 1
+[INFO] mgg: 165 nomBkg: 0.300825 +/- 1 (2) sig -- +0.0771293(0.173541) - 0.0705058(0.136311)
+[FOR TABLE] ,UntaggedTag_0,170,0.232587, assuming resolution of 1
+[INFO] mgg: 170 nomBkg: 0.232425 +/- 1 (2) sig -- +0.0423725(0.158191) - 0.0544747(0.116213)
+[FOR TABLE] ,UntaggedTag_0,175,0.180509, assuming resolution of 1
+[INFO] mgg: 175 nomBkg: 0.180389 +/- 1 (2) sig -- +0.0174202(0.139362) - 0.0447449(0.0958315)
+[FOR TABLE] ,UntaggedTag_0,180,0.142406, assuming resolution of 1
+[INFO] mgg: 180 nomBkg: 0.140666 +/- 1 (2) sig -- +0.00879035(0.0681252) - 0.105225(0.124182)
 
 [INFO] intLumi 172.13
-Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/AllFitResults/bkgplot_21.pdf has been created
-Info in <TCanvas::Print>: pdf file /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/ALP_BkgModel_ReReco/fit_results_run3/21/BkgPlots/bkgplot_cat0.pdf has been created
+Info in <TCanvas::Print>: pdf file ./ALP_BkgModel_ReReco/fit_results_run3/AllFitResults_blind/bkgplot_21.pdf has been created
+Info in <TCanvas::Print>: pdf file ./ALP_BkgModel_ReReco/fit_results_run3/21/BkgPlots_blind/bkgplot_cat0.pdf has been created
+Warning in <TClassTable::Add>: class RooPowerLaw already in TClassTable
+Error in <TCling::LoadPCM>: ROOT PCM /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Background/lib/RootDict_rdict.pcm file does not exist
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libASImageGui_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libASImage_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libDCache_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libEG_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libEve_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libFFTW_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libFitPanel_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libFoam_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libFumili_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libGX11TTF_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libGX11_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libGdml_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libGed_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libGenVector_G__GenVector32_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libGenVector_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libGenetic_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libGeomBuilder_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libGeomPainter_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libGeom_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libGpad_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libGraf3d_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libGraf_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libGuiBld_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libGuiHtml_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libGui_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libGviz3d_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libHistFactory_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libHistPainter_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libHist_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libHtml_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libMLP_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libMathCore_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libMathMore_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libMatrix_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libMinuit2_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libMinuit_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libNet_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libNetxNG_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libPhysics_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libPostscript_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libProofBench_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libProofDraw_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libProofPlayer_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libProof_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libPyMVA_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libQuadp_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libRCsg_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libRDAVIX_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libRGL_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libRHTTPSniff_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libRHTTP_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libROOTBrowsable_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libROOTBrowserv7_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libROOTDataFrame_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libROOTEve_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libROOTFitPanelv7_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libROOTGeomViewer_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libROOTGpadv7_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libROOTGraphicsPrimitives_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libROOTHistDraw_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libROOTHist_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libROOTNTupleUtil_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libROOTNTuple_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libROOTTMVASofie_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libROOTTPython_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libROOTTreeViewer_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libROOTVecOps_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libROOTWebDisplay_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libRecorder_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libRooFitCore_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libRooFitHS3_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libRooFitJSONInterface_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libRooFitMore_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libRooFitRDataFrameHelpers_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libRooFitXRooFit_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libRooFit_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libRooStats_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libRootAuth_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libSPlot_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libSQLIO_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libSessionViewer_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libSmatrix_G__Smatrix32_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libSmatrix_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libSpectrumPainter_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libSpectrum_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libTMVAGui_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libTMVAUtils_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libTMVA_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libTreePlayer_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libTreeViewer_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libTree_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libWebGui6_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libX3d_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libXMLIO_rdict.pcm
+
+Info in <TCling::LoadPCM>: In-memory ROOT PCM candidate /cvmfs/cms.cern.ch/el9_amd64_gcc12/lcg/root/6.30.07-8b1a11e1ef0e074fdfd44e162b27e71c/lib/libXMLParser_rdict.pcm
+
+[WSTFileWrapper] successfully opened this file: ./ALP_BkgModel_ReReco/fit_results_run3/21/CMS-HGG_mva_13p6TeV_multipdf.root
+[WSTFileWrapper] on file ./ALP_BkgModel_ReReco/fit_results_run3/21/CMS-HGG_mva_13p6TeV_multipdf.root opened workspace named: multipdf
+[INFO] sqrts=13p6TeV -> extStr=13p6TeV
+[WSTFileWrapper] Got non-zero RooAbsData from ./ALP_BkgModel_ReReco/fit_results_run3/21/CMS-HGG_mva_13p6TeV_multipdf.root with name roohist_data_mass_cat0
+[WSTFileWrapper] Got non-zero RooAbsPdf from ./ALP_BkgModel_ReReco/fit_results_run3/21/CMS-HGG_mva_13p6TeV_multipdf.root with name CMS_hgg_cat0_13p6TeV_bkgshape
+[WSTFileWrapper] Got non-zero RooCategory from ./ALP_BkgModel_ReReco/fit_results_run3/21/CMS-HGG_mva_13p6TeV_multipdf.root with name pdfindex_cat0_13p6TeV
+[INFO] Current PDF and data:
+[INFO] 	RooFFTConvPdf::Exp3[ Exp_soft_exp3(CMS_hza_mass) (*) Exp_gau_exp3(CMS_hza_mass) ] = 6004.95
+[INFO] 	RooDataHist::roohist_data_mass_cat0[CMS_hza_mass] = 85 bins (249 weights)
+unblind: 1
+Number of PDFs: 3
+Info in <TCanvas::Print>: pdf file ./ALP_BkgModel_ReReco/fit_results_run3/21/BkgPlots_unblind/allPdfs_cat0.pdf has been created
+unblind: 1
+Number of PDFs: 3
+Info in <TCanvas::Print>: pdf file ./ALP_BkgModel_ReReco/fit_results_run3/AllFitResults_unblind/allPdfs_21.pdf has been created
+[INFO] Best fit PDF and data:
+[INFO] 	RooFFTConvPdf::Exp3[ Exp_soft_exp3(CMS_hza_mass) (*) Exp_gau_exp3(CMS_hza_mass) ] = 5989.4
+[INFO] 	RooDataHist::roohist_data_mass_cat0[CMS_hza_mass] = 85 bins (249 weights)
+Error in <TLegend::AddEntry>: need to create a canvas first
+[INFO] Plotting data and nominal curve
+[INFO] Plot has 85 bins
+[INFO] Processing for mA = 21
+[FOR TABLE] ,UntaggedTag_0,95,2.17583, assuming resolution of 1
+[INFO] mgg: 95 nomBkg: 2.06396 +/- 1 (2) sig -- +0.0757608(0.269372) - 1.58425(1.66891)
+[FOR TABLE] ,UntaggedTag_0,97.5,3.35853, assuming resolution of 1
+[INFO] mgg: 97.5 nomBkg: 3.35274 +/- 1 (2) sig -- +0.772474(1.63078) - 0.654832(1.20489)
+[FOR TABLE] ,UntaggedTag_0,100,4.92877, assuming resolution of 1
+[INFO] mgg: 100 nomBkg: 4.92614 +/- 1 (2) sig -- +0.72827(1.56058) - 0.654253(1.27002)
+[FOR TABLE] ,UntaggedTag_0,102.5,6.55583, assuming resolution of 1
+[INFO] mgg: 102.5 nomBkg: 6.56062 +/- 1 (2) sig -- +0.660354(1.38074) - 0.615058(1.23012)
+[FOR TABLE] ,UntaggedTag_0,105,7.95086, assuming resolution of 1
+[INFO] mgg: 105 nomBkg: 7.96639 +/- 1 (2) sig -- +0.694595(1.38919) - 0.684612(1.36922)
+[FOR TABLE] ,UntaggedTag_0,107.5,8.84008, assuming resolution of 1
+[INFO] mgg: 107.5 nomBkg: 8.85987 +/- 1 (2) sig -- +0.802274(1.53479) - 0.761395(1.52279)
+[FOR TABLE] ,UntaggedTag_0,110,9.08801, assuming resolution of 1
+[INFO] mgg: 110 nomBkg: 9.10678 +/- 1 (2) sig -- +0.848741(1.69748) - 0.778012(1.4853)
+[FOR TABLE] ,UntaggedTag_0,112.5,8.72369, assuming resolution of 1
+[INFO] mgg: 112.5 nomBkg: 8.73824 +/- 1 (2) sig -- +0.796748(1.66278) - 0.750942(1.43362)
+[FOR TABLE] ,UntaggedTag_0,115,7.90981, assuming resolution of 1
+[INFO] mgg: 115 nomBkg: 7.91906 +/- 1 (2) sig -- +0.692528(1.45101) - 0.649611(1.23735)
+[FOR TABLE] ,UntaggedTag_0,117.5,6.86489, assuming resolution of 1
+[INFO] mgg: 117.5 nomBkg: 6.86565 +/- 1 (2) sig -- +0.552706(1.22824) - 0.536379(1.01912)
+[FOR TABLE] ,UntaggedTag_0,120,5.77598, assuming resolution of 1
+[INFO] mgg: 120 nomBkg: 5.77236 +/- 1 (2) sig -- +0.506793(1.12621) - 0.428417(0.811738)
+[FOR TABLE] ,UntaggedTag_0,122.5,4.76968, assuming resolution of 1
+[INFO] mgg: 122.5 nomBkg: 4.76675 +/- 1 (2) sig -- +0.409367(0.972246) - 0.335162(0.670324)
+[FOR TABLE] ,UntaggedTag_0,125,3.90575, assuming resolution of 1
+[INFO] mgg: 125 nomBkg: 3.89949 +/- 1 (2) sig -- +0.185129(0.833082) - 0.289416(0.548366)
+[FOR TABLE] ,UntaggedTag_0,127.5,3.19544, assuming resolution of 1
+[INFO] mgg: 127.5 nomBkg: 3.19265 +/- 1 (2) sig -- +0.282677(0.670049) - 0.249425(0.473908)
+[FOR TABLE] ,UntaggedTag_0,130,2.62424, assuming resolution of 1
+[INFO] mgg: 130 nomBkg: 2.61962 +/- 1 (2) sig -- +0.265539(0.606947) - 0.225124(0.429782)
+[FOR TABLE] ,UntaggedTag_0,135,1.80468, assuming resolution of 1
+[INFO] mgg: 135 nomBkg: 1.80183 +/- 1 (2) sig -- +0.235955(0.48764) - 0.190036(0.365996)
+[FOR TABLE] ,UntaggedTag_0,140,1.27651, assuming resolution of 1
+[INFO] mgg: 140 nomBkg: 1.27478 +/- 1 (2) sig -- +0.185236(0.396935) - 0.164327(0.308735)
+[FOR TABLE] ,UntaggedTag_0,145,0.925789, assuming resolution of 1
+[INFO] mgg: 145 nomBkg: 0.924711 +/- 1 (2) sig -- +0.157766(0.315531) - 0.15171(0.267299)
+[FOR TABLE] ,UntaggedTag_0,150,0.685237, assuming resolution of 1
+[INFO] mgg: 150 nomBkg: 0.684545 +/- 1 (2) sig -- +0.116349(0.261786) - 0.123004(0.224616)
+[FOR TABLE] ,UntaggedTag_0,155,0.515286, assuming resolution of 1
+[INFO] mgg: 155 nomBkg: 0.514826 +/- 1 (2) sig -- +0.105105(0.218617) - 0.0965298(0.185015)
+[FOR TABLE] ,UntaggedTag_0,160,0.392136, assuming resolution of 1
+[INFO] mgg: 160 nomBkg: 0.39182 +/- 1 (2) sig -- +0.0550156(0.198056) - 0.0857107(0.159177)
+[FOR TABLE] ,UntaggedTag_0,165,0.301048, assuming resolution of 1
+[INFO] mgg: 165 nomBkg: 0.300825 +/- 1 (2) sig -- +0.0771293(0.173541) - 0.0705058(0.136311)
+[FOR TABLE] ,UntaggedTag_0,170,0.232587, assuming resolution of 1
+[INFO] mgg: 170 nomBkg: 0.232425 +/- 1 (2) sig -- +0.0423725(0.158191) - 0.0544747(0.116213)
+[FOR TABLE] ,UntaggedTag_0,175,0.180509, assuming resolution of 1
+[INFO] mgg: 175 nomBkg: 0.180389 +/- 1 (2) sig -- +0.0174202(0.139362) - 0.0447449(0.0958315)
+[FOR TABLE] ,UntaggedTag_0,180,0.142406, assuming resolution of 1
+[INFO] mgg: 180 nomBkg: 0.140666 +/- 1 (2) sig -- +0.00879035(0.0681252) - 0.105225(0.124182)
+
+[INFO] intLumi 172.13
+Info in <TCanvas::Print>: pdf file ./ALP_BkgModel_ReReco/fit_results_run3/AllFitResults_unblind/bkgplot_21.pdf has been created
+Info in <TCanvas::Print>: pdf file ./ALP_BkgModel_ReReco/fit_results_run3/21/BkgPlots_unblind/bkgplot_cat0.pdf has been created

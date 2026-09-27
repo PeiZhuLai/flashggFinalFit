@@ -1,0 +1,58 @@
+\begin{table}[htbp]
+  \begin{center}
+    \topcaption{Per-function diagnostics of the background fit for the envelope members at $21 \le m_{a} \le 30~\GeV$. The fit status is the Minuit status of the background-only fit to data (0 = converged). The goodness-of-fit probability is obtained from the observed $\chi^{2}$ with toys; a function is accepted only if it exceeds 0.01. The F-test column gives the probability that the next higher order of the same family is not required (`--' when no higher order was scanned); the higher order is adopted only if this probability falls below 0.10 when building the envelope candidates, and below the stricter 0.05 when identifying the highest order supported by the data in the truth-model scan. The bias column is the mean of the pull distribution obtained when the toy datasets are generated with this function as the truth model, at the expected signal strength, and fitted with the full envelope. The pull is normalized to the uncertainty on the side of the fitted signal strength that faces the true value; the quoted uncertainty is the uncertainty on that mean and 10000 toys are used per function. Functions marked `fallback' did not pass the combined goodness-of-fit and F-test selection and were retained by the fallback rule that keeps every family represented in the envelope; `best fit' marks the function preferred by the penalized likelihood.}
+    \label{tab:bkg_diagnostics_mA21to30}
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{|c|c|c|c|c|c|c|} \hline
+      $m_{a}$ (\GeV) & Function & Fit status & GOF $p$-value & F-test $p$ & Bias (mean pull, truth $=$ this function) & Note \\ \hline
+      21 & Exp3 & 0 & 0.870 & 0.924 & $-0.065 \pm 0.011$ & best fit \\
+       & Pow1 & 0 & 0.460 & 1.000 & $+0.011 \pm 0.010$ & -- \\
+       & Lau1 & 0 & 0.130 & 1.000 & $-0.095 \pm 0.010$ & -- \\
+      \hline
+      22 & Exp3 & 0 & 0.620 & 1.000 & $+0.050 \pm 0.010$ & best fit \\
+       & Pow1 & 0 & 0.030 & 1.000 & $+0.014 \pm 0.010$ & -- \\
+       & Lau1 & 0 & 0.050 & 1.000 & $-0.101 \pm 0.011$ & -- \\
+       & Bern6 & 0 & 0.480 & -- & $-0.054 \pm 0.010$ & -- \\
+      \hline
+      23 & Exp3 & 0 & 0.870 & 1.000 & $+0.001 \pm 0.010$ & best fit \\
+       & Pow1 & 0 & 0.440 & 1.000 & $-0.023 \pm 0.011$ & -- \\
+       & Lau1 & 0 & 0.290 & 1.000 & $-0.145 \pm 0.011$ & -- \\
+       & Bern6 & 0 & 0.600 & -- & $-0.096 \pm 0.010$ & -- \\
+      \hline
+      24 & Exp3 & 0 & 0.076 & 1.000 & $+0.041 \pm 0.011$ & best fit \\
+       & Pow1 & 0 & $<10^{-3}$ & 1.000 & $+0.010 \pm 0.010$ & fallback \\
+       & Lau1 & 0 & $<10^{-3}$ & 1.000 & $-0.091 \pm 0.011$ & fallback \\
+       & Bern5 & 0 & $<10^{-3}$ & -- & $-0.147 \pm 0.011$ & fallback \\
+      \hline
+      25 & Exp3 & 0 & 0.068 & 1.000 & $+0.004 \pm 0.010$ & best fit \\
+       & Pow1 & 0 & 0.004 & 1.000 & $-0.009 \pm 0.010$ & fallback \\
+       & Lau1 & 0 & $<10^{-3}$ & 1.000 & $-0.114 \pm 0.011$ & fallback \\
+       & Bern6 & 0 & $<10^{-3}$ & -- & $+0.032 \pm 0.010$ & fallback \\
+      \hline
+      26 & Exp1 & 1 & 0.311 & 0.305 & $-0.076 \pm 0.010$ & best fit \\
+       & Pow1 & 0 & 0.391 & 1.000 & $-0.032 \pm 0.010$ & -- \\
+       & Lau1 & 0 & 0.005 & 1.000 & $-0.024 \pm 0.010$ & fallback \\
+       & Bern6 & 0 & 0.164 & -- & $+0.061 \pm 0.010$ & -- \\
+      \hline
+      27 & Exp1 & 0 & 0.178 & 0.863 & $-0.036 \pm 0.010$ & best fit \\
+       & Pow1 & 0 & 0.379 & 1.000 & $+0.005 \pm 0.010$ & -- \\
+       & Lau1 & 0 & $<10^{-3}$ & 1.000 & $+0.005 \pm 0.010$ & fallback \\
+      \hline
+      28 & Exp1 & 0 & 0.004 & 1.000 & $-0.026 \pm 0.010$ & fallback, best fit \\
+       & Pow1 & 0 & 0.004 & 1.000 & $+0.071 \pm 0.010$ & fallback \\
+       & Lau1 & 0 & $<10^{-3}$ & 1.000 & $+0.040 \pm 0.010$ & fallback \\
+      \hline
+      29 & Exp1 & 0 & 0.212 & 0.579 & $+0.017 \pm 0.010$ & best fit \\
+       & Pow1 & 0 & 0.263 & 0.742 & $+0.101 \pm 0.010$ & -- \\
+       & Lau1 & 0 & 0.002 & 1.000 & $-0.141 \pm 0.010$ & fallback \\
+       & Bern6 & 0 & 0.142 & -- & $+0.069 \pm 0.010$ & -- \\
+      \hline
+      30 & Exp1 & 0 & 0.267 & 1.000 & $-0.023 \pm 0.010$ & best fit \\
+       & Pow1 & 0 & 0.477 & 1.000 & $+0.090 \pm 0.010$ & -- \\
+       & Lau1 & 0 & 0.053 & 1.000 & $-0.140 \pm 0.010$ & -- \\
+       & Bern6 & 0 & 0.049 & -- & $-0.017 \pm 0.010$ & -- \\
+      \hline
+    \end{tabular}
+    }
+  \end{center}
+\end{table}
