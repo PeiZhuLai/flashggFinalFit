@@ -178,12 +178,13 @@ if opts.plots:
                 continue
             hi = getattr(tree, 'r')
             diff = bf - opts.expectSignal
-            unc = 0.5 * (hi-lo)
-            # mu_true = float(opts.expectSignal)
-            # if bf > mu_true:
-            #     unc = hi - bf           # 上誤差（應為正）
-            # else:
-            #     unc = bf - lo           # 下誤差（應為正）
+            # [PZ 2026-09-26] Use the uncertainty on the side facing the true value, as in the
+            # Combine tutorial (data/tutorials/parametric_exercise/plot_bias_pull.py): fitted r
+            # below the truth -> upper error, above -> lower error. (The flashggFinalFit H->gg
+            # upstream uses the symmetric 0.5*(hi-lo); it is NOT the source of this choice.) The symmetric 0.5*(hi-lo) used before ignores that the r interval is
+            # asymmetric near the expected limit (upper/lower ~ 1.17-1.19 here), which shifted
+            # every mass point negative by ~0.07 on average (vs ~0.04 with this definition).
+            unc = (hi - bf) if bf < opts.expectSignal else (bf - lo)
             if unc > 0.: 
                 pullHist.Fill(diff/unc)
         canv = r.TCanvas()
