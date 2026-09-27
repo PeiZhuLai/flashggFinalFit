@@ -4,7 +4,7 @@
 Single source of truth for:
   - the adopted per-mA BDT working-point cuts (all 30 mass points),
   - the DY-background sample combination per era,
-  - the fit-window / mass-range conventions (massLow=105 for mA1,2 else 95),
+  - the fit-window / mass-range conventions (massLow=95 for all mA),
   - the event-selection loader (H_mass, factor weight, MVA_Score_mA_M{n}).
 
 Both the real-data validation (validate_cuts.py) and the pseudo-data workspace
@@ -20,6 +20,11 @@ import numpy as np
 import uproot
 
 SCORED_BASE = "/eos/home-p/pelai/HZa/root_P2Root/run3_bdt_scored_nominal"
+# CLOSURE_FSRFIX=1 (2026-09-26): read the FSR-fix re-production instead, where 2022 DY+gamma is
+# the inclusive PTG-10to100 sample (the 10to50/50to100 slices were retired). Unset = unchanged.
+FSRFIX = os.environ.get("CLOSURE_FSRFIX", "0") == "1"
+if FSRFIX:
+    SCORED_BASE = "/eos/home-p/pelai/HZa/root_P2Root/run3_bdt_scored_fsrfix"
 TREE = "inclusive"
 MASS_BR = "H_mass"
 WEIGHT_BR = "factor"
@@ -29,7 +34,7 @@ ERAS = ["2022preEE", "2022postEE", "2023preBPix", "2023postBPix", "2024"]
 
 # DY background combination per era (identical to make_sculpt_R_table_from_wp.py /
 # table_interpolate_bkgYield_1.py).
-_bkg_2022 = ["DYGto2LG_10to50", "DYGto2LG_50to100"]
+_bkg_2022 = ["DYGto2LG_10to100"] if FSRFIX else ["DYGto2LG_10to50", "DYGto2LG_50to100"]
 _bkg_2023 = ["DYGto2LG_10to100"]
 _bkg_dyll = ["DYJetsToLL"]
 _bkg_dyll_2024 = ["DYJetsTo2E", "DYJetsTo2Mu", "DYJetsTo2Tau"]
@@ -62,8 +67,14 @@ ADOPTED_CUTS = {**CUTS_TRAINED, **CUTS_INTERP}
 
 
 def mass_low(mA):
-    """Low edge of the CMS_hza_mass range: 105 for mA1,2 (skip turn-on) else 95."""
-    return 105.0 if int(mA) in (1, 2) else 95.0
+    """Low edge of the CMS_hza_mass range: 95 for all mA.
+
+    (2026-07-30: mA1,2 restored from 105 to 95 now that the low-mass sculpting is
+    controlled -- R~1 working points, a clean background-only pseudo-data closure, and
+    the fine 1 GeV mass-shape check all show no turn-on fake peak, so the turn-on region
+    no longer needs to be skipped.)
+    """
+    return 95.0
 
 
 MASS_HIGH = 180.0

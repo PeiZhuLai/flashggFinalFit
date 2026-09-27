@@ -28,7 +28,9 @@ import numpy as np
 import ROOT
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from select_lib import (ADOPTED_CUTS, MASS_HIGH, load_combined, mass_low, select)
+import uproot
+from select_lib import (ADOPTED_CUTS, MASS_HIGH, load_combined, mass_low, select,
+                        SCORED_BASE, ERAS, TREE, MASS_BR, SCORE_FMT)
 
 ROOT.gROOT.SetBatch(True)
 ROOT.RooMsgService.instance().setGlobalKillBelow(ROOT.RooFit.ERROR)
@@ -39,13 +41,58 @@ OUTBASE_DEFAULT = ("/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
                    "flashggFinalFit/pseudodata_closure/pseudodata")
 
 
-def build_one(mA, outbase, verbose=True, cut=None):
+BLIND_LOW, BLIND_HIGH = 115.0, 135.0   # blinded Higgs window (same as bkgmcSculptingCheck)
+
+
+def _load_data_mass(mA):
+    """Real Data (unweighted) H_mass + BDT score from run3_bdt_scored_nominal for mass mA."""
+    sb = SCORE_FMT.format(int(mA))
+    ms, ss = [], []
+    for era in ERAS:
+        path = os.path.join(SCORED_BASE, "Data", "%s.root" % era)
+        if not os.path.exists(path):
+            continue
+        arr = uproot.open(path)[TREE].arrays([MASS_BR, sb], library="np")
+        ms.append(arr[MASS_BR])
+        ss.append(arr[sb])
+    if not ms:
+        return np.array([]), np.array([])
+    return np.concatenate(ms), np.concatenate(ss)
+
+
+def _sideband_scale(mA, cut, mm, ww):
+    """data/MC yield ratio in the sidebands (fit window excluding the blind [115,135]).
+
+    Identical normalization to bkgmcSculptingCheck._scale_bkg_to_data_sideband, so the
+    closure pseudo-data carries the SAME background-MC yield as the data/MC sculpting-check
+    plots (the raw DY MC over-predicts the data by ~1/scale; only shapes are meaningful).
+    """
+    def _sb(x):
+        return (x < BLIND_LOW) | (x > BLIND_HIGH)
+    mc_sb = float(ww[_sb(mm)].sum())
+    dm, ds = _load_data_mass(mA)
+    if dm.size == 0 or mc_sb <= 0.0:
+        return 1.0
+    dmsk = select(mA, dm, np.ones_like(dm), ds, cut)   # Data: factor == 1
+    data_sb = float(_sb(dm[dmsk]).sum())
+    return data_sb / mc_sb if mc_sb > 0.0 else 1.0
+
+
+def build_one(mA, outbase, verbose=True, cut=None, bootstrap=None):
     cut = ADOPTED_CUTS[int(mA)] if cut is None else float(cut)
     lo = mass_low(mA)
     nbin_1gev = int(round(MASS_HIGH - lo))          # 1 GeV bins (roohist binning)
     m, w, s = load_combined(mA)
     msk = select(mA, m, w, s, cut)
     mm, ww = m[msk], w[msk]
+    if bootstrap is not None:
+        # MC-statistics replica (2026-09-27): Poisson(1) weight per selected MC event, so the
+        # spread of the closure r_hat over replicas measures how much of it is MC fluctuation.
+        ww = ww * np.random.default_rng(int(bootstrap)).poisson(1.0, ww.size)
+    sf = _sideband_scale(mA, cut, mm, ww)           # normalize MC to data in sidebands
+    ww = ww * sf                                      # (match bkgmcSculptingCheck)
+    if verbose:
+        print("[mA=%s] sideband data/MC scale = %.4f" % (mA, sf))
     hist, edges = np.histogram(mm, bins=nbin_1gev, range=(lo, MASS_HIGH), weights=ww)
     centers = 0.5 * (edges[:-1] + edges[1:])
     counts = np.rint(np.clip(hist, 0.0, None)).astype(int)   # floor<0, round to int
@@ -88,13 +135,15 @@ def main():
     ap.add_argument("--outbase", default=OUTBASE_DEFAULT)
     ap.add_argument("--cut", type=float, default=None,
                     help="override the adopted BDT cut (for WP scans)")
+    ap.add_argument("--bootstrap", type=int, default=None,
+                    help="seed for a Poisson(1) MC-statistics bootstrap replica (default: off)")
     a = ap.parse_args()
     if "-" in a.mA and "," not in a.mA:
         lo, hi = a.mA.split("-"); mAs = list(range(int(lo), int(hi) + 1))
     else:
         mAs = [int(x) for x in a.mA.split(",")]
     for mA in mAs:
-        build_one(mA, a.outbase, cut=a.cut)
+        build_one(mA, a.outbase, cut=a.cut, bootstrap=a.bootstrap)
 
 
 if __name__ == "__main__":

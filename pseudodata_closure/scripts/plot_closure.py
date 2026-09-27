@@ -24,6 +24,11 @@ PC = "/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFi
 LUMI_LABEL = "172 fb^{-1} (13.6 TeV)"
 LEFT, RIGHT = 0.13, 0.04
 TSIZE, LSIZE = 0.055, 0.050
+# pad heights; text sizes are relative to the pad, so the lower pad needs the
+# ratio applied to render at the same physical size as the upper one.
+P1H, P2H = 0.66, 0.34
+SCALE = P1H / P2H
+RHAT_RANGE = 0.5
 
 
 def cms_label(pad, lumi=LUMI_LABEL):
@@ -65,16 +70,16 @@ def main():
     g2.SetFillColor(ROOT.kOrange);
     g1 = ROOT.TGraphAsymmErrors(n, x, med, ex, ex, e1lo, e1hi)
     g1.SetFillColor(ROOT.kGreen + 1)
-    gm = ROOT.TGraph(n, x, med); gm.SetLineStyle(2); gm.SetLineWidth(2); gm.SetLineColor(ROOT.kBlack)
-    go = ROOT.TGraph(n, x, obs); go.SetMarkerStyle(20); go.SetMarkerSize(1.0); go.SetLineWidth(2)
+    gm = ROOT.TGraph(n, x, med); gm.SetLineStyle(2); gm.SetLineWidth(3); gm.SetLineColor(ROOT.kBlack)
+    go = ROOT.TGraph(n, x, obs); go.SetMarkerStyle(20); go.SetMarkerSize(1.4); go.SetLineWidth(3)
     frame = p1.DrawFrame(0.5, 0.0, 30.5, max(obs.tolist() + [max(med)]) * 1.6)
     frame.GetYaxis().SetTitle("95% CL upper limit on #mu")
     frame.GetYaxis().SetTitleSize(TSIZE); frame.GetYaxis().SetLabelSize(LSIZE)
     frame.GetYaxis().SetTitleOffset(1.15)
     frame.GetXaxis().SetLabelSize(0)
     g2.Draw("3 same"); g1.Draw("3 same"); gm.Draw("L same"); go.Draw("LP same")
-    leg = ROOT.TLegend(0.45, 0.60, 1 - RIGHT - 0.01, 0.88)
-    leg.SetBorderSize(0); leg.SetFillStyle(0); leg.SetTextSize(0.040)
+    leg = ROOT.TLegend(0.34, 0.60, 1 - RIGHT - 0.01, 0.88)
+    leg.SetBorderSize(0); leg.SetFillStyle(0); leg.SetTextSize(0.045)
     leg.AddEntry(go, "Observed (bkg-only MC pseudo-data)", "LP")
     leg.AddEntry(gm, "Expected (Asimov)", "L")
     leg.AddEntry(g1, "Expected #pm1#sigma", "F")
@@ -85,16 +90,18 @@ def main():
     # ---- bottom: r-hat ----
     p2.cd()
     gr = ROOT.TGraphAsymmErrors(n, x, rh, ex, ex, rlo, rhi)
-    gr.SetMarkerStyle(20); gr.SetMarkerSize(0.9); gr.SetLineWidth(2)
-    rmax = max(1.0, max(abs(rh[i]) + max(rlo[i], rhi[i]) for i in range(n)) * 1.2)
+    gr.SetMarkerStyle(20); gr.SetMarkerSize(1.4); gr.SetLineWidth(3)
+    rmax = RHAT_RANGE
     fr2 = p2.DrawFrame(0.5, -rmax, 30.5, rmax)
     fr2.GetXaxis().SetTitle("m_{a} [GeV]")
-    fr2.GetYaxis().SetTitle("#hat{#mu}")
-    fr2.GetXaxis().SetTitleSize(0.11); fr2.GetXaxis().SetLabelSize(0.095)
-    fr2.GetYaxis().SetTitleSize(0.11); fr2.GetYaxis().SetLabelSize(0.095)
-    fr2.GetYaxis().SetTitleOffset(0.55); fr2.GetYaxis().SetNdivisions(505)
+    fr2.GetYaxis().SetTitle("Best-fit #hat{#mu}")
+    fr2.GetXaxis().SetTitleSize(TSIZE * SCALE); fr2.GetXaxis().SetLabelSize(LSIZE * SCALE)
+    fr2.GetYaxis().SetTitleSize(TSIZE * SCALE); fr2.GetYaxis().SetLabelSize(LSIZE * SCALE)
+    fr2.GetYaxis().SetTitleOffset(1.15 / SCALE); fr2.GetYaxis().SetNdivisions(505)
+    fr2.GetYaxis().CenterTitle(True)
     fr2.GetXaxis().SetTitleOffset(1.05)
-    l0 = ROOT.TLine(0.5, 0, 30.5, 0); l0.SetLineStyle(2); l0.SetLineColor(ROOT.kRed + 1); l0.Draw()
+    l0 = ROOT.TLine(0.5, 0, 30.5, 0)
+    l0.SetLineStyle(2); l0.SetLineWidth(3); l0.SetLineColor(ROOT.kRed + 1); l0.Draw()
     gr.Draw("P same")
 
     os.makedirs(f"{PC}/plots", exist_ok=True)
