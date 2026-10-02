@@ -65,6 +65,27 @@ inline void fixUnitShapeCoeff(RooRealVar* coeff) {
   coeff->setConstant(true);
 }
 
+// [PZ 2026-09-27] mA24-29: after the FSR-fix re-production every envelope member had its
+// turn-on / width / smearing parameters railed on the per-mass windows below (the turn-on of the
+// llgg spectrum is set by the Z + two photon-pT thresholds and does not scale with m_a), which
+// left the likelihood away from its interior minimum (open-range refit: dNLL up to 69 for Bern5
+// at mA24). For these masses the windows are opened to the same ranges the bias-study fits use
+// (Combine/Checks/Bias_nominal/bias_fit_config.sh), keeping the per-mass starting values.
+inline bool openStepGausRanges(int massALP) { return massALP >= 24 && massALP <= 29; }
+inline void openRange(double &val, double &lo, double &hi, double newLo, double newHi) {
+  lo = newLo; hi = newHi;
+  if (val < lo) val = lo;
+  if (val > hi) val = hi;
+}
+inline void openStepGaus(int massALP, double &turnon, double &turnonLo, double &turnonHi,
+                         double &width, double &widthLo, double &widthHi,
+                         double &sigma, double &sigmaLo, double &sigmaHi) {
+  if (!openStepGausRanges(massALP)) return;
+  openRange(turnon, turnonLo, turnonHi, 95.0, 125.0);
+  openRange(width,  widthLo,  widthHi,  0.1,  50.0);
+  openRange(sigma,  sigmaLo,  sigmaHi,  0.05, 20.0);
+}
+
 inline StepGausWindow makeStableStepGausWindow(int massALP, double turnonShift, double sigmaScale, double widthScale) {
   const double m = clampDouble((double)massALP, 1.0, 30.0);
   const double baseTurnon = clampDouble(105.0 + 0.30*m + turnonShift, 103.0, 117.5);
@@ -328,6 +349,7 @@ RooAbsPdf* PdfModelBuilder::getBernsteinStepxGau(string prefix, int order, int m
     width_bern  = 2.2;   width_lbern  = 0.5;   width_hbern  = 7.0;
   }
 
+  openStepGaus(mass_ALP, turnon_bern, turnon_lbern, turnon_hbern, width_bern, width_lbern, width_hbern, sigma_bern, sigma_lbern, sigma_hbern);
   RooRealVar *g_mean  = new RooRealVar(Form("%s_gmean",prefix.c_str()),Form("%s_gmean",prefix.c_str()),0.);
   g_mean->setConstant(true);
   RooRealVar *g_sigma = new RooRealVar(Form("%s_gsigma",prefix.c_str()),Form("%s_gsigma",prefix.c_str()), sigma_bern, sigma_lbern, sigma_hbern);
@@ -533,6 +555,7 @@ RooAbsPdf* PdfModelBuilder::getPowerLawStepxGau(string prefix, int order, int ca
   }
 
   
+  openStepGaus(mass_ALP, turnon_pow, turnon_lpow, turnon_hpow, width_pow, width_lpow, width_hpow, sigma_pow, sigma_lpow, sigma_hpow);
   RooRealVar *sigma = new RooRealVar(Form("%s_sigma_p%d",prefix.c_str(),order),Form("%s_sigma_p%d",prefix.c_str(),order),sigma_pow,sigma_lpow,sigma_hpow);
   RooRealVar *turnon = new RooRealVar(Form("%s_turnon_p%d",prefix.c_str(),order),Form("%s_turnon_p%d",prefix.c_str(),order),turnon_pow,turnon_lpow,turnon_hpow);
   RooRealVar *width  = new RooRealVar(Form("%s_width_p%d",prefix.c_str(),order),Form("%s_width_p%d",prefix.c_str(),order),width_pow,width_lpow,width_hpow);
@@ -799,26 +822,21 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
     sigma_exp  = 6.2;       sigma_lexp  = 2.5;    sigma_hexp  = 11.0;
     turnon_exp = 114.6;     turnon_lexp = 111.5;  turnon_hexp = 118.0;
     width_exp  = 4.2;       width_lexp  = 0.8;    width_hexp  = 9.0;
-  } else if (mass_ALP == 28) {
-    par1_exp1 = -0.0592;    par1_lexp1 = -0.09;   par1_hexp1 = -0.03;
-    par1_exp3 = -0.059;     par1_lexp3 = -0.12;   par1_hexp3 = -0.03;
-    par3_exp3 = -0.040;     par3_lexp3 = -0.10;   par3_hexp3 = -0.02;
-    par1_exp5 = -0.059;     par1_lexp5 = -0.12;   par1_hexp5 = -0.02;
-    par3_exp5 = -0.040;     par3_lexp5 = -0.10;   par3_hexp5 = -0.02;
-    par5_exp5 = -0.020;     par5_lexp5 = -0.08;   par5_hexp5 = -0.01;
-    sigma_exp  = 6.5;       sigma_lexp  = 2.5;    sigma_hexp  = 11.0;
-    turnon_exp = 115.0;     turnon_lexp = 112.0;  turnon_hexp = 118.5;
-    width_exp  = 4.5;       width_lexp  = 0.8;    width_hexp  = 9.0;
-  } else if (mass_ALP == 29) {
-    par1_exp1 = -0.0598;    par1_lexp1 = -0.09;   par1_hexp1 = -0.03;
-    par1_exp3 = -0.060;     par1_lexp3 = -0.12;   par1_hexp3 = -0.03;
-    par3_exp3 = -0.040;     par3_lexp3 = -0.10;   par3_hexp3 = -0.02;
-    par1_exp5 = -0.060;     par1_lexp5 = -0.12;   par1_hexp5 = -0.02;
-    par3_exp5 = -0.040;     par3_lexp5 = -0.10;   par3_hexp5 = -0.02;
-    par5_exp5 = -0.020;     par5_lexp5 = -0.08;   par5_hexp5 = -0.01;
-    sigma_exp  = 6.8;       sigma_lexp  = 3.0;    sigma_hexp  = 10.0;
-    turnon_exp = 115.5;     turnon_lexp = 113.0;  turnon_hexp = 118.0;
-    width_exp  = 4.8;       width_lexp  = 1.0;    width_hexp  = 9.0;
+  } else if (mass_ALP == 28 || mass_ALP == 29) {
+    // [PZ 2026-09-27] After opening the step-Gaussian windows (openStepGaus, mA24-29) the Exp
+    // family did not converge here: mA28 Exp1 status 1 (rejected; Exp3 entered as a family
+    // fallback with its slope railed at -0.12 and width at 0.1), mA29 Exp1 status -1 at an interior
+    // point. Start from where those fits ended (turn-on ~107, width ~4, sigma ~9, slope ~-0.07)
+    // instead of the old m_a-scaled guesses (turn-on 115), and let the slopes reach -0.20.
+    par1_exp1 = -0.070;     par1_lexp1 = -0.20;   par1_hexp1 = -0.02;
+    par1_exp3 = -0.070;     par1_lexp3 = -0.20;   par1_hexp3 = -0.02;
+    par3_exp3 = -0.040;     par3_lexp3 = -0.15;   par3_hexp3 = -0.01;
+    par1_exp5 = -0.070;     par1_lexp5 = -0.20;   par1_hexp5 = -0.02;
+    par3_exp5 = -0.040;     par3_lexp5 = -0.15;   par3_hexp5 = -0.01;
+    par5_exp5 = -0.020;     par5_lexp5 = -0.10;   par5_hexp5 = -0.005;
+    sigma_exp  = 9.0;       sigma_lexp  = 3.0;    sigma_hexp  = 12.0;
+    turnon_exp = 107.0;     turnon_lexp = 103.0;  turnon_hexp = 118.0;
+    width_exp  = 4.0;       width_lexp  = 1.0;    width_hexp  = 9.0;
   } else if (mass_ALP == 30) {
     par1_exp1 = -0.0605;    par1_lexp1 = -0.09;   par1_hexp1 = -0.03;
     par1_exp3 = -0.061;     par1_lexp3 = -0.12;   par1_hexp3 = -0.03;
@@ -832,6 +850,7 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
   }
 
   
+  openStepGaus(mass_ALP, turnon_exp, turnon_lexp, turnon_hexp, width_exp, width_lexp, width_hexp, sigma_exp, sigma_lexp, sigma_hexp);
   RooRealVar *sigma = new RooRealVar(Form("%s_sigma_p%d",prefix.c_str(),order),Form("%s_sigma_p%d",prefix.c_str(),order),sigma_exp,sigma_lexp,sigma_hexp);
   RooRealVar *turnon = new RooRealVar(Form("%s_turnon_p%d",prefix.c_str(),order),Form("%s_turnon_p%d",prefix.c_str(),order),turnon_exp,turnon_lexp,turnon_hexp);
   RooRealVar *width  = new RooRealVar(Form("%s_width_p%d",prefix.c_str(),order),Form("%s_width_p%d",prefix.c_str(),order),width_exp,width_lexp,width_hexp);
@@ -1101,6 +1120,7 @@ RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat
   }
 
 
+  openStepGaus(mass_ALP, turnon_lau, turnon_llau, turnon_hlau, width_lau, width_llau, width_hlau, sigma_lau, sigma_llau, sigma_hlau);
   RooRealVar *sigma = new RooRealVar(Form("%s_sigma_p%d",prefix.c_str(),order),Form("%s_sigma_p%d",prefix.c_str(),order),sigma_lau,sigma_llau,sigma_hlau);
   RooRealVar *turnon = new RooRealVar(Form("%s_turnon_p%d",prefix.c_str(),order),Form("%s_turnon_p%d",prefix.c_str(),order),turnon_lau,turnon_llau,turnon_hlau);
   RooRealVar *width  = new RooRealVar(Form("%s_width_p%d",prefix.c_str(),order),Form("%s_width_p%d",prefix.c_str(),order),width_lau,width_llau,width_hlau);

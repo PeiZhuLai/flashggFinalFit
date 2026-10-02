@@ -296,6 +296,11 @@ def factoryType(d,s):
     'muon_looseid_sf_SelectedMuon':'a_w',
     'muon_looseid_sf_nomatch_SelectedGenNoRecoMuon':'a_w',
     'muon_iso_sf_SelectedMuon':'a_w',
+    # 2026-09-30: both also exist as Up01sigma/Down01sigma datasets, so the auto-detection picked
+    # "a_h (hist pair)", whose kappa = down/midpoint, up/midpoint SYMMETRIZES the effect
+    # (S1 scheme-2 mva_reweight 0.910/1.036 came out 0.935/1.065). a_w = down/nominal, up/nominal.
+    'mva_reweight':'a_w',
+    'photon_csev_sf_SelectedPhoton':'a_w',
   }
   if s['name'] in forcedTypeMap:
     print(f" [factoryType] 使用強制映射: {s['name']} -> {forcedTypeMap[s['name']]}")
@@ -317,7 +322,8 @@ def factoryType(d,s):
     # 若已有在 cache，直接使用
     if key in factoryType._cache and f"hasHist:{s['name']}" in factoryType._cache[key]:
         cache_entry = factoryType._cache[key]
-        if cache_entry[f"hasHist:{s['name']}"]:
+        # 2026-10-01: a weight triplet wins over a hist pair (see the scan branch below)
+        if cache_entry[f"hasHist:{s['name']}"] and not _detect_weight_triplet(cache_entry['vars'], s['name'])[0]:
             print(f" [factoryType] {s['name']} => a_h (cache, hist pair)")
             return "a_h"
         else:
@@ -358,10 +364,15 @@ def factoryType(d,s):
     factoryType._cache[key][f"hasHist:{s['name']}"] = has_hist
 
     if has_hist:
-      # 若同時又有權重 triplet，可列印提醒（預設仍以 a_h 為準）
+      # 2026-10-01: if the per-event weight triplet also exists, use it (a_w). The a_h yield ratio is
+      # normalized to the up/down MIDPOINT, which symmetrizes the effect: the S1 scheme-2 lnN 0.910/1.036
+      # came out 0.935/1.065, and any genuine shift of the nominal yield is lost. a_w = down/nominal,
+      # up/nominal. Hist-pair-only systematics keep a_h.
       has_triplet, *_ = _detect_weight_triplet(varnames, s['name'])
       if has_triplet:
-        print(f" [factoryType][INFO] {s['name']} 同時發現 RooDataHist 與權重欄位，優先採用 a_h (shape)")
+        f.Close()
+        print(f" [factoryType] {s['name']} => a_w (weight triplet preferred over hist pair)")
+        return "a_w"
       f.Close()
       print(f" [factoryType] {s['name']} => a_h (hist pair)")
       return "a_h"

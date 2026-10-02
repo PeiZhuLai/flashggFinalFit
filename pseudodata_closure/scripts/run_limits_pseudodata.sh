@@ -7,9 +7,11 @@
 # MH frozen at 125.38, rMax 2 (same conventions as Plots/1_makeLimits_observed.sh).
 # Parallel NPROC<=6. ALPMASS="1 2 3" to restrict.
 set -u
+set +u   # cmsset_default.sh references unset variables (CVS_RSH)
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 cd /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src
 eval `scramv1 runtime -sh`
+set -u
 FFIT=/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit
 PC=$FFIT/pseudodata_closure
 DCREAL=$FFIT/Datacard/output_Datacard_leptons

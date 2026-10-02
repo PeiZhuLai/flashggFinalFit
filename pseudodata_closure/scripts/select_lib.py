@@ -65,6 +65,19 @@ CUTS_INTERP = {11: 0.99, 12: 0.99, 13: 0.99, 14: 0.99, 16: 0.99, 17: 0.99,
                26: 0.985, 27: 0.985, 28: 0.98, 29: 0.98}
 ADOPTED_CUTS = {**CUTS_TRAINED, **CUTS_INTERP}
 
+if FSRFIX:
+    # 2026-09-27: the hard-coded tables above are the pre-FSR-fix working points. With the
+    # FSR-fix re-production the anchors come from the current MVAcut_points_run3.json and each
+    # interpolated point takes the cut of its nearest anchor -- the same rule as
+    # MVAcut/run3_ReReco_Sys/scripts/apply_bdt_data.py::find_nearest_cut. Verified against the
+    # real data roohists with validate_cuts.py.
+    import json as _json
+    _WP_JSON = "/afs/cern.ch/work/p/pelai/HZa/HiggsZaAna/Plot/output/MVAcut_points_run3.json"
+    CUTS_TRAINED = {int(e["mA"]): float(e["MVAcut"]) for e in _json.load(open(_WP_JSON))["results"]}
+    CUTS_INTERP = {m: CUTS_TRAINED[min(CUTS_TRAINED, key=lambda k: abs(k - m))]
+                   for m in range(1, 31) if m not in CUTS_TRAINED}
+    ADOPTED_CUTS = {**CUTS_TRAINED, **CUTS_INTERP}
+
 
 def mass_low(mA):
     """Low edge of the CMS_hza_mass range: 95 for all mA.

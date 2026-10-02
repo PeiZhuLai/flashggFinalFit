@@ -89,7 +89,14 @@ def main():
 
     # ---- bottom: r-hat ----
     p2.cd()
-    gr = ROOT.TGraphAsymmErrors(n, x, rh, ex, ex, rlo, rhi)
+    # FitDiagnostics failures come back with zero errors (2026-09-27: mA5 and mA6, whose s+b fit
+    # runs into the lower physical boundary of mu on ~30-event pseudo-data): leave them out of
+    # the mu-hat panel instead of drawing the default value as if it were a result.
+    ok = [i for i in range(n) if not (rlo[i] == 0 and rhi[i] == 0)]
+    gr = ROOT.TGraphAsymmErrors(len(ok), array('d', [x[i] for i in ok]), array('d', [rh[i] for i in ok]),
+                                array('d', [ex[i] for i in ok]), array('d', [ex[i] for i in ok]),
+                                array('d', [rlo[i] for i in ok]), array('d', [rhi[i] for i in ok]))
+    print("[plot] mu-hat not drawn (fit failure) at mA =", [int(x[i]) for i in range(n) if i not in ok])
     gr.SetMarkerStyle(20); gr.SetMarkerSize(1.4); gr.SetLineWidth(3)
     rmax = RHAT_RANGE
     fr2 = p2.DrawFrame(0.5, -rmax, 30.5, rmax)

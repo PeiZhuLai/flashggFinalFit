@@ -210,7 +210,9 @@ static int bestBernOrder(int m)
   // the family is therefore removed from the envelope at these three points,
   // exactly as is done at the mass points listed in the default branch.
   switch (m) {
-    case 3: return 3; case 9: return 6;
+    // [PZ 2026-10-01] m_a = 3: with the S1 scheme-2 lnN Bern2 = -0.211 (10000 toys), the only function
+    // above threshold -> next lower order (AN Sec 7.4); Bern1 GOF p = 0.17.
+    case 3: return 1; case 9: return 6;
     // m_a = 11 is further capped to Bern3 by envMaxOrder (low-order envelope,
     // see the comment there); the value below only keeps Bernstein in the family
     // list for that mass point.
@@ -219,7 +221,7 @@ static int bestBernOrder(int m)
     // [PZ 2026-09-26] m_a = 20: after the FSR fix Bern6 = +0.208 (10000 toys, pull with the
     // error facing the truth), the only function above threshold -> next lower order (AN Sec 7.4).
     case 18: return 5; case 19: return 5; case 20: return 5; case 22: return 6;
-    case 23: return 6; case 24: return 5; case 25: return 6; case 26: return 6;
+    case 23: return 6; case 24: return 5; case 25: return 5; /* 2026-10-01: Bern6 bias +0.212 after the DY-veto retrain -> 5 (AN 7.4) */ case 26: return 6;
     case 29: return 6; case 30: return 6;
     // Bernstein dropped: m_a = 1, 5, 6, 7, 8, 21, 28 (no order passes GOF or
     // bias) and m_a = 2, 4, 27 (bias above 0.2 at 10000 toys, see above).
@@ -596,7 +598,11 @@ double getGoodnessOfFit(RooRealVar *mass, RooAbsPdf *mpdf, RooAbsData *data, std
   double chi2 = plot_chi2->chiSquare("pdf","data",np);
   std::cout << "[INFO] Calculating GOF for pdf " << pdf->GetName() << ", using " <<np << " fitted parameters" <<std::endl;
 
-  if ((double)data->sumEntries()/nBinsForMass < 5 ){
+  // [PZ 2026-09-27] Always use toys. The asymptotic chi2 branch (sumEntries/nBins >= 5, i.e.
+  // more than 425 events over 95-180 GeV) switched on at mA24-30 after the FSR-fix re-production
+  // and gave p-values that are not comparable with the toy-based ones at the other masses; with
+  // many sparse bins in the tails the asymptotic chi2 is not reliable either.
+  if (true){
 
     std::cout << "[INFO] Running toys for GOF test " << std::endl;
     RooArgSet *params = pdf->getParameters(*data);
@@ -1273,7 +1279,9 @@ int main(int argc, char* argv[]){
 	if (bestBernOrder(mass_ALP) > 0) functionClasses.push_back("Bernstein");
 	functionClasses.push_back("Exponential");
 	functionClasses.push_back("PowerLaw");
-	functionClasses.push_back("Laurent");
+	// [PZ 2026-10-01] Lau1 (lowest order) above the 0.2 bias threshold after the 2024 DY-veto retrain
+	// at mA24 (-0.232) and mA25 (-0.215): removed there (AN Sec 7.4; cf. mA8 Pow1 2026-09-25).
+	if (mass_ALP != 24 && mass_ALP != 25) functionClasses.push_back("Laurent");
 
 	map<string,string> namingMap;
 	namingMap.insert(pair<string,string>("Bernstein","pol"));

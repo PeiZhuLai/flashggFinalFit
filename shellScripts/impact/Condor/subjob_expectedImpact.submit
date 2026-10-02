@@ -13,9 +13,9 @@ on_exit_hold          = (ExitBySignal == True) || (ExitCode != 0)
 # Periodically retry failed jobs every 10 minutes, up to a maximum of 3 starts.
 periodic_release      = (NumJobStarts < 3) && ((CurrentTime - EnteredCurrentStatus) > 600)
 
-log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_mA3.$(ClusterId).log
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_mA29.$(ClusterId).log
 output                = /dev/null
-error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_mA3.$(ClusterId).$(ProcId).err
-arguments             = 3 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_mA29.$(ClusterId).$(ProcId).err
+arguments             = 29 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
 queue
 

@@ -36,6 +36,14 @@ INPUT_BASE_TREE_NAME = "test"
 UPROOT_STEP = "200 MB"
 DEFAULT_REWEIGHT_JSON = "/afs/cern.ch/work/p/pelai/HZa/HiggsZaAna/HZaMVA/reweights/sideband_run3_iterative.json"
 MVA_REWEIGHT_SYST_NAME = "mva_reweight"
+MVA_REWEIGHT_LNN = None  # set from --mva-reweight-lnn-json (S1 scheme 2)
+# S1 scheme 2 is the analysis default (user decision 2026-09-27). Until 2026-10-01 it was opt-in through
+# HZA_MVA_REWEIGHT_LNN_JSON, and a chain that re-ran one mass point without the variable silently wrote
+# the old per-event variation into the datacard (mA3, 2026-10-01). Now the JSON is the default, a missing
+# file is an error, and every entry must carry the working point it was derived at ("mvacut"), which has
+# to match the working point of this run. --legacy-mva-reweight restores the old per-event variation.
+DEFAULT_MVA_REWEIGHT_LNN_JSON = ("/afs/cern.ch/work/p/pelai/HZa/HiggsZaAna/studies/l3_review_20260910/"
+                                 "s1_altsideband_20260927/results/s1_lnn_scheme2_fsrfix_dyveto.json")
 REWEIGHT_UNCERTAINTY_FRACTION = 1.0
 
 REWEIGHT_VAR_ALIASES = {
@@ -59,6 +67,16 @@ def get_args():
                         help='Path to sideband reweight JSON, or a directory containing sideband_run3_iterative.json')
     parser.add_argument('--disable-reweight-uncertainty', action='store_true',
                         help='Do not add MVA reweight uncertainty branches to signal output trees')
+    # S1 scheme 2 (user decision 2026-09-27): the reweight nuisance is the envelope of the signal
+    # yield after the WP under {nominal, z_m&hsb, z_m_narrow&hsb} reweights relative to no
+    # reweight, one asymmetric lnN per mA, correlated across eras and channels. When this JSON
+    # is given, weight_mva_reweight_Up/Down become those per-mA constants (central 1), so the
+    # datacard a_w factory writes kappa_up/kappa_down directly.
+    parser.add_argument('--mva-reweight-lnn-json',
+                        default=os.environ.get('HZA_MVA_REWEIGHT_LNN_JSON', DEFAULT_MVA_REWEIGHT_LNN_JSON),
+                        help='JSON {"values": {"<mA>": {"up": k_up, "down": k_down, "mvacut": cut}}} replacing the per-event reweight variation (default: S1 scheme 2)')
+    parser.add_argument('--legacy-mva-reweight', action='store_true',
+                        help='use the old per-event reweight variation instead of the S1 scheme-2 lnN')
     # 新增：控制日誌等級，預設 INFO；若需要完整追蹤，指定 --log-level DEBUG
     parser.add_argument('--log-level', default='INFO', choices=['DEBUG','INFO','WARNING','ERROR','CRITICAL'],
                         help='Logging level (default: INFO)')
@@ -481,6 +499,25 @@ def get_mva_col(columns: List[str], syst: str) -> Optional[str]:
     # 若找不到，回退為無（交由 pass_map 過濾）
     return 'MVA_Score' if 'MVA_Score' in cols else None
 
+def build_test_key_map(samples: List[str], years: List[str], input_base: str, id_cols: Tuple[str, ...]) -> Dict[tuple, pd.DataFrame]:
+    """(sample, year) -> DataFrame of the event keys of the NOMINAL test tree (all events, before
+    any BDT cut). Systematic samples are restricted to these keys (see process_files)."""
+    out: Dict[tuple, pd.DataFrame] = {}
+    for s in samples:
+        for y in years:
+            p = os.path.join(input_base, s, f"{y}.root")
+            if not os.path.exists(p):
+                continue
+            with uproot.open(p) as f:
+                if INPUT_BASE_TREE_NAME not in f:
+                    continue
+                df = f[INPUT_BASE_TREE_NAME].arrays(list(id_cols), library='pd')
+            for c in id_cols:
+                df[c] = df[c].astype(np.int64, copy=False)
+            out[(s, y)] = df.drop_duplicates()
+            logging.info(f"Nominal test keys for {s}, {y}: {len(out[(s, y)])}")
+    return out
+
 def process_files(output_folder, input_folder, samples: List[str], years: List[str], pass_map: Dict[tuple, set], id_cols: Tuple[str, ...], mva_cuts: Dict[int, float], reweight_variation: Optional[SidebandReweightVariation]):
     """Process input files and write the results to output ROOT files, after MVA_Score filtering."""
 
@@ -515,12 +552,22 @@ def process_files(output_folder, input_folder, samples: List[str], years: List[s
                     if not os.path.exists(input_path):
                         logging.warning(f"Missing input: {input_path}")
                         continue
+                    # [PZ 2026-09-27] Systematic samples: the train/validation/test split in p2root
+                    # (Parque2Root_BDT.py) is row-index % 10 per file, so once a variation moves one
+                    # event across the preselection every later row lands in a different bucket and
+                    # the syst 'test' tree is a different random 30% than the nominal one. Joining
+                    # it with the nominal pass set kept only the overlap (median 48% of the nominal
+                    # yield, down to 3%), which faked 5%-capped rate terms in calcPhotonSyst. Now:
+                    # read the syst 'inclusive' tree, keep the events whose key is in the NOMINAL
+                    # test tree (same split as the nominal, no training events), and apply the
+                    # syst's own BDT score cut below (no join with the nominal pass set, so events
+                    # can migrate both ways). The nominal branch is unchanged.
+                    tree_name_in = INPUT_BASE_TREE_NAME if syst == 'nominal' else "inclusive"
                     with uproot.open(input_path) as infile:
-                        # 新增：檢查與使用指定樹名（預設 'test'）
-                        if INPUT_BASE_TREE_NAME not in infile:
-                            logging.error(f"Tree '{INPUT_BASE_TREE_NAME}' not found in: {input_path}")
+                        if tree_name_in not in infile:
+                            logging.error(f"Tree '{tree_name_in}' not found in: {input_path}")
                             continue
-                        all_data = infile[INPUT_BASE_TREE_NAME].arrays(library='pd')
+                        all_data = infile[tree_name_in].arrays(library='pd')
                         all_data.columns = [col.replace('up', 'Up').replace('down', 'Down') for col in all_data.columns]
                         if 'dZ' not in all_data.columns:
                             all_data['dZ'] = np.zeros(len(all_data))
@@ -528,6 +575,16 @@ def process_files(output_folder, input_folder, samples: List[str], years: List[s
                         before = len(all_data)
                         # 先以唯一鍵過濾
                         pass_set = pass_map.get((mA, year), set())
+                        if syst != 'nominal':
+                            test_keys = test_key_map.get((mA, year))
+                            missing = [c for c in id_cols if c not in all_data.columns]
+                            if test_keys is None or missing:
+                                logging.error(f"No nominal test keys / ID columns for {mA} {year} {syst}; skip")
+                                continue
+                            for c in id_cols:
+                                all_data[c] = all_data[c].astype(np.int64, copy=False)
+                            all_data = all_data.merge(test_keys, on=list(id_cols), how='inner')
+                            pass_set = set()   # no join with the nominal pass set for systematics
                         if pass_set:
                             if len(id_cols) == 1 and id_cols[0] == 'event':
                                 all_data['event'] = all_data['event'].astype(np.int64, copy=False)
@@ -565,6 +622,11 @@ def process_files(output_folder, input_folder, samples: List[str], years: List[s
                                 reweight_variation,
                                 label=f"{mA} {year} {syst} {lep}",
                             )
+                            if MVA_REWEIGHT_LNN is not None:
+                                k = MVA_REWEIGHT_LNN[ma_val]
+                                data[f"weight_{MVA_REWEIGHT_SYST_NAME}_central"] = np.ones(len(data), dtype=np.float32)
+                                data[f"weight_{MVA_REWEIGHT_SYST_NAME}_Up"] = np.full(len(data), k["up"], dtype=np.float32)
+                                data[f"weight_{MVA_REWEIGHT_SYST_NAME}_Down"] = np.full(len(data), k["down"], dtype=np.float32)
                             data = data.rename(columns={"H_mass": "CMS_hza_mass"})
                             tree_name = f'{proc}_125_Za_{lep}_13p6TeV_cat0{syst_suffix}'
                             outfile[f'DiphotonTree/{tree_name}'] = data
@@ -580,7 +642,32 @@ if __name__ == "__main__":
     reweight_variation = load_reweight_variation(args.reweight_json, disabled=args.disable_reweight_uncertainty)
     # 1) 讀取每個 ma 的最佳化 cut
     mva_cuts = parse_mva_cuts(optimized_BDT_Cut)
+    MVA_REWEIGHT_LNN = None
+    if args.legacy_mva_reweight:
+        logging.warning("--legacy-mva-reweight: per-event reweight variation (NOT the S1 scheme-2 lnN)")
+    else:
+        lnn_path = args.mva_reweight_lnn_json
+        if not lnn_path or not os.path.exists(lnn_path):
+            raise SystemExit(f"S1 lnN JSON not found: {lnn_path} (use --legacy-mva-reweight for the old variation)")
+        _vals = json.load(open(lnn_path))["values"]
+        MVA_REWEIGHT_LNN = {int(m): {"up": float(v["up"]), "down": float(v["down"]),
+                                     "mvacut": (float(v["mvacut"]) if "mvacut" in v else None)} for m, v in _vals.items()}
+        problems = []
+        for x in samples:
+            m = parse_ma_from_name(x)
+            if m not in MVA_REWEIGHT_LNN:
+                problems.append(f"mA{m}: no entry"); continue
+            c = MVA_REWEIGHT_LNN[m]["mvacut"]
+            if c is None:
+                problems.append(f"mA{m}: entry has no 'mvacut' (cannot verify it matches the working point)")
+            elif m in mva_cuts and abs(c - mva_cuts[m]) > 1e-6:
+                problems.append(f"mA{m}: lnN derived at cut {c} but the working point is {mva_cuts[m]}")
+        if problems:
+            raise SystemExit("S1 lnN JSON %s inconsistent with this run -- rerun eval_alt_reweight.py + "
+                             "make_s1_lnn_json.py at the current working points:\n  " % lnn_path + "\n  ".join(problems))
+        logging.info(f"MVA reweight nuisance = per-mA lnN from {lnn_path}: {MVA_REWEIGHT_LNN}")
     # 2) 根據 INPUT_BASE 的 MVA_Score 建立通過事件對照表（回傳唯一鍵欄位）
     pass_map, id_cols = build_pass_event_map(samples, years, INPUT_BASE, mva_cuts)
     # 3) 在主流程中套用唯一鍵與 MVA_Score 雙重篩選
+    test_key_map = build_test_key_map(samples, years, args.inputFolder, id_cols)
     process_files(args.outputFolder, args.inputFolder, samples, years, pass_map, id_cols, mva_cuts, reweight_variation)

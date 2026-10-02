@@ -94,6 +94,12 @@ common_opts=(
   --cminDefaultMinimizerStrategy 0
   --cminDefaultMinimizerTolerance 0.01
   --cminFallbackAlgo Minuit2,0:0.1
+  # [PZ 2026-10-02] mA29: the per-nuisance refits (initial fit inside each --algo impact job) failed with
+  # Migrad status -1 for 31 of 81 nuisances and the initial fit put r_lo on the rMin boundary; those
+  # nuisances were silently dropped from the json. These fallbacks only run after a failed minimization.
+  --cminFallbackAlgo Minuit2,Migrad,1:0.1
+  --cminFallbackAlgo Minuit2,Simplex,0:0.1
+  --cminFallbackAlgo Minuit2,Migrad,0:1.0
   -v 1
 )
 
@@ -104,6 +110,30 @@ echo "[Timer] mA=${mA} initial fit finished in $(format_duration $((initial_end_
 
 fits_start_time=$(date +%s)
 combineTool.py "${common_opts[@]}" --doFits --parallel 4
+# [PZ 2026-10-02] second pass: a refit whose tree lacks the 3 points (nominal, -1, +1) is redone with
+# Minuit strategy 1 (mA29: MuonSmear/PhotonSmear 2022preEE and csev 2023preBPix fail with strategy 0
+# even with the fallbacks, and pass with strategy 1).
+retry=$(python3 - <<'PYRETRY'
+import glob, ROOT
+ROOT.gROOT.SetBatch(True)
+bad = []
+for f in sorted(glob.glob("higgsCombine_paramFit_Test_*.MultiDimFit.mH*.root")):
+    tf = ROOT.TFile.Open(f); t = tf.Get("limit") if tf else None
+    if not t or t.GetEntries() < 3:
+        bad.append(f.split("paramFit_Test_")[1].split(".MultiDimFit")[0])
+    if tf: tf.Close()
+print(",".join(bad))
+PYRETRY
+)
+if [[ -n "$retry" ]]; then
+  echo ">>> Redoing refits with strategy 1: ${retry}"
+  opts_s1=(); prev=""
+  for o in "${common_opts[@]}"; do
+    if [[ "$prev" == "--cminDefaultMinimizerStrategy" ]]; then opts_s1+=(1); else opts_s1+=("$o"); fi
+    prev="$o"
+  done
+  combineTool.py "${opts_s1[@]}" --doFits --named "$retry" --parallel 4
+fi
 fits_end_time=$(date +%s)
 echo "[Timer] mA=${mA} nuisance fits finished in $(format_duration $((fits_end_time - fits_start_time)))"
 
@@ -117,6 +147,16 @@ echo "[Timer] mA=${mA} impacts json finished in $(format_duration $((json_end_ti
 
 plot_start_time=$(date +%s)
 plotImpacts.py -i "$json_file" -o "$plot_file"
+# Completeness check: combineTool silently drops a nuisance whose refit tree lacks the 3 points.
+python3 - "$json_file" "$work_dir" <<'PYCHK' || { echo "[ERROR] mA=${mA} impacts incomplete (see above)"; exit 3; }
+import glob, json, sys
+d = json.load(open(sys.argv[1])); n = len(d["params"])
+nf = len(glob.glob(sys.argv[2] + "/higgsCombine_paramFit_*.root"))
+r = [p for p in d["POIs"] if p["name"] == "r"][0]["fit"]
+print("[CHECK] params in json %d, refit files %d, r = %.3f / %.3f / %.3f" % (n, nf, r[0], r[1], r[2]))
+bad = n < nf or r[0] <= -4.99 or r[2] >= 4.99
+sys.exit(1 if bad else 0)
+PYCHK
 plot_end_time=$(date +%s)
 echo "[Timer] mA=${mA} impact plot finished in $(format_duration $((plot_end_time - plot_start_time)))"
 

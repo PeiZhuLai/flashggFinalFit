@@ -6,11 +6,13 @@
 # Reuses the already-built ./bin/fTest_ALP_turnOn (no rebuild). Parallel NPROC<=6.
 #   ALPMASS="1 2 3" to restrict; GOF_TOYS=<N> (default 100, same as real).
 set -u
+set +u   # cmsset_default.sh references unset variables (CVS_RSH)
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 cd /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src
 eval `scramv1 runtime -sh`
 FFIT=/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit
 source $FFIT/setup.sh >/dev/null 2>&1
+set -u
 cd $FFIT/Background
 PC=$FFIT/pseudodata_closure
 GOF_TOYS="${GOF_TOYS:-100}"

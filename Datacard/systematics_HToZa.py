@@ -55,6 +55,11 @@ experimental_systematics = [
 
                 # Photon
                 {'name':'photon_id_sf_SelectedPhoton','title':'CMS_hza_photon_id','type':'factory','prior':'lnN','correlateAcrossYears':1},
+                # Conversion-safe electron veto of the photons (2026-09-27: it was applied in the central
+                # weight but its uncertainty was missing from the datacards; it is a separate weight,
+                # weight_photon_csev_sf_SelectedPhoton_*, not part of the photon or electron ID SFs).
+                # Measured per era (pixel-detector conditions), hence uncorrelated across eras.
+                {'name':'photon_csev_sf_SelectedPhoton','title':'CMS_hza_photon_csev','type':'factory','prior':'lnN','correlateAcrossYears':0},
 
                 # MVA training variable reweighting.
                 # Filled in root_MVAcut signal trees as:
