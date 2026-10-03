@@ -1,23 +1,23 @@
 {
-  "exp": 0.052,
+  "exp": 0.0527,
   "fit_results": {
     "Bern5": {
-      "mean": 0.0719,
-      "mean_err": 0.0107,
-      "sigma": 1.0377,
-      "sigma_err": 0.0081
+      "mean": 0.0681,
+      "mean_err": 0.0104,
+      "sigma": 1.013,
+      "sigma_err": 0.0076
     },
     "Exp1": {
-      "mean": -0.1289,
-      "mean_err": 0.0104,
-      "sigma": 0.9932,
-      "sigma_err": 0.0073
+      "mean": -0.0695,
+      "mean_err": 0.0101,
+      "sigma": 0.9837,
+      "sigma_err": 0.0076
     },
     "Pow1": {
-      "mean": -0.1214,
+      "mean": -0.0884,
       "mean_err": 0.0101,
-      "sigma": 0.9838,
-      "sigma_err": 0.0077
+      "sigma": 0.9833,
+      "sigma_err": 0.0076
     }
   },
   "mA": 24
