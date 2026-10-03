@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import glob
 import hashlib
@@ -43,7 +44,21 @@ MVA_REWEIGHT_LNN = None  # set from --mva-reweight-lnn-json (S1 scheme 2)
 # file is an error, and every entry must carry the working point it was derived at ("mvacut"), which has
 # to match the working point of this run. --legacy-mva-reweight restores the old per-event variation.
 DEFAULT_MVA_REWEIGHT_LNN_JSON = ("/afs/cern.ch/work/p/pelai/HZa/HiggsZaAna/studies/l3_review_20260910/"
-                                 "s1_altsideband_20260927/results/s1_lnn_scheme2_fsrfix_dyveto.json")
+                                 "s1_altsideband_20260927/results/s1_lnn_scheme2_sigrw_dyveto.json")
+# [PZ 2026-10-02] Signal reweighting (user decision): the signal is reweighted with the same nominal
+# sideband (data/MC) reweight as the background simulation, so that every simulated sample is corrected
+# to the data shape. The training implementation (HZaMVA/scripts/sideband_reweight.py) is used, with the
+# mass-hypothesis variable at the TRUE ALP mass, param = (ALP_m - m_a)/H_m, as in the BDT training and in
+# eval_alt_reweight.py. The reweight is normalized per (m_a, era, channel) so that the preselected yield of
+# the nominal test sample is unchanged: it changes the BDT efficiency and the shapes, not the cross section
+# normalization. The same per-channel normalization is used for the systematic-variation trees. Absolute
+# weight columns are multiplied; scale-factor columns (weight_*_sf_*) are ratios and are left alone.
+# The CMS_hza_mva_reweight lnN must then be derived relative to the nominal reweight
+# (make_s1_lnn_json.py --reference nominal); a JSON with another reference is refused.
+HZAMVA_SCRIPTS = "/afs/cern.ch/work/p/pelai/HZa/HiggsZaAna/HZaMVA/scripts"
+SIGNAL_RW = None          # SidebandReweighter, None with --no-signal-reweight
+SIGNAL_RW_NORM = {}       # (mA, year, lep) -> sum(w) / sum(w R) over the preselected nominal test events
+ABS_WEIGHT_COLS = ("weight", "weight_central", "factor", "weight_central_no_lumi")
 REWEIGHT_UNCERTAINTY_FRACTION = 1.0
 
 REWEIGHT_VAR_ALIASES = {
@@ -75,6 +90,9 @@ def get_args():
     parser.add_argument('--mva-reweight-lnn-json',
                         default=os.environ.get('HZA_MVA_REWEIGHT_LNN_JSON', DEFAULT_MVA_REWEIGHT_LNN_JSON),
                         help='JSON {"values": {"<mA>": {"up": k_up, "down": k_down, "mvacut": cut}}} replacing the per-event reweight variation (default: S1 scheme 2)')
+    parser.add_argument('--no-signal-reweight', action='store_true',
+                        help='Do NOT apply the nominal sideband reweight to the signal (pre-2026-10-02 behavior; '
+                             'needs an lnN JSON with reference "none")')
     parser.add_argument('--legacy-mva-reweight', action='store_true',
                         help='use the old per-event reweight variation instead of the S1 scheme-2 lnN')
     # 新增：控制日誌等級，預設 INFO；若需要完整追蹤，指定 --log-level DEBUG
@@ -518,6 +536,35 @@ def build_test_key_map(samples: List[str], years: List[str], input_base: str, id
             logging.info(f"Nominal test keys for {s}, {y}: {len(out[(s, y)])}")
     return out
 
+def _signal_rw_frame(frame: pd.DataFrame, ma: float) -> pd.DataFrame:
+    fr = frame.copy()
+    for logical in ("pho1ECALIso", "pho2ECALIso", "H_m", "ALP_m"):
+        col = _first_present_column(fr, logical)
+        if col is not None and col != logical:
+            fr[logical] = fr[col]
+    fr["param"] = (fr["ALP_m"].to_numpy(dtype=float) - float(ma)) / fr["H_m"].to_numpy(dtype=float)
+    return fr
+
+def signal_rw_factors(frame: pd.DataFrame, ma: float) -> np.ndarray:
+    if len(frame) == 0:
+        return np.ones(0, dtype=float)
+    return np.asarray(SIGNAL_RW.weights_for_dataframe(_signal_rw_frame(frame, ma)), dtype=float)
+
+def compute_signal_rw_norm(input_folder: str, mA: str, year: str, ma: float):
+    """Per-channel factor that preserves the preselected nominal test-sample yield."""
+    path = f"{input_folder}/{mA}/{year}.root"
+    with uproot.open(path) as f:
+        frame = f[INPUT_BASE_TREE_NAME].arrays(library="pd")
+    w = frame["weight"].to_numpy(dtype=float)
+    r = signal_rw_factors(frame, ma)
+    for lep, col in (("ele", "n_electrons"), ("mu", "n_muons")):
+        sel = frame[col].to_numpy() == 2
+        den = float(np.sum(w[sel] * r[sel]))
+        norm = float(np.sum(w[sel])) / den if den > 0 else 1.0
+        SIGNAL_RW_NORM[(mA, year, lep)] = norm
+        logging.info(f"signal reweight {mA} {year} {lep}: <R> = {den / max(float(np.sum(w[sel])), 1e-30):.5f}, "
+                     f"normalization {norm:.5f} ({int(sel.sum())} preselected test events)")
+
 def process_files(output_folder, input_folder, samples: List[str], years: List[str], pass_map: Dict[tuple, set], id_cols: Tuple[str, ...], mva_cuts: Dict[int, float], reweight_variation: Optional[SidebandReweightVariation]):
     """Process input files and write the results to output ROOT files, after MVA_Score filtering."""
 
@@ -536,7 +583,13 @@ def process_files(output_folder, input_folder, samples: List[str], years: List[s
         for mA in samples:
             if not os.path.exists(f"{output_folder}/{mA}/output_{year}.root"):
                 os.makedirs(f"{output_folder}/{mA}", exist_ok=True)
-            with uproot.recreate(f"{output_folder}/{mA}/output_{year}.root") as outfile:
+            if SIGNAL_RW is not None:
+                compute_signal_rw_norm(input_folder, mA, year, parse_ma_from_name(mA))
+            # write to .partial and rename on success: a job killed mid-way (e.g. EOS I/O error) must not
+            # leave a readable output that silently lacks the later systematic trees
+            out_final = f"{output_folder}/{mA}/output_{year}.root"
+            out_tmp = out_final + ".partial"
+            with uproot.recreate(out_tmp) as outfile:
                 logging.info(f"Output file: {output_folder}/{mA}/output_{year}.root")
                 for syst in syst_variations:
                     logging.info(f"Processing {year} {mA} {syst}")
@@ -613,6 +666,8 @@ def process_files(output_folder, input_folder, samples: List[str], years: List[s
                             )
 
                         logging.info(f"Filtered {mA} {year} {syst}: {before} -> {len(all_data)} rows")
+                        if SIGNAL_RW is not None:
+                            all_data["_sigrw_raw"] = signal_rw_factors(all_data, ma_val)
 
                         for lep in ['ele', 'mu']:
                             data = all_data.query('n_electrons==2' if lep == 'ele' else 'n_muons==2').copy()
@@ -627,9 +682,16 @@ def process_files(output_folder, input_folder, samples: List[str], years: List[s
                                 data[f"weight_{MVA_REWEIGHT_SYST_NAME}_central"] = np.ones(len(data), dtype=np.float32)
                                 data[f"weight_{MVA_REWEIGHT_SYST_NAME}_Up"] = np.full(len(data), k["up"], dtype=np.float32)
                                 data[f"weight_{MVA_REWEIGHT_SYST_NAME}_Down"] = np.full(len(data), k["down"], dtype=np.float32)
+                            if SIGNAL_RW is not None:
+                                rw = data.pop("_sigrw_raw").to_numpy(dtype=float) * SIGNAL_RW_NORM[(mA, year, lep)]
+                                for col in ABS_WEIGHT_COLS:
+                                    if col in data.columns:
+                                        data[col] = data[col].to_numpy(dtype=float) * rw
+                                data["weight_sideband_rwgt"] = rw.astype(np.float32)
                             data = data.rename(columns={"H_mass": "CMS_hza_mass"})
                             tree_name = f'{proc}_125_Za_{lep}_13p6TeV_cat0{syst_suffix}'
                             outfile[f'DiphotonTree/{tree_name}'] = data
+            os.replace(out_tmp, out_final)
 
 if __name__ == "__main__":
     args = get_args()
@@ -642,6 +704,16 @@ if __name__ == "__main__":
     reweight_variation = load_reweight_variation(args.reweight_json, disabled=args.disable_reweight_uncertainty)
     # 1) 讀取每個 ma 的最佳化 cut
     mva_cuts = parse_mva_cuts(optimized_BDT_Cut)
+    if not args.no_signal_reweight:
+        sys.path.insert(0, HZAMVA_SCRIPTS)
+        from sideband_reweight import SidebandReweighter
+        _rw_path = resolve_reweight_json(args.reweight_json)
+        if _rw_path is None:
+            raise SystemExit(f"Signal reweight JSON not found from '{args.reweight_json}'")
+        SIGNAL_RW = SidebandReweighter.from_json(_rw_path)
+        logging.info(f"Signal reweighted with {_rw_path} (true-mass param, preselected yield preserved per channel)")
+    else:
+        logging.warning("--no-signal-reweight: the signal is NOT reweighted")
     MVA_REWEIGHT_LNN = None
     if args.legacy_mva_reweight:
         logging.warning("--legacy-mva-reweight: per-event reweight variation (NOT the S1 scheme-2 lnN)")
@@ -649,7 +721,14 @@ if __name__ == "__main__":
         lnn_path = args.mva_reweight_lnn_json
         if not lnn_path or not os.path.exists(lnn_path):
             raise SystemExit(f"S1 lnN JSON not found: {lnn_path} (use --legacy-mva-reweight for the old variation)")
-        _vals = json.load(open(lnn_path))["values"]
+        _lnn = json.load(open(lnn_path))
+        _ref = _lnn.get("reference", "none")
+        _want = "none" if args.no_signal_reweight else "nominal"
+        if _ref != _want:
+            raise SystemExit(f"S1 lnN JSON {lnn_path} is relative to the '{_ref}' reweight, but this run "
+                             f"{'does not reweight' if _want == 'none' else 'reweights'} the signal "
+                             f"(needs reference '{_want}'; make_s1_lnn_json.py --reference {_want})")
+        _vals = _lnn["values"]
         MVA_REWEIGHT_LNN = {int(m): {"up": float(v["up"]), "down": float(v["down"]),
                                      "mvacut": (float(v["mvacut"]) if "mvacut" in v else None)} for m, v in _vals.items()}
         problems = []

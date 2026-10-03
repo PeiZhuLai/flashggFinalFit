@@ -110,10 +110,12 @@ echo "[Timer] mA=${mA} initial fit finished in $(format_duration $((initial_end_
 
 fits_start_time=$(date +%s)
 combineTool.py "${common_opts[@]}" --doFits --parallel 4
-# [PZ 2026-10-02] second pass: a refit whose tree lacks the 3 points (nominal, -1, +1) is redone with
-# Minuit strategy 1 (mA29: MuonSmear/PhotonSmear 2022preEE and csev 2023preBPix fail with strategy 0
-# even with the fallbacks, and pass with strategy 1).
-retry=$(python3 - <<'PYRETRY'
+# [PZ 2026-10-02] later passes: a refit whose tree lacks the 3 points (nominal, -1, +1) is redone with
+# Minuit strategy 1, then strategy 2 (mA29: MuonSmear/PhotonSmear 2022preEE and csev 2023preBPix fail with
+# strategy 0 even with the fallbacks; with the signal reweight PhotonSmear 2022preEE also fails with
+# strategy 1 and passes with strategy 2).
+short_fits() {
+python3 - <<'PYRETRY'
 import glob, ROOT
 ROOT.gROOT.SetBatch(True)
 bad = []
@@ -124,16 +126,18 @@ for f in sorted(glob.glob("higgsCombine_paramFit_Test_*.MultiDimFit.mH*.root")):
     if tf: tf.Close()
 print(",".join(bad))
 PYRETRY
-)
-if [[ -n "$retry" ]]; then
-  echo ">>> Redoing refits with strategy 1: ${retry}"
-  opts_s1=(); prev=""
+}
+for strat in 1 2; do
+  retry=$(short_fits)
+  [[ -z "$retry" ]] && break
+  echo ">>> Redoing refits with strategy ${strat}: ${retry}"
+  opts_s=(); prev=""
   for o in "${common_opts[@]}"; do
-    if [[ "$prev" == "--cminDefaultMinimizerStrategy" ]]; then opts_s1+=(1); else opts_s1+=("$o"); fi
+    if [[ "$prev" == "--cminDefaultMinimizerStrategy" ]]; then opts_s+=("$strat"); else opts_s+=("$o"); fi
     prev="$o"
   done
-  combineTool.py "${opts_s1[@]}" --doFits --named "$retry" --parallel 4
-fi
+  combineTool.py "${opts_s[@]}" --doFits --named "$retry" --parallel 4
+done
 fits_end_time=$(date +%s)
 echo "[Timer] mA=${mA} nuisance fits finished in $(format_duration $((fits_end_time - fits_start_time)))"
 
