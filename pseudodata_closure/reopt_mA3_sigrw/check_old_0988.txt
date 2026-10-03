@@ -1,0 +1,1 @@
+  closureZ=0.96461 rhat=+0.027   -0.028/+0.030   (old: closureZ=0.945497 rhat=+0.032   -0.034/+0.037 data_fallback=0 )
