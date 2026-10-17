@@ -10,6 +10,12 @@ import pandas as pd
 import uproot
 import awkward as ak
 import subprocess
+import sys
+
+# shared with the scorer (HiggsZaAna/Parquet2Rootfile): local write + xrdcp, and which models produced the scores
+sys.path.insert(0, "/afs/cern.ch/work/p/pelai/HZa/HiggsZaAna/Parquet2Rootfile")
+import eos_safe_write as esw
+import score_provenance as sp
 
 optimized_BDT_Cut="/afs/cern.ch/work/p/pelai/HZa/HiggsZaAna/Plot/output/MVAcut_points_run3.json"
 
@@ -17,6 +23,11 @@ INPUT_BASE = "/eos/home-p/pelai/HZa/root_P2Root/run3_bdt_scored_fsrfix/Data"
 mAs = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
 procductions = ['Data']
 years = ['2022preEE', '2022postEE', '2023preBPix', '2023postBPix', '2024']
+
+# local copies of the written era files (and the frames written), merged locally by hadd_outputs; every verified
+# local file is copied to EOS at the end (publish_many), so a failed run leaves the previous outputs untouched
+LOCAL: Dict[tuple, tuple] = {}
+PENDING: List[tuple] = []
 
 # 讀 INPUT_BASE 的樹名與 iterate step
 INPUT_BASE_TREE_NAME = "inclusive"
@@ -196,8 +207,10 @@ def filter_columns(df: pd.DataFrame) -> pd.DataFrame:
     return df[columns_to_keep]
 
 def process_files(output_folder: str, input_folder: str, pass_map: Dict[tuple, set], id_cols: Tuple[str, ...], mva_cuts: Dict[int, float]) -> None:
+    # Each era file is read once, only the branches the outputs keep (filter_columns, after the H_mass rename), the
+    # MVA scores and, with a pass map, the event-ID columns; every mA is cut from it. Without a pass map the index is
+    # reset as the inner merge with the (same-file, same-cut) map did, so the outputs equal the per-mA full reads.
     os.makedirs(output_folder, exist_ok=True)
-    syst_variations = ["nominal"]
 
     year_files = list_year_root_files(input_folder, years)
     missing_years = [y for y in years if y not in year_files]
@@ -205,92 +218,101 @@ def process_files(output_folder: str, input_folder: str, pass_map: Dict[tuple, s
         logging.warning(f"Missing year files under {input_folder}: {missing_years}")
 
     samples = [f"mA_M{m}" for m in mAs]
+    keep_names = ("CMS_hgg_mass", "CMS_hza_mass", "weight", "dZ", "H_mass")
     for year in years:
         input_path = year_files.get(year)
         if not input_path:
             logging.warning(f"Missing input: {os.path.join(input_folder, f'{year}.root')}")
             continue
 
+        with uproot.open(input_path) as infile:
+            if INPUT_BASE_TREE_NAME not in infile:
+                logging.error(f"Tree '{INPUT_BASE_TREE_NAME}' not found in: {input_path}")
+                continue
+            t = infile[INPUT_BASE_TREE_NAME]
+            keys = list(map(str, t.keys()))
+            want = {get_mva_branch_for_sample(s) for s in samples}
+            if pass_map:
+                want |= set(id_cols)
+            need = [k for k in keys if k in want or k in keep_names or k.endswith("Up") or k.endswith("Down") or k.endswith("central")]
+            full = t.arrays(need, library='pd')
+        if 'dZ' not in full.columns:
+            full['dZ'] = np.zeros(len(full), dtype=np.float32)
+        logging.info(f"Read {input_path}: {len(full)} rows, {len(need)} of {len(keys)} branches")
+
         for s in samples:
             out_dir = os.path.join(output_folder, s)
             os.makedirs(out_dir, exist_ok=True)
             out_path = os.path.join(out_dir, f"output_{year}.root")
+            df = full
+            before = len(df)
 
-            for syst in syst_variations:
-                # data only nominal; keep loop structure
-                with uproot.open(input_path) as infile:
-                    if INPUT_BASE_TREE_NAME not in infile:
-                        logging.error(f"Tree '{INPUT_BASE_TREE_NAME}' not found in: {input_path}")
-                        continue
-
-                    df = infile[INPUT_BASE_TREE_NAME].arrays(library='pd')
-                    if 'dZ' not in df.columns:
-                        df['dZ'] = np.zeros(len(df), dtype=np.float32)
-
-                    before = len(df)
-
-                    # 1) pass_map 事件鍵過濾
-                    pass_set = pass_map.get((s, year), set())
-                    if pass_set:
-                        if len(id_cols) == 1 and id_cols[0] == 'event':
-                            if 'event' in df.columns:
-                                df['event'] = df['event'].astype(np.int64, copy=False)
-                                df = df[df['event'].isin(pass_set)]
-                        else:
-                            missing = [c for c in id_cols if c not in df.columns]
-                            if missing:
-                                logging.warning(f"Missing ID columns in {s} {year}: {missing}, skip ID merge.")
-                            else:
-                                for c in id_cols:
-                                    df[c] = df[c].astype(np.int64, copy=False)
-                                pass_df = pd.DataFrame(list(pass_set), columns=list(id_cols))
-                                df = df.merge(pass_df, on=list(id_cols), how='inner')
-
-                    # 2) 用對應 sample 的 MVA branch 再 cut 一次
-                    ma_val = parse_ma_from_name(s)
-                    nearest_ma, thr = find_nearest_cut(ma_val, mva_cuts)
-                    mva_col = get_mva_col(df.columns.tolist(), 'nominal', s)
-                    if thr is not None and mva_col is not None:
-                        if nearest_ma != ma_val:
-                            logging.info(f"Use nearest mA for filtering {s} {year}: target mA={ma_val}, nearest mA={nearest_ma}, cut={thr}")
-                        df = df[df[mva_col] >= thr]
+            # 1) pass_map 事件鍵過濾 (only with a pass map from another source)
+            pass_set = pass_map.get((s, year), set())
+            if pass_set:
+                if len(id_cols) == 1 and id_cols[0] == 'event':
+                    if 'event' in df.columns:
+                        df = df.assign(event=df['event'].astype(np.int64, copy=False))
+                        df = df[df['event'].isin(pass_set)]
+                else:
+                    missing = [c for c in id_cols if c not in df.columns]
+                    if missing:
+                        logging.warning(f"Missing ID columns in {s} {year}: {missing}, skip ID merge.")
                     else:
-                        if mva_col is None:
-                            logging.warning(f"Missing MVA branch for {s} in {input_path}: expected '{get_mva_branch_for_sample(s)}'")
+                        df = df.assign(**{c: df[c].astype(np.int64, copy=False) for c in id_cols})
+                        pass_df = pd.DataFrame(list(pass_set), columns=list(id_cols))
+                        df = df.merge(pass_df, on=list(id_cols), how='inner')
 
-                    logging.info(f"Filtered {s} {year}: {before} -> {len(df)} rows")
+            # 2) 用對應 sample 的 MVA branch 再 cut 一次
+            ma_val = parse_ma_from_name(s)
+            nearest_ma, thr = find_nearest_cut(ma_val, mva_cuts)
+            mva_col = get_mva_col(df.columns.tolist(), 'nominal', s)
+            if thr is not None and mva_col is not None:
+                if nearest_ma != ma_val:
+                    logging.info(f"Use nearest mA for filtering {s} {year}: target mA={ma_val}, nearest mA={nearest_ma}, cut={thr}")
+                df = df[df[mva_col] >= thr]
+            else:
+                if mva_col is None:
+                    logging.warning(f"Missing MVA branch for {s} in {input_path}: expected '{get_mva_branch_for_sample(s)}'")
+            if not pass_map:
+                df = df.reset_index(drop=True)
 
-                    # 3) 輸出前清理欄位
-                    if 'H_mass' in df.columns:
-                        df = df.rename(columns={"H_mass": "CMS_hza_mass"})
-                    df = filter_columns(df)
+            logging.info(f"Filtered {s} {year}: {before} -> {len(df)} rows")
 
-                # 4) 寫檔
-                with uproot.recreate(out_path) as outfile:
-                    outfile['DiphotonTree/Data_13p6TeV'] = df
-                logging.info(f"Wrote: {out_path}")
+            # 3) 輸出前清理欄位
+            if 'H_mass' in df.columns:
+                df = df.rename(columns={"H_mass": "CMS_hza_mass"})
+            df = filter_columns(df)
+
+            # 4) 寫檔: local file, verified, then xrdcp to EOS (writing through the EOS FUSE mount damaged files)
+            local = esw.stage_path(out_path)
+            expect = {}
+            with uproot.recreate(local) as outfile:
+                outfile['DiphotonTree/Data_13p6TeV'] = df
+            esw.record(expect, 'DiphotonTree/Data_13p6TeV', df)
+            esw.verify_local(local, expect)
+            LOCAL[(s, year)] = (local, df)
+            PENDING.append((local, out_path))
+            logging.info(f"Wrote: {out_path}")
 
 # 新增：將每個 mA 目錄下的各年度輸出合併為 run3.root
 def hadd_outputs(output_folder: str, samples: List[str], years_list: List[str]) -> None:
+    # merges the local copies written by process_files (no read through the FUSE mount); hadd keeps the input order,
+    # so run3.root must read back as the era frames concatenated; any failure raises
     for s in samples:
         out_dir = os.path.join(output_folder, s)
-        inputs = [os.path.join(out_dir, f"output_{y}.root") for y in years_list
-                  if os.path.exists(os.path.join(out_dir, f"output_{y}.root"))]
-        if not inputs:
+        parts = [LOCAL[(s, y)] for y in years_list if (s, y) in LOCAL]
+        if not parts:
             logging.warning(f"No yearly files found to hadd for {s} under {out_dir}")
             continue
         merged = os.path.join(out_dir, "run3.root")
-        if os.path.exists(merged):
-            try:
-                os.remove(merged)
-            except Exception:
-                pass
-        cmd = ["hadd", "-f", merged] + inputs
-        logging.info(f"HADD {s}: {' '.join(inputs)} -> {merged}")
-        try:
-            subprocess.run(cmd, check=True)
-        except Exception as e:
-            logging.error(f"hadd failed for {s}: {e}")
+        local = esw.stage_path(merged)
+        logging.info(f"HADD {s}: {' '.join(p for p, _ in parts)} -> {merged}")
+        esw.hadd_local(local, [p for p, _ in parts])
+        expect = {}
+        esw.record(expect, 'DiphotonTree/Data_13p6TeV', pd.concat([d for _, d in parts], ignore_index=True))
+        esw.verify_local(local, expect)
+        PENDING.append((local, merged))
 
 if __name__ == "__main__":
     args = get_args()
@@ -301,8 +323,18 @@ if __name__ == "__main__":
     mva_cuts = parse_mva_cuts(optimized_BDT_Cut)
     samples = [f"mA_M{m}" for m in mAs]
 
-    # pass_map 與實際處理都改用「year.root」作為 input
-    pass_map, id_cols = build_pass_event_map(samples, years, args.inputFolder, mva_cuts)
-    process_files(args.outputFolder, args.inputFolder, pass_map, id_cols, mva_cuts)
-
-    hadd_outputs(args.outputFolder, samples, years)
+    # the scores must come from the installed models (fingerprint, or recomputed for files written before it)
+    for p, how in sp.check_scored_files(list(list_year_root_files(args.inputFolder, years).values())).items():
+        logging.info(f"Scores of {p}: installed models ({how})")
+    # The pass map was built from the same year files and branch with the same cut as process_files applies, so it
+    # never removed an event (its inner merge only renumbered the index); process_files keeps the cut and the index
+    # reset. build_pass_event_map stays for a pass map from another source.
+    pass_map, id_cols = {}, ()
+    try:
+        process_files(args.outputFolder, args.inputFolder, pass_map, id_cols, mva_cuts)
+        hadd_outputs(args.outputFolder, samples, years)
+        logging.info(f"Copying {len(PENDING)} verified files to {args.outputFolder}")
+        esw.publish_many(PENDING)
+        logging.info("All outputs copied (adler32 checked)")
+    finally:
+        esw.cleanup()

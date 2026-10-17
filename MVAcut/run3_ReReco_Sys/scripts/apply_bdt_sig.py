@@ -16,6 +16,11 @@ import re, ast
 from typing import Dict, List, Optional, Tuple  # 新增 Tuple
 import awkward as ak
 
+# shared with the scorer (HiggsZaAna/Parquet2Rootfile): local write + xrdcp, and which models produced the scores
+sys.path.insert(0, "/afs/cern.ch/work/p/pelai/HZa/HiggsZaAna/Parquet2Rootfile")
+import eos_safe_write as esw
+import score_provenance as sp
+
 # 新增：統一設定日誌等級與抑制吵雜第三方 logger
 def setup_logging(level_str: str = "INFO") -> None:
     level = getattr(logging, level_str.upper(), logging.INFO)
@@ -565,16 +570,18 @@ def compute_signal_rw_norm(input_folder: str, mA: str, year: str, ma: float):
         logging.info(f"signal reweight {mA} {year} {lep}: <R> = {den / max(float(np.sum(w[sel])), 1e-30):.5f}, "
                      f"normalization {norm:.5f} ({int(sel.sum())} preselected test events)")
 
+SYST_VARIATIONS = [
+    "nominal",
+    "FNUF_up", "FNUF_down", "Material_up", "Material_down",
+    "Electron_scale_up", "Electron_scale_down", "Electron_smear_up", "Electron_smear_down",
+    "Muon_scale_up", "Muon_scale_down", "Muon_smear_up", "Muon_smear_down",
+    "Photon_scale_up", "Photon_scale_down", "Photon_smear_up", "Photon_smear_down"
+]
+
 def process_files(output_folder, input_folder, samples: List[str], years: List[str], pass_map: Dict[tuple, set], id_cols: Tuple[str, ...], mva_cuts: Dict[int, float], reweight_variation: Optional[SidebandReweightVariation]):
     """Process input files and write the results to output ROOT files, after MVA_Score filtering."""
 
-    syst_variations = [
-        "nominal", 
-        "FNUF_up", "FNUF_down", "Material_up", "Material_down",
-        "Electron_scale_up", "Electron_scale_down", "Electron_smear_up", "Electron_smear_down", 
-        "Muon_scale_up", "Muon_scale_down", "Muon_smear_up", "Muon_smear_down",
-        "Photon_scale_up", "Photon_scale_down", "Photon_smear_up", "Photon_smear_down"
-    ]
+    syst_variations = SYST_VARIATIONS
 
     os.makedirs(output_folder, exist_ok=True)
 
@@ -585,10 +592,12 @@ def process_files(output_folder, input_folder, samples: List[str], years: List[s
                 os.makedirs(f"{output_folder}/{mA}", exist_ok=True)
             if SIGNAL_RW is not None:
                 compute_signal_rw_norm(input_folder, mA, year, parse_ma_from_name(mA))
-            # write to .partial and rename on success: a job killed mid-way (e.g. EOS I/O error) must not
-            # leave a readable output that silently lacks the later systematic trees
+            # written to a local file, verified (every branch, every entry), then xrdcp'd to EOS through .partial and
+            # renamed: writing through the EOS FUSE mount damaged files, and a job killed mid-way must not leave a
+            # readable output that silently lacks the later systematic trees
             out_final = f"{output_folder}/{mA}/output_{year}.root"
-            out_tmp = out_final + ".partial"
+            out_tmp = esw.stage_path(out_final)
+            expect = {}
             with uproot.recreate(out_tmp) as outfile:
                 logging.info(f"Output file: {output_folder}/{mA}/output_{year}.root")
                 for syst in syst_variations:
@@ -691,7 +700,9 @@ def process_files(output_folder, input_folder, samples: List[str], years: List[s
                             data = data.rename(columns={"H_mass": "CMS_hza_mass"})
                             tree_name = f'{proc}_125_Za_{lep}_13p6TeV_cat0{syst_suffix}'
                             outfile[f'DiphotonTree/{tree_name}'] = data
-            os.replace(out_tmp, out_final)
+                            esw.record(expect, f'DiphotonTree/{tree_name}', data)
+            esw.verify_local(out_tmp, expect)
+            esw.publish(out_tmp, out_final)
 
 if __name__ == "__main__":
     args = get_args()
@@ -745,8 +756,23 @@ if __name__ == "__main__":
             raise SystemExit("S1 lnN JSON %s inconsistent with this run -- rerun eval_alt_reweight.py + "
                              "make_s1_lnn_json.py at the current working points:\n  " % lnn_path + "\n  ".join(problems))
         logging.info(f"MVA reweight nuisance = per-mA lnN from {lnn_path}: {MVA_REWEIGHT_LNN}")
+    # the scores must come from the installed models (fingerprint, or recomputed for files written before it):
+    # every nominal and systematic input of this slice, and the INPUT_BASE files of the pass map
+    to_check = []
+    for base in dict.fromkeys([args.inputFolder.rstrip("/"), INPUT_BASE.rstrip("/")]):
+        for x in samples:
+            for syst in SYST_VARIATIONS:
+                for y in years:
+                    p = f"{base}/{x}/{y}.root" if syst == "nominal" else f"{base}/{x}_{syst}/{y}.root"
+                    if os.path.isfile(p):
+                        to_check.append(p)
+    for p, how in sp.check_scored_files(to_check).items():
+        logging.info(f"Scores of {p}: installed models ({how})")
     # 2) 根據 INPUT_BASE 的 MVA_Score 建立通過事件對照表（回傳唯一鍵欄位）
     pass_map, id_cols = build_pass_event_map(samples, years, INPUT_BASE, mva_cuts)
     # 3) 在主流程中套用唯一鍵與 MVA_Score 雙重篩選
     test_key_map = build_test_key_map(samples, years, args.inputFolder, id_cols)
-    process_files(args.outputFolder, args.inputFolder, samples, years, pass_map, id_cols, mva_cuts, reweight_variation)
+    try:
+        process_files(args.outputFolder, args.inputFolder, samples, years, pass_map, id_cols, mva_cuts, reweight_variation)
+    finally:
+        esw.cleanup()
