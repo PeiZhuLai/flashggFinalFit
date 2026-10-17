@@ -1,2 +1,0 @@
-mass,ftest_status,best_fit_pdf,n_pdfs,ftest_results,envelope_results,ftest_stdout,bkgplots_status,bkgplots_stdout
-28,OK,0:Exp1,3,./ALP_BkgModel_ReReco/fit_results_run3/28/HZAmassInde_fTest/fTestResults.txt,./ALP_BkgModel_ReReco/fit_results_run3/28/HZAmassInde_fTest/EnvelopeResults.txt,./ALP_BkgModel_ReReco/fit_results_run3/28/ftest.stdout.log,OK,./ALP_BkgModel_ReReco/fit_results_run3/28/makeBkgPlots.stdout.log

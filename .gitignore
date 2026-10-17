@@ -63,3 +63,32 @@ Combine/Checks/Bias_nominal/bias_jobs
 !Background/ALP_BkgModel_ReReco/fit_results_run3/*/HZAmassInde_fTest/fTestResults.txt
 !Background/ALP_BkgModel_ReReco/fit_results_run3/*/HZAmassInde_fTest/EnvelopeResults.txt
 Background/ENVELOPE.md
+# backups and snapshots (keep on disk, never commit)
+*.bak
+*.bak_*
+*.bak_*/
+*.before_*
+*.nopow_*
+*_before_*/
+*_backup_*/
+*_pre[A-Z]*_20*/
+Signal/_mA1_sigfit_bak_*/
+Signal/sigsyst_variants_*/
+
+# analysis products and real-data results kept out of the repository
+*.DONE
+Combine/output_*
+Combine/root_t2w*
+Combine/impact_jobs/
+Combine/Checks/Bias_nominal/bias_outputs*/
+Background/ALP_BkgModel_ReReco/fit_results_run3/
+Background/output_tables/
+Datacard/output_Datacard_leptons*/
+Datacard/summary_output_Datacard_leptons.json/
+Plots/plot_limits/
+Signal/logs_*/
+pseudodata_closure/logs/
+pseudodata_closure/scan_*/
+pseudodata_closure/reopt_*/
+pseudodata_closure/mA2_real_backup_*/
+pseudodata_closure/*.json
