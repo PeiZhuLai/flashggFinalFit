@@ -9,7 +9,8 @@ mkdir -p "$outdir"
 
 for mA in "${ALPmassList[@]}"; do
     echo "Processing SIGNIFICANCE for mA = ${mA}"
-    path_datacard="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Datacard/output_Datacard_leptons/${mA}_pruned_datacard_leptons.txt"
+    # cross-section card (2026-10-15): the significance does not depend on the SM cross-section normalization
+    path_datacard="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Datacard/output_Datacard_leptons/${mA}_pruned_datacard_leptons_xsec.txt"
     combine -M Significance "$path_datacard" --cminDefaultMinimizerStrategy 0 -m 125.38 \
         --setParameters MH=125.38 --freezeParameters MH --rMin -5 --rMax 5 -n "${mA}"
     mv "higgsCombine${mA}.Significance.mH125.38.root" "$outdir"/ 2>/dev/null

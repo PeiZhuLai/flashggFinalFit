@@ -220,7 +220,7 @@ if opt.doSystematics:
       leave()
   # --mass_ALP is parsed as a string; comparing it to the int list was always False, so the
   # interpolated mass points never got their efficiency rateParam (fixed 2026-09-24).
-  if int(round(float(opt.mass_ALP))) in interploate_ma_list:
+  if int(round(float(str(opt.mass_ALP).replace("p", ".")))) in interploate_ma_list:
     if not writeInterpolateYields(fdata,data,syst,opt):
       print(" --> [ERROR] in writing systematic %s (signal shape). Leaving"%syst['name'])
       leave()

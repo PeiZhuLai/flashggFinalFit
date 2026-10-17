@@ -30,3 +30,7 @@ for mA in "${mAs[@]}"; do
             --channel leptons \
             --doSystematics
 done
+
+# two datacards per m_a (2026-10-15): <m>_pruned_datacard_leptons.txt = Wilson card (with QCDscale/pdf/alphaS),
+# <m>_pruned_datacard_leptons_xsec.txt = cross-section card (the same without those three lines)
+bash "$path_makeDatacard/make_xsec_datacards.sh" "${mAs[@]}"

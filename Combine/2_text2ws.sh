@@ -12,14 +12,20 @@ mkdir -p output_impacts
 # combineTool.py -M Impacts -d root_t2w/5_Datacard_leptons.root -m 125.38 --doFits --robustFit 1  -t -1 --expectSignal 1
 # combineTool.py -M Impacts -d root_t2w/5_Datacard_leptons.root -m 125.38 -o output_impacts/5_impacts.json
 # plotImpacts.py -i output_impacts/5_impacts.json -o output_impacts/5_Expected_Impacts
+# two datacards per m_a (2026-10-15): root_t2w_xsec (cross-section card) and root_t2w_wilson (Wilson card, with the
+# theory uncertainties); root_t2w -> root_t2w_xsec, so the bias study and the impacts use the cross-section card
+for card in xsec wilson; do
 for mA in "${mAs[@]}"; do
     echo "=========================================="
-    echo "Processing Text2Workspace for mA = ${mA}"
+    echo "Processing Text2Workspace for mA = ${mA} (${card} card)"
     echo "=========================================="
 
     # 1. 生成workspace文件
-    python3 RunText2Workspace.py --batch local --queue workday --mA ${mA}
+    python3 RunText2Workspace.py --batch local --queue workday --mA ${mA} --card ${card}
 done
+done
+if [ -d root_t2w ] && [ ! -L root_t2w ]; then mv root_t2w root_t2w_before_twocards_$(date +%Y%m%d_%H%M); fi
+ln -sfn root_t2w_xsec root_t2w
 
 # for mA in "${mAs[@]}"; do
 #     echo "=============================="

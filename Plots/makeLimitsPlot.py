@@ -248,14 +248,16 @@ def _infer_masses_from_hepdata(jmap: dict) -> List[int]:
     return ms
 
 def build_graph_from_combine(masses: List[int], mode: str = "xs",
-                            assume_xs: float = 100.0, higgs_xs: float = 59703.914):
+                            assume_xs: float = 100.0, higgs_xs: float = 59703.914, results_dir: str = None):
     mode = (mode or "xs").lower()
     g = TGraph()
     failed = []
     j = 0
 
+    _resdir = results_dir or "/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/output_combine_results"
+
     def _fname(m):
-        return f"/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/output_combine_results/higgsCombine{m}.AsymptoticLimits.mH125.38.root"
+        return f"{_resdir}/higgsCombine{m}.AsymptoticLimits.mH125.38.root"
 
     for m in masses:
         ok, q025, q16, q50, q84, q975, obs, hasObs = read_limits_from_file(_fname(m))
@@ -695,6 +697,12 @@ def main():
     parser.add_argument("--results-dir", default=None,
                         help="combine results dir (default=output_combine_results=expected/blind). "
                              "Point at output_combine_results_observed to draw the observed line.")
+    # two datacards (2026-10-15): xs (and the Run 2 xs comparison) from the cross-section card (--results-dir, default
+    # output_combine_results -> output_combine_results_xsec); BR and C_ZH use the SM Higgs cross section, so they are
+    # drawn from the Wilson card with the theory uncertainties
+    parser.add_argument("--results-dir-wilson",
+                        default="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/output_combine_results_wilson",
+                        help="combine results of the Wilson card, used for the br and wilson plots and the Run 2 wilson comparison")
     parser.add_argument("--masses", default="", help="逗號分隔質量點 (例: 5,15,30) 留空使用內建")
     parser.add_argument("--only", default="",
                         help="只輸出哪些: xs,br,wilson,compare (逗號分隔), 留空=全部(=5張)")
@@ -744,13 +752,13 @@ def main():
     if "br" in req:
         BrazilianPlots(
             masses=masses, outdir=args.outdir, assume_xs=args.assume_xs, higgs_xs=args.higgs_xs,
-            lumi_fb=args.lumi, formats=formats, logy=logy, save_root=save_root, tag_suffix=args.tag_suffix, results_dir=args.results_dir,
+            lumi_fb=args.lumi, formats=formats, logy=logy, save_root=save_root, tag_suffix=args.tag_suffix, results_dir=args.results_dir_wilson,
             drawObs=not args.no_obs, setLimitsOnBR=True, setLimitsOnWilsonCoefficient=False,
         )
     if "wilson" in req:
         BrazilianPlots(
             masses=masses, outdir=args.outdir, assume_xs=args.assume_xs, higgs_xs=args.higgs_xs,
-            lumi_fb=args.lumi, formats=formats, logy=logy, save_root=save_root, tag_suffix=args.tag_suffix, results_dir=args.results_dir,
+            lumi_fb=args.lumi, formats=formats, logy=logy, save_root=save_root, tag_suffix=args.tag_suffix, results_dir=args.results_dir_wilson,
             drawObs=not args.no_obs, setLimitsOnBR=True, setLimitsOnWilsonCoefficient=True,
             indirect_min=args.indirect_min, indirect_max=args.indirect_max, indirect_step=args.indirect_step,
         )
@@ -763,7 +771,7 @@ def main():
         g_run2_xs_obs = build_graph_from_hepdata_values(j_xs, masses, which="obs")
 
         g_this_xs_exp, failed_xs = build_graph_from_combine(
-            masses, mode="xs", assume_xs=args.assume_xs, higgs_xs=args.higgs_xs
+            masses, mode="xs", assume_xs=args.assume_xs, higgs_xs=args.higgs_xs, results_dir=args.results_dir
         )
 
         outbase_xs = os.path.join(args.outdir, f"compare_xs_run2{args.tag_suffix}")
@@ -791,7 +799,7 @@ def main():
         g_run2_w_obs = build_graph_from_hepdata_values(j_w, masses, which="obs")
 
         g_this_w_exp, failed_w = build_graph_from_combine(
-            masses, mode="wilson", assume_xs=args.assume_xs, higgs_xs=args.higgs_xs
+            masses, mode="wilson", assume_xs=args.assume_xs, higgs_xs=args.higgs_xs, results_dir=args.results_dir_wilson
         )
 
         outbase_w = os.path.join(args.outdir, f"compare_wilson_run2{args.tag_suffix}")

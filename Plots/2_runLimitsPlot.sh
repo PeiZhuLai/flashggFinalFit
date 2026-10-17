@@ -53,6 +53,7 @@ python3 makeLimitsPlot.py \
   --masses $MASSES_RES \
   --only xs,br \
   --results-dir "$OBSDIR" \
+  --results-dir-wilson "${OBSDIR}_wilson" \
   --tag-suffix observed
 
 # Full-range (m_a = 0.1..30 GeV) XS limit: merged(0.1-0.9) + resolved(1-30) on one log-x canvas.

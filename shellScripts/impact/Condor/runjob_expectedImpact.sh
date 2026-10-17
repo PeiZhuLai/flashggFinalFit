@@ -17,6 +17,14 @@ base_dir="${2:-/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/
 cmssw_top="${3:-/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4}"
 combine_dir="${base_dir}/Combine"
 mh="125.38"
+# two datacards (2026-10-15): IMPACT_CARD=wilson (default; with the theory uncertainties on the SM cross section, the
+# AN main-text impacts -> output_impacts/) or xsec (cross-section card, AN appendix -> output_impacts_xsec/)
+card_type="${IMPACT_CARD:-wilson}"
+case "$card_type" in
+  wilson) out_impacts="output_impacts" ;;
+  xsec)   out_impacts="output_impacts_xsec" ;;
+  *) echo "[ERROR] IMPACT_CARD must be wilson or xsec"; exit 2 ;;
+esac
 
 format_duration() {
   local total_seconds="${1:-0}"
@@ -30,6 +38,7 @@ script_start_time=$(date +%s)
 
 echo ">>> Running expected impacts Condor job"
 echo "  mA        = ${mA}"
+echo "  card      = ${card_type}"
 echo "  BASE_DIR  = ${base_dir}"
 echo "  CMSSW_TOP = ${cmssw_top}"
 
@@ -55,18 +64,18 @@ if [[ -r /cvmfs/cms.cern.ch/crab3/crab.sh ]]; then
 fi
 
 cd "$combine_dir" || exit 1
-mkdir -p root_t2w output_impacts impact_jobs
+mkdir -p "root_t2w_${card_type}" "$out_impacts" impact_jobs
 
-echo ">>> Processing Text2Workspace for mA = ${mA}"
-python3 RunText2Workspace.py --batch local --queue workday --mA "$mA"
+echo ">>> Processing Text2Workspace for mA = ${mA} (${card_type} card)"
+python3 RunText2Workspace.py --batch local --queue workday --mA "$mA" --card "$card_type"
 
-card="${combine_dir}/root_t2w/${mA}_Datacard_leptons.root"
+card="${combine_dir}/root_t2w_${card_type}/${mA}_Datacard_leptons.root"
 if [[ ! -f "$card" ]]; then
   echo "[ERROR] Missing workspace: ${card}"
   exit 1
 fi
 
-work_dir="${combine_dir}/impact_jobs/mA_${mA}_$(date +%Y%m%d_%H%M%S)_${RANDOM}"
+work_dir="${combine_dir}/impact_jobs/mA_${mA}_${card_type}_$(date +%Y%m%d_%H%M%S)_${RANDOM}"
 mkdir -p "$work_dir"
 cd "$work_dir" || exit 1
 
@@ -141,8 +150,8 @@ done
 fits_end_time=$(date +%s)
 echo "[Timer] mA=${mA} nuisance fits finished in $(format_duration $((fits_end_time - fits_start_time)))"
 
-json_file="${combine_dir}/output_impacts/${mA}_impacts.json"
-plot_file="${combine_dir}/output_impacts/${mA}_Expected_Impacts"
+json_file="${combine_dir}/${out_impacts}/${mA}_impacts.json"
+plot_file="${combine_dir}/${out_impacts}/${mA}_Expected_Impacts"
 
 json_start_time=$(date +%s)
 combineTool.py -M Impacts -d "$card" -m "$mh" --redefineSignalPOIs r -o "$json_file"

@@ -50,6 +50,9 @@ for mA in "${mAs[@]}"; do
 
   echo "[INFO] Copy datacard -> $dst_base/"
   rsync "${RSYNC_OPTS[@]}" "$dc_src" "${dst_base}/"
+  # cross-section card (2026-10-15; same shapes, without QCDscale/pdf/alphaS)
+  [[ -f "${dc_src%.txt}_xsec.txt" ]] || die "xsec datacard not found: ${dc_src%.txt}_xsec.txt (run make_xsec_datacards.sh)"
+  rsync "${RSYNC_OPTS[@]}" "${dc_src%.txt}_xsec.txt" "${dst_base}/"
 
   echo "[INFO] Parse root files from datacard..."
   mapfile -t root_files < <(extract_root_paths "$dc_src")

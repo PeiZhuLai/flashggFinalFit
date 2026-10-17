@@ -1,0 +1,34 @@
+# subjob_expectedImpact
+universe              = vanilla
+executable            = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/shellScripts/impact/Condor/runjob_expectedImpact.sh
+getenv                = True
+request_memory        = 4000
+request_cpus          = 4
++JobFlavour           = "tomorrow"
+batch_name            = impactPlots_xsec
+environment           = "IMPACT_CARD=xsec"
+
+# Send the job to Held state on failure.
+on_exit_hold          = (ExitBySignal == True) || (ExitCode != 0)
+
+# Periodically retry failed jobs every 10 minutes, up to a maximum of 3 starts.
+periodic_release      = (NumJobStarts < 3) && ((CurrentTime - EnteredCurrentStatus) > 600)
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA1.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA1.$(ClusterId).$(ProcId).err
+arguments             = 1 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA2.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA2.$(ClusterId).$(ProcId).err
+arguments             = 2 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA3.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA3.$(ClusterId).$(ProcId).err
+arguments             = 3 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+

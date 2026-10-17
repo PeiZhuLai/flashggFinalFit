@@ -12,15 +12,21 @@ ALPmassList=( 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 
 # ALPmassList=( 1 2 3 9 )
 nALPmass=${#ALPmassList[@]}
 
-rm -fr output_combine_results
-mkdir -p output_combine_results
+# two datacards per m_a (2026-10-15): output_combine_results_xsec (cross-section card, model-independent limit, also
+# used for the comparison with Run 2) and output_combine_results_wilson (Wilson card with the theory uncertainties, for
+# the BR and C_ZH limits); output_combine_results -> output_combine_results_xsec
+if [ -d output_combine_results ] && [ ! -L output_combine_results ]; then mv output_combine_results output_combine_results_before_twocards_$(date +%Y%m%d_%H%M); fi
+for card in xsec wilson; do
+suffix=""; [ "$card" = xsec ] && suffix="_xsec"
+rm -fr output_combine_results_${card}
+mkdir -p output_combine_results_${card}
 
 for iALPmass in "${!ALPmassList[@]}"; do
     
     mA=${ALPmassList[iALPmass]}
-    echo "Processing for mA = ${mA}"
+    echo "Processing for mA = ${mA} (${card} card)"
     # ---------- Asymptotic Limit ---------- 
-    path_datacard="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Datacard/output_Datacard_leptons/${ALPmassList[iALPmass]}_pruned_datacard_leptons.txt"
+    path_datacard="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Datacard/output_Datacard_leptons/${ALPmassList[iALPmass]}_pruned_datacard_leptons${suffix}.txt"
     # NOTE: MH must be frozen at 125.38 (not profiled) -- floating it over [115,135] pushes the
     #       signal eff/xs/BR splines out of their GSL interpolation domain -> NaN-poisoned fit.
     #       rMax must be kept small: default rMax=20 is ~200x the true limit (~0.1) and makes the
@@ -28,9 +34,11 @@ for iALPmass in "${!ALPmassList[@]}"; do
     combine -M AsymptoticLimits $path_datacard --cminDefaultMinimizerStrategy 0 -m 125.38 --run blind --setParameters MH=125.38 --freezeParameters MH --rMax 2 -n ${ALPmassList[iALPmass]}
     
     # Move the output files to the output directory
-    mv higgsCombine${ALPmassList[iALPmass]}.AsymptoticLimits.mH125.38.root ./output_combine_results
+    mv higgsCombine${ALPmassList[iALPmass]}.AsymptoticLimits.mH125.38.root ./output_combine_results_${card}
 
 done
+done
+ln -sfn output_combine_results_xsec output_combine_results
 
 # Expected (--doObserved False)
 # path_datacard="/afs/cern.ch/work/p/pelai/HZa/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine"

@@ -16,6 +16,7 @@ def get_options():
   parser.add_option('--batch', dest='batch', default='local', help="Batch system [SGE,IC,condor]")
   parser.add_option('--queue', dest='queue', default='workday', help="Condor queue")
   parser.add_option('--ncpus', dest='ncpus', default=4, type='int', help="Number of cpus")
+  parser.add_option('--card', dest='card', default='xsec', help="Datacard type: xsec (cross-section card, no theory uncertainties on the SM cross section) or wilson (with them); output root_t2w_<card>/")
   parser.add_option('--dryRun', dest='dryRun', action="store_true", default=False, help="Only create submission files")
   return parser.parse_args()
 (opt,args) = get_options()
@@ -33,35 +34,40 @@ if opt.mode not in models:
   leave()
 
 extStr = ""
+if opt.card not in ("xsec", "wilson"):
+  print(" --> [ERROR] --card must be xsec or wilson"); leave()
+cardSuffix = "_xsec" if opt.card == "xsec" else ""
+t2wDir = "./root_t2w_%s" % opt.card
 print(" --> Running text2workspace for model: %s"%opt.mode)
-print(" --> Input: /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Datacard/output_Datacard_leptons/%s_pruned_datacard_leptons.txt --> Output: ./root_t2w/%s_Datacard_leptons.root"%(opt.mA,opt.mA))
+print(" --> Input: /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Datacard/output_Datacard_leptons/%s_pruned_datacard_leptons%s.txt --> Output: %s/%s_Datacard_leptons.root"%(opt.mA,cardSuffix,t2wDir,opt.mA))
 
 if not os.path.isdir(f"./t2w_jobs"): os.system(f"mkdir ./t2w_jobs")
-if not os.path.isdir(f"./root_t2w"): os.system(f"mkdir ./root_t2w")
+if not os.path.isdir(t2wDir): os.system("mkdir %s" % t2wDir)
 
 # Open submission file to write to
-fsub = open("./t2w_jobs/%s_t2w.sh"%(opt.mA),"w")
+jobName = "%s_%s" % (opt.mA, opt.card)
+fsub = open("./t2w_jobs/%s_t2w.sh"%(jobName),"w")
 fsub.write("#!/bin/bash\n\n")
 fsub.write("cd %s\n\n"%os.environ['PWD'])
 fsub.write("eval `scramv1 runtime -sh`\n\n")
 # if not os.path.isdir("./output_Datacard%s"%extStr): os.system("mkdir ./output_Datacard%s"%extStr)
 # fdataName = "./output_Datacard%s/%s_pruned_datacard_%s_%s.txt"%(extStr,opt.mA,opt.year,opt.channel)
 # fsub.write("text2workspace.py Datacard%s.txt -o Datacard%s_%s.root %s %s"%(opt.ext,opt.ext,opt.mode,opt.common_opts,models[opt.mode]))
-fsub.write("text2workspace.py /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Datacard/output_Datacard_leptons/%s_pruned_datacard_leptons.txt -o ./root_t2w/%s_Datacard_leptons.root %s %s"%(opt.mA,opt.mA,  opt.common_opts,models[opt.mode]))
+fsub.write("text2workspace.py /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Datacard/output_Datacard_leptons/%s_pruned_datacard_leptons%s.txt -o %s/%s_Datacard_leptons.root %s %s"%(opt.mA,cardSuffix,t2wDir,opt.mA,  opt.common_opts,models[opt.mode]))
 fsub.close()
 
 # /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Datacard/output_Datacard_leptons/15_pruned_datacard_leptons.txt
 
 # Change permission for file
-os.system("chmod 775 ./t2w_jobs/%s_t2w.sh"%(opt.mA))
+os.system("chmod 775 ./t2w_jobs/%s_t2w.sh"%(jobName))
 
 # If using condor then also write submission file
 if opt.batch == 'condor':
-  f_cdr = open("./t2w_jobs/%s_t2w.sub"%(opt.mA),"w")
-  f_cdr.write("executable          = %s/src/flashggFinalFit/Combine/t2w_jobs/%s_t2w.sh\n"%(os.environ['CMSSW_BASE'],opt.mA))
-  f_cdr.write("output              = %s/src/flashggFinalFit/Combine/t2w_jobs/%s_t2w.sh.out\n"%(os.environ['CMSSW_BASE'],opt.mA))
-  f_cdr.write("error               = %s/src/flashggFinalFit/Combine/t2w_jobs/%s_t2w.sh.err\n"%(os.environ['CMSSW_BASE'],opt.mA))
-  f_cdr.write("log                 = %s/src/flashggFinalFit/Combine/t2w_jobs/%s_t2w.sh.log\n"%(os.environ['CMSSW_BASE'],opt.mA))
+  f_cdr = open("./t2w_jobs/%s_t2w.sub"%(jobName),"w")
+  f_cdr.write("executable          = %s/src/flashggFinalFit/Combine/t2w_jobs/%s_t2w.sh\n"%(os.environ['CMSSW_BASE'],jobName))
+  f_cdr.write("output              = %s/src/flashggFinalFit/Combine/t2w_jobs/%s_t2w.sh.out\n"%(os.environ['CMSSW_BASE'],jobName))
+  f_cdr.write("error               = %s/src/flashggFinalFit/Combine/t2w_jobs/%s_t2w.sh.err\n"%(os.environ['CMSSW_BASE'],jobName))
+  f_cdr.write("log                 = %s/src/flashggFinalFit/Combine/t2w_jobs/%s_t2w.sh.log\n"%(os.environ['CMSSW_BASE'],jobName))
   f_cdr.write("+JobFlavour         = \"%s\"\n"%opt.queue)
   f_cdr.write("RequestCpus         = %g\n"%opt.ncpus)
   f_cdr.write("queue\n")
@@ -70,10 +76,10 @@ if opt.batch == 'condor':
 # Submit
 if opt.batch == "condor": 
   if os.environ['PWD'].startswith("/eos"):
-    subcmd = "condor_submit -spool ./t2w_jobs/%s_t2w.sub"%(opt.mA) 
+    subcmd = "condor_submit -spool ./t2w_jobs/%s_t2w.sub"%(jobName) 
   else:
-    subcmd = "condor_submit ./t2w_jobs/%s_t2w.sub"%(opt.mA)
-elif opt.batch == 'local': subcmd = "bash ./t2w_jobs/%s_t2w.sh"%(opt.mA)
-else: subcmd = "qsub -q hep.q -l h_rt=6:0:0 -l h_vmem=24G ./t2w_jobs/%s_t2w.sh"%(opt.mA)
+    subcmd = "condor_submit ./t2w_jobs/%s_t2w.sub"%(jobName)
+elif opt.batch == 'local': subcmd = "bash ./t2w_jobs/%s_t2w.sh"%(jobName)
+else: subcmd = "qsub -q hep.q -l h_rt=6:0:0 -l h_vmem=24G ./t2w_jobs/%s_t2w.sh"%(jobName)
 if opt.dryRun: print("[DRY RUN] %s"%subcmd)
 else: run(subcmd)

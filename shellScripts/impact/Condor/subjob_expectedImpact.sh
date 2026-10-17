@@ -25,16 +25,18 @@ format_duration() {
 }
 
 script_start_time=$(date +%s)
+IMPACT_CARD="${IMPACT_CARD:-wilson}"   # 2026-10-15: wilson (AN main text, output_impacts/) or xsec (appendix, output_impacts_xsec/)
 
 echo ">>> Preparing expected impact Condor submission"
 echo "  BASE_DIR  = ${BASE_DIR}"
 echo "  CMSSW_TOP = ${CMSSW_TOP}"
 echo "  masses    = ${mAs[*]}"
+echo "  card      = ${IMPACT_CARD}"
 
 submit_dir="${BASE_DIR}/shellScripts/impact/Condor"
 combine_dir="${BASE_DIR}/Combine"
 log_dir="${combine_dir}/impact_logs"
-submit_file="${submit_dir}/subjob_expectedImpact.submit"
+submit_file="${submit_dir}/subjob_expectedImpact_${IMPACT_CARD}.submit"
 executable="${submit_dir}/runjob_expectedImpact.sh"
 
 mkdir -p "$log_dir" "${combine_dir}/output_impacts" "${combine_dir}/impact_jobs"
@@ -47,7 +49,8 @@ getenv                = True
 request_memory        = 4000
 request_cpus          = 4
 +JobFlavour           = "tomorrow"
-batch_name            = impactPlots
+batch_name            = impactPlots_${IMPACT_CARD}
+environment           = "IMPACT_CARD=${IMPACT_CARD}"
 
 # Send the job to Held state on failure.
 on_exit_hold          = (ExitBySignal == True) || (ExitCode != 0)
@@ -59,9 +62,9 @@ EOF
 
 for mA in "${mAs[@]}"; do
   cat >> "$submit_file" << EOF
-log                   = ${log_dir}/impact_mA${mA}.\$(ClusterId).log
+log                   = ${log_dir}/impact_${IMPACT_CARD}_mA${mA}.\$(ClusterId).log
 output                = /dev/null
-error                 = ${log_dir}/impact_mA${mA}.\$(ClusterId).\$(ProcId).err
+error                 = ${log_dir}/impact_${IMPACT_CARD}_mA${mA}.\$(ClusterId).\$(ProcId).err
 arguments             = ${mA} ${BASE_DIR} ${CMSSW_TOP}
 queue
 
