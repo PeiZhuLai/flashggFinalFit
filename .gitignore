@@ -84,7 +84,7 @@ Combine/Checks/Bias_nominal/bias_outputs*/
 Background/ALP_BkgModel_ReReco/fit_results_run3/
 Background/output_tables/
 Datacard/output_Datacard_leptons*/
-Datacard/summary_output_Datacard_leptons.json/
+Datacard/summary_output_Datacard_leptons.json
 Plots/plot_limits/
 Signal/logs_*/
 pseudodata_closure/logs/
@@ -92,3 +92,6 @@ pseudodata_closure/scan_*/
 pseudodata_closure/reopt_*/
 pseudodata_closure/mA2_real_backup_*/
 pseudodata_closure/*.json
+*.bak.*
+Background/*_variants/
+pseudodata_closure/pre[A-Z]*_20*/
