@@ -145,8 +145,11 @@ for ((iBin=0; iBin<$nMass; iBin++))
     # 1. fTest
     ######################################
     # ./bin/fTest_ALP_turnOn -i $dir_input/mA_M${massList[$iBin]}/ws/run3.root --saveMultiPdf $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -D $path_bkg/HZAmassInde_fTest --mass_ALP ${massList[$iBin]} -c 1 --isFlashgg 0 --isData 0 -f data, --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 > $path_bkg/ftest.log
+    # m_a = 1 is fitted from 100 GeV: no data below 101 GeV, and the bias study passes only there (AN Sec 7.4)
+    mhLow=95
+    if [[ "${massList[$iBin]}" == "1" ]]; then mhLow=100; fi
     ftest_start_time=$(date +%s)
-    ./bin/fTest_ALP_turnOn -i $dir_input/mA_M${massList[$iBin]}/ws/run3.root --saveMultiPdf $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -D $ftest_outdir --mass_ALP ${massList[$iBin]} -c 1 --isFlashgg 0 --isData 0 -f data, --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 --gtoys "$gof_toys" > "$ftest_stdout" 2>&1
+    ./bin/fTest_ALP_turnOn -i $dir_input/mA_M${massList[$iBin]}/ws/run3.root --saveMultiPdf $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -D $ftest_outdir --mass_ALP ${massList[$iBin]} -c 1 --isFlashgg 0 --isData 0 -f data, --mhLow $mhLow --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 --gtoys "$gof_toys" > "$ftest_stdout" 2>&1
     ftest_cmd_status=$?
     ftest_end_time=$(date +%s)
     echo "[Timer] mA=${massList[$iBin]} fTest finished in $(format_duration $((ftest_end_time - ftest_start_time)))"
@@ -174,10 +177,10 @@ for ((iBin=0; iBin<$nMass; iBin++))
     bkgplots_start_time=$(date +%s)
     # Two sets of bkg-fit plots per mA: blinded (data blanked in 115-135) and unblinded.
     # Blinded:
-    ./bin/makeBkgPlots_ALP -b $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -d $path_bkg/BkgPlots_blind --total_OutDir $total_OutDir_blind -o $path_bkg/BkgPlots_blind.root --sqrts 13p6TeV --isMultiPdf --useBinnedData --massStep 2.5 --mhVal 125.0 --maVal ${massList[$iBin]} --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 --intLumi $Lumi_run3 -c 0 --isFlashgg 0 --doBands > "$bkgplots_stdout" 2>&1
+    ./bin/makeBkgPlots_ALP -b $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -d $path_bkg/BkgPlots_blind --total_OutDir $total_OutDir_blind -o $path_bkg/BkgPlots_blind.root --sqrts 13p6TeV --isMultiPdf --useBinnedData --massStep 2.5 --mhVal 125.0 --maVal ${massList[$iBin]} --mhLow $mhLow --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 --intLumi $Lumi_run3 -c 0 --isFlashgg 0 --doBands > "$bkgplots_stdout" 2>&1
     bkgplots_cmd_status=$?
     # Unblinded:
-    ./bin/makeBkgPlots_ALP -b $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -d $path_bkg/BkgPlots_unblind --total_OutDir $total_OutDir_unblind -o $path_bkg/BkgPlots_unblind.root --sqrts 13p6TeV --isMultiPdf --useBinnedData --massStep 2.5 --mhVal 125.0 --maVal ${massList[$iBin]} --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 --intLumi $Lumi_run3 -c 0 --isFlashgg 0 --doBands --unblind >> "$bkgplots_stdout" 2>&1
+    ./bin/makeBkgPlots_ALP -b $path_bkg/CMS-HGG_mva_13p6TeV_multipdf.root -d $path_bkg/BkgPlots_unblind --total_OutDir $total_OutDir_unblind -o $path_bkg/BkgPlots_unblind.root --sqrts 13p6TeV --isMultiPdf --useBinnedData --massStep 2.5 --mhVal 125.0 --maVal ${massList[$iBin]} --mhLow $mhLow --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 --intLumi $Lumi_run3 -c 0 --isFlashgg 0 --doBands --unblind >> "$bkgplots_stdout" 2>&1
     bkgplots_cmd_status=$(( bkgplots_cmd_status + $? ))
     bkgplots_end_time=$(date +%s)
     echo "[Timer] mA=${massList[$iBin]} makeBkgPlots finished in $(format_duration $((bkgplots_end_time - bkgplots_start_time)))"

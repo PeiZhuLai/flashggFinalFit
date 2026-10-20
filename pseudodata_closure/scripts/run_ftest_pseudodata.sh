@@ -28,10 +28,11 @@ run_one() {
     local OUT=$PC/fit_results_run3_pseudodata/${mA}
     if [[ ! -f "$WS" ]]; then echo "[SKIP mA=$mA] missing $WS"; return 1; fi
     mkdir -p $OUT/HZAmassInde_fTest
+    local lo=95; [[ "$mA" == "1" ]] && lo=100   # fit low edge as in shellScripts/bkg/fit_bkg.sh
     ./bin/fTest_ALP_turnOn -i $WS \
         --saveMultiPdf $OUT/CMS-HGG_mva_13p6TeV_multipdf.root -D $OUT/HZAmassInde_fTest \
         --mass_ALP ${mA} -c 1 --isFlashgg 0 --isData 0 -f data, \
-        --mhLow 95 --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 --gtoys "$GOF_TOYS" \
+        --mhLow $lo --mhHigh 180 --mhLowBlind 115 --mhHighBlind 135 --gtoys "$GOF_TOYS" \
         > $OUT/ftest.stdout.log 2>&1
     local st=$?
     local bf=$(grep -E "Best Fit Pdf =" $OUT/ftest.stdout.log | tail -1 | sed 's/.*Best Fit Pdf = //')

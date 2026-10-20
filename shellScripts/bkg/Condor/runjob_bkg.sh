@@ -130,10 +130,10 @@ if [[ "$ws_input" -ot "$tree_input" ]]; then
   finish_skipped
 fi
 
-# Per-mass m_llgg fit low edge: raise to 105 for mA=1,2 to avoid the steep low-m_llgg
-# turn-on that biased the low-mass background fits (bias study, 2026-06). Others stay 95.
+# Per-mass m_llgg fit low edge, as in fit_bkg.sh: m_a = 1 from 100 GeV (no data below 101 GeV, and the bias
+# study passes only there, AN Sec 7.4), all other masses from 95 GeV.
 mhLow=95
-if [[ "$mass" == "1" || "$mass" == "2" ]]; then mhLow=105; fi
+if [[ "$mass" == "1" ]]; then mhLow=100; fi
 
 ftest_start_time=$(date +%s)
 ./bin/fTest_ALP_turnOn \

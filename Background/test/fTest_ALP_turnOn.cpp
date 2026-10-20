@@ -196,7 +196,7 @@ static int bestBernOrder(int m)
   // among orders that pass GOF (p>0.01) AND have |median bias|<0.2 in EVERY available
   // measurement (robust against the Bernstein irreproducibility seen in single runs),
   // pick the one with the smallest max|bias| (largest margin). Returns 0 -> drop:
-  //   mA 1, 28: no Bernstein order passes GOF;  mA 5, 6: no order robustly passes bias.
+  //   mA 28: no Bernstein order passes GOF;  mA 5, 6: no order robustly passes bias.
   // [PZ 2026-08-04] m_a = 2, 4 and 27 additionally drop Bernstein. The orders
   // in this table were picked from the 2026-06-14 bias study, which used 1000
   // toys per function. Repeating the whole scan with 10000 toys showed that
@@ -210,6 +210,9 @@ static int bestBernOrder(int m)
   // the family is therefore removed from the envelope at these three points,
   // exactly as is done at the mass points listed in the default branch.
   switch (m) {
+    // m_a = 1: fitted over 100-180 GeV (no data below 101 GeV), Bernstein up to order 4 (the F-test picks Bern2);
+    // without it Lau1 biases by -0.246 (10 x 1000 toys), with it the largest bias is Bern2 -0.161 (AN Sec 7.4).
+    case 1: return 4;
     // [PZ 2026-10-01] m_a = 3: with the S1 scheme-2 lnN Bern2 = -0.211 (10000 toys), the only function
     // above threshold -> next lower order (AN Sec 7.4); Bern1 GOF p = 0.17.
     case 3: return 1; case 9: return 6;
@@ -223,7 +226,7 @@ static int bestBernOrder(int m)
     case 18: return 5; case 19: return 5; case 20: return 5; case 22: return 6;
     case 23: return 6; case 24: return 5; case 25: return 5; /* 2026-10-01: Bern6 bias +0.212 after the DY-veto retrain -> 5 (AN 7.4) */ case 26: return 6;
     case 29: return 6; case 30: return 6;
-    // Bernstein dropped: m_a = 1, 5, 6, 7, 8, 21, 28 (no order passes GOF or
+    // Bernstein dropped: m_a = 5, 6, 7, 8, 21, 28 (no order passes GOF or
     // bias) and m_a = 2, 4, 27 (bias above 0.2 at 10000 toys, see above).
     default: return 0;
   }
@@ -1375,6 +1378,17 @@ int main(int argc, char* argv[]){
 
 		mass->setBins(nBinsForMass);
 		RooAbsData *data = dataFull;
+		// The workspace dataset spans 95-180 GeV; with a narrower window (--mhLow 100 at m_a = 1) events outside it would
+		// make every fit fail, so keep only the window. Not done when the dataset is already inside (unchanged path).
+		{
+		  double dmin = 0., dmax = 0.;
+		  dataFull->getRange(*mass, dmin, dmax);
+		  if (dmin < mgg_low || dmax > mgg_high) {
+		    data = dataFull->reduce(RooArgSet(*mass), Form("%s>=%f && %s<=%f", mass->GetName(), (double)mgg_low, mass->GetName(), (double)mgg_high));
+		    std::cout << "[INFO] dataset reduced to [" << mgg_low << "," << mgg_high << "]: " << dataFull->sumEntries()
+		              << " -> " << data->sumEntries() << " entries" << std::endl;
+		  }
+		}
 		// Guard against empty datasets: extended fits with n=0 lead to NaN NLL.
 		if (!data || data->sumEntries() <= 0.) {
 		  std::cerr << "[WARN] Category " << catname << " has zero entries in the fit range. Skip this category." << std::endl;
