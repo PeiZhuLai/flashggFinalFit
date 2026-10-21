@@ -32,3 +32,165 @@ error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_
 arguments             = 3 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
 queue
 
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA4.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA4.$(ClusterId).$(ProcId).err
+arguments             = 4 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA5.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA5.$(ClusterId).$(ProcId).err
+arguments             = 5 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA6.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA6.$(ClusterId).$(ProcId).err
+arguments             = 6 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA7.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA7.$(ClusterId).$(ProcId).err
+arguments             = 7 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA8.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA8.$(ClusterId).$(ProcId).err
+arguments             = 8 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA9.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA9.$(ClusterId).$(ProcId).err
+arguments             = 9 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA10.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA10.$(ClusterId).$(ProcId).err
+arguments             = 10 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA11.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA11.$(ClusterId).$(ProcId).err
+arguments             = 11 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA12.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA12.$(ClusterId).$(ProcId).err
+arguments             = 12 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA13.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA13.$(ClusterId).$(ProcId).err
+arguments             = 13 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA14.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA14.$(ClusterId).$(ProcId).err
+arguments             = 14 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA15.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA15.$(ClusterId).$(ProcId).err
+arguments             = 15 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA16.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA16.$(ClusterId).$(ProcId).err
+arguments             = 16 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA17.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA17.$(ClusterId).$(ProcId).err
+arguments             = 17 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA18.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA18.$(ClusterId).$(ProcId).err
+arguments             = 18 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA19.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA19.$(ClusterId).$(ProcId).err
+arguments             = 19 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA20.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA20.$(ClusterId).$(ProcId).err
+arguments             = 20 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA21.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA21.$(ClusterId).$(ProcId).err
+arguments             = 21 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA22.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA22.$(ClusterId).$(ProcId).err
+arguments             = 22 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA23.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA23.$(ClusterId).$(ProcId).err
+arguments             = 23 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA24.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA24.$(ClusterId).$(ProcId).err
+arguments             = 24 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA25.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA25.$(ClusterId).$(ProcId).err
+arguments             = 25 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA26.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA26.$(ClusterId).$(ProcId).err
+arguments             = 26 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA27.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA27.$(ClusterId).$(ProcId).err
+arguments             = 27 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA28.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA28.$(ClusterId).$(ProcId).err
+arguments             = 28 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA29.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA29.$(ClusterId).$(ProcId).err
+arguments             = 29 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+
+log                   = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA30.$(ClusterId).log
+output                = /dev/null
+error                 = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/impact_logs/impact_xsec_mA30.$(ClusterId).$(ProcId).err
+arguments             = 30 /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4
+queue
+

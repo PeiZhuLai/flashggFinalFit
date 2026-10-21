@@ -335,8 +335,9 @@ def main():
             leg2.AddEntry(g, lab, "p")
 
         mg.SetTitle("")
-        mg.GetXaxis().SetTitle("(#mu - #tilde{#mu}) / #sigma_{#mu}")
-        mg.GetYaxis().SetTitle("#tilde{#mu}")
+        # pulls are (fitted - generated) / sigma (RunBiasStudy.py); the y value is the generated mu
+        mg.GetXaxis().SetTitle("(#tilde{#mu} - #mu) / #sigma_{#mu}")
+        mg.GetYaxis().SetTitle("#mu")
         mg.GetXaxis().SetLimits(MEAN_VS_R_XMIN, MEAN_VS_R_XMAX)
 
         if json_means:
