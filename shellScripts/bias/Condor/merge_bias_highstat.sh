@@ -22,7 +22,7 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BASE_DIR="${BASE_DIR:-$(cd "${script_dir}/../../.." && pwd)}"
 CMSSW_TOP="${CMSSW_TOP:-/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4}"
 bias_dir="${BASE_DIR}/Combine/Checks/Bias_nominal"
-hs_root="${bias_dir}/bias_outputs_highstat"
+hs_root="${BIAS_HS_ROOT:-${bias_dir}/bias_outputs_highstat}"   # override for side studies (e.g. envcheck_20261022)
 root_datacard_path="${ROOT_DATACARD_PATH:-${BASE_DIR}/Combine/root_t2w}"
 
 if [[ $# -lt 1 ]]; then

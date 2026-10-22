@@ -94,8 +94,12 @@ if [[ ! -f "$card" ]]; then
   exit 1
 fi
 
-out_root="${bias_dir}/bias_outputs_highstat/mA_${mA}/chunk${chunk}"
-work_dir="${bias_dir}/bias_jobs_highstat/mA_${mA}_chunk${chunk}_$(date +%Y%m%d_%H%M%S)_${RANDOM}"
+out_root="${BIAS_HS_ROOT:-${bias_dir}/bias_outputs_highstat}/mA_${mA}/chunk${chunk}"
+# Toys and combine logs (~8 MB per job) stay on the worker's local scratch; only
+# the split fit files are copied back to AFS. Left in AFS, 300 jobs per rerun
+# accumulated to 12 GB and filled the work quota. Local runs fall back to AFS.
+work_parent="${_CONDOR_SCRATCH_DIR:-${bias_dir}/bias_jobs_highstat}"
+work_dir="${work_parent}/mA_${mA}_chunk${chunk}_$(date +%Y%m%d_%H%M%S)_${RANDOM}"
 mkdir -p "$work_dir" "$out_root"
 cd "$work_dir" || exit 1
 

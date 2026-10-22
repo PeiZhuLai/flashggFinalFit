@@ -121,16 +121,21 @@ for ipdf in range(multipdf.getNumPdfs()):
 
 if opts.toys:
     if not os.path.isdir('BiasToys'): os.makedirs('BiasToys', exist_ok=True)
-    toyCmdBase = 'combine -m %.4f -d %s -M GenerateOnly --expectSignal %.4f -s %g --saveToys %s '%(opts.mH, opts.datacard, opts.expectSignal, opts.seed, opts.combineOptions)
+    toyCmdBase = 'combine -m %.4f -d %s -M GenerateOnly --expectSignal %.4f --saveToys %s '%(opts.mH, opts.datacard, opts.expectSignal, opts.combineOptions)
     for ipdf,pdfName in indexNameMap.items():
         name = shortName(pdfName)
         if opts.nToys > opts.split:
             for isplit in range(opts.nToys//opts.split):
-                toyCmd = toyCmdBase + ' -t %g -n _%s_split%g --setParameters %s=%g --freezeParameters %s'%(opts.split, name, isplit, indexName, ipdf, indexName)
+                # A fixed seed has to differ per split, otherwise every split regenerates
+                # the same toys and the merged sample is the first split repeated. The
+                # offset keeps split seeds clear of the per-chunk seeds of
+                # runjob_bias_highstat.sh (100000 + 100*mA + chunk). -1 stays random.
+                seed = opts.seed + 100000*isplit if opts.seed >= 0 else -1
+                toyCmd = toyCmdBase + ' -s %d -t %g -n _%s_split%g --setParameters %s=%g --freezeParameters %s'%(seed, opts.split, name, isplit, indexName, ipdf, indexName)
                 run(toyCmd, dry=opts.dryRun)
                 os.system('mv higgsCombine_%s* %s'%(name, toyName(name,split=isplit)))
         else: 
-            toyCmd = toyCmdBase + ' -t %g -n _%s --setParameters %s=%g --freezeParameters %s'%(opts.nToys, name, indexName, ipdf, indexName)
+            toyCmd = toyCmdBase + ' -s %d -t %g -n _%s --setParameters %s=%g --freezeParameters %s'%(opts.seed, opts.nToys, name, indexName, ipdf, indexName)
             run(toyCmd, dry=opts.dryRun)
             os.system('mv higgsCombine_%s* %s'%(name, toyName(name)))
 print()
