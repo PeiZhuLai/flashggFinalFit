@@ -209,16 +209,16 @@ static int bestBernOrder(int m)
   // family is already at low order, so there is no order left to fall back on;
   // the family is therefore removed from the envelope at these three points,
   // exactly as is done at the mass points listed in the default branch.
+  // m_a = 2 and 4 restored, and the m_a = 3 cap (lowered to Bern1 for Bern2 = -0.211) undone: those
+  // values came from high-statistics runs whose two splits per chunk shared one seed (5000 distinct
+  // toys, uncertainty ~0.014). Rerun with 10000 independent toys and the current cards: Bern2 -0.077
+  // (m_a = 2), Bern2 -0.144 (m_a = 3), Bern4 -0.171 (m_a = 4). m_a = 20 and 25 keep the Bern5 cap
+  // (Bern6 +0.246 and +0.259 in the same rerun).
   switch (m) {
     // m_a = 1: fitted over 100-180 GeV (no data below 101 GeV), Bernstein up to order 4 (the F-test picks Bern2);
     // without it Lau1 biases by -0.246 (10 x 1000 toys), with it the largest bias is Bern2 -0.161 (AN Sec 7.4).
     case 1: return 4;
-    // [PZ 2026-10-01] m_a = 3: with the S1 scheme-2 lnN Bern2 = -0.211 (10000 toys), the only function
-    // above threshold -> next lower order (AN Sec 7.4); Bern1 GOF p = 0.17.
-    case 3: return 1; case 9: return 6;
-    // m_a = 11 is further capped to Bern3 by envMaxOrder (low-order envelope,
-    // see the comment there); the value below only keeps Bernstein in the family
-    // list for that mass point.
+    case 2: return 2; case 3: return 3; case 4: return 5; case 9: return 6;
     case 10: return 5; case 11: return 5; case 12: return 5; case 13: return 4;
     case 14: return 5; case 15: return 5; case 16: return 6; case 17: return 5;
     // [PZ 2026-09-26] m_a = 20: after the FSR fix Bern6 = +0.208 (10000 toys, pull with the
@@ -226,8 +226,10 @@ static int bestBernOrder(int m)
     case 18: return 5; case 19: return 5; case 20: return 5; case 22: return 6;
     case 23: return 6; case 24: return 5; case 25: return 5; /* 2026-10-01: Bern6 bias +0.212 after the DY-veto retrain -> 5 (AN 7.4) */ case 26: return 6;
     case 29: return 6; case 30: return 6;
-    // Bernstein dropped: m_a = 5, 6, 7, 8, 21, 28 (no order passes GOF or
-    // bias) and m_a = 2, 4, 27 (bias above 0.2 at 10000 toys, see above).
+    // Bernstein dropped: m_a = 5, 6, 7, 8, 21, 28 (no order passes GOF or bias) and m_a = 27.
+    // At m_a = 27 the removal (Bern5 -0.299) came from the shared-seed runs; with 10000 independent
+    // toys the envelope with Bernstein (F-test: Bern5) also passes (largest Lau1 -0.185). Both
+    // configurations satisfy the bias requirement, and the one already in use is kept.
     default: return 0;
   }
 }
@@ -267,10 +269,12 @@ static int envMaxOrder(const std::string& funcType, int mass_ALP)
   // and Bernstein <= 3 brings those two to -0.031 and -0.022, and the largest
   // bias of the mass point from 0.289 to 0.167, while the goodness of fit stays
   // comfortably above threshold (0.41-0.55). See Section 7.5 of the AN.
-  if (mass_ALP==11 || isLowOrderMass(mass_ALP)) {
-    // [PZ 2026-09-25] after the FSR fix Bern3 = -0.288 at m_a = 11 (10000 toys), the only
-    // function above threshold; per AN Sec 7.4 fall back to the next lower order.
-    if (funcType=="Bernstein") return (mass_ALP==11) ? 3 : 4;   // m_a=11: Bern1..Bern2
+  // Lifted at m_a = 11 (also its Bern2 cap, set for Bern3 = -0.288): both came from runs whose
+  // two splits per chunk shared one seed. With 10000 independent toys and the current cards the
+  // full scan selects Exp1, Pow1, Lau1 and Bern5, with the largest bias Pow1 -0.140. The
+  // restriction stays available through LOWORDER_MASSES.
+  if (isLowOrderMass(mass_ALP)) {
+    if (funcType=="Bernstein") return 4;
     return 3;                              // Exp1/Pow1 only (orders are odd), Lau1..Lau2
   }
   // Bernstein: cap at the per-mA optimal order (exclusive upper bound = order+1).
@@ -1282,9 +1286,9 @@ int main(int argc, char* argv[]){
 	if (bestBernOrder(mass_ALP) > 0) functionClasses.push_back("Bernstein");
 	functionClasses.push_back("Exponential");
 	functionClasses.push_back("PowerLaw");
-	// [PZ 2026-10-01] Lau1 (lowest order) above the 0.2 bias threshold after the 2024 DY-veto retrain
-	// at mA24 (-0.232) and mA25 (-0.215): removed there (AN Sec 7.4; cf. mA8 Pow1 2026-09-25).
-	if (mass_ALP != 24 && mass_ALP != 25) functionClasses.push_back("Laurent");
+	// Laurent is kept at every mass point. It had been removed at mA24 (Lau1 -0.232) and mA25 (-0.215)
+	// on the shared-seed runs; with 10000 independent toys Lau1 is -0.192 (mA24) and -0.168 (mA25).
+	functionClasses.push_back("Laurent");
 
 	map<string,string> namingMap;
 	namingMap.insert(pair<string,string>("Bernstein","pol"));

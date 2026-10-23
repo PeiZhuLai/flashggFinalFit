@@ -106,8 +106,19 @@ cd "$work_dir" || exit 1
 echo ">>> Work dir : ${work_dir}"
 echo ">>> Output   : ${out_root}"
 
+# Optional side-study switches (unset = nominal): SELECT_FUNCTION restricts the truth functions (name substring),
+# FIT_DATACARD_PATH fits the toys with a different workspace than the one they were generated from.
+extra=()
+[[ -n "${SELECT_FUNCTION:-}" ]] && extra+=( --selectFunction "${SELECT_FUNCTION}" )
+fit_extra=()
+if [[ -n "${FIT_DATACARD_PATH:-}" ]]; then
+  fit_card="${FIT_DATACARD_PATH}/${mA}_Datacard_leptons.root"
+  [[ -f "$fit_card" ]] || { echo "[ERROR] Missing fit workspace: ${fit_card}"; exit 1; }
+  fit_extra+=( --fitDatacard "$fit_card" )
+fi
+
 t0=$(date +%s)
-python3 "${bias_dir}/RunBiasStudy.py" -d "$card" --mA "$mA" -t -n "$ntoys" --split "$split" -s "$seed"
+python3 "${bias_dir}/RunBiasStudy.py" -d "$card" --mA "$mA" -t -n "$ntoys" --split "$split" -s "$seed" "${extra[@]}"
 if ! compgen -G "BiasToys/biasStudy_*_toys.root" >/dev/null; then
   echo "[ERROR] no toys produced"
   exit 1
@@ -115,7 +126,7 @@ fi
 echo "[Timer] toys $(format_duration $(( $(date +%s) - t0 )))"
 
 t0=$(date +%s)
-python3 "${bias_dir}/RunBiasStudy.py" -d "$card" --mA "$mA" -f -n "$ntoys" --split "$split" -s "$seed" -c "${bias_fit_opts}"
+python3 "${bias_dir}/RunBiasStudy.py" -d "$card" --mA "$mA" -f -n "$ntoys" --split "$split" -s "$seed" -c "${bias_fit_opts}" "${extra[@]}" "${fit_extra[@]}"
 if ! compgen -G "BiasFits/biasStudy_*_fits.root" >/dev/null; then
   echo "[ERROR] no fits produced"
   exit 1

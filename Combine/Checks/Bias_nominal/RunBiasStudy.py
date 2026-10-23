@@ -6,6 +6,7 @@ from optparse import OptionParser
 parser = OptionParser()
 parser.add_option('--mA', dest='mA', default=5, type='int', help="ALP mass") # PZ
 parser.add_option("-d","--datacard",default="Datacard.root")
+parser.add_option("--fitDatacard",default=None,help="workspace for the fits (default: --datacard); toys always come from --datacard, so a truth model outside the fitted envelope can be tested")
 parser.add_option("-w","--workspace",default="w")
 parser.add_option("-t","--toys",action="store_true", default=False)
 parser.add_option("-n","--nToys",default=1000,type="int")
@@ -142,7 +143,7 @@ print()
 
 if opts.fits:
     if not os.path.isdir('BiasFits'): os.makedirs('BiasFits', exist_ok=True)
-    fitCmdBase = 'combine -m %.4f -d %s -M MultiDimFit -P %s --algo singles %s '%(opts.mH, opts.datacard, opts.poi, opts.combineOptions)
+    fitCmdBase = 'combine -m %.4f -d %s -M MultiDimFit -P %s --algo singles %s '%(opts.mH, opts.fitDatacard or opts.datacard, opts.poi, opts.combineOptions)
     for ipdf,pdfName in indexNameMap.items():
         name = shortName(pdfName)
         if opts.nToys > opts.split:

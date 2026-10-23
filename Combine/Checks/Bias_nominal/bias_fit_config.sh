@@ -6,10 +6,14 @@ default_bias_fit_combine_options() {
 EOF
 }
 
+# BIAS_FIT_EXTRA_OPTIONS is appended to whichever set is used (e.g. extra --cminFallbackAlgo, --robustFit 1),
+# so a side study can change the minimizer without restating the parameter ranges.
 resolve_bias_fit_combine_options() {
+  local base
   if [[ -n "${BIAS_FIT_COMBINE_OPTIONS:-}" ]]; then
-    printf '%s' "${BIAS_FIT_COMBINE_OPTIONS}"
+    base="${BIAS_FIT_COMBINE_OPTIONS}"
   else
-    default_bias_fit_combine_options
+    base="$(default_bias_fit_combine_options)"   # $(...) drops the heredoc's trailing newline
   fi
+  printf '%s' "${base}${BIAS_FIT_EXTRA_OPTIONS:+ ${BIAS_FIT_EXTRA_OPTIONS}}"
 }

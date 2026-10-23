@@ -100,8 +100,10 @@ PY
   # set it equal to nToys.
   echo "  running Gaussian fit over ${min_toys} toys"
   card="${root_datacard_path}/${mA}_Datacard_leptons.root"
+  sel=()   # truth functions restricted as in the jobs (runjob_bias_highstat.sh SELECT_FUNCTION)
+  [[ -n "${SELECT_FUNCTION:-}" ]] && sel=( --selectFunction "${SELECT_FUNCTION}" )
   python3 "${bias_dir}/RunBiasStudy.py" -d "$card" --mA "$mA" -p --gaussianFit \
-      -n "$min_toys" --split "$min_toys"
+      -n "$min_toys" --split "$min_toys" "${sel[@]}"
 
   # Also produce the overlay/r-vs-bias plots that the AN shows in Figure 46.
   # plot_bias.py sizes its loop from the tree itself, so it picks up the full
