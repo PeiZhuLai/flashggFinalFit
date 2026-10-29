@@ -55,7 +55,7 @@ DEF_BIAS = os.path.join(FINALFIT_DIR, "Combine", "Checks", "Bias_nominal", "bias
 # fit to a 1000-entry pull distribution is pulled towards zero by the tails.
 DEF_BIAS_HS = os.path.join(FINALFIT_DIR, "Combine", "Checks", "Bias_nominal",
                            "bias_outputs_highstat")
-DEF_OUTDIR = os.path.join(BKG_DIR, "output_tables")
+DEF_OUTDIR = "/eos/home-p/pelai/HZa/output_tables/bkg_envelope"
 
 # Order in which families are listed inside one mass point.
 FAMILY_ORDER = ["Exp", "Pow", "Lau", "Bern"]

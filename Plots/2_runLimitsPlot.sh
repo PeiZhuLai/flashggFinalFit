@@ -31,11 +31,12 @@ cd /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinal
   # --masses 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30 \
 
 MASSES_RES="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30"
+LIMIT_PLOT_DIR="${LIMIT_PLOT_DIR:-/eos/home-p/pelai/HZa/output_plots/plot_limits/2_runLimitsPlot}"
 OBSDIR="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/Combine/output_combine_results_observed"
 
 # resolved-only (m_a = 1..30) EXPECTED: XS / BR / Wilson / compare
 python3 makeLimitsPlot.py \
-  --outdir plot_limits/2_runLimitsPlot \
+  --outdir "$LIMIT_PLOT_DIR" \
   --assume-xs 100 \
   --higgs-xs 59703.914 \
   --lumi 172.13 \
@@ -45,7 +46,7 @@ python3 makeLimitsPlot.py \
 
 # resolved-only (m_a = 1..30) with OBSERVED line (reads output_combine_results_observed)
 python3 makeLimitsPlot.py \
-  --outdir plot_limits/2_runLimitsPlot \
+  --outdir "$LIMIT_PLOT_DIR" \
   --assume-xs 100 \
   --higgs-xs 59703.914 \
   --lumi 172.13 \
@@ -62,7 +63,7 @@ OBSDIR="/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashgg
 
 # expected-only
 python3 makeLimitsPlot_full.py \
-  --outdir plot_limits/2_runLimitsPlot \
+  --outdir "$LIMIT_PLOT_DIR" \
   --assume-xs 100 \
   --lumi 172.13 \
   --formats pdf,png \
@@ -70,7 +71,7 @@ python3 makeLimitsPlot_full.py \
 
 # with observed overlay
 python3 makeLimitsPlot_full.py \
-  --outdir plot_limits/2_runLimitsPlot \
+  --outdir "$LIMIT_PLOT_DIR" \
   --assume-xs 100 \
   --lumi 172.13 \
   --formats pdf,png \

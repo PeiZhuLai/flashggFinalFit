@@ -17,7 +17,7 @@ BASE_DIR="${BASE_DIR:-$(cd "${script_dir}/../../.." && pwd)}"   # .../flashggFin
 BN="${BASE_DIR}/Combine/Checks/Bias_nominal"
 OUTPUTS="${BN}/bias_outputs"
 OUTPUTS_HS="${BN}/bias_outputs_highstat"
-FLAT="${BN}/plots_bias"
+FLAT="${BIAS_PLOT_DIR:-/eos/home-p/pelai/HZa/output_plots/plots_bias}"
 
 mkdir -p "${FLAT}"
 
