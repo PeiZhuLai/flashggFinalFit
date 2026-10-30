@@ -23,6 +23,7 @@
 #include "RooNumConvPdf.h"
 #include "RooGaussModel.h"
 #include "TMath.h"
+#include <cstdlib>
 #include "RooAbsData.h"
 #include "boost/algorithm/string/split.hpp"
 #include "boost/algorithm/string/classification.hpp"
@@ -71,7 +72,13 @@ inline void fixUnitShapeCoeff(RooRealVar* coeff) {
 // left the likelihood away from its interior minimum (open-range refit: dNLL up to 69 for Bern5
 // at mA24). For these masses the windows are opened to the same ranges the bias-study fits use
 // (Combine/Checks/Bias_nominal/bias_fit_config.sh), keeping the per-mass starting values.
-inline bool openStepGausRanges(int massALP) { return massALP >= 24 && massALP <= 29; }
+// massALP = 0 is the merged sub-GeV analysis (1_grand_merged.sh). Its m_llG turn-on sits at
+// ~100-110 GeV with a 100 GeV fit edge, so the resolved mA = 1 window (turn-on pinned to
+// 103-106 for the 105 GeV edge) does not apply; it gets the same open turn-on window, but
+// width and sigma keep a 1 GeV floor: with both free down to 0.1 / 0.05 they trade off as the
+// turn-on sharpens (Exp1 fit status 1), and a 0.05 GeV smearing is narrower than the FFT
+// binning, which left combine's asymptotic NLL scan without a crossing at M0p3-0p6.
+inline bool openStepGausRanges(int massALP) { return massALP == 0 || (massALP >= 24 && massALP <= 29); }
 inline void openRange(double &val, double &lo, double &hi, double newLo, double newHi) {
   lo = newLo; hi = newHi;
   if (val < lo) val = lo;
@@ -82,8 +89,24 @@ inline void openStepGaus(int massALP, double &turnon, double &turnonLo, double &
                          double &sigma, double &sigmaLo, double &sigmaHi) {
   if (!openStepGausRanges(massALP)) return;
   openRange(turnon, turnonLo, turnonHi, 95.0, 125.0);
-  openRange(width,  widthLo,  widthHi,  0.1,  50.0);
-  openRange(sigma,  sigmaLo,  sigmaHi,  0.05, 20.0);
+  const double wsFloor = (massALP == 0) ? 1.0 : 0.0;
+  openRange(width,  widthLo,  widthHi,  std::max(0.1,  wsFloor), 50.0);
+  openRange(sigma,  sigmaLo,  sigmaHi,  std::max(0.05, wsFloor), 20.0);
+}
+// massALP = 0: the Gaussian smearing is held fixed. An erf step of width w convolved with a
+// Gaussian of width sigma is an erf of width sqrt(w^2 + sigma^2) up to the slope term, so with
+// both free the fit has a near-flat direction (Exp1 fit status 1 / -1 at M0p2, 0p3, 0p8, 0p9);
+// the turn-on softness is carried by the width alone. 2 GeV is about the m_llG resolution;
+// MERGED_SIGMA=<GeV> in the environment overrides it (used to scan the fixed value).
+const double kMergedSigma = 2.0;
+inline double mergedSigma() {
+  const char *env = std::getenv("MERGED_SIGMA");
+  return (env && *env) ? std::atof(env) : kMergedSigma;
+}
+inline void fixMergedSmearing(int massALP, RooRealVar *sigma) {
+  if (massALP != 0) return;
+  sigma->setVal(mergedSigma());
+  sigma->setConstant(true);
 }
 
 inline StepGausWindow makeStableStepGausWindow(int massALP, double turnonShift, double sigmaScale, double widthScale) {
@@ -353,6 +376,7 @@ RooAbsPdf* PdfModelBuilder::getBernsteinStepxGau(string prefix, int order, int m
   RooRealVar *g_mean  = new RooRealVar(Form("%s_gmean",prefix.c_str()),Form("%s_gmean",prefix.c_str()),0.);
   g_mean->setConstant(true);
   RooRealVar *g_sigma = new RooRealVar(Form("%s_gsigma",prefix.c_str()),Form("%s_gsigma",prefix.c_str()), sigma_bern, sigma_lbern, sigma_hbern);
+  fixMergedSmearing(mass_ALP, g_sigma);
   RooGaussian *gaus   = new RooGaussian(Form("%s_gaus",prefix.c_str()),Form("%s_gaus",prefix.c_str()),*obs_var,*g_mean,*g_sigma);
 
   RooRealVar *step_value = new RooRealVar(Form("%s_step",prefix.c_str()), Form("%s_step",prefix.c_str()), turnon_bern, turnon_lbern, turnon_hbern);
@@ -555,8 +579,16 @@ RooAbsPdf* PdfModelBuilder::getPowerLawStepxGau(string prefix, int order, int ca
   }
 
   
+  if (mass_ALP == 0) {
+    // merged: the spectrum above the turn-on falls like m^-3..-4. With Pow1 capped at m^-5 the
+    // family could only reach it through Pow3 with the m^-11 term switched off, i.e. a copy of
+    // Lau1 with two idle parameters; let Pow1 reach the same range as Lau1 / the Pow3 p3 term.
+    par1_pow1 = -4.0;      par1_lpow1 = -12.0;   par1_hpow1 = -2.0;
+  }
+
   openStepGaus(mass_ALP, turnon_pow, turnon_lpow, turnon_hpow, width_pow, width_lpow, width_hpow, sigma_pow, sigma_lpow, sigma_hpow);
   RooRealVar *sigma = new RooRealVar(Form("%s_sigma_p%d",prefix.c_str(),order),Form("%s_sigma_p%d",prefix.c_str(),order),sigma_pow,sigma_lpow,sigma_hpow);
+  fixMergedSmearing(mass_ALP, sigma);
   RooRealVar *turnon = new RooRealVar(Form("%s_turnon_p%d",prefix.c_str(),order),Form("%s_turnon_p%d",prefix.c_str(),order),turnon_pow,turnon_lpow,turnon_hpow);
   RooRealVar *width  = new RooRealVar(Form("%s_width_p%d",prefix.c_str(),order),Form("%s_width_p%d",prefix.c_str(),order),width_pow,width_lpow,width_hpow);
   
@@ -851,7 +883,11 @@ RooAbsPdf* PdfModelBuilder::getExponentialStepxGau(string prefix, int order, int
 
   
   openStepGaus(mass_ALP, turnon_exp, turnon_lexp, turnon_hexp, width_exp, width_lexp, width_hexp, sigma_exp, sigma_lexp, sigma_hexp);
+  // massALP = 0: the leading slope railed at the -0.02 edge (M0p3 -0.023, M0p8 -0.021, with the
+  // turn-on pushed to ~121 to compensate), so the merged spectrum may fall more slowly.
+  if (mass_ALP == 0) { par1_hexp1 = -0.005; par1_hexp3 = -0.005; par1_hexp5 = -0.005; }
   RooRealVar *sigma = new RooRealVar(Form("%s_sigma_p%d",prefix.c_str(),order),Form("%s_sigma_p%d",prefix.c_str(),order),sigma_exp,sigma_lexp,sigma_hexp);
+  fixMergedSmearing(mass_ALP, sigma);
   RooRealVar *turnon = new RooRealVar(Form("%s_turnon_p%d",prefix.c_str(),order),Form("%s_turnon_p%d",prefix.c_str(),order),turnon_exp,turnon_lexp,turnon_hexp);
   RooRealVar *width  = new RooRealVar(Form("%s_width_p%d",prefix.c_str(),order),Form("%s_width_p%d",prefix.c_str(),order),width_exp,width_lexp,width_hexp);
   
@@ -1122,6 +1158,7 @@ RooAbsPdf* PdfModelBuilder::getLaurentStepxGau(string prefix, int order, int cat
 
   openStepGaus(mass_ALP, turnon_lau, turnon_llau, turnon_hlau, width_lau, width_llau, width_hlau, sigma_lau, sigma_llau, sigma_hlau);
   RooRealVar *sigma = new RooRealVar(Form("%s_sigma_p%d",prefix.c_str(),order),Form("%s_sigma_p%d",prefix.c_str(),order),sigma_lau,sigma_llau,sigma_hlau);
+  fixMergedSmearing(mass_ALP, sigma);
   RooRealVar *turnon = new RooRealVar(Form("%s_turnon_p%d",prefix.c_str(),order),Form("%s_turnon_p%d",prefix.c_str(),order),turnon_lau,turnon_llau,turnon_hlau);
   RooRealVar *width  = new RooRealVar(Form("%s_width_p%d",prefix.c_str(),order),Form("%s_width_p%d",prefix.c_str(),order),width_lau,width_llau,width_hlau);
   

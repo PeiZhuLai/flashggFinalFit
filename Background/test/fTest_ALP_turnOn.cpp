@@ -67,6 +67,9 @@ static void randomizePdfParamsUniform(RooAbsPdf* pdf, RooAbsData* data);
 bool BLIND = true;
 bool runFtestCheckWithToys=false;
 bool PLOT_ONLY = false;
+// --mass_ALP 0 (merged): the stored default index of the multipdf goes to the best-scoring pdf
+// whose refit converged; a non-converged pdf is picked only when none converged.
+bool PREFER_CONVERGED_BEST_FIT = false;
 
 int FTEST_NTOYS = 500; // was 5000; lower = much faster (override with --ftoys)
 int GOF_NTOYS   = 200; // was 500;  lower = faster (override with --gtoys)
@@ -190,6 +193,34 @@ RooAbsPdf* getPdf(PdfModelBuilder &pdfsModel, string type, int order, const char
 // (mA 1: all functions fail GOF; mA 6: best Bern4=-0.244 still biases; mA 28: no
 // GOF-passing Bernstein). The hung high-order points (12,21,24) land on a stable
 // lower order that passes (B5/B4/B4), so this also avoids the Bern6 instability.
+// --mass_ALP 0: start Bern(n+1) at the Bern(n) minimum through degree elevation, which leaves the
+// polynomial unchanged, so the higher order cannot settle in a worse local minimum than the lower
+// one (seen at M0p1/0p3: Bern4 NLL above Bern3, which stopped the F-test before Bern5). The
+// coefficients are squares of the Bern_bNN parameters; Bern_b00 is fixed to 1 and c'_0 = c_0.
+static void seedBernsteinFromLower(RooAbsPdf* lower, RooAbsPdf* higher, RooAbsData* data, int lowerOrder)
+{
+  if (!lower || !higher || !data || lowerOrder < 1) return;
+  std::unique_ptr<RooArgSet> lp(lower->getParameters(*data)), hp(higher->getParameters(*data));
+  auto var = [](RooArgSet* s, const std::string& n) { return dynamic_cast<RooRealVar*>(s->find(n.c_str())); };
+  for (const char* n : {"Bern_step", "Bern_stepWidth"}) {
+    RooRealVar *a = var(lp.get(), n), *b = var(hp.get(), n);
+    if (a && b && !b->isConstant()) b->setVal(a->getVal());
+  }
+  const int d = lowerOrder - 1;   // degree of the lower polynomial
+  std::vector<double> c(lowerOrder);
+  for (int i = 0; i <= d; i++) {
+    RooRealVar* v = var(lp.get(), Form("Bern_b%02d", i));
+    if (!v) return;
+    c[i] = v->getVal() * v->getVal();
+  }
+  for (int i = 0; i <= d + 1; i++) {
+    const double f = double(i) / (d + 1);
+    const double e = f * (i >= 1 ? c[i-1] : 0.) + (1. - f) * (i <= d ? c[i] : 0.);
+    RooRealVar* v = var(hp.get(), Form("Bern_b%02d", i));
+    if (v && !v->isConstant()) v->setVal(std::sqrt(e));
+  }
+}
+
 static int bestBernOrder(int m)
 {
   // Per-mA Bernstein order chosen from ALL bias runs (Bern3/4/5/6 + validation v1):
@@ -215,6 +246,9 @@ static int bestBernOrder(int m)
   // (m_a = 2), Bern2 -0.144 (m_a = 3), Bern4 -0.171 (m_a = 4). m_a = 20 and 25 keep the Bern5 cap
   // (Bern6 +0.246 and +0.259 in the same rerun).
   switch (m) {
+    // m_a = 0 (merged): without Bernstein the envelope held only two shapes (Exp1 and a single
+    // power law, Lau1 == Pow3); the F-test picks the order, capped at Bern5.
+    case 0: return 5;
     // m_a = 1: fitted over 100-180 GeV (no data below 101 GeV), Bernstein up to order 4 (the F-test picks Bern2);
     // without it Lau1 biases by -0.246 (10 x 1000 toys), with it the largest bias is Bern2 -0.161 (AN Sec 7.4).
     case 1: return 4;
@@ -233,6 +267,13 @@ static int bestBernOrder(int m)
     default: return 0;
   }
 }
+
+// Lowest Bernstein order allowed into the envelope. m_a = 0 (merged): at M0p7-0p9 the F-test stops
+// at Bern3 (Bern4 vs Bern3 p = 0.21 / 0.52 / 0.71), and Bern3 is too stiff for a power-law
+// spectrum: with Pow1 as truth the envelope fits that pick Bern3 pull by +1.1 to +1.6, giving mean
+// pulls of +0.27 / +0.29 / +0.31 (10000 toys). Orders below the floor are still fitted (they seed
+// the next order) but do not enter the envelope; the floor order enters without the F-test.
+static int minBernOrder(int m) { return (m == 0) ? 4 : 1; }
 
 // Optional study override: LOWORDER_MASSES="11" (comma separated) restricts the
 // envelope at those mass points to the lowest orders -- Exp1/Pow1 and Bernstein
@@ -1164,7 +1205,7 @@ int main(int argc, char* argv[]){
     ("infilename,i", po::value<string>(&fileName),                                              "In file name")
     ("channel", po::value<string>(&channelName),                                                "channel name")
     ("ncats,c", po::value<int>(&ncats)->default_value(5),                                       "Number of categories")
-    ("mass_ALP", po::value<int>(&mass_ALP)->default_value(1),                                   "Mass of ALP")
+    ("mass_ALP", po::value<int>(&mass_ALP)->default_value(1),                                   "Mass of ALP (0 = merged sub-GeV: no mA=1 order caps, open turn-on windows)")
     ("singleCat", po::value<int>(&singleCategory)->default_value(-1),                           "Run A single Category")
     ("datfile,d", po::value<string>(&datfile)->default_value("dat/fTest.dat"),                  "Right results to datfile for BiasStudy")
     ("outDir,D", po::value<string>(&outDir)->default_value("plots/fTest"),                      "Out directory for plots")
@@ -1366,6 +1407,7 @@ int main(int argc, char* argv[]){
     }
 
     std::cout << "[INFO] Processing for mA = " << mass_ALP << std::endl;
+    PREFER_CONVERGED_BEST_FIT = (mass_ALP == 0);
 
     if (!dataFull) {
       std::cerr << "[ERROR] Could not retrieve dataset for category " << catname << ". Tried names:" << std::endl;
@@ -1480,6 +1522,8 @@ int main(int argc, char* argv[]){
 				else {
 					int fitStatus = 0;
 					bkgPdf->Print();
+					if (mass_ALP == 0 && *funcType == "Bernstein" && prev_pdf && prev_order == order-1)
+						seedBernsteinFromLower(prev_pdf, bkgPdf, data, prev_order);
 					runFit(bkgPdf,data,&thisNll,&fitStatus,/*max iterations*/3);
 
           if (fitStatus!=0) std::cout << "[WARNING] Warning -- Fit status for " << bkgPdf->GetName() << " at " << fitStatus <<std::endl;
@@ -1529,7 +1573,8 @@ int main(int argc, char* argv[]){
 				std::cout << "[INFO] Upper end Threshold for highest order function " << upperEnvThreshold <<std::endl;
 
 
-				while (prob<upperEnvThreshold && order < envMaxOrder(*funcType, mass_ALP) ){
+				const int minOrder = (*funcType == "Bernstein") ? minBernOrder(mass_ALP) : 1;
+				while ((prob<upperEnvThreshold || order <= minOrder) && order < envMaxOrder(*funcType, mass_ALP) ){
 					RooAbsPdf *bkgPdf = getPdf(pdfsModel,*funcType,order,"", mass_ALP);
 
           if (!bkgPdf ){
@@ -1540,6 +1585,8 @@ int main(int argc, char* argv[]){
             ensureOrderSuffix(bkgPdf, order);
 
 						int fitStatus=0;
+						if (mass_ALP == 0 && *funcType == "Bernstein" && prev_pdf && prev_order == order-1)
+							seedBernsteinFromLower(prev_pdf, bkgPdf, data, prev_order);
 						runFit(bkgPdf,data,&thisNll,&fitStatus,/*max iterations*/3);
 						if (fitStatus!=0) std::cout << "[WARNING] Warning -- Fit status for " << bkgPdf->GetName() << " at " << fitStatus <<std::endl;
 						double myNll = 2.*thisNll;
@@ -1562,7 +1609,7 @@ int main(int argc, char* argv[]){
 								const int nvars = bkgPdf->getVariables() ? bkgPdf->getVariables()->getSize() : 0;
 								const double candidateScore = myNll + nvars;
 								const bool candidateHasValidGof = (gofProb >= 0.0);
-									if (fitStatus != 5 && std::isfinite(candidateScore)) {
+									if (fitStatus != 5 && std::isfinite(candidateScore) && order >= minOrder) {
 										EnvelopeCandidate fallbackCandidate;
 									fallbackCandidate.pdf = bkgPdf;
 									fallbackCandidate.family = *funcType;
@@ -1583,7 +1630,8 @@ int main(int argc, char* argv[]){
 										}
 									}
 		            
-									if ((prob < upperEnvThreshold) ) {
+									const bool atMinOrder = (minOrder > 1 && order == minOrder);
+									if (order >= minOrder && (prob < upperEnvThreshold || atMinOrder)) {
 
 									if (gofProb > minEnvelopeGof) {
 										std::cout << "[INFO] Adding to Envelope " << bkgPdf->GetName() << " "<< gofProb
@@ -1913,6 +1961,8 @@ static int getBestFitFunction(RooMultiPdf *mpdf, RooAbsData *data, RooCategory *
   if (n<=0) return 0;
   int bestIndex = 0;
   double bestScore = 1e300;
+  int bestConvIndex = -1;
+  double bestConvScore = 1e300;
   int current = catIndex->getIndex();
   for (int i=0; i<n; ++i) {
     catIndex->setIndex(i);
@@ -1932,8 +1982,13 @@ static int getBestFitFunction(RooMultiPdf *mpdf, RooAbsData *data, RooCategory *
       bestScore = score;
       bestIndex = i;
     }
+    if (status == 0 && score < bestConvScore) {
+      bestConvScore = score;
+      bestConvIndex = i;
+    }
   }
   catIndex->setIndex(current);
+  if (PREFER_CONVERGED_BEST_FIT && bestConvIndex >= 0) return bestConvIndex;
   return bestIndex;
 }
 static bool checkPdfDataObservables(RooAbsPdf* pdf, RooAbsData* data, bool verboseDiag) {
