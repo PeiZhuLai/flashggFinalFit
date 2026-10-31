@@ -54,7 +54,12 @@ experimental_systematics = [
                 {'name':'pu_reweight_sf','title':'CMS_hza_pileup','type':'factory','prior':'lnN','correlateAcrossYears':1},
 
                 # Photon
-                {'name':'photon_id_sf_SelectedPhoton','title':'CMS_hza_photon_id','type':'factory','prior':'lnN','correlateAcrossYears':1},
+                # Custom photon ID, split in two: the statistical part (data and MC statistics of each era's
+                # tag-and-probe measurement, uncorrelated across eras) is the up/down of weight_photon_id_sf_SelectedPhoton;
+                # the method part (RMS/sqrt(N) of the four fits and the alternative MC, correlated across eras) is the
+                # separate weight_photon_id_syst_sf_SelectedPhoton (central 1). Needs signal produced with the split SF JSON.
+                {'name':'photon_id_sf_SelectedPhoton','title':'CMS_hza_photon_id_stat','type':'factory','prior':'lnN','correlateAcrossYears':0},
+                {'name':'photon_id_syst_sf_SelectedPhoton','title':'CMS_hza_photon_id_syst','type':'factory','prior':'lnN','correlateAcrossYears':1},
                 # Conversion-safe electron veto of the photons (2026-09-27: it was applied in the central
                 # weight but its uncertainty was missing from the datacards; it is a separate weight,
                 # weight_photon_csev_sf_SelectedPhoton_*, not part of the photon or electron ID SFs).
