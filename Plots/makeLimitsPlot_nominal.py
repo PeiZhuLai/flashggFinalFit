@@ -455,7 +455,7 @@ def main():
     parser.add_argument("--apv", action="store_true", help="APV flag")
     parser.add_argument("--no-obs", action="store_true", help="Do not draw observed")
     # 移除 --br 與 --wilson 參數
-    parser.add_argument("--outdir", default="output_plots", help="Output directory")
+    parser.add_argument("--outdir", default="/eos/home-p/pelai/HZa/output_plots/plot_limits/2_runLimitsPlot", help="Output directory")
     parser.add_argument("--assume-xs", type=float, default=100.0, help="Assumed signal cross section (fb)")
     parser.add_argument("--higgs-xs", "--ggf-xs", dest="higgs_xs", type=float, default=59703.914,
                         help="Inclusive SM Higgs boson production cross section (fb), summed over all "

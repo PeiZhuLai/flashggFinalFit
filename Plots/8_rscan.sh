@@ -3,7 +3,7 @@
 #   combine -M MultiDimFit --algo grid : -2 dLL vs r over [-5,5]; plot1DScan.py -> pdf
 #   (gives r-hat and the 68%/95% CL intervals from the scan). MH frozen at 125.38.
 #   Needs root_t2w (built by 1_makeLimits_observed.sh). mA1 = R=1 working-point datacard.
-# Output -> root: Combine/output_rscan_observed/{mA}_rscan.root ; pdf: Plots/plot_limits/8_rscan/mA{NN}_rscan.pdf
+# Output -> root: Combine/output_rscan_observed/{mA}_rscan.root ; pdf: /eos/home-p/pelai/HZa/output_plots/plot_limits/8_rscan/mA{NN}_rscan.pdf
 # PARALLEL over mA: NPROC workers (default 4; NPROC=1 -> serial). ALPMASS="1 2 3" to restrict.
 # Each mA runs in its own tmp workdir (avoids concurrent combine_logger.out clobber).
 set -e
@@ -13,7 +13,7 @@ eval `scramv1 runtime -sh`
 FFIT=/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit
 T2W=$FFIT/Combine/root_t2w
 OUT=$FFIT/Combine/output_rscan_observed                # MultiDimFit scan roots stay here
-PLOTDIR=$FFIT/Plots/plot_limits/8_rscan                # human-facing scan pdf (execution-order #8)
+PLOTDIR=/eos/home-p/pelai/HZa/output_plots/plot_limits/8_rscan                # human-facing scan pdf (execution-order #8)
 mkdir -p "$OUT" "$OUT/logs_parallel" "$PLOTDIR"
 
 POINTS="${POINTS:-50}"

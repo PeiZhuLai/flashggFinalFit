@@ -44,7 +44,7 @@ def cms_label(lumi, left=0.15, top=0.08):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--outdir", default="plot_limits")
+    ap.add_argument("--outdir", default="/eos/home-p/pelai/HZa/output_plots/plot_limits")
     ap.add_argument("--combine-dir",
                     default="/afs/cern.ch/work/p/pelai/HZa/HiggsZaAna/MergedAna/output/limits")
     ap.add_argument("--pattern", default="higgsCombine_merged_M0p{i}.AsymptoticLimits.mH125.root",

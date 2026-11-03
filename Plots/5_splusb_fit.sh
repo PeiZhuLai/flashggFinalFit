@@ -9,7 +9,7 @@
 #   (mA11 status=-1, mA12 r=+5.000); narrowing to ±3 recovers the true r-hat~=0
 #   (identical at ±2 and ±3). All 30 mA have |r-hat|<0.11, so ±3 is ample.
 # Output -> roots: Combine/output_splusb_fit_observed/fitDiagnostics{mA}_sb.root
-#           r-hat: Plots/plot_limits/6_splusb_fit/mA{NN}_rhat.txt   (best-fit r summary)
+#           r-hat: /eos/home-p/pelai/HZa/output_plots/plot_limits/6_splusb_fit/mA{NN}_rhat.txt   (best-fit r summary)
 # PARALLEL over mA: NPROC workers (default 4; NPROC=1 -> serial). ALPMASS="1 2 3" to restrict.
 # Each mA runs in its own tmp workdir so the concurrent combines don't clobber combine_logger.out.
 set -e
@@ -19,7 +19,7 @@ eval `scramv1 runtime -sh`
 FFIT=/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit
 T2W=$FFIT/Combine/root_t2w
 OUT=$FFIT/Combine/output_splusb_fit_observed           # FitDiagnostics roots stay here
-PLOTDIR=$FFIT/Plots/plot_limits/6_splusb_fit           # human-facing r-hat txt (execution-order #6)
+PLOTDIR=/eos/home-p/pelai/HZa/output_plots/plot_limits/6_splusb_fit           # human-facing r-hat txt (execution-order #6)
 mkdir -p "$OUT" "$OUT/logs_parallel" "$PLOTDIR"
 
 ALPmassList=( $(seq 1 30) )

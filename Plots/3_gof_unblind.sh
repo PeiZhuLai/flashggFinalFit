@@ -3,7 +3,7 @@
 #   combine -M GoodnessOfFit --algo saturated : observed test statistic + toy distribution.
 #   GOF p-value = fraction of toys with t_toy >= t_obs.
 # Output -> combine roots: Plots/unblind_GOF/roots/ ; plots via plot_gof_unblind.py
-# -> Plots/plot_limits/5_gof/mA{NN}_gof.{pdf,png}.  NTOYS overridable (default 500).
+# -> /eos/home-p/pelai/HZa/output_plots/plot_limits/5_gof/mA{NN}_gof.{pdf,png}.  NTOYS overridable (default 500).
 # PARALLEL over mA: NPROC workers (default 4; NPROC=1 -> serial). ALPMASS="1 2 3" to restrict.
 set -e
 source /cvmfs/cms.cern.ch/cmsset_default.sh

@@ -5,7 +5,7 @@
 #   signal strength r-hat with its uncertainty), and the ranked nuisance impacts on r.
 #   MH frozen at 125.38, r in [-5,5], robustFit. NO -t / --expectSignal (this is OBSERVED
 #   data, not an Asimov/expected dataset). mA1 uses the R=1 working-point datacard.
-# Output -> Plots/plot_limits/9_impacts/mA{NN}_impacts.{json,pdf}  (combine intermediate roots in Combine/output_impacts_observed/)
+# Output -> /eos/home-p/pelai/HZa/output_plots/plot_limits/9_impacts/mA{NN}_impacts.{json,pdf}  (combine intermediate roots in Combine/output_impacts_observed/)
 # TWO parallel axes: NPROC mA-workers (default 2) x PARALLEL nuisance-fits each (default 2).
 # Keep NPROC*PARALLEL modest on shared lxplus. ALPMASS="1 2 3" to restrict.
 set -e
@@ -15,7 +15,7 @@ eval `scramv1 runtime -sh`
 FFIT=/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit
 T2W=$FFIT/Combine/root_t2w
 OUT=$FFIT/Combine/output_impacts_observed              # combine intermediate roots stay here
-PLOTDIR=$FFIT/Plots/plot_limits/9_impacts             # human-facing json+pdf (execution-order #9)
+PLOTDIR=/eos/home-p/pelai/HZa/output_plots/plot_limits/9_impacts             # human-facing json+pdf (execution-order #9)
 mkdir -p "$OUT" "$OUT/logs_parallel" "$PLOTDIR"
 
 PARALLEL="${PARALLEL:-2}"   # combineTool --parallel (nuisance fits per mA)

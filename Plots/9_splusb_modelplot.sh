@@ -5,7 +5,7 @@
 #   NOTE: 5_splusb_fit.sh's Hesse cannot force a pos-def covariance with the discrete-
 #   profiling multipdf bkg (fit_status=300), so --saveWithUncertainties is dropped and these
 #   curves carry NO post-fit uncertainty band (central S+B / B curves only).
-# Output -> Plots/plot_limits/7_splusb_modelplot/mA{NN}_splusb_model_{unblind,blind}.pdf
+# Output -> /eos/home-p/pelai/HZa/output_plots/plot_limits/7_splusb_modelplot/mA{NN}_splusb_model_{unblind,blind}.pdf
 set -e
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 cd /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src
@@ -13,7 +13,7 @@ eval `scramv1 runtime -sh`
 FFIT=/afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit
 SB=$FFIT/Combine/output_splusb_fit_observed              # FitDiagnostics roots (input) stay here
 T2W=$FFIT/Combine/root_t2w                               # combine workspaces (post-fit pdf source)
-PLOTDIR=$FFIT/Plots/plot_limits/7_splusb_modelplot       # human-facing model pdf (execution-order #7)
+PLOTDIR=/eos/home-p/pelai/HZa/output_plots/plot_limits/7_splusb_modelplot       # human-facing model pdf (execution-order #7)
 mkdir -p "$PLOTDIR"
 LUMI="172.13 fb^{-1}"
 ALPmassList=( $(seq 1 30) )

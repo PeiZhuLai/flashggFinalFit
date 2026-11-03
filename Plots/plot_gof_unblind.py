@@ -6,8 +6,8 @@ For each mA reads the saturated-GOF combine outputs:
   unblind_GOF/roots/higgsCombine{mA}_toys.GoodnessOfFit.mH125.38.12345.root (toy t distribution)
 draws the toy distribution + observed arrow, computes the GOF p-value
 (= fraction of toys with t_toy >= t_obs), and saves:
-  plot_limits/5_gof/mA{mA:02d}_gof.{pdf,png}     per-mA
-  plot_limits/5_gof/gof_pvalue_vs_mA.{pdf,png}   summary p-value vs mA
+  /eos/home-p/pelai/HZa/output_plots/plot_limits/5_gof/mA{mA:02d}_gof.{pdf,png}     per-mA
+  /eos/home-p/pelai/HZa/output_plots/plot_limits/5_gof/gof_pvalue_vs_mA.{pdf,png}   summary p-value vs mA
 Run in higgs-alp-ana (ROOT 6.24).
 """
 import os, glob, array, ROOT
@@ -17,10 +17,10 @@ ROOT.gErrorIgnoreLevel = ROOT.kError + 1
 ROOT.gStyle.SetOptStat(0)
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-ROOTS = f"{BASE}/unblind_GOF/roots"                  # combine GOF roots (input) stay here
-OUT = f"{BASE}/plot_limits/5_gof"                     # human-facing gof pdf/png (execution-order #5)
+ROOTS = os.environ.get("GOF_ROOTS", f"{BASE}/unblind_GOF/roots")   # combine GOF roots (input)
+OUT = os.environ.get("GOF_OUT", "/eos/home-p/pelai/HZa/output_plots/plot_limits/5_gof")       # human-facing gof pdf/png
 os.makedirs(OUT, exist_ok=True)
-MASSES = list(range(1, 31))
+MASSES = [int(m) for m in os.environ.get("GOF_MASSES", " ".join(map(str, range(1, 31)))).split()]
 LUMI = "172.13 fb^{-1} (13.6 TeV)"
 
 
@@ -88,7 +88,7 @@ def main():
         c.SetLeftMargin(0.12); c.SetRightMargin(0.04); c.SetTopMargin(0.08); c.SetBottomMargin(0.13)
         c.SetGridy()
         frame = c.DrawFrame(0, 0, 31, 1.05)
-        frame.GetXaxis().SetTitle("m_{a} [GeV]"); frame.GetYaxis().SetTitle("GOF p-value (saturated)")
+        frame.GetXaxis().SetTitle("m_{a} [GeV]"); frame.GetYaxis().SetTitle(os.environ.get("GOF_YTITLE", "GOF p-value (saturated)"))
         frame.GetXaxis().SetTitleSize(0.05); frame.GetYaxis().SetTitleSize(0.05)
         g.SetMarkerStyle(20); g.SetMarkerSize(1.1); g.SetMarkerColor(ROOT.kBlack); g.SetLineColor(ROOT.kBlack)
         g.Draw("P SAME")

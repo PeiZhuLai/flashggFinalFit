@@ -64,7 +64,7 @@ def collect(masses, fname_fn, assume_xs):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--outdir", default=f"{FLASHGG}/Plots/plot_limits")
+    ap.add_argument("--outdir", default="/eos/home-p/pelai/HZa/output_plots/plot_limits")
     ap.add_argument("--merged-dir", default=f"{FLASHGG}/Combine/merged_limits")
     ap.add_argument("--merged-pattern",
                     default="higgsCombine_merged_flashgg_M0p{i}.AsymptoticLimits.mH125.root")
