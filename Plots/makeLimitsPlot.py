@@ -39,12 +39,12 @@ decoupling_energy_scale = 1000.0
 ZToll_br = 0.06729
 
 # Ratio pad (pad2) y-axis range — edit these to adjust the bottom panel scale
-FRAME2_YMIN = -0.72
-FRAME2_YMAX = +0.72
+FRAME2_YMIN = -0.6
+FRAME2_YMAX = +1.2
 
 # Brazilian-style limit plot y-axis ranges (XS / BR / Wilson modes)
 BRAZILIAN_XS_YMIN,     BRAZILIAN_XS_YMAX     = 4e-1, 100.0
-BRAZILIAN_BR_YMIN,     BRAZILIAN_BR_YMAX     = 1e-6, 2e-2
+BRAZILIAN_BR_YMIN,     BRAZILIAN_BR_YMAX     = 1e-4, 3e-1
 BRAZILIAN_WILSON_YMIN, BRAZILIAN_WILSON_YMAX = 5e-3, 10.0
 
 # Run3-vs-Run2 comparison plot top-pad (pad1) y-axis ranges
@@ -521,11 +521,12 @@ def BrazilianPlots(sample: int = 0,
             p2s = (q975 - q50) * assume_xs
             m2s = (q50 - q025) * assume_xs
         else:
-            exp = q50 * assume_xs / higgs_xs
-            p1s = (q84 - q50) * assume_xs / higgs_xs
-            m1s = (q50 - q16) * assume_xs / higgs_xs
-            p2s = (q975 - q50) * assume_xs / higgs_xs
-            m2s = (q50 - q025) * assume_xs / higgs_xs
+            # B(H->Za) = sigma x B(H->Za->llgg) / (sigma_SM(pp->H) x B(Z->ll)), with B(a->gg) = 100%
+            exp = q50 * assume_xs / (higgs_xs * ZToll_br)
+            p1s = (q84 - q50) * assume_xs / (higgs_xs * ZToll_br)
+            m1s = (q50 - q16) * assume_xs / (higgs_xs * ZToll_br)
+            p2s = (q975 - q50) * assume_xs / (higgs_xs * ZToll_br)
+            m2s = (q50 - q025) * assume_xs / (higgs_xs * ZToll_br)
 
         if setLimitsOnWilsonCoefficient:
             mid_br = q50 * assume_xs / (higgs_xs * ZToll_br)
@@ -553,7 +554,7 @@ def BrazilianPlots(sample: int = 0,
         g_exp_2s.SetPointError(idx, 0.0, 0.0, m2s, p2s)
 
         if drawObs and hasObs and (not setLimitsOnWilsonCoefficient):
-            yobs = obs * assume_xs if not setLimitsOnBR else obs * assume_xs / higgs_xs
+            yobs = obs * assume_xs if not setLimitsOnBR else obs * assume_xs / (higgs_xs * ZToll_br)
             g_obs.SetPoint(idx, m, yobs)
 
         idx += 1
@@ -588,7 +589,7 @@ def BrazilianPlots(sample: int = 0,
             ytitle = "#sigma(pp #rightarrow H) #times B(#rightarrow Za #rightarrow 2l + 2#gamma) [fb]"
             ymin, ymax = BRAZILIAN_XS_YMIN, BRAZILIAN_XS_YMAX
         else:
-            ytitle = "Br(H #rightarrow Za #rightarrow 2l + 2#gamma)"
+            ytitle = "B(H #rightarrow Za)"
             ymin, ymax = BRAZILIAN_BR_YMIN, BRAZILIAN_BR_YMAX
 
     frame = TH1F("frame", f";m_{{a}} (GeV);{ytitle}", 100, xmin, xmax)

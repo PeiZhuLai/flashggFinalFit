@@ -239,11 +239,11 @@ def BrazilianPlots(sample: int = 0,
             p2s = (q975 - q50) * assume_xs
             m2s = (q50 - q025) * assume_xs
         else:
-            exp = q50 * assume_xs / higgs_xs
-            p1s = (q84 - q50) * assume_xs / higgs_xs
-            m1s = (q50 - q16) * assume_xs / higgs_xs
-            p2s = (q975 - q50) * assume_xs / higgs_xs
-            m2s = (q50 - q025) * assume_xs / higgs_xs
+            exp = q50 * assume_xs / (higgs_xs * ZToll_br)
+            p1s = (q84 - q50) * assume_xs / (higgs_xs * ZToll_br)
+            m1s = (q50 - q16) * assume_xs / (higgs_xs * ZToll_br)
+            p2s = (q975 - q50) * assume_xs / (higgs_xs * ZToll_br)
+            m2s = (q50 - q025) * assume_xs / (higgs_xs * ZToll_br)
 
         # 修正: Wilson 誤差用「轉換後差值」而非直接把差值丟進公式
         if setLimitsOnWilsonCoefficient:
@@ -273,7 +273,7 @@ def BrazilianPlots(sample: int = 0,
             if not setLimitsOnBR:
                 g_obs.SetPoint(idx, m, obs * assume_xs)
             else:
-                g_obs.SetPoint(idx, m, obs * assume_xs / higgs_xs)
+                g_obs.SetPoint(idx, m, obs * assume_xs / (higgs_xs * ZToll_br))
 
         print(f"[BrazilianPlots] m={m} ({'BR' if setLimitsOnBR else 'XS'}) median={exp:.3g}")
         idx += 1
