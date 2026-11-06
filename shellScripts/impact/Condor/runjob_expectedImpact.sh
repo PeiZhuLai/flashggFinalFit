@@ -25,6 +25,12 @@ case "$card_type" in
   xsec)   out_impacts="output_impacts_xsec" ;;
   *) echo "[ERROR] IMPACT_CARD must be wilson or xsec"; exit 2 ;;
 esac
+# Injected signal strength of the Asimov dataset: IMPACT_EXPECT=1 (default) or q50, the median expected
+# limit of this mass point and card, so that the impacts are evaluated for a signal near the sensitivity
+# (r = 1 is about 50 times the expected limit). q50 writes to <out_impacts>_q50/.
+impact_expect="${IMPACT_EXPECT:-1}"
+[[ "$impact_expect" == "q50" ]] && out_impacts="${out_impacts}_q50"
+impact_parallel="${IMPACT_PARALLEL:-4}"
 
 format_duration() {
   local total_seconds="${1:-0}"
@@ -67,13 +73,27 @@ cd "$combine_dir" || exit 1
 mkdir -p "root_t2w_${card_type}" "$out_impacts" impact_jobs
 
 echo ">>> Processing Text2Workspace for mA = ${mA} (${card_type} card)"
-python3 RunText2Workspace.py --batch local --queue workday --mA "$mA" --card "$card_type"
+if [[ "${IMPACT_SKIP_T2W:-0}" == "1" ]]; then
+  echo ">>> IMPACT_SKIP_T2W=1: using the existing workspace"
+else
+  python3 RunText2Workspace.py --batch local --queue workday --mA "$mA" --card "$card_type"
+fi
 
 card="${combine_dir}/root_t2w_${card_type}/${mA}_Datacard_leptons.root"
 if [[ ! -f "$card" ]]; then
   echo "[ERROR] Missing workspace: ${card}"
   exit 1
 fi
+
+if [[ "$impact_expect" == "q50" ]]; then
+  impact_expect=$(python3 - "${combine_dir}/output_combine_results_${card_type}/higgsCombine${mA}.AsymptoticLimits.mH${mh}.root" <<'PYQ50'
+import sys, ROOT
+f = ROOT.TFile.Open(sys.argv[1])
+print("%.6g" % [e.limit for e in f.Get("limit") if abs(e.quantileExpected - 0.5) < 1e-3][0])
+PYQ50
+)
+fi
+echo "  expectSignal = ${impact_expect}"
 
 work_dir="${combine_dir}/impact_jobs/mA_${mA}_${card_type}_$(date +%Y%m%d_%H%M%S)_${RANDOM}"
 mkdir -p "$work_dir"
@@ -90,7 +110,7 @@ common_opts=(
   --rMin -5
   --rMax 5
   -t -1
-  --expectSignal 1
+  --expectSignal "$impact_expect"
   --robustFit 1
   --cminPreScan
   --freezeParameters=MH
@@ -118,7 +138,7 @@ initial_end_time=$(date +%s)
 echo "[Timer] mA=${mA} initial fit finished in $(format_duration $((initial_end_time - initial_start_time)))"
 
 fits_start_time=$(date +%s)
-combineTool.py "${common_opts[@]}" --doFits --parallel 4
+combineTool.py "${common_opts[@]}" --doFits --parallel "$impact_parallel"
 # [PZ 2026-10-02] later passes: a refit whose tree lacks the 3 points (nominal, -1, +1) is redone with
 # Minuit strategy 1, then strategy 2 (mA29: MuonSmear/PhotonSmear 2022preEE and csev 2023preBPix fail with
 # strategy 0 even with the fallbacks; with the signal reweight PhotonSmear 2022preEE also fails with
@@ -145,7 +165,7 @@ for strat in 1 2; do
     if [[ "$prev" == "--cminDefaultMinimizerStrategy" ]]; then opts_s+=("$strat"); else opts_s+=("$o"); fi
     prev="$o"
   done
-  combineTool.py "${opts_s[@]}" --doFits --named "$retry" --parallel 4
+  combineTool.py "${opts_s[@]}" --doFits --named "$retry" --parallel "$impact_parallel"
 done
 fits_end_time=$(date +%s)
 echo "[Timer] mA=${mA} nuisance fits finished in $(format_duration $((fits_end_time - fits_start_time)))"

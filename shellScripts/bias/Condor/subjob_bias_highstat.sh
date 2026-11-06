@@ -47,7 +47,7 @@ cat > "$submit_file" << EOF
 universe              = vanilla
 executable            = ${executable}
 getenv                = True
-request_memory        = 4000
+request_memory        = 3000
 request_cpus          = 1
 +JobFlavour           = "tomorrow"
 batch_name            = Bias_HighStat
