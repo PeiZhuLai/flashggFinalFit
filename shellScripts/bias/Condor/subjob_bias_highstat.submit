@@ -2,7 +2,7 @@
 universe              = vanilla
 executable            = /afs/cern.ch/work/p/pelai/HZa/flashgg_run3/CMSSW_14_1_0_pre4/src/flashggFinalFit/shellScripts/bias/Condor/runjob_bias_highstat.sh
 getenv                = True
-request_memory        = 4000
+request_memory        = 3000
 request_cpus          = 1
 +JobFlavour           = "tomorrow"
 batch_name            = Bias_HighStat
